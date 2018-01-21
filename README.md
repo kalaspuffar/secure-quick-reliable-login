@@ -23,3 +23,7 @@ This is as good as it sounds. It's what we've been waiting for.
 ## Installation
 
 ***TODO***
+
+## Build from source
+
+***TODO***
