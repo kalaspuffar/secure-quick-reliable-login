@@ -2,11 +2,11 @@
 
 This repository is an implementation for SQRL (Secure Quick Response Login) on android.
 
-*** This repository is in active development and haven't reached first viable implentation yet ***
+***This repository is in active development and haven't reached first viable implentation yet***
 
 ## Usage
 
-*** TODO ***
+***TODO***
 
 ## Introduction
 
@@ -22,4 +22,4 @@ This is as good as it sounds. It's what we've been waiting for.
 
 ## Installation
 
-*** TODO ***
+***TODO***
