@@ -5,8 +5,8 @@ android_binary(
     manifest = "src/main/AndroidManifest.xml",
     resource_files = glob(["src/main/res/**"]),
     deps = [
-        "@androidsdk//com.android.support:appcompat-v7-25.0.0",        
-        "@androidsdk//com.android.support:design-25.0.0",
+        "@androidsdk//com.android.support:appcompat-v7-25.3.1",        
+        "@androidsdk//com.android.support:design-25.3.1",
         "@androidsdk//com.android.support.constraint:constraint-layout-1.0.2"
     ]
 )
