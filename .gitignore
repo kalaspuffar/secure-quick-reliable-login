@@ -54,3 +54,9 @@ freeline_project_description.json
 /bazel-*
 /gradle
 /gradlew*
+/gen_build
+/.classpath
+/.project
+/.settings
+/release
+/.vscode

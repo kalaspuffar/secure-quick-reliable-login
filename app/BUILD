@@ -1,0 +1,12 @@
+android_binary(
+    name = "sqrl",
+    custom_package = "org.ea.sqrl",
+    srcs = glob(["src/main/java/**/*.java"]),
+    manifest = "src/main/AndroidManifest.xml",
+    resource_files = glob(["src/main/res/**"]),
+    deps = [
+        "@androidsdk//com.android.support:appcompat-v7-25.0.0",        
+        "@androidsdk//com.android.support:design-25.0.0",
+        "@androidsdk//com.android.support.constraint:constraint-layout-1.0.2"
+    ]
+)
