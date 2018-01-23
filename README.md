@@ -44,9 +44,16 @@ But after the project is setup you may use the command below to build your relea
 
 Last way to build the project is to use bazel. First you need to install or build bazel which is easy on Linux and Mac but can be more of a hazzle on windows.
 
+Remember to build a project with bazel in windows you use three slashes instead of two to signify the root. eg ///app:sqrl
+
 First you need to setup your workspace inside of the project directory. In order to find your api level you can look into the [sdk path]/platforms to see which versions are installed. The build_tools_version can be found in the [sdk path]/build-tools.
 
 ```
+load("@bazel_tools//tools/build_defs/repo:maven_rules.bzl", "maven_aar")
+maven_aar(
+  name = "qrcodereaderview",
+  artifact = "com.dlazaro66.qrcodereaderview:qrcodereaderview:2.0.2",
+)
 android_sdk_repository(
     name = "androidsdk",
     path = "[your sdk path]",
