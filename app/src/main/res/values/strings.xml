@@ -32,4 +32,8 @@ Printing backups onto paper, as a small QR code and text (perhaps more than once
 
 But PLEASE do make backups, since NO ONE knows your unique 77-digit private identity... not even you!</string>
 
+    <string name="title_activity_scan_secret">ScanSecretActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
 </resources>
