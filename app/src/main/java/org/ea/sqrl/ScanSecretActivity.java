@@ -1,11 +1,13 @@
 package org.ea.sqrl;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.PointF;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Base64;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -18,6 +20,7 @@ import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
  * status bar and navigation/system bar) with user interaction.
  */
 public class ScanSecretActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener {
+    public static final String EXTRA_MESSAGE = "org.ea.sqrl.QRCODE";
     private TextView mResultTextView;
     private QRCodeReaderView qrCodeReaderView;
     private LinearLayout mContentView;
@@ -86,10 +89,10 @@ public class ScanSecretActivity extends AppCompatActivity implements QRCodeReade
         qrCodeReaderView.setOnQRCodeReadListener(this);
 
         // Use this function to enable/disable decoding
-        qrCodeReaderView.setQRDecodingEnabled(true);
+//        qrCodeReaderView.setQRDecodingEnabled(true);
 
         // Use this function to change the autofocus interval (default is 5 secs)
-//        qrCodeReaderView.setAutofocusInterval(2000L);
+        qrCodeReaderView.setAutofocusInterval(2000L);
 
         // Use this function to enable/disable Torch
 //        qrCodeReaderView.setTorchEnabled(true);
@@ -131,7 +134,11 @@ public class ScanSecretActivity extends AppCompatActivity implements QRCodeReade
 
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
-        mResultTextView.setText(text);
+        System.out.println(text);
+        qrCodeReaderView.stopCamera();
+        Intent intent = new Intent(this, IntroductionActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, text);
+        startActivity(intent);
     }
 
     @Override
