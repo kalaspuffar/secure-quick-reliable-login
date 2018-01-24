@@ -31,7 +31,7 @@ SQRL provides many simple ways to back up your private identity, and all backups
 Printing backups onto paper, as a small QR code and text (perhaps more than once) is recommended, since paper is the original data storage medium. In many ways it\'s still the best. Simply store it where you store your life\'s other important documents. You can also record your backup to thumb drives, burn them to CD\'s, and store them safely anywhere.
 \n\n
 But PLEASE do make backups, since NO ONE knows your unique 77-digit private identity... not even you!</string>
-\n\n
+    \n\n
     <string name="title_activity_scan_secret">ScanSecretActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>

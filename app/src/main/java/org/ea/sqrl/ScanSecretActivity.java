@@ -14,6 +14,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
+import com.google.zxing.DecodeHintType;
+
+import org.ea.sqrl.storage.SQRLStorage;
+
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -87,12 +94,16 @@ public class ScanSecretActivity extends AppCompatActivity implements QRCodeReade
 
         qrCodeReaderView = (QRCodeReaderView)findViewById(R.id.qrdecoderview);
         qrCodeReaderView.setOnQRCodeReadListener(this);
+        Map<DecodeHintType, Object> decodeHints = new HashMap<>();
+        decodeHints.put(DecodeHintType.CHARACTER_SET, "ASCII");
+
+        qrCodeReaderView.setDecodeHints(decodeHints);
 
         // Use this function to enable/disable decoding
 //        qrCodeReaderView.setQRDecodingEnabled(true);
 
         // Use this function to change the autofocus interval (default is 5 secs)
-        qrCodeReaderView.setAutofocusInterval(2000L);
+        qrCodeReaderView.setAutofocusInterval(800L);
 
         // Use this function to enable/disable Torch
 //        qrCodeReaderView.setTorchEnabled(true);
@@ -134,7 +145,12 @@ public class ScanSecretActivity extends AppCompatActivity implements QRCodeReade
 
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
-        System.out.println(text);
+        try {
+            System.out.println(Base64.encodeToString(text.getBytes("ASCII"), Base64.DEFAULT));
+            SQRLStorage storage = new SQRLStorage(text.getBytes("ASCII"), true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         qrCodeReaderView.stopCamera();
         Intent intent = new Intent(this, IntroductionActivity.class);
         intent.putExtra(EXTRA_MESSAGE, text);
