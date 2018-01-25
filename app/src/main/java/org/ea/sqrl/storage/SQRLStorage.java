@@ -1,10 +1,11 @@
 package org.ea.sqrl.storage;
 
-import com.lambdaworks.crypto.SCrypt;
+import com.codahale.aesgcmsiv.AEAD;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.Base64;
-import static org.libsodium.jni.NaCl.sodium;
 
 public class SQRLStorage {
     private static final String STORAGE_HEADER = "sqrldata";
@@ -18,29 +19,17 @@ public class SQRLStorage {
 
     public SQRLStorage(byte[] input, boolean full) throws Exception {
         String header = new String(Arrays.copyOfRange(input, 0, 8));
-/*
-        System.out.println(input.length);
-        for (int i = 0; i < input.length - 1; i++)
-            System.out.println(i + " = " + getIntFromTwoBytes(input, i));
-*/
+
         if (!STORAGE_HEADER.equals(header)) throw new Exception("Incorrect header");
         int readOffset = 8;
         int readLen = readOffset + 2;
-
-        System.out.println("Reading keys " + input.length + " > " + readLen);
-
         while (input.length > readLen) {
             int headerFix = readOffset > 0 ? 0 : 8;
             int len = getIntFromTwoBytes(input, readOffset + headerFix);
-
-            System.out.println("Header fix " + headerFix + " > " + len);
-
             if (readOffset + len > input.length)
                 throw new Exception(
                         "Incorrect length of block offset " + readOffset + " len " + len + " input len "+input.length
                 );
-
-            System.out.println("Handle block fix " + headerFix + " > " + len);
 
             handleBlock(Arrays.copyOfRange(input, readOffset + headerFix, readOffset + len - headerFix));
             readOffset += len;
@@ -79,30 +68,40 @@ public class SQRLStorage {
         identityLockKey = Arrays.copyOfRange(input, 77, 109);
         verificationTag = Arrays.copyOfRange(input, 109, 125);
 
+
         try {
+            byte[] key = EncryptionUtils.enSCrypt("Testing1234", randomSalt, logNFactor, 32, iterationCount);
 
-            byte[] key = SCrypt.scrypt("Testing1234".getBytes("US-ASCII"), randomSalt, 1 << logNFactor, 256, 1, 16);
+            AEAD crypt = new AEAD(key);
+            byte[] testVer1 = crypt.seal(initializationVector, Arrays.copyOfRange(input, 45, 109), Arrays.copyOfRange(input, 0, 45));
 
-
-            System.out.println(Arrays.toString(key));
+            System.out.println(Arrays.toString(testVer1));
             System.out.println(Arrays.toString(verificationTag));
-            System.out.println(logNFactor);
 
 /*
-            Password key = new Password();
-            byte[] passkey = key.deriveKey(32, "Testing1234".getBytes("US-ASCII"), randomSalt, logNFactor, iterationCount);
-            Aead crypto = new Aead(passkey);
-            crypto.useAesGcm();
-            byte[] testVer1 = crypto.encrypt(initializationVector, Arrays.copyOfRange(input, 45, 109), Arrays.copyOfRange(input, 0, 45));
-            byte[] testVer2 = crypto.encrypt(initializationVector, Arrays.copyOfRange(input, 0, 45), Arrays.copyOfRange(input, 45, 109));
-            System.out.println(Arrays.toString(verificationTag));
+            byte[] nullRandomSalt = new byte[16];
+            Arrays.fill(nullRandomSalt, (byte)0);
+            crypt.useAesGcm();
+            byte[] testVer1 = crypt.encrypt(initializationVector, Arrays.copyOfRange(input, 45, 109), Arrays.copyOfRange(input, 0, 45));
+
+
+            Key keySpec = new SecretKeySpec(key, "AES");
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            GCMParameterSpec params = new GCMParameterSpec(128, initializationVector);
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec, params);
+            cipher.updateAAD(Arrays.copyOfRange(input, 0, 45));
+            cipher.update(identityMasterKey);
+            cipher.update(identityLockKey);
+            byte[] testVer1 = cipher.doFinal();
+
             System.out.println(Arrays.toString(testVer1));
-            System.out.println(Arrays.toString(testVer2));
+            System.out.println(Arrays.toString(verificationTag));
+
 */
         } catch (Exception e) {
-            System.out.println("DADAA");
             e.printStackTrace();
         }
+
     }
 
     private byte[] rescue_randomSalt;
@@ -151,11 +150,8 @@ public class SQRLStorage {
         int len = getIntFromTwoBytes(input, 0);
         int type = getIntFromTwoBytes(input, 2);
 
-        System.out.println("Type: " + type);
-
         switch (type) {
             case PASSWORD_PBKDF:
-                System.out.println("Handle password");
                 handlePasswordBlock(input);
                 break;
             case RESCUECODE_PBKDF:
@@ -165,8 +161,6 @@ public class SQRLStorage {
                 handlePreviousIdentityBlock(input, len);
                 break;
             default:
-                System.out.println("Unknown type");
-
                 throw new Exception("Unknown type "+type);
         }
     }
@@ -185,27 +179,21 @@ public class SQRLStorage {
         return STORAGE_HEADER;
     }
 
-    public static String input =
-        "c3FybGRhdGF9AAEALQAPHT8/Pz4wP0Y/Pz8yPw8/Px9hP2Q/PwVAPz8aCT8AAAA/AQQFDwA/PwAj" +
-        "P1A/Pz9ofDN6Pz87Pz8/Pz86Pz8/Pz8/Hz8BPxgXYz4/P08VOj8/Rz8/S2pgP20/CRU/LT8/UD8/" +
-        "P1I/MF0/WH43UEs/PDQ/ATs/P0kAAgB5Pz8/LUsEYhI/PT8/Pz8/CT8AAAA/P1A/PVFsP3UpH30/" +
-        "W1s/Y20mPz8/Pz8TdT8/Swk/PyQ/fz8UUT8TPxA/WR1WPz8=";
-
     public static void main(String[] args) {
         try {
-            //File f = new File("c:/tmp/Testing.sqrl");
-            //BufferedReader br = new BufferedReader(new FileReader(f));
-            //String line = br.readLine();
-            //System.out.println(Base64.getEncoder().encodeToString(line.getBytes("ASCII")));
+            File file = new File("c:/tmp/Testing.sqrl");
+            byte[] bytesArray = new byte[(int) file.length()];
 
-            SQRLStorage storage = new SQRLStorage(input, true);
-            System.out.println(storage);
+            FileInputStream fis = new FileInputStream(file);
+            fis.read(bytesArray);
+            fis.close();
+
+            SQRLStorage storage = new SQRLStorage(bytesArray, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 }
-
 
 /*
         sqrldata – lowercase signature means binary follows             8 bytes

@@ -146,8 +146,7 @@ public class ScanSecretActivity extends AppCompatActivity implements QRCodeReade
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
         try {
-            SQRLStorage storage = new SQRLStorage(SQRLStorage.input, true);
-            //SQRLStorage storage = new SQRLStorage(text.getBytes("ASCII"), true);
+            SQRLStorage storage = new SQRLStorage(text.getBytes("US-ASCII"), true);
             System.out.println("Key: " + text);
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());
