@@ -103,7 +103,7 @@ public class ScanSecretActivity extends AppCompatActivity implements QRCodeReade
 //        qrCodeReaderView.setQRDecodingEnabled(true);
 
         // Use this function to change the autofocus interval (default is 5 secs)
-        qrCodeReaderView.setAutofocusInterval(800L);
+        qrCodeReaderView.setAutofocusInterval(2000L);
 
         // Use this function to enable/disable Torch
 //        qrCodeReaderView.setTorchEnabled(true);
@@ -146,11 +146,15 @@ public class ScanSecretActivity extends AppCompatActivity implements QRCodeReade
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
         try {
-            System.out.println(Base64.encodeToString(text.getBytes("ASCII"), Base64.DEFAULT));
-            SQRLStorage storage = new SQRLStorage(text.getBytes("ASCII"), true);
+            SQRLStorage storage = new SQRLStorage(SQRLStorage.input, true);
+            //SQRLStorage storage = new SQRLStorage(text.getBytes("ASCII"), true);
+            System.out.println("Key: " + text);
         } catch (Exception e) {
+            System.out.println("ERROR: " + e.getMessage());
             e.printStackTrace();
         }
+
+
         qrCodeReaderView.stopCamera();
         Intent intent = new Intent(this, IntroductionActivity.class);
         intent.putExtra(EXTRA_MESSAGE, text);

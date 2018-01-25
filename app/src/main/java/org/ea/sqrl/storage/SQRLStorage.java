@@ -1,23 +1,13 @@
 package org.ea.sqrl.storage;
 
-import android.security.keystore.KeyGenParameterSpec;
-import android.security.keystore.KeyProperties;
+import com.lambdaworks.crypto.SCrypt;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Base64;
-
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
+import static org.libsodium.jni.NaCl.sodium;
 
 public class SQRLStorage {
     private static final String STORAGE_HEADER = "sqrldata";
-
-
     private static final int PASSWORD_PBKDF = 1;
     private static final int RESCUECODE_PBKDF = 2;
     private static final int PREVIOUS_IDENTITY_KEYS = 3;
@@ -36,14 +26,22 @@ public class SQRLStorage {
         if (!STORAGE_HEADER.equals(header)) throw new Exception("Incorrect header");
         int readOffset = 8;
         int readLen = readOffset + 2;
-        boolean addedKeys = false;
+
+        System.out.println("Reading keys " + input.length + " > " + readLen);
+
         while (input.length > readLen) {
             int headerFix = readOffset > 0 ? 0 : 8;
             int len = getIntFromTwoBytes(input, readOffset + headerFix);
+
+            System.out.println("Header fix " + headerFix + " > " + len);
+
             if (readOffset + len > input.length)
                 throw new Exception(
                         "Incorrect length of block offset " + readOffset + " len " + len + " input len "+input.length
                 );
+
+            System.out.println("Handle block fix " + headerFix + " > " + len);
+
             handleBlock(Arrays.copyOfRange(input, readOffset + headerFix, readOffset + len - headerFix));
             readOffset += len;
             readLen = readOffset + 2;
@@ -56,7 +54,7 @@ public class SQRLStorage {
     private int plaintextLength;
     private byte[] initializationVector;
     private byte[] randomSalt;
-    private byte   logNFactor;
+    private int   logNFactor;
     private int iterationCount;
     private int optionFlags;
     private byte hintLength;
@@ -80,6 +78,31 @@ public class SQRLStorage {
         identityMasterKey = Arrays.copyOfRange(input, 45, 77);
         identityLockKey = Arrays.copyOfRange(input, 77, 109);
         verificationTag = Arrays.copyOfRange(input, 109, 125);
+
+        try {
+
+            byte[] key = SCrypt.scrypt("Testing1234".getBytes("US-ASCII"), randomSalt, 1 << logNFactor, 256, 1, 16);
+
+
+            System.out.println(Arrays.toString(key));
+            System.out.println(Arrays.toString(verificationTag));
+            System.out.println(logNFactor);
+
+/*
+            Password key = new Password();
+            byte[] passkey = key.deriveKey(32, "Testing1234".getBytes("US-ASCII"), randomSalt, logNFactor, iterationCount);
+            Aead crypto = new Aead(passkey);
+            crypto.useAesGcm();
+            byte[] testVer1 = crypto.encrypt(initializationVector, Arrays.copyOfRange(input, 45, 109), Arrays.copyOfRange(input, 0, 45));
+            byte[] testVer2 = crypto.encrypt(initializationVector, Arrays.copyOfRange(input, 0, 45), Arrays.copyOfRange(input, 45, 109));
+            System.out.println(Arrays.toString(verificationTag));
+            System.out.println(Arrays.toString(testVer1));
+            System.out.println(Arrays.toString(testVer2));
+*/
+        } catch (Exception e) {
+            System.out.println("DADAA");
+            e.printStackTrace();
+        }
     }
 
     private byte[] rescue_randomSalt;
@@ -127,8 +150,12 @@ public class SQRLStorage {
     public void handleBlock(byte[] input) throws Exception {
         int len = getIntFromTwoBytes(input, 0);
         int type = getIntFromTwoBytes(input, 2);
+
+        System.out.println("Type: " + type);
+
         switch (type) {
             case PASSWORD_PBKDF:
+                System.out.println("Handle password");
                 handlePasswordBlock(input);
                 break;
             case RESCUECODE_PBKDF:
@@ -138,6 +165,8 @@ public class SQRLStorage {
                 handlePreviousIdentityBlock(input, len);
                 break;
             default:
+                System.out.println("Unknown type");
+
                 throw new Exception("Unknown type "+type);
         }
     }

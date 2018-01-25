@@ -10,6 +10,7 @@ android_binary(
         "@androidsdk//com.android.support:appcompat-v7-25.3.1",
         "@androidsdk//com.android.support:design-25.3.1",
         "@androidsdk//com.android.support.constraint:constraint-layout-1.0.2",
-        "@qrcodereaderview//aar"
+        "@qrcodereaderview//aar",
+        "@kalium//jar"
     ]
 )
