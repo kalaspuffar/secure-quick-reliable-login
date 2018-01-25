@@ -1,7 +1,5 @@
 package org.ea.sqrl.storage;
 
-import com.codahale.aesgcmsiv.AEAD;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Arrays;
@@ -71,14 +69,13 @@ public class SQRLStorage {
 
         try {
             byte[] key = EncryptionUtils.enSCrypt("Testing1234", randomSalt, logNFactor, 32, iterationCount);
+            System.out.println(EncryptionUtils.byte2hex(key));
 
-            AEAD crypt = new AEAD(key);
-            byte[] testVer1 = crypt.seal(initializationVector, Arrays.copyOfRange(input, 45, 109), Arrays.copyOfRange(input, 0, 45));
+/*
 
             System.out.println(Arrays.toString(testVer1));
             System.out.println(Arrays.toString(verificationTag));
 
-/*
             byte[] nullRandomSalt = new byte[16];
             Arrays.fill(nullRandomSalt, (byte)0);
             crypt.useAesGcm();
