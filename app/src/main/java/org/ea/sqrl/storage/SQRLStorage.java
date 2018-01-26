@@ -1,9 +1,20 @@
 package org.ea.sqrl.storage;
 
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileInputStream;
+import java.security.Key;
+import java.security.KeyStore;
 import java.util.Arrays;
-import java.util.Base64;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 public class SQRLStorage {
     private static final String STORAGE_HEADER = "sqrldata";
@@ -11,9 +22,6 @@ public class SQRLStorage {
     private static final int RESCUECODE_PBKDF = 2;
     private static final int PREVIOUS_IDENTITY_KEYS = 3;
 
-    public SQRLStorage(String input, boolean full) throws Exception {
-        this(Base64.getDecoder().decode(input), full);
-    }
 
     public SQRLStorage(byte[] input, boolean full) throws Exception {
         String header = new String(Arrays.copyOfRange(input, 0, 8));
@@ -39,6 +47,7 @@ public class SQRLStorage {
      * Password block.
      */
     private int plaintextLength;
+    private byte[] plaintext;
     private byte[] initializationVector;
     private byte[] randomSalt;
     private int   logNFactor;
@@ -47,13 +56,17 @@ public class SQRLStorage {
     private byte hintLength;
     private byte timeInSecondsToRunPWEnScryptOnPassword;
     private int idleTimoutInMinutes;
+    private byte[] identityMasterKeyEncrypted;
+    private byte[] identityLockKeyEncrypted;
+    private byte[] verificationTag;
+
     private byte[] identityMasterKey;
     private byte[] identityLockKey;
-    private byte[] verificationTag;
 
 
     public void handlePasswordBlock(byte[] input) {
         plaintextLength = getIntFromTwoBytes(input, 4);
+        plaintext = Arrays.copyOfRange(input, 0, plaintextLength);
         initializationVector = Arrays.copyOfRange(input, 6, 18);
         randomSalt = Arrays.copyOfRange(input, 18, 34);
         logNFactor = input[34];
@@ -62,81 +75,53 @@ public class SQRLStorage {
         hintLength = input[41];
         timeInSecondsToRunPWEnScryptOnPassword = input[42];
         idleTimoutInMinutes = getIntFromTwoBytes(input, 43);
-        identityMasterKey = Arrays.copyOfRange(input, 45, 77);
-        identityLockKey = Arrays.copyOfRange(input, 77, 109);
+        identityMasterKeyEncrypted = Arrays.copyOfRange(input, 45, 77);
+        identityLockKeyEncrypted = Arrays.copyOfRange(input, 77, 109);
         verificationTag = Arrays.copyOfRange(input, 109, 125);
-
-
-        try {
-            byte[] key = EncryptionUtils.enSCrypt("Testing1234", randomSalt, logNFactor, 32, iterationCount);
-            System.out.println(EncryptionUtils.byte2hex(key));
-
-/*
-
-            System.out.println(Arrays.toString(testVer1));
-            System.out.println(Arrays.toString(verificationTag));
-
-            byte[] nullRandomSalt = new byte[16];
-            Arrays.fill(nullRandomSalt, (byte)0);
-            crypt.useAesGcm();
-            byte[] testVer1 = crypt.encrypt(initializationVector, Arrays.copyOfRange(input, 45, 109), Arrays.copyOfRange(input, 0, 45));
-
-
-            Key keySpec = new SecretKeySpec(key, "AES");
-            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-            GCMParameterSpec params = new GCMParameterSpec(128, initializationVector);
-            cipher.init(Cipher.ENCRYPT_MODE, keySpec, params);
-            cipher.updateAAD(Arrays.copyOfRange(input, 0, 45));
-            cipher.update(identityMasterKey);
-            cipher.update(identityLockKey);
-            byte[] testVer1 = cipher.doFinal();
-
-            System.out.println(Arrays.toString(testVer1));
-            System.out.println(Arrays.toString(verificationTag));
-
-*/
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
+
+    private byte[] rescue_plaintext;
     private byte[] rescue_randomSalt;
     private byte   rescue_logNFactor;
     private int rescue_iterationCount;
+    private byte[] rescue_identityLockKeyEncrypted;
     private byte[] rescue_identityLockKey;
     private byte[] rescue_verificationTag;
 
     public void handleIdentityBlock(byte[] input) {
+        rescue_plaintext = Arrays.copyOfRange(input, 0, 25);
         rescue_randomSalt = Arrays.copyOfRange(input, 4, 20);
         rescue_logNFactor = input[20];
         rescue_iterationCount = getIntFromFourBytes(input, 21);
-        rescue_identityLockKey = Arrays.copyOfRange(input, 25, 57);
+        rescue_identityLockKeyEncrypted = Arrays.copyOfRange(input, 25, 57);
         rescue_verificationTag = Arrays.copyOfRange(input, 57, 73);
     }
 
+    private byte[] previous_plaintext;
     private int previous_countOfKeys;
-    private byte[] previous1;
-    private byte[] previous2;
-    private byte[] previous3;
-    private byte[] previous4;
+    private byte[] previous_key1;
+    private byte[] previous_key2;
+    private byte[] previous_key3;
+    private byte[] previous_key4;
     private byte[] previous_verificationTag;
 
     public void handlePreviousIdentityBlock(byte[] input, int len) {
+        previous_plaintext = Arrays.copyOfRange(input, 0, 6);
         previous_countOfKeys = getIntFromTwoBytes(input, 4);
 
         int lastKeyEnd = 6 + 32;
-        previous1 = Arrays.copyOfRange(input, 6, lastKeyEnd);
+        previous_key1 = Arrays.copyOfRange(input, 6, lastKeyEnd);
         if(previous_countOfKeys > 1) {
-            previous2 = Arrays.copyOfRange(input, lastKeyEnd, lastKeyEnd + 32);
+            previous_key2 = Arrays.copyOfRange(input, lastKeyEnd, lastKeyEnd + 32);
             lastKeyEnd += 32;
         }
         if(previous_countOfKeys > 2) {
-            previous3 = Arrays.copyOfRange(input, lastKeyEnd, lastKeyEnd + 32);
+            previous_key3 = Arrays.copyOfRange(input, lastKeyEnd, lastKeyEnd + 32);
             lastKeyEnd += 32;
         }
         if(previous_countOfKeys > 3) {
-            previous4 = Arrays.copyOfRange(input, lastKeyEnd, lastKeyEnd + 32);
+            previous_key4 = Arrays.copyOfRange(input, lastKeyEnd, lastKeyEnd + 32);
             lastKeyEnd += 32;
         }
         previous_verificationTag = Arrays.copyOfRange(input, lastKeyEnd, lastKeyEnd + 16);
@@ -170,6 +155,47 @@ public class SQRLStorage {
         return (input[offset] & 0xff) | ((input[offset + 1] & 0xff) << 8) | (input[offset + 2] & 0xff) << 16 | ((input[offset + 3] & 0xff) << 24);
     }
 
+    public void decryptData(String password) {
+        try {
+            byte[] key = EncryptionUtils.enSCrypt(password, randomSalt, logNFactor, 32, iterationCount);
+            System.out.println(EncryptionUtils.byte2hex(key));
+            //byte[] key = EncryptionUtils.hex2Byte("a8694c73b0d6c7d6e93eda31552118ce0d9a5d5168170bd2b7123852c18cb14a");
+
+            Key keySpec = new SecretKeySpec(key, "AES");
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            GCMParameterSpec params = new GCMParameterSpec(128, initializationVector);
+            cipher.init(Cipher.DECRYPT_MODE, keySpec, params);
+            cipher.updateAAD(plaintext);
+            cipher.update(identityMasterKeyEncrypted);
+            cipher.update(identityLockKeyEncrypted);
+            byte[] decryptionResult = cipher.doFinal(verificationTag);
+            identityMasterKey = Arrays.copyOfRange(decryptionResult, 0, 32);
+            identityLockKeyEncrypted = Arrays.copyOfRange(decryptionResult, 32, 64);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            byte[] key = EncryptionUtils.enSCrypt(password, rescue_randomSalt, rescue_logNFactor, 32, rescue_iterationCount);
+            System.out.println(EncryptionUtils.byte2hex(key));
+            //byte[] key = EncryptionUtils.hex2Byte("8ea530fa2e42a3bd8379e115c2b94fcf9e784e3720519611ab9db068277e2b7b");
+
+            byte[] nullBytes = new byte[12];
+            Arrays.fill(nullBytes, (byte)0);
+
+            Key keySpec = new SecretKeySpec(key, "AES");
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            GCMParameterSpec params = new GCMParameterSpec(128, nullBytes);
+            cipher.init(Cipher.DECRYPT_MODE, keySpec, params);
+            cipher.updateAAD(rescue_plaintext);
+            cipher.update(rescue_identityLockKeyEncrypted);
+            rescue_identityLockKey = cipher.doFinal(rescue_verificationTag);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public String toString() {
@@ -178,7 +204,7 @@ public class SQRLStorage {
 
     public static void main(String[] args) {
         try {
-            File file = new File("c:/tmp/Testing.sqrl");
+            File file = new File("Testing.sqrl");
             byte[] bytesArray = new byte[(int) file.length()];
 
             FileInputStream fis = new FileInputStream(file);
@@ -186,6 +212,7 @@ public class SQRLStorage {
             fis.close();
 
             SQRLStorage storage = new SQRLStorage(bytesArray, true);
+            storage.decryptData("Testing1234");
         } catch (Exception e) {
             e.printStackTrace();
         }

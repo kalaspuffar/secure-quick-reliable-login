@@ -147,6 +147,8 @@ public class ScanSecretActivity extends AppCompatActivity implements QRCodeReade
     public void onQRCodeRead(String text, PointF[] points) {
         try {
             SQRLStorage storage = new SQRLStorage(text.getBytes("US-ASCII"), true);
+            storage.decryptData("Testing1234");
+
             System.out.println("Key: " + text);
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());
