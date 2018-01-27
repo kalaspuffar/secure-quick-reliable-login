@@ -1,5 +1,6 @@
 package org.ea.sqrl.storage;
 
+import android.os.Build;
 import android.os.Handler;
 import android.widget.ProgressBar;
 
@@ -155,6 +156,11 @@ public class SQRLStorage {
     }
 
     public void decryptData(String password) {
+
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return;
+        }
+
         try {
             byte[] key = EncryptionUtils.enSCrypt(password, randomSalt, logNFactor, 32, iterationCount, this.progressBar, this.handler);
             System.out.println(EncryptionUtils.byte2hex(key));
@@ -170,7 +176,6 @@ public class SQRLStorage {
             byte[] decryptionResult = cipher.doFinal(verificationTag);
             identityMasterKey = Arrays.copyOfRange(decryptionResult, 0, 32);
             identityLockKeyEncrypted = Arrays.copyOfRange(decryptionResult, 32, 64);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
