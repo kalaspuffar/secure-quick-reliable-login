@@ -1,18 +1,14 @@
 package org.ea.sqrl.storage;
 
-import android.security.keystore.KeyGenParameterSpec;
-import android.security.keystore.KeyProperties;
-import android.util.Log;
+import android.os.Handler;
+import android.widget.ProgressBar;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.security.Key;
-import java.security.KeyStore;
 import java.util.Arrays;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -21,10 +17,13 @@ public class SQRLStorage {
     private static final int PASSWORD_PBKDF = 1;
     private static final int RESCUECODE_PBKDF = 2;
     private static final int PREVIOUS_IDENTITY_KEYS = 3;
-
+    private ProgressBar progressBar;
+    private Handler handler;
 
     public SQRLStorage(byte[] input, boolean full) throws Exception {
         String header = new String(Arrays.copyOfRange(input, 0, 8));
+
+        System.setProperty("com.lambdaworks.jni.loader", "nil");
 
         if (!STORAGE_HEADER.equals(header)) throw new Exception("Incorrect header");
         int readOffset = 8;
@@ -157,12 +156,12 @@ public class SQRLStorage {
 
     public void decryptData(String password) {
         try {
-            byte[] key = EncryptionUtils.enSCrypt(password, randomSalt, logNFactor, 32, iterationCount);
+            byte[] key = EncryptionUtils.enSCrypt(password, randomSalt, logNFactor, 32, iterationCount, this.progressBar, this.handler);
             System.out.println(EncryptionUtils.byte2hex(key));
             //byte[] key = EncryptionUtils.hex2Byte("a8694c73b0d6c7d6e93eda31552118ce0d9a5d5168170bd2b7123852c18cb14a");
 
             Key keySpec = new SecretKeySpec(key, "AES");
-            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
             GCMParameterSpec params = new GCMParameterSpec(128, initializationVector);
             cipher.init(Cipher.DECRYPT_MODE, keySpec, params);
             cipher.updateAAD(plaintext);
@@ -177,7 +176,7 @@ public class SQRLStorage {
         }
 
         try {
-            byte[] key = EncryptionUtils.enSCrypt(password, rescue_randomSalt, rescue_logNFactor, 32, rescue_iterationCount);
+            byte[] key = EncryptionUtils.enSCrypt(password, rescue_randomSalt, rescue_logNFactor, 32, rescue_iterationCount, this.progressBar, this.handler);
             System.out.println(EncryptionUtils.byte2hex(key));
             //byte[] key = EncryptionUtils.hex2Byte("8ea530fa2e42a3bd8379e115c2b94fcf9e784e3720519611ab9db068277e2b7b");
 
@@ -185,7 +184,7 @@ public class SQRLStorage {
             Arrays.fill(nullBytes, (byte)0);
 
             Key keySpec = new SecretKeySpec(key, "AES");
-            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
             GCMParameterSpec params = new GCMParameterSpec(128, nullBytes);
             cipher.init(Cipher.DECRYPT_MODE, keySpec, params);
             cipher.updateAAD(rescue_plaintext);
@@ -211,11 +210,21 @@ public class SQRLStorage {
             fis.read(bytesArray);
             fis.close();
 
+            System.out.println(EncryptionUtils.byte2hex(bytesArray));
             SQRLStorage storage = new SQRLStorage(bytesArray, true);
             storage.decryptData("Testing1234");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void setProgressBar(ProgressBar progressBar) {
+        this.progressBar = progressBar;
+        this.progressBar.setMax(iterationCount + rescue_iterationCount);
+    }
+
+    public void setHandler(Handler handler) {
+        this.handler = handler;
     }
 }
 

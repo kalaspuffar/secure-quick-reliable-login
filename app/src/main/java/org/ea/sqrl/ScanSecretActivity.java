@@ -1,85 +1,20 @@
 package org.ea.sqrl;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.PointF;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Base64;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.util.Log;
+import android.widget.Toast;
 
-import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
-import com.google.zxing.DecodeHintType;
-
-import org.ea.sqrl.storage.SQRLStorage;
-
-import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class ScanSecretActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener {
+public class ScanSecretActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "org.ea.sqrl.QRCODE";
-    private TextView mResultTextView;
-    private QRCodeReaderView qrCodeReaderView;
-    private LinearLayout mContentView;
-
-    /**
-     * Some older devices needs a small delay between UI widget updates
-     * and a change of the status and navigation bar.
-     */
-    private static final int UI_ANIMATION_DELAY = 300;
-    private final Handler mHideHandler = new Handler();
-    private final Runnable mHidePart2Runnable = new Runnable() {
-        @SuppressLint("InlinedApi")
-        @Override
-        public void run() {
-            // Delayed removal of status and navigation bar
-
-            // Note that some of these constants are new as of API 16 (Jelly Bean)
-            // and API 19 (KitKat). It is safe to use them, as they are inlined
-            // at compile-time and do nothing on earlier devices.
-            mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-        }
-    };
-    private View mControlsView;
-    private final Runnable mShowPart2Runnable = new Runnable() {
-        @Override
-        public void run() {
-            // Delayed display of UI elements
-            ActionBar actionBar = getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.show();
-            }
-            mControlsView.setVisibility(View.VISIBLE);
-        }
-    };
-    private final Runnable mHideRunnable = new Runnable() {
-        @Override
-        public void run() {
-            hide();
-        }
-    };
-
-    private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            return false;
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,90 +22,32 @@ public class ScanSecretActivity extends AppCompatActivity implements QRCodeReade
 
         setContentView(R.layout.activity_scan_secret);
 
-        mResultTextView = (TextView)findViewById(R.id.resultTextView);
-        mContentView = (LinearLayout)findViewById(R.id.fullscreen_content);
-        mControlsView = (View)findViewById(R.id.fullscreen_content_controls);
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
-
-        qrCodeReaderView = (QRCodeReaderView)findViewById(R.id.qrdecoderview);
-        qrCodeReaderView.setOnQRCodeReadListener(this);
-        Map<DecodeHintType, Object> decodeHints = new HashMap<>();
-        decodeHints.put(DecodeHintType.CHARACTER_SET, "ASCII");
-
-        qrCodeReaderView.setDecodeHints(decodeHints);
-
-        // Use this function to enable/disable decoding
-//        qrCodeReaderView.setQRDecodingEnabled(true);
-
-        // Use this function to change the autofocus interval (default is 5 secs)
-        qrCodeReaderView.setAutofocusInterval(2000L);
-
-        // Use this function to enable/disable Torch
-//        qrCodeReaderView.setTorchEnabled(true);
-
-        // Use this function to set front camera preview
-//        qrCodeReaderView.setFrontCamera();
-
-        // Use this function to set back camera preview
-        qrCodeReaderView.setBackCamera();
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+        integrator.setPrompt("Scan");
+        integrator.setCameraId(0);
+        integrator.setBeepEnabled(false);
+        integrator.setBarcodeImageEnabled(false);
+        integrator.initiateScan();
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        delayedHide(100);
-    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(result != null) {
+            if(result.getContents() == null) {
+                Log.d("MainActivity", "Cancelled scan");
+                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                Intent intent = new Intent(this, DecryptingActivity.class);
+                try {
+                    intent.putExtra(EXTRA_MESSAGE, result.getRawBytes());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-
-    private void hide() {
-        // Hide UI first
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
+                startActivity(intent);
+            }
         }
-        mControlsView.setVisibility(View.GONE);
-        // Schedule a runnable to remove the status and navigation bar after a delay
-        mHideHandler.removeCallbacks(mShowPart2Runnable);
-        mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
-    }
-
-    /**
-     * Schedules a call to hide() in delay milliseconds, canceling any
-     * previously scheduled calls.
-     */
-    private void delayedHide(int delayMillis) {
-        mHideHandler.removeCallbacks(mHideRunnable);
-        mHideHandler.postDelayed(mHideRunnable, delayMillis);
-    }
-
-    @Override
-    public void onQRCodeRead(String text, PointF[] points) {
-        try {
-            SQRLStorage storage = new SQRLStorage(text.getBytes("US-ASCII"), true);
-            storage.decryptData("Testing1234");
-
-            System.out.println("Key: " + text);
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
-            e.printStackTrace();
-        }
-
-
-        qrCodeReaderView.stopCamera();
-        Intent intent = new Intent(this, IntroductionActivity.class);
-        intent.putExtra(EXTRA_MESSAGE, text);
-        startActivity(intent);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        qrCodeReaderView.startCamera();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        qrCodeReaderView.stopCamera();
     }
 }

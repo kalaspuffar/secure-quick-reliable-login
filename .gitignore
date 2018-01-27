@@ -60,4 +60,4 @@ freeline_project_description.json
 /.settings
 /release
 /.vscode
-/Testing.sqrl
+/Testing*
