@@ -155,11 +155,19 @@ public class SQRLStorage {
         return (input[offset] & 0xff) | ((input[offset + 1] & 0xff) << 8) | (input[offset + 2] & 0xff) << 16 | ((input[offset + 3] & 0xff) << 24);
     }
 
-    public void decryptData(String password) {
+    /**
+     * Decrypt the identity key, this has the master key used to login to sites and also the lock
+     * key that we supply to the sites in order to unlock at a later date if the master key ever
+     * gets compromised.
+     *
+     * @param password  Password used to unlock the master key.
+     */
+    public void decryptIdentityKey(String password) {
 
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             return;
         }
+        this.progressBar.setMax(iterationCount);
 
         try {
             byte[] key = EncryptionUtils.enSCrypt(password, randomSalt, logNFactor, 32, iterationCount, this.progressBar, this.handler);
@@ -179,9 +187,24 @@ public class SQRLStorage {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * This unlocks the unlock key used to recover your identity if your master key gets comprimised
+     * this key should NEVER be saved in the device. It's just used to create a new identity.
+     *
+     * @param rescueCode    Special rescueCode printed on paper in the format of 0000-0000-0000-0000-0000-0000
+     */
+    public void decryptUnlockKey(String rescueCode) {
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return;
+        }
+
+        this.progressBar.setMax(rescue_iterationCount);
+        rescueCode = rescueCode.replaceAll("-", "");
 
         try {
-            byte[] key = EncryptionUtils.enSCrypt(password, rescue_randomSalt, rescue_logNFactor, 32, rescue_iterationCount, this.progressBar, this.handler);
+            byte[] key = EncryptionUtils.enSCrypt(rescueCode, rescue_randomSalt, rescue_logNFactor, 32, rescue_iterationCount, this.progressBar, this.handler);
             System.out.println(EncryptionUtils.byte2hex(key));
             //byte[] key = EncryptionUtils.hex2Byte("8ea530fa2e42a3bd8379e115c2b94fcf9e784e3720519611ab9db068277e2b7b");
 
@@ -200,7 +223,6 @@ public class SQRLStorage {
         }
     }
 
-
     @Override
     public String toString() {
         return STORAGE_HEADER;
@@ -217,7 +239,7 @@ public class SQRLStorage {
 
             System.out.println(EncryptionUtils.byte2hex(bytesArray));
             SQRLStorage storage = new SQRLStorage(bytesArray, true);
-            storage.decryptData("Testing1234");
+            storage.decryptIdentityKey("Testing1234");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -225,7 +247,6 @@ public class SQRLStorage {
 
     public void setProgressBar(ProgressBar progressBar) {
         this.progressBar = progressBar;
-        this.progressBar.setMax(iterationCount + rescue_iterationCount);
     }
 
     public void setHandler(Handler handler) {
