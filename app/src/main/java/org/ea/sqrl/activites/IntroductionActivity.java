@@ -1,4 +1,4 @@
-package org.ea.sqrl;
+package org.ea.sqrl.activites;
 
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,6 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.TextView;
+
+import org.ea.sqrl.R;
 
 public class IntroductionActivity extends AppCompatActivity {
 

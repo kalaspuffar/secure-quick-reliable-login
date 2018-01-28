@@ -24,11 +24,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".IntroductionActivity"
+            android:name=".activites.IntroductionActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ScanSecretActivity"
+            android:name=".activites.ScanSecretActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_scan_secret"
             android:theme="@style/FullscreenTheme">
@@ -38,7 +38,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DecryptingActivity"></activity>
+        <activity android:name=".activites.DecryptingActivity"></activity>
     </application>
 
 </manifest>

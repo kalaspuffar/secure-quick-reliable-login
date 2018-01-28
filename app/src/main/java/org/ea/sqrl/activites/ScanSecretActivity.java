@@ -1,4 +1,4 @@
-package org.ea.sqrl;
+package org.ea.sqrl.activites;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +8,8 @@ import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
+import org.ea.sqrl.R;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.

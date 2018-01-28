@@ -1,4 +1,4 @@
-package org.ea.sqrl;
+package org.ea.sqrl.activites;
 
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -8,10 +8,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import org.ea.sqrl.R;
 import org.ea.sqrl.storage.EncryptionUtils;
 import org.ea.sqrl.storage.SQRLStorage;
-
-import java.util.Arrays;
 
 public class DecryptingActivity extends AppCompatActivity {
 
