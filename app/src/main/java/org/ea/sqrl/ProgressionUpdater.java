@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class ProgressionUpdater {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
@@ -23,6 +24,7 @@ public class ProgressionUpdater {
     }
 
     public String getTimeLeft() {
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         long timeLeftInMilliSeconds = (endTime - startTime) * (max - progressBar.getProgress());
         return sdf.format(new Date(timeLeftInMilliSeconds));
     }
