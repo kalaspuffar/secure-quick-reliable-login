@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ProgressionUpdater {
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     private Handler handler;
     private ProgressBar progressBar;
     private TextView progressText;
@@ -42,6 +42,7 @@ public class ProgressionUpdater {
 
     public void setMax(int max) {
         this.max = max;
+        this.progressBar.setMax(max);
         this.progressText.setText("Time left: " + getTimeLeft());
     }
 }
