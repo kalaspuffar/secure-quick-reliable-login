@@ -5,6 +5,8 @@ import android.widget.ProgressBar;
 
 import com.lambdaworks.crypto.SCrypt;
 
+import org.ea.sqrl.ProgressionUpdater;
+
 import java.util.Arrays;
 
 /**
@@ -47,16 +49,18 @@ public class EncryptionUtils {
         return result;
     }
 
-    public static byte[] enSCrypt(String password, byte[] randomSalt, int logNFactor, int dkLen, int iterationCount, ProgressBar progressBar, Handler handler) throws Exception {
+    public static byte[] enSCrypt(String password, byte[] randomSalt, int logNFactor, int dkLen, int iterationCount, ProgressionUpdater progressionUpdater) throws Exception {
+        progressionUpdater.startTimer();
         byte[] key = SCrypt.scrypt(password.getBytes(), randomSalt, 1 << logNFactor, 256, 1, dkLen);
+        progressionUpdater.endTimer();
 
-        handler.post(() -> progressBar.incrementProgressBy(1));
+        progressionUpdater.incrementProgress();
 
         byte[] xorKey = Arrays.copyOf(key, key.length);
         for(int i = 1; i < iterationCount; i++) {
             key = SCrypt.scrypt(password.getBytes(), key, 1 << logNFactor, 256, 1, dkLen);
             xorKey = xor(key, xorKey);
-            handler.post(() -> progressBar.incrementProgressBy(1));
+            progressionUpdater.incrementProgress();
         }
 
         return xorKey;

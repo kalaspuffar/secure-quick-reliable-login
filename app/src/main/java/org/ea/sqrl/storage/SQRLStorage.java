@@ -4,6 +4,8 @@ import android.os.Build;
 import android.os.Handler;
 import android.widget.ProgressBar;
 
+import org.ea.sqrl.ProgressionUpdater;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.security.Key;
@@ -18,8 +20,7 @@ public class SQRLStorage {
     private static final int PASSWORD_PBKDF = 1;
     private static final int RESCUECODE_PBKDF = 2;
     private static final int PREVIOUS_IDENTITY_KEYS = 3;
-    private ProgressBar progressBar;
-    private Handler handler;
+    private ProgressionUpdater progressionUpdater;
 
     public SQRLStorage(byte[] input, boolean full) throws Exception {
         String header = new String(Arrays.copyOfRange(input, 0, 8));
@@ -167,10 +168,10 @@ public class SQRLStorage {
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             return;
         }
-        this.progressBar.setMax(iterationCount);
+        this.progressionUpdater.setMax(iterationCount);
 
         try {
-            byte[] key = EncryptionUtils.enSCrypt(password, randomSalt, logNFactor, 32, iterationCount, this.progressBar, this.handler);
+            byte[] key = EncryptionUtils.enSCrypt(password, randomSalt, logNFactor, 32, iterationCount, this.progressionUpdater);
             System.out.println(EncryptionUtils.byte2hex(key));
             //byte[] key = EncryptionUtils.hex2Byte("a8694c73b0d6c7d6e93eda31552118ce0d9a5d5168170bd2b7123852c18cb14a");
 
@@ -200,11 +201,11 @@ public class SQRLStorage {
             return;
         }
 
-        this.progressBar.setMax(rescue_iterationCount);
+        this.progressionUpdater.setMax(rescue_iterationCount);
         rescueCode = rescueCode.replaceAll("-", "");
 
         try {
-            byte[] key = EncryptionUtils.enSCrypt(rescueCode, rescue_randomSalt, rescue_logNFactor, 32, rescue_iterationCount, this.progressBar, this.handler);
+            byte[] key = EncryptionUtils.enSCrypt(rescueCode, rescue_randomSalt, rescue_logNFactor, 32, rescue_iterationCount, this.progressionUpdater);
             System.out.println(EncryptionUtils.byte2hex(key));
             //byte[] key = EncryptionUtils.hex2Byte("8ea530fa2e42a3bd8379e115c2b94fcf9e784e3720519611ab9db068277e2b7b");
 
@@ -245,12 +246,8 @@ public class SQRLStorage {
         }
     }
 
-    public void setProgressBar(ProgressBar progressBar) {
-        this.progressBar = progressBar;
-    }
-
-    public void setHandler(Handler handler) {
-        this.handler = handler;
+    public void setProgressionUpdater(ProgressionUpdater progressionUpdater) {
+        this.progressionUpdater = progressionUpdater;
     }
 }
 

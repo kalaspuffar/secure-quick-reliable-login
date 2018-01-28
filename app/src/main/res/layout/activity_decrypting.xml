@@ -9,17 +9,11 @@
     <ProgressBar
         android:id="@+id/pbDecrypting"
         style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="31dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="203dp"
+        android:layout_width="324dp"
+        android:layout_height="83dp"
         android:indeterminate="false"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:layout_editor_absoluteX="30dp"
+        tools:layout_editor_absoluteY="129dp" />
 
     <Button
         android:id="@+id/btnDecryptKey"
@@ -52,7 +46,7 @@
         android:id="@+id/textView"
         android:layout_width="0dp"
         android:layout_height="30dp"
-        android:layout_marginBottom="22dp"
+        android:layout_marginBottom="40dp"
         android:layout_marginEnd="30dp"
         android:layout_marginStart="30dp"
         android:text="Password"
@@ -62,5 +56,20 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/txtPassword"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/lblProgressText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:textAlignment="textEnd"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pbDecrypting" />
 </android.support.constraint.ConstraintLayout>
