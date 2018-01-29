@@ -16,6 +16,12 @@ public class ProgressionUpdater {
     private int max;
     private long startTime;
     private long endTime;
+    private boolean dummy = false;
+
+    public ProgressionUpdater() {
+        dummy = true;
+    }
+
 
     public ProgressionUpdater(Handler handler, ProgressBar progressBar, TextView progressText) {
         this.handler = handler;
@@ -30,6 +36,7 @@ public class ProgressionUpdater {
     }
 
     public void incrementProgress() {
+        if(dummy) return;
         handler.post(() -> progressBar.incrementProgressBy(1));
         this.progressText.setText("Time left: " + getTimeLeft());
     }
@@ -43,6 +50,7 @@ public class ProgressionUpdater {
     }
 
     public void setMax(int max) {
+        if(dummy) return;
         this.max = max;
         this.progressBar.setMax(max);
         this.progressText.setText("Time left: " + getTimeLeft());

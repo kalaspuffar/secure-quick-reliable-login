@@ -2,6 +2,7 @@ package org.ea.sqrl.storage;
 
 import android.os.Build;
 import android.os.Handler;
+import android.util.Base64;
 import android.widget.ProgressBar;
 
 import org.ea.sqrl.ProgressionUpdater;
@@ -22,10 +23,22 @@ public class SQRLStorage {
     private static final int PREVIOUS_IDENTITY_KEYS = 3;
     private ProgressionUpdater progressionUpdater;
 
-    public SQRLStorage(byte[] input, boolean full) throws Exception {
+    private static SQRLStorage instance = null;
+
+    private SQRLStorage() {
+        System.setProperty("com.lambdaworks.jni.loader", "nil");
+    }
+
+    public static SQRLStorage getInstance() {
+        if(instance == null) {
+            instance = new SQRLStorage();
+        }
+        return instance;
+    }
+
+    public void read(byte[] input, boolean full) throws Exception {
         String header = new String(Arrays.copyOfRange(input, 0, 8));
 
-        System.setProperty("com.lambdaworks.jni.loader", "nil");
 
         if (!STORAGE_HEADER.equals(header)) throw new Exception("Incorrect header");
         int readOffset = 8;
@@ -148,11 +161,11 @@ public class SQRLStorage {
         }
     }
 
-    public int getIntFromTwoBytes(byte[] input, int offset) {
+    private int getIntFromTwoBytes(byte[] input, int offset) {
         return (input[offset] & 0xff) | ((input[offset + 1] & 0xff) << 8);
     }
 
-    public int getIntFromFourBytes(byte[] input, int offset) {
+    private int getIntFromFourBytes(byte[] input, int offset) {
         return (input[offset] & 0xff) | ((input[offset + 1] & 0xff) << 8) | (input[offset + 2] & 0xff) << 16 | ((input[offset + 3] & 0xff) << 24);
     }
 
@@ -164,8 +177,7 @@ public class SQRLStorage {
      * @param password  Password used to unlock the master key.
      */
     public void decryptIdentityKey(String password) {
-
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+        if(Build.VERSION.BASE_OS != null && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             return;
         }
         this.progressionUpdater.setMax(iterationCount);
@@ -229,6 +241,7 @@ public class SQRLStorage {
         return STORAGE_HEADER;
     }
 
+
     public static void main(String[] args) {
         try {
             File file = new File("Testing.sqrl");
@@ -239,7 +252,8 @@ public class SQRLStorage {
             fis.close();
 
             System.out.println(EncryptionUtils.byte2hex(bytesArray));
-            SQRLStorage storage = new SQRLStorage(bytesArray, true);
+            SQRLStorage storage = SQRLStorage.getInstance();
+            storage.read(bytesArray, true);
             storage.decryptIdentityKey("Testing1234");
         } catch (Exception e) {
             e.printStackTrace();
@@ -248,6 +262,10 @@ public class SQRLStorage {
 
     public void setProgressionUpdater(ProgressionUpdater progressionUpdater) {
         this.progressionUpdater = progressionUpdater;
+    }
+
+    public byte[] getMasterKey() {
+        return this.identityMasterKey;
     }
 }
 
