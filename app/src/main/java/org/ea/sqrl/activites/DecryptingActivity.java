@@ -26,7 +26,7 @@ public class DecryptingActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            byte[] rawQRData = extras.getByteArray(ScanSecretActivity.EXTRA_MESSAGE);
+            byte[] rawQRData = extras.getByteArray(ScanActivity.EXTRA_MESSAGE);
             String hexdata = EncryptionUtils.byte2hex(rawQRData);
             int end = hexdata.indexOf("0ec11ec11");
             qrCodeData = EncryptionUtils.hex2Byte(hexdata.substring(3, end));
@@ -42,7 +42,8 @@ public class DecryptingActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     public void run() {
                         try {
-                            SQRLStorage storage = new SQRLStorage(qrCodeData, true);
+                            SQRLStorage storage = SQRLStorage.getInstance();
+                            storage.read(qrCodeData, true);
                             storage.setProgressionUpdater(new ProgressionUpdater(handler, pbDecrypting, progressText));
                             storage.decryptIdentityKey(txtPassword.getText().toString());
                         } catch (Exception e) {

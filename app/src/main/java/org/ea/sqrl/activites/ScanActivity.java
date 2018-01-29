@@ -11,18 +11,27 @@ import com.google.zxing.integration.android.IntentResult;
 
 import org.ea.sqrl.R;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
-public class ScanSecretActivity extends AppCompatActivity {
+public class ScanActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "org.ea.sqrl.QRCODE";
+    public static final String SCAN_MODE_MESSAGE = "org.ea.sqrl.SCANMODE";
+
+    public static final int SCAN_MODE_SECRET = 1;
+    public static final int SCAN_MODE_LOGIN = 2;
+    private int scanMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_scan_secret);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            scanMode = extras.getInt(ScanActivity.SCAN_MODE_MESSAGE);
+        } else {
+            scanMode = SCAN_MODE_SECRET;
+        }
+
 
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
@@ -41,13 +50,22 @@ public class ScanSecretActivity extends AppCompatActivity {
                 Log.d("MainActivity", "Cancelled scan");
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
-                Intent intent = new Intent(this, DecryptingActivity.class);
+                Intent intent = null;
+                switch (scanMode) {
+                    case SCAN_MODE_SECRET:
+                        intent = new Intent(this, DecryptingActivity.class);
+                        break;
+                    case SCAN_MODE_LOGIN:
+                        intent = new Intent(this, DecryptingActivity.class);
+                        break;
+                    default:
+                        intent = new Intent(this, IntroductionActivity.class);
+                }
                 try {
                     intent.putExtra(EXTRA_MESSAGE, result.getRawBytes());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
                 startActivity(intent);
             }
         }
