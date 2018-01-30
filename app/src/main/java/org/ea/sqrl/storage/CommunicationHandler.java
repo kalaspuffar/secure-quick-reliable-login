@@ -17,23 +17,30 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Signature;
+import java.security.cert.CertificateException;
 import java.util.Arrays;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
 
 public class CommunicationHandler {
 
     public static String encodeUrlSafe(byte[] data) throws Exception {
         if(Build.VERSION.BASE_OS != null) {
-            return Base64.encodeToString(data, Base64.CRLF + Base64.NO_PADDING + Base64.URL_SAFE);
+            return Base64.encodeToString(data, Base64.NO_PADDING + Base64.URL_SAFE + Base64.NO_WRAP);
         } else {
             return java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(data);
         }
@@ -41,7 +48,7 @@ public class CommunicationHandler {
 
     public static byte[] decodeUrlSafe(String data) throws Exception {
         if(Build.VERSION.BASE_OS != null) {
-            return Base64.decode(data, Base64.CRLF + Base64.NO_PADDING + Base64.URL_SAFE);
+            return Base64.decode(data, Base64.NO_PADDING + Base64.URL_SAFE + Base64.NO_WRAP);
         } else {
             return java.util.Base64.getUrlDecoder().decode(data);
         }
@@ -87,15 +94,15 @@ public class CommunicationHandler {
     }
 
     public String postRequest(String link, String data) throws Exception {
-        String httpsURL = "https://" + link;
+        StringBuilder result = new StringBuilder();
 
+        String httpsURL = "https://" + link;
         URL myurl = new URL(httpsURL);
-        HttpsURLConnection con = (HttpsURLConnection)myurl.openConnection();
+        HttpsURLConnection con = (HttpsURLConnection) myurl.openConnection();
         con.setRequestMethod("POST");
 
-        con.setRequestProperty("Content-length", String.valueOf(data.length()));
-        con.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
-        //con.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0;Windows98;DigExt)");
+        con.setRequestProperty("Content-Length", String.valueOf(data.length()));
+        con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         con.setDoOutput(true);
         con.setDoInput(true);
 
@@ -103,30 +110,23 @@ public class CommunicationHandler {
         output.writeBytes(data);
         output.close();
 
-
-
-        DataInputStream input = new DataInputStream( con.getInputStream() );
+        DataInputStream input = new DataInputStream(con.getInputStream());
 
         String newLine = System.getProperty("line.separator");
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-        StringBuilder result = new StringBuilder();
-        String line; boolean flag = false;
+        String line;
+        boolean flag = false;
         while ((line = reader.readLine()) != null) {
             result.append(flag ? newLine : "").append(line);
             flag = true;
         }
-
-        /*
-        for( int c = input.read(); c != -1; c = input.read() )
-            System.out.print( (char)c );
-        */
         input.close();
 
-        System.out.println("Resp Code:"+con.getResponseCode());
+        System.out.println("Resp Code:" + con.getResponseCode());
         return result.toString();
     }
 
-    private static void debugPostData(String data) throws Exception{
+    public static void debugPostData(String data) throws Exception{
         String[] variables = data.split("&");
         for(String s : variables) {
             System.out.println(s);
@@ -149,21 +149,17 @@ public class CommunicationHandler {
             storage.setProgressionUpdater(new ProgressionUpdater());
             storage.read(bytesArray, true);
             storage.decryptIdentityKey("Testing1234");
+            byte[] masterKey = storage.getMasterKey();
 
             CommunicationHandler commHandler = new CommunicationHandler();
-            String sqrlLink = "sqrl://www.grc.com/sqrl?nut=zXPUSRX-0DcmezCtdb-4-Q";
+            String sqrlLink = "sqrl://www.grc.com/sqrl?nut=jAXR0Ck8HlxlDJnFqiKavA";
             String domain = sqrlLink.split("/")[2];
             String serverData = sqrlLink.substring(sqrlLink.indexOf("://")+3);
 
-            byte[] privateKey = commHandler.getPrivateKey(storage.getMasterKey(), domain);
+            byte[] privateKey = commHandler.getPrivateKey(masterKey, domain);
             String postData = commHandler.createPostParams(commHandler.createClientQueryData(), sqrlLink, privateKey);
 
-            //System.out.println(postData);
-            //debugPostData(postData);
-
             System.out.println(commHandler.postRequest(serverData, postData));
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }

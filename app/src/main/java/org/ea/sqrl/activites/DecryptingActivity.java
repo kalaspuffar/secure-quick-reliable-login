@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import org.ea.sqrl.ProgressionUpdater;
 import org.ea.sqrl.R;
+import org.ea.sqrl.storage.CommunicationHandler;
 import org.ea.sqrl.storage.EncryptionUtils;
 import org.ea.sqrl.storage.SQRLStorage;
 
@@ -28,10 +29,7 @@ public class DecryptingActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             byte[] rawQRData = extras.getByteArray(ScanActivity.EXTRA_MESSAGE);
-            String hexdata = EncryptionUtils.byte2hex(rawQRData);
-            int end = hexdata.indexOf("0ec11ec11");
-            qrCodeData = EncryptionUtils.hex2Byte(hexdata.substring(3, end));
-            System.out.println(EncryptionUtils.byte2hex(qrCodeData));
+            qrCodeData = EncryptionUtils.readSQRLQRCode(rawQRData);
         }
 
         final ProgressBar pbDecrypting = findViewById(R.id.pbDecrypting);

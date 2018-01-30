@@ -7,6 +7,7 @@ import com.lambdaworks.crypto.SCrypt;
 
 import org.ea.sqrl.ProgressionUpdater;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
 /**
@@ -64,5 +65,43 @@ public class EncryptionUtils {
         }
 
         return xorKey;
+    }
+
+    /**
+     * We look into the string from the QRCode after either sqrldata, sqrl:// or qrl:// to start
+     * our string.
+     * Then we look for the ec11 that padds the QRCode in order to remove that. Lastly we remove
+     * all trailing zeros.
+     *
+     * @param rawHexData    String from the QR code read.
+     * @return  The string without any extra information.
+     */
+    public static byte[] readSQRLQRCode(byte[] rawHexData) {
+        String string = EncryptionUtils.byte2hex(rawHexData);
+        int start = string.indexOf("7371726c64617461");
+        if(start == -1) {
+            start = string.indexOf("7371726c3a2f2f");
+        }
+        if(start == -1) {
+            start = string.indexOf("71726c3a2f2f");
+        }
+        int end = string.lastIndexOf("ec11");
+        string = string.substring(start, end);
+        while(string.endsWith("ec11")) {
+            string = string.substring(0, string.length()-4);
+        }
+        while(string.endsWith("0")) {
+            string = string.substring(0, string.length()-1);
+        }
+        return EncryptionUtils.hex2Byte(string);
+    }
+
+    public static String readSQRLQRCodeAsString(byte[] rawHexData) {
+        try {
+            return new String(readSQRLQRCode(rawHexData), "ASCII");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

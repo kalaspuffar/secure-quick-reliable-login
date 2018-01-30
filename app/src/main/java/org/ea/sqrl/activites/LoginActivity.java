@@ -25,14 +25,9 @@ public class LoginActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             byte[] rawQRData = extras.getByteArray(ScanActivity.EXTRA_MESSAGE);
-            String hexdata = EncryptionUtils.byte2hex(rawQRData);
-            System.out.println(hexdata);
-            int end = hexdata.indexOf("0ec11");
-            byte[] qrCodeData = EncryptionUtils.hex2Byte(hexdata.substring(3, end));
-            System.out.println(EncryptionUtils.byte2hex(qrCodeData));
+            String sqrlLink = EncryptionUtils.readSQRLQRCodeAsString(rawQRData);
 
-            String sqrlLink = new String(qrCodeData);
-            String domain = sqrlLink.split("/")[2];
+            final String domain = sqrlLink.split("/")[2];
 
             final TextView txtSite = findViewById(R.id.txtSite);
             txtSite.setText(domain);
@@ -42,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     new Thread(new Runnable() {
                         public void run() {
+
                             SQRLStorage storage = SQRLStorage.getInstance();
                             CommunicationHandler commHandler = new CommunicationHandler();
                             String serverData = sqrlLink.substring(sqrlLink.indexOf("://")+3);
@@ -49,8 +45,10 @@ public class LoginActivity extends AppCompatActivity {
                             try {
                                 byte[] privateKey = commHandler.getPrivateKey(storage.getMasterKey(), domain);
                                 String postData = commHandler.createPostParams(commHandler.createClientQueryData(), sqrlLink, privateKey);
+
                                 String response = commHandler.postRequest(serverData, postData);
-                                System.out.println(CommunicationHandler.decodeUrlSafe(response));
+                                System.out.println("Response: " + response);
+
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
