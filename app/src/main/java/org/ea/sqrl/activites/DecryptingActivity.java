@@ -1,5 +1,6 @@
 package org.ea.sqrl.activites;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -46,11 +47,15 @@ public class DecryptingActivity extends AppCompatActivity {
                             storage.read(qrCodeData, true);
                             storage.setProgressionUpdater(new ProgressionUpdater(handler, pbDecrypting, progressText));
                             storage.decryptIdentityKey(txtPassword.getText().toString());
+
+                            Intent intent = new Intent(DecryptingActivity.this, ScanActivity.class);
+                            intent.putExtra(ScanActivity.SCAN_MODE_MESSAGE, ScanActivity.SCAN_MODE_LOGIN);
+                            startActivity(intent);
+
                         } catch (Exception e) {
                             System.out.println("ERROR: " + e.getMessage());
                             e.printStackTrace();
                         }
-
                     }
                 }).start();
             }

@@ -38,7 +38,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activites.DecryptingActivity"></activity>
+        <activity android:name=".activites.DecryptingActivity" />
+        <activity android:name=".activites.LoginActivity"></activity>
     </application>
 
 </manifest>

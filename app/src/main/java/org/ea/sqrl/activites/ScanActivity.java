@@ -56,7 +56,7 @@ public class ScanActivity extends AppCompatActivity {
                         intent = new Intent(this, DecryptingActivity.class);
                         break;
                     case SCAN_MODE_LOGIN:
-                        intent = new Intent(this, DecryptingActivity.class);
+                        intent = new Intent(this, LoginActivity.class);
                         break;
                     default:
                         intent = new Intent(this, IntroductionActivity.class);

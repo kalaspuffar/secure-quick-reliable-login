@@ -47,21 +47,21 @@ public class CommunicationHandler {
         }
     }
 
-    private byte[] getPrivateKey(byte[] masterKey, String domain) throws Exception {
+    public byte[] getPrivateKey(byte[] masterKey, String domain) throws Exception {
         final Mac HMacSha256 = Mac.getInstance("HmacSHA256");
         final SecretKeySpec key = new SecretKeySpec(masterKey, "HmacSHA256");
         HMacSha256.init(key);
         return HMacSha256.doFinal(domain.getBytes());
     }
 
-    private String createClientQueryData() {
+    public String createClientQueryData() {
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=ident\r\n");
         return sb.toString();
     }
 
-    private String createPostParams(String client, String server, byte[] privateKey) throws Exception {
+    public String createPostParams(String client, String server, byte[] privateKey) throws Exception {
         StringBuilder sb = new StringBuilder();
         EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
         EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(privateKey, spec);
@@ -126,7 +126,7 @@ public class CommunicationHandler {
         return result.toString();
     }
 
-    public static void debugPostData(String data) throws Exception{
+    private static void debugPostData(String data) throws Exception{
         String[] variables = data.split("&");
         for(String s : variables) {
             System.out.println(s);
