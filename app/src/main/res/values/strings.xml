@@ -36,7 +36,11 @@ But PLEASE do make backups, since NO ONE knows your unique 77-digit private iden
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_activity_start">SQRL - Welcome</string>
-    <string name="welcome_message">Welcome</string>
+    <string name="welcome_message">
+    	Welcome to the an secure quick reliable login client.
+    	\n\n
+    	
+    	</string>
     <string name="button_scan_secret">Scan secret code</string>
 
 </resources>
