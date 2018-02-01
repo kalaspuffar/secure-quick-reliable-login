@@ -13,6 +13,7 @@ import java.security.Key;
 import java.util.Arrays;
 
 import javax.crypto.Cipher;
+import javax.crypto.Mac;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -209,7 +210,7 @@ public class SQRLStorage {
      * @param rescueCode    Special rescueCode printed on paper in the format of 0000-0000-0000-0000-0000-0000
      */
     public void decryptUnlockKey(String rescueCode) {
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+        if(Build.VERSION.BASE_OS != null && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             return;
         }
 
@@ -264,9 +265,13 @@ public class SQRLStorage {
         this.progressionUpdater = progressionUpdater;
     }
 
-    public byte[] getMasterKey() {
-        return this.identityMasterKey;
+    public byte[] getPrivateKey(String domain) throws Exception {
+        final Mac HMacSha256 = Mac.getInstance("HmacSHA256");
+        final SecretKeySpec key = new SecretKeySpec(this.identityMasterKey, "HmacSHA256");
+        HMacSha256.init(key);
+        return HMacSha256.doFinal(domain.getBytes());
     }
+
 }
 
 /*

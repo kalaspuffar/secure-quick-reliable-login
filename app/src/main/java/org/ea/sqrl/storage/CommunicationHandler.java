@@ -54,34 +54,40 @@ public class CommunicationHandler {
         }
     }
 
-    public byte[] getPrivateKey(byte[] masterKey, String domain) throws Exception {
-        final Mac HMacSha256 = Mac.getInstance("HmacSHA256");
-        final SecretKeySpec key = new SecretKeySpec(masterKey, "HmacSHA256");
-        HMacSha256.init(key);
-        return HMacSha256.doFinal(domain.getBytes());
-    }
-
-    public String createClientQueryData() {
+    public String createClientQueryData(String domain) throws Exception {
+        SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
-        sb.append("cmd=ident\r\n");
+        sb.append("cmd=query\r\n");
+        EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
+        EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(storage.getPrivateKey(domain), spec);
+        sb.append("idk=" + encodeUrlSafe(privKey.getA().toByteArray()));
+
         return sb.toString();
     }
 
-    public String createPostParams(String client, String server, byte[] privateKey) throws Exception {
+    public String createClientIdentData(String domain) throws Exception {
+        SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
+        sb.append("ver=1\r\n");
+        sb.append("cmd=query\r\n");
         EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
-        EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(privateKey, spec);
-        client += "idk=" + encodeUrlSafe(privKey.getA().toByteArray());
+        EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(storage.getPrivateKey(domain), spec);
+        sb.append("idk=" + encodeUrlSafe(privKey.getA().toByteArray()));
 
+        return sb.toString();
+    }
+
+    public String createPostParams(String client, String server, String domain) throws Exception {
+        EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
+        EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(SQRLStorage.getInstance().getPrivateKey(domain), spec);
+
+        StringBuilder sb = new StringBuilder();
         sb.append("client=");
         sb.append(encodeUrlSafe(client.getBytes()));
 
         sb.append("&server=");
         sb.append(encodeUrlSafe(server.getBytes()));
-
-        sb.append("&idk=");
-        sb.append(encodeUrlSafe(privKey.getA().toByteArray()));
 
         PrivateKey sKey = new EdDSAPrivateKey(privKey);
         Signature sgr = new EdDSAEngine(MessageDigest.getInstance(spec.getHashAlgorithm()));
@@ -138,7 +144,7 @@ public class CommunicationHandler {
 
     public static void main(String[] args) {
         try {
-            File file = new File("Testing2.sqrl");
+            File file = new File("Testing3.sqrl");
             byte[] bytesArray = new byte[(int) file.length()];
 
             FileInputStream fis = new FileInputStream(file);
@@ -149,15 +155,13 @@ public class CommunicationHandler {
             storage.setProgressionUpdater(new ProgressionUpdater());
             storage.read(bytesArray, true);
             storage.decryptIdentityKey("Testing1234");
-            byte[] masterKey = storage.getMasterKey();
 
             CommunicationHandler commHandler = new CommunicationHandler();
-            String sqrlLink = "sqrl://www.grc.com/sqrl?nut=jAXR0Ck8HlxlDJnFqiKavA";
+            String sqrlLink = "sqrl://www.grc.com/sqrl?nut=Goq4xz6i70frU7xu1-RDTQ";
             String domain = sqrlLink.split("/")[2];
             String serverData = sqrlLink.substring(sqrlLink.indexOf("://")+3);
 
-            byte[] privateKey = commHandler.getPrivateKey(masterKey, domain);
-            String postData = commHandler.createPostParams(commHandler.createClientQueryData(), sqrlLink, privateKey);
+            String postData = commHandler.createPostParams(commHandler.createClientQueryData(domain), sqrlLink, domain);
 
             System.out.println(commHandler.postRequest(serverData, postData));
         } catch (Exception e) {

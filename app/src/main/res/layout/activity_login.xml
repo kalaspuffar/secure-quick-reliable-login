@@ -21,14 +21,12 @@
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="wrap_content"
-        android:layout_height="53dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="32dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="Login"
+        android:layout_marginEnd="32dp"
+        android:text="@string/button_login"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/textView3"
@@ -54,5 +52,15 @@
         android:text="Using this protocol you may login to the scanned url. Please check that the scanned domain is the same as the place you want to visit"
         app:layout_constraintBottom_toTopOf="@+id/textView3"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnScanNew"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginStart="32dp"
+        android:text="@string/button_scan_new_site"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 </android.support.constraint.ConstraintLayout>

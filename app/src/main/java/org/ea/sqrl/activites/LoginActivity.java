@@ -32,30 +32,25 @@ public class LoginActivity extends AppCompatActivity {
             final TextView txtSite = findViewById(R.id.txtSite);
             txtSite.setText(domain);
 
-            final Button btnDecryptKey = findViewById(R.id.btnLogin);
-            btnDecryptKey.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    new Thread(new Runnable() {
-                        public void run() {
+            final Button btnScanNew = findViewById(R.id.btnScanNew);
+            btnScanNew.setOnClickListener(v -> new Thread(() -> {
+                Intent intent = new Intent(LoginActivity.this, ScanActivity.class);
+                intent.putExtra(ScanActivity.SCAN_MODE_MESSAGE, ScanActivity.SCAN_MODE_LOGIN);
+                startActivity(intent);
+            }).start());
 
-                            SQRLStorage storage = SQRLStorage.getInstance();
-                            CommunicationHandler commHandler = new CommunicationHandler();
-                            String serverData = sqrlLink.substring(sqrlLink.indexOf("://")+3);
-
-                            try {
-                                byte[] privateKey = commHandler.getPrivateKey(storage.getMasterKey(), domain);
-                                String postData = commHandler.createPostParams(commHandler.createClientQueryData(), sqrlLink, privateKey);
-
-                                String response = commHandler.postRequest(serverData, postData);
-                                System.out.println("Response: " + response);
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).start();
+            final Button btnLogin = findViewById(R.id.btnLogin);
+            btnLogin.setOnClickListener(v -> new Thread(() -> {
+                CommunicationHandler commHandler = new CommunicationHandler();
+                String serverData = sqrlLink.substring(sqrlLink.indexOf("://")+3);
+                try {
+                    String postData = commHandler.createPostParams(commHandler.createClientQueryData(domain), sqrlLink, domain);
+                    String response = commHandler.postRequest(serverData, postData);
+                    System.out.println("Response: " + response);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            });
+            }).start());
         }
 
     }

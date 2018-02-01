@@ -57,5 +57,6 @@ Observe that permissions to use the camera needs to be supplied in order to scan
 or site QR Codes.
     </string>
     <string name="button_scan_secret">Scan secret code</string>
-
+    <string name="button_scan_new_site">Scan new site</string>
+    <string name="button_login">Login</string>
 </resources>

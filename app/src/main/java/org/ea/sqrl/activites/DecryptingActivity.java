@@ -36,27 +36,21 @@ public class DecryptingActivity extends AppCompatActivity {
         final EditText txtPassword = findViewById(R.id.txtPassword);
         final Button btnDecryptKey = findViewById(R.id.btnDecryptKey);
         final TextView progressText = findViewById(R.id.lblProgressText);
-        btnDecryptKey.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                new Thread(new Runnable() {
-                    public void run() {
-                        try {
-                            SQRLStorage storage = SQRLStorage.getInstance();
-                            storage.read(qrCodeData, true);
-                            storage.setProgressionUpdater(new ProgressionUpdater(handler, pbDecrypting, progressText));
-                            storage.decryptIdentityKey(txtPassword.getText().toString());
+        btnDecryptKey.setOnClickListener(v -> new Thread(() -> {
+            try {
+                SQRLStorage storage = SQRLStorage.getInstance();
+                storage.read(qrCodeData, true);
+                storage.setProgressionUpdater(new ProgressionUpdater(handler, pbDecrypting, progressText));
+                storage.decryptIdentityKey(txtPassword.getText().toString());
 
-                            Intent intent = new Intent(DecryptingActivity.this, ScanActivity.class);
-                            intent.putExtra(ScanActivity.SCAN_MODE_MESSAGE, ScanActivity.SCAN_MODE_LOGIN);
-                            startActivity(intent);
+                Intent intent = new Intent(DecryptingActivity.this, ScanActivity.class);
+                intent.putExtra(ScanActivity.SCAN_MODE_MESSAGE, ScanActivity.SCAN_MODE_LOGIN);
+                startActivity(intent);
 
-                        } catch (Exception e) {
-                            System.out.println("ERROR: " + e.getMessage());
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
+            } catch (Exception e) {
+                System.out.println("ERROR: " + e.getMessage());
+                e.printStackTrace();
             }
-        });
+        }).start());
     }
 }
