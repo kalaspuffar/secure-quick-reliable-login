@@ -1,9 +1,19 @@
 <resources>
     <string name="app_name">Secure Quick Reliable Login</string>
     <string name="action_settings">Settings</string>
-    <string name="introduction_startpage"><b>Secure Quick Reliable Login</b>
+    <string name="introduction_startpage">
+<b>Secure Quick Reliable Login</b>
+\n\n
+Welcome to the help pages. These pages tries to explain the different concepts in the protocol in
+more detail. We will also try to explain the different use cases available to you using this application.
+\n\n
+To use the help pages you can swipe left or right in order to change page.
+\n\n
+If you are interest in looking at the source code of this application it\'s open source and available
+at https://github.com/kalaspuffar/secure-quick-reliable-login
     </string>
-    <string name="introduction_nutshell"><b>In a Nutshell</b>
+    <string name="introduction_nutshell">
+<b>In a Nutshell</b>
 \n\n
 Before you begin using SQRL to login to websites, your SQRL private identity must be created. You only need one, probably for life, because it reveals NOTHING about you, and it\'s highly secure. It\'s just a very long (77-digit) random number.
 \n\n
@@ -15,7 +25,8 @@ Since you never need to use an eMail address or a password, you never give a web
 \n\n
 This is as good as it sounds. It\'s what we\'ve been waiting for.
     </string>
-    <string name="introduction_password"><b>Your SQRL Password</b>
+    <string name="introduction_password">
+<b>Your SQRL Password</b>
 \n\n
 SQRL frees you from the burden of logging into Internet websites by doing it for you. But this means if someone else gained control of your SQRL app, they could impersonate you.
 \n\n
@@ -23,7 +34,8 @@ We solve this problem with a SQRL password which YOU use to login to your SQRL. 
 \n\n
 You are free to change your password and its various settings at any time. And if you should ever forget or lose your password for any reason, SQRL\'s Rescue Code can be used to recover your access.
     </string>
-    <string name="introduction_rescue_code"><b>SQRL\'s Rescue Code</b>
+    <string name="introduction_rescue_code">
+<b>SQRL\'s Rescue Code</b>
 \n\n
 You and SQRL will probably never need rescuing. But SQRL\'s security is so tight that you MIGHT need a way to unlock things a bit. Here are the two scenarios where you WOULD need rescuing:
 \n\n
@@ -32,7 +44,8 @@ You and SQRL will probably never need rescuing. But SQRL\'s security is so tight
 \n\n
 SQRL\'s Rescue Code is a powerful ally. Write it down, keep it safe and never lose it. You will probably never need it, but if you do you\'ll be very glad you kept it.
     </string>
-    <string name="introduction_backup"><b>Why Backup?</b>
+    <string name="introduction_backup">
+<b>Why Backup?</b>
 \n\n
 Your SQRL private identity is a randomly chosen 77-digit number used to generate each of your individual web identities. NO ONE knows what it is. As you use SQRL to identify yourself to the Internet, your identity BECOMES that 77-digit number. If it is ever lost, so is your Internet identity.
 \n\n
