@@ -81,7 +81,9 @@ public class LoginActivity extends BaseActivity {
                         }
                     });
                 } catch (Exception e) {
-                    txtSite.setText(e.getMessage());
+                    handler.post(() -> {
+                        txtSite.setText(e.getMessage());
+                    });
                     e.printStackTrace();
                     return;
                 }
