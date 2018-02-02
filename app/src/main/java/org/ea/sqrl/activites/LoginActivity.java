@@ -26,18 +26,24 @@ public class LoginActivity extends BaseActivity {
     private void postQuery(CommunicationHandler commHandler) throws Exception {
         String postData = commHandler.createPostParams(commHandler.createClientQuery(), serverData);
         commHandler.postRequest(queryLink, postData);
+        serverData = commHandler.getResponse();
+        queryLink = commHandler.getQueryLink();
         commHandler.printParams();
     }
 
     private void postCreateAccount(CommunicationHandler commHandler) throws Exception {
         String postData = commHandler.createPostParams(commHandler.createClientCreateAccount(), serverData);
         commHandler.postRequest(queryLink, postData);
+        serverData = commHandler.getResponse();
+        queryLink = commHandler.getQueryLink();
         commHandler.printParams();
     }
 
     private void postLogin(CommunicationHandler commHandler) throws Exception {
         String postData = commHandler.createPostParams(commHandler.createClientLogin(), serverData);
         commHandler.postRequest(queryLink, postData);
+        serverData = commHandler.getResponse();
+        queryLink = commHandler.getQueryLink();
         commHandler.printParams();
     }
 
@@ -55,10 +61,10 @@ public class LoginActivity extends BaseActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             byte[] rawQRData = extras.getByteArray(ScanActivity.EXTRA_MESSAGE);
-            String sqrlLink = EncryptionUtils.readSQRLQRCodeAsString(rawQRData);
-            int indexOfQuery = sqrlLink.indexOf("/", sqrlLink.indexOf("://")+3);
-            queryLink = sqrlLink.substring(indexOfQuery);
-            final String domain = sqrlLink.split("/")[2];
+            serverData = EncryptionUtils.readSQRLQRCodeAsString(rawQRData);
+            int indexOfQuery = serverData.indexOf("/", serverData.indexOf("://")+3);
+            queryLink = serverData.substring(indexOfQuery);
+            final String domain = serverData.split("/")[2];
             commHandler.setDomain(domain);
 
             txtSite.setText(domain);

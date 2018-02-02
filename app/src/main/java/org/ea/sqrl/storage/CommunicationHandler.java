@@ -63,22 +63,6 @@ public class CommunicationHandler {
         return instance;
     }
 
-    public static String encodeUrlSafe(byte[] data) throws Exception {
-        if(Build.VERSION.BASE_OS != null) {
-            return Base64.encodeToString(data, Base64.NO_PADDING + Base64.URL_SAFE + Base64.NO_WRAP);
-        } else {
-            return java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(data);
-        }
-    }
-
-    public static byte[] decodeUrlSafe(String data) throws Exception {
-        if(Build.VERSION.BASE_OS != null) {
-            return Base64.decode(data, Base64.NO_PADDING + Base64.URL_SAFE + Base64.NO_WRAP);
-        } else {
-            return java.util.Base64.getUrlDecoder().decode(data);
-        }
-    }
-
     public void setDomain(String domain) {
         this.domain = domain;
     }
@@ -90,7 +74,7 @@ public class CommunicationHandler {
         sb.append("cmd=query\r\n");
         EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
         EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(storage.getPrivateKey(domain), spec);
-        sb.append("idk=" + encodeUrlSafe(privKey.getA().toByteArray()));
+        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(privKey.getA().toByteArray()));
 
         return sb.toString();
     }
@@ -102,7 +86,7 @@ public class CommunicationHandler {
         sb.append("cmd=ident\r\n");
         EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
         EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(storage.getPrivateKey(domain), spec);
-        sb.append("idk=" + encodeUrlSafe(privKey.getA().toByteArray()));
+        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(privKey.getA().toByteArray()));
 
         return sb.toString();
     }
@@ -114,7 +98,7 @@ public class CommunicationHandler {
         sb.append("cmd=ident\r\n");
         EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
         EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(storage.getPrivateKey(domain), spec);
-        sb.append("idk=" + encodeUrlSafe(privKey.getA().toByteArray()));
+        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(privKey.getA().toByteArray()));
 
         return sb.toString();
     }
@@ -125,18 +109,18 @@ public class CommunicationHandler {
 
         StringBuilder sb = new StringBuilder();
         sb.append("client=");
-        sb.append(encodeUrlSafe(client.getBytes()));
+        sb.append(EncryptionUtils.encodeUrlSafe(client.getBytes()));
 
         sb.append("&server=");
-        sb.append(encodeUrlSafe(server.getBytes()));
+        sb.append(EncryptionUtils.encodeUrlSafe(server.getBytes()));
 
         PrivateKey sKey = new EdDSAPrivateKey(privKey);
         Signature sgr = new EdDSAEngine(MessageDigest.getInstance(spec.getHashAlgorithm()));
         sgr.initSign(sKey);
-        sgr.update(encodeUrlSafe(client.getBytes()).getBytes());
-        sgr.update(encodeUrlSafe(server.getBytes()).getBytes());
+        sgr.update(EncryptionUtils.encodeUrlSafe(client.getBytes()).getBytes());
+        sgr.update(EncryptionUtils.encodeUrlSafe(server.getBytes()).getBytes());
         sb.append("&ids=");
-        sb.append(encodeUrlSafe(sgr.sign()));
+        sb.append(EncryptionUtils.encodeUrlSafe(sgr.sign()));
         return sb.toString();
     }
 
@@ -144,6 +128,7 @@ public class CommunicationHandler {
         StringBuilder result = new StringBuilder();
 
         String httpsURL = "https://" + domain + link;
+
         URL myurl = new URL(httpsURL);
         HttpsURLConnection con = (HttpsURLConnection) myurl.openConnection();
         con.setRequestMethod("POST");
@@ -178,7 +163,7 @@ public class CommunicationHandler {
         String[] variables = data.split("&");
         for(String s : variables) {
             System.out.println(s);
-            byte[] bytes = decodeUrlSafe(s.split("=")[1]);
+            byte[] bytes = EncryptionUtils.decodeUrlSafe(s.split("=")[1]);
             System.out.println(Arrays.toString(bytes));
             System.out.println(new String(bytes));
         }
@@ -186,9 +171,8 @@ public class CommunicationHandler {
 
 
     private void setResponseData(String responseData) throws Exception {
-        this.response = responseData;
-        String responseStr = new String(decodeUrlSafe(responseData));
-        for(String param : responseStr.split("\r\n")) {
+        this.response = new String(EncryptionUtils.decodeUrlSafe(responseData));
+        for(String param : response.split("\r\n")) {
             int firstEqualSign = param.indexOf("=");
             if(firstEqualSign == -1) continue;
             lastResponse.put(param.substring(0, firstEqualSign), param.substring(firstEqualSign+1));
@@ -208,11 +192,6 @@ public class CommunicationHandler {
     public boolean isTIFBitSet(int k) {
         if(!lastResponse.containsKey("tif")) return false;
         int tif = Integer.parseInt(lastResponse.get("tif"), 16);
-
-        System.out.println(tif);
-        System.out.println(1 << k);
-        System.out.println(tif & 1 << k);
-
         return (tif & 1 << k) != 0;
     }
 
@@ -252,5 +231,12 @@ public class CommunicationHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public String getQueryLink() {
+        if(!lastResponse.containsKey("qry")) {
+            return "";
+        }
+        return lastResponse.get("qry");
     }
 }

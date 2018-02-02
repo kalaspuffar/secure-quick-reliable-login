@@ -105,4 +105,5 @@ Daniel Persson
     <string name="button_create_account">Create account</string>
     <string name="error_incorrect_password">Unable to decrypt secret, check your password</string>
     <string name="button_decrypt_key">Decrypt key</string>
+    <string name="decrypt_identity_message">You\'ve successfully scanned your secure identity. Please verify that the rescue data presented below corresponds to the data printed on your key page.</string>
 </resources>

@@ -40,6 +40,8 @@ public class SQRLStorage {
     public void read(byte[] input, boolean full) throws Exception {
         String header = new String(Arrays.copyOfRange(input, 0, 8));
 
+        String inputString = EncryptionUtils.encodeBase56(Arrays.copyOfRange(input, 125, input.length));
+        verifyingRecoveryBlock = fixString(inputString);
 
         if (!STORAGE_HEADER.equals(header)) throw new Exception("Incorrect header");
         int readOffset = 8;
@@ -104,7 +106,29 @@ public class SQRLStorage {
     private byte[] rescue_identityLockKey;
     private byte[] rescue_verificationTag;
 
-    public void handleIdentityBlock(byte[] input) {
+    private String verifyingRecoveryBlock;
+
+    public String getVerifyingRecoveryBlock() {
+        return verifyingRecoveryBlock;
+    }
+
+    public String fixString(String input) {
+        int i = 0;
+        String result = "";
+        for(String s : input.split("")) {
+            result += s;
+            if(i != 0 && i % 4 == 0) {
+                result += " ";
+            }
+            if(i != 0 && i % 20 == 0) {
+                result += "\n";
+            }
+            i++;
+        }
+        return result;
+    }
+
+    public void handleIdentityBlock(byte[] input) throws Exception {
         rescue_plaintext = Arrays.copyOfRange(input, 0, 25);
         rescue_randomSalt = Arrays.copyOfRange(input, 4, 20);
         rescue_logNFactor = input[20];

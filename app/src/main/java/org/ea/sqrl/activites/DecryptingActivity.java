@@ -36,11 +36,21 @@ public class DecryptingActivity extends BaseActivity {
         final EditText txtPassword = findViewById(R.id.txtPassword);
         final Button btnDecryptKey = findViewById(R.id.btnDecryptKey);
         final TextView progressText = findViewById(R.id.lblProgressText);
+        final TextView txtRecoveryKey = findViewById(R.id.txtRecoveryKey);
+
+        SQRLStorage storage = SQRLStorage.getInstance();
+        try {
+            storage.read(qrCodeData, true);
+            storage.setProgressionUpdater(new ProgressionUpdater(handler, pbDecrypting, progressText));
+        } catch (Exception e) {
+            System.out.println("ERROR: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        txtRecoveryKey.setText(storage.getVerifyingRecoveryBlock());
+
         btnDecryptKey.setOnClickListener(v -> new Thread(() -> {
             try {
-                SQRLStorage storage = SQRLStorage.getInstance();
-                storage.read(qrCodeData, true);
-                storage.setProgressionUpdater(new ProgressionUpdater(handler, pbDecrypting, progressText));
                 boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString());
 
                 if(decryptStatus) {
@@ -49,11 +59,11 @@ public class DecryptingActivity extends BaseActivity {
                 } else {
                     progressText.setText(R.string.error_incorrect_password);
                 }
-
             } catch (Exception e) {
                 System.out.println("ERROR: " + e.getMessage());
                 e.printStackTrace();
             }
+
         }).start());
     }
 }
