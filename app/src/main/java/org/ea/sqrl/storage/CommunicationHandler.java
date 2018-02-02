@@ -30,6 +30,8 @@ import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -39,6 +41,18 @@ import javax.net.ssl.SSLContext;
 public class CommunicationHandler {
     private static CommunicationHandler instance = null;
     private String domain;
+    private Map<String, String> lastResponse = new HashMap<>();
+    private String response;
+
+    public static final int TIF_CURRENT_ID_MATCH = 0;
+    public static final int TIF_PREVIOUS_ID_MATCH = 1;
+    public static final int TIF_IP_MATCHED = 2;
+    public static final int TIF_SQRL_DISABLED = 3;
+    public static final int TIF_FUNCTION_NOT_SUPPORTED = 4;
+    public static final int TIF_TRANSIENT_ERROR = 5;
+    public static final int TIF_COMMAND_FAILED = 6;
+    public static final int TIF_CLIENT_FAILURE = 7;
+    public static final int TIF_BAD_ID_ASSOCIATION = 8;
 
     private CommunicationHandler() {}
 
@@ -69,7 +83,7 @@ public class CommunicationHandler {
         this.domain = domain;
     }
 
-    public String createClientQueryData() throws Exception {
+    public String createClientQuery() throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
@@ -81,11 +95,23 @@ public class CommunicationHandler {
         return sb.toString();
     }
 
-    public String createClientIdentData() throws Exception {
+    public String createClientCreateAccount() throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
-        sb.append("cmd=query\r\n");
+        sb.append("cmd=ident\r\n");
+        EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
+        EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(storage.getPrivateKey(domain), spec);
+        sb.append("idk=" + encodeUrlSafe(privKey.getA().toByteArray()));
+
+        return sb.toString();
+    }
+
+    public String createClientLogin() throws Exception {
+        SQRLStorage storage = SQRLStorage.getInstance();
+        StringBuilder sb = new StringBuilder();
+        sb.append("ver=1\r\n");
+        sb.append("cmd=ident\r\n");
         EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
         EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(storage.getPrivateKey(domain), spec);
         sb.append("idk=" + encodeUrlSafe(privKey.getA().toByteArray()));
@@ -114,7 +140,7 @@ public class CommunicationHandler {
         return sb.toString();
     }
 
-    public String postRequest(String link, String data) throws Exception {
+    public void postRequest(String link, String data) throws Exception {
         StringBuilder result = new StringBuilder();
 
         String httpsURL = "https://" + domain + link;
@@ -144,7 +170,8 @@ public class CommunicationHandler {
         input.close();
 
         System.out.println("Resp Code:" + con.getResponseCode());
-        return result.toString();
+
+        setResponseData(result.toString());
     }
 
     public static void debugPostData(String data) throws Exception{
@@ -155,6 +182,44 @@ public class CommunicationHandler {
             System.out.println(Arrays.toString(bytes));
             System.out.println(new String(bytes));
         }
+    }
+
+
+    private void setResponseData(String responseData) throws Exception {
+        this.response = responseData;
+        String responseStr = new String(decodeUrlSafe(responseData));
+        for(String param : responseStr.split("\r\n")) {
+            int firstEqualSign = param.indexOf("=");
+            if(firstEqualSign == -1) continue;
+            lastResponse.put(param.substring(0, firstEqualSign), param.substring(firstEqualSign+1));
+        }
+    }
+
+    public void printParams() {
+        for(Map.Entry<String, String> entry : lastResponse.entrySet()) {
+            System.out.println(entry.getKey() + "=" + entry.getValue());
+        }
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public boolean isTIFBitSet(int k) {
+        if(!lastResponse.containsKey("tif")) return false;
+        int tif = Integer.parseInt(lastResponse.get("tif"), 16);
+
+        System.out.println(tif);
+        System.out.println(1 << k);
+        System.out.println(tif & 1 << k);
+
+        return (tif & 1 << k) != 0;
+    }
+
+    public boolean isTIFZero() {
+        if(!lastResponse.containsKey("tif")) return false;
+        int tif = Integer.parseInt(lastResponse.get("tif"));
+        return tif == 0;
     }
 
     public static void main(String[] args) {
@@ -181,9 +246,9 @@ public class CommunicationHandler {
             System.out.println(queryLink);
 
             commHandler.setDomain(domain);
-            String postData = commHandler.createPostParams(commHandler.createClientQueryData(), sqrlLink);
-
-            System.out.println(commHandler.postRequest(queryLink, postData));
+            String postData = commHandler.createPostParams(commHandler.createClientQuery(), sqrlLink);
+            commHandler.postRequest(queryLink, postData);
+            commHandler.printParams();
         } catch (Exception e) {
             e.printStackTrace();
         }

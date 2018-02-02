@@ -41,11 +41,14 @@ public class DecryptingActivity extends BaseActivity {
                 SQRLStorage storage = SQRLStorage.getInstance();
                 storage.read(qrCodeData, true);
                 storage.setProgressionUpdater(new ProgressionUpdater(handler, pbDecrypting, progressText));
-                storage.decryptIdentityKey(txtPassword.getText().toString());
+                boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString());
 
-                Intent intent = new Intent(DecryptingActivity.this, ScanActivity.class);
-                intent.putExtra(ScanActivity.SCAN_MODE_MESSAGE, ScanActivity.SCAN_MODE_LOGIN);
-                startActivity(intent);
+                if(decryptStatus) {
+                    Intent intent = new Intent(DecryptingActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                } else {
+                    progressText.setText(R.string.error_incorrect_password);
+                }
 
             } catch (Exception e) {
                 System.out.println("ERROR: " + e.getMessage());

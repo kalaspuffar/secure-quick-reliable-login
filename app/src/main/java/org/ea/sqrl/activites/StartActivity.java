@@ -21,16 +21,10 @@ public class StartActivity extends BaseActivity {
         txtWelcomeMessage.setMovementMethod(new ScrollingMovementMethod());
 
         final Button btnScanSecret = findViewById(R.id.btnScanSecret);
-        btnScanSecret.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                new Thread(new Runnable() {
-                    public void run() {
-                        Intent intent = new Intent(StartActivity.this, ScanActivity.class);
-                        intent.putExtra(ScanActivity.SCAN_MODE_MESSAGE, ScanActivity.SCAN_MODE_SECRET);
-                        startActivity(intent);
-                    }
-                }).start();
-            }
-        });
+        btnScanSecret.setOnClickListener(v -> new Thread(() -> {
+            Intent intent = new Intent(StartActivity.this, ScanActivity.class);
+            intent.putExtra(ScanActivity.SCAN_MODE_MESSAGE, ScanActivity.SCAN_MODE_SECRET);
+            startActivity(intent);
+        }).start());
     }
 }

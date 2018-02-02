@@ -32,7 +32,6 @@ public class ScanActivity extends AppCompatActivity {
             scanMode = SCAN_MODE_SECRET;
         }
 
-
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
         integrator.setPrompt("Scan");

@@ -177,9 +177,9 @@ public class SQRLStorage {
      *
      * @param password  Password used to unlock the master key.
      */
-    public void decryptIdentityKey(String password) {
+    public boolean decryptIdentityKey(String password) {
         if(Build.VERSION.BASE_OS != null && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            return;
+            return false;
         }
         this.progressionUpdater.setMax(iterationCount);
 
@@ -200,7 +200,9 @@ public class SQRLStorage {
             identityLockKeyEncrypted = Arrays.copyOfRange(decryptionResult, 32, 64);
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     /**
@@ -209,9 +211,9 @@ public class SQRLStorage {
      *
      * @param rescueCode    Special rescueCode printed on paper in the format of 0000-0000-0000-0000-0000-0000
      */
-    public void decryptUnlockKey(String rescueCode) {
+    public boolean decryptUnlockKey(String rescueCode) {
         if(Build.VERSION.BASE_OS != null && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            return;
+            return false;
         }
 
         this.progressionUpdater.setMax(rescue_iterationCount);
@@ -234,7 +236,9 @@ public class SQRLStorage {
             rescue_identityLockKey = cipher.doFinal(rescue_verificationTag);
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     @Override

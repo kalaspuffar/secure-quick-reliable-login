@@ -102,4 +102,7 @@ https://github.com/kalaspuffar/secure-quick-reliable-login
 Authors:\n
 Daniel Persson
     </string>
+    <string name="button_create_account">Create account</string>
+    <string name="error_incorrect_password">Unable to decrypt secret, check your password</string>
+    <string name="button_decrypt_key">Decrypt key</string>
 </resources>
