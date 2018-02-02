@@ -37,6 +37,17 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 
 public class CommunicationHandler {
+    private static CommunicationHandler instance = null;
+    private String domain;
+
+    private CommunicationHandler() {}
+
+    public static CommunicationHandler getInstance() {
+        if(instance == null) {
+            instance = new CommunicationHandler();
+        }
+        return instance;
+    }
 
     public static String encodeUrlSafe(byte[] data) throws Exception {
         if(Build.VERSION.BASE_OS != null) {
@@ -54,7 +65,11 @@ public class CommunicationHandler {
         }
     }
 
-    public String createClientQueryData(String domain) throws Exception {
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    public String createClientQueryData() throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
@@ -66,7 +81,7 @@ public class CommunicationHandler {
         return sb.toString();
     }
 
-    public String createClientIdentData(String domain) throws Exception {
+    public String createClientIdentData() throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
@@ -78,7 +93,7 @@ public class CommunicationHandler {
         return sb.toString();
     }
 
-    public String createPostParams(String client, String server, String domain) throws Exception {
+    public String createPostParams(String client, String server) throws Exception {
         EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
         EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(SQRLStorage.getInstance().getPrivateKey(domain), spec);
 
@@ -102,7 +117,7 @@ public class CommunicationHandler {
     public String postRequest(String link, String data) throws Exception {
         StringBuilder result = new StringBuilder();
 
-        String httpsURL = "https://" + link;
+        String httpsURL = "https://" + domain + link;
         URL myurl = new URL(httpsURL);
         HttpsURLConnection con = (HttpsURLConnection) myurl.openConnection();
         con.setRequestMethod("POST");
@@ -144,7 +159,7 @@ public class CommunicationHandler {
 
     public static void main(String[] args) {
         try {
-            File file = new File("Testing3.sqrl");
+            File file = new File("Testing2.sqrl");
             byte[] bytesArray = new byte[(int) file.length()];
 
             FileInputStream fis = new FileInputStream(file);
@@ -156,14 +171,19 @@ public class CommunicationHandler {
             storage.read(bytesArray, true);
             storage.decryptIdentityKey("Testing1234");
 
-            CommunicationHandler commHandler = new CommunicationHandler();
+            CommunicationHandler commHandler = CommunicationHandler.getInstance();
             String sqrlLink = "sqrl://www.grc.com/sqrl?nut=Goq4xz6i70frU7xu1-RDTQ";
             String domain = sqrlLink.split("/")[2];
-            String serverData = sqrlLink.substring(sqrlLink.indexOf("://")+3);
 
-            String postData = commHandler.createPostParams(commHandler.createClientQueryData(domain), sqrlLink, domain);
+            int indexOfQuery = sqrlLink.indexOf("/", sqrlLink.indexOf("://")+3);
+            String queryLink = sqrlLink.substring(indexOfQuery);
 
-            System.out.println(commHandler.postRequest(serverData, postData));
+            System.out.println(queryLink);
+
+            commHandler.setDomain(domain);
+            String postData = commHandler.createPostParams(commHandler.createClientQueryData(), sqrlLink);
+
+            System.out.println(commHandler.postRequest(queryLink, postData));
         } catch (Exception e) {
             e.printStackTrace();
         }

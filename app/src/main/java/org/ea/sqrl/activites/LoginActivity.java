@@ -27,7 +27,9 @@ public class LoginActivity extends AppCompatActivity {
             byte[] rawQRData = extras.getByteArray(ScanActivity.EXTRA_MESSAGE);
             String sqrlLink = EncryptionUtils.readSQRLQRCodeAsString(rawQRData);
 
+            final CommunicationHandler commHandler = CommunicationHandler.getInstance();
             final String domain = sqrlLink.split("/")[2];
+            commHandler.setDomain(domain);
 
             final TextView txtSite = findViewById(R.id.txtSite);
             txtSite.setText(domain);
@@ -41,11 +43,11 @@ public class LoginActivity extends AppCompatActivity {
 
             final Button btnLogin = findViewById(R.id.btnLogin);
             btnLogin.setOnClickListener(v -> new Thread(() -> {
-                CommunicationHandler commHandler = new CommunicationHandler();
-                String serverData = sqrlLink.substring(sqrlLink.indexOf("://")+3);
+                int indexOfQuery = sqrlLink.indexOf("/", sqrlLink.indexOf("://")+3);
+                String queryLink = sqrlLink.substring(indexOfQuery);
                 try {
-                    String postData = commHandler.createPostParams(commHandler.createClientQueryData(domain), sqrlLink, domain);
-                    String response = commHandler.postRequest(serverData, postData);
+                    String postData = commHandler.createPostParams(commHandler.createClientQueryData(), sqrlLink);
+                    String response = commHandler.postRequest(queryLink, postData);
                     System.out.println("Response: " + response);
                 } catch (Exception e) {
                     e.printStackTrace();
