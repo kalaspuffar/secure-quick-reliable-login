@@ -16,7 +16,7 @@ import org.ea.sqrl.storage.SQRLStorage;
 import java.io.File;
 import java.io.FileInputStream;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

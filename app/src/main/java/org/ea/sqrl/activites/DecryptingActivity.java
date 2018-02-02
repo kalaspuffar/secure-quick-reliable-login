@@ -16,7 +16,7 @@ import org.ea.sqrl.storage.CommunicationHandler;
 import org.ea.sqrl.storage.EncryptionUtils;
 import org.ea.sqrl.storage.SQRLStorage;
 
-public class DecryptingActivity extends AppCompatActivity {
+public class DecryptingActivity extends BaseActivity {
 
     private Handler handler = new Handler();
     private byte[] qrCodeData;

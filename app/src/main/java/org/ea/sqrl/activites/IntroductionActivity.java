@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
@@ -51,29 +52,11 @@ public class IntroductionActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-    }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_introduction, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        Button btnClose = findViewById(R.id.btnClose);
+        btnClose.setOnClickListener(v -> new Thread(() -> {
+            IntroductionActivity.this.finish();
+        }).start());
     }
 
     /**
@@ -104,18 +87,21 @@ public class IntroductionActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_introduction, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+            TextView textView = rootView.findViewById(R.id.section_label);
             switch (getArguments().getInt(ARG_SECTION_NUMBER)) {
                 case 0:
-                    textView.setText(getString(R.string.introduction_nutshell));
+                    textView.setText(getString(R.string.introduction_startpage));
                     break;
                 case 1:
-                    textView.setText(getString(R.string.introduction_password));
+                    textView.setText(getString(R.string.introduction_nutshell));
                     break;
                 case 2:
-                    textView.setText(getString(R.string.introduction_rescue_code));
+                    textView.setText(getString(R.string.introduction_password));
                     break;
                 case 3:
+                    textView.setText(getString(R.string.introduction_rescue_code));
+                    break;
+                case 4:
                     textView.setText(getString(R.string.introduction_backup));
                     break;
                 default:
@@ -146,7 +132,7 @@ public class IntroductionActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 4 total pages.
-            return 4;
+            return 5;
         }
     }
 }

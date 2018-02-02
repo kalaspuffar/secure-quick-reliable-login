@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import org.ea.sqrl.R;
 
-public class StartActivity extends AppCompatActivity {
+public class StartActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
