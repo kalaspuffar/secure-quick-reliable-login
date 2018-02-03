@@ -19,26 +19,41 @@ import java.util.Arrays;
  */
 
 public class EncryptionUtils {
-    private static byte[] BASE56_ENCODE = "23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz".getBytes();
+    private static final byte[] BASE56_ENCODE = "23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz".getBytes();
 
     public static String encodeBase56(byte[] data) throws Exception {
-        BigInteger largeNum = new BigInteger(data);
-        final BigInteger BASE = new BigInteger("56");
+        for(int i = 0; i < data.length / 2; i++) {
+            byte temp = data[i];
+            data[i] = data[data.length - i - 1];
+            data[data.length - i - 1] = temp;
+        }
+
+        BigInteger largeNum = new BigInteger(1, data);
+        final BigInteger BASE = BigInteger.valueOf(56);
         String resultStr = "";
         int i = 0;
-        MessageDigest md = MessageDigest.getInstance("SHA256");
+        byte line = 0;
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
         while(!largeNum.equals(BigInteger.ZERO)) {
             BigInteger[] res = largeNum.divideAndRemainder(BASE);
             largeNum = res[0];
             resultStr += (char)BASE56_ENCODE[res[1].intValue()];
             md.update(BASE56_ENCODE[res[1].intValue()]);
+            i++;
             if(i == 19) {
-                md.update((byte)0);
-                BigInteger reminder = new BigInteger(md.digest()).mod(BASE);
+                md.update(line);
+                BigInteger digestInt = new BigInteger(1, md.digest());
+                BigInteger reminder = digestInt.mod(BASE);
                 resultStr += (char)BASE56_ENCODE[reminder.intValue()];
+                md.reset();
                 i = 0;
+                line++;
             }
         }
+        md.update(line);
+        BigInteger reminder = new BigInteger(1, md.digest()).mod(BASE);
+        resultStr += (char)BASE56_ENCODE[reminder.intValue()];
+
         return resultStr;
     }
 

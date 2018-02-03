@@ -22,8 +22,9 @@ public class SQRLStorage {
     private static final int PASSWORD_PBKDF = 1;
     private static final int RESCUECODE_PBKDF = 2;
     private static final int PREVIOUS_IDENTITY_KEYS = 3;
+    private static final int HEADER_LENGTH = 8;
     private ProgressionUpdater progressionUpdater;
-
+    private int passwordBlockLength = 0;
     private static SQRLStorage instance = null;
 
     private SQRLStorage() {
@@ -37,11 +38,24 @@ public class SQRLStorage {
         return instance;
     }
 
+    public String fixString(String input) {
+        int i = 0;
+        String result = "";
+        for(String s : input.split("")) {
+            result += s;
+            if(i != 0 && i % 4 == 0) {
+                result += " ";
+                if(i % 20 == 0) {
+                    result += "\n";
+                }
+            }
+            i++;
+        }
+        return result;
+    }
+
     public void read(byte[] input, boolean full) throws Exception {
         String header = new String(Arrays.copyOfRange(input, 0, 8));
-
-        String inputString = EncryptionUtils.encodeBase56(Arrays.copyOfRange(input, 125, input.length));
-        verifyingRecoveryBlock = fixString(inputString);
 
         if (!STORAGE_HEADER.equals(header)) throw new Exception("Incorrect header");
         int readOffset = 8;
@@ -58,6 +72,10 @@ public class SQRLStorage {
             readOffset += len;
             readLen = readOffset + 2;
         }
+
+        String inputString = EncryptionUtils.encodeBase56(Arrays.copyOfRange(input, HEADER_LENGTH + passwordBlockLength, input.length));
+        verifyingRecoveryBlock = fixString(inputString);
+        System.out.println(verifyingRecoveryBlock);
     }
 
     /**
@@ -82,6 +100,7 @@ public class SQRLStorage {
 
 
     public void handlePasswordBlock(byte[] input) {
+        passwordBlockLength = input.length;
         plaintextLength = getIntFromTwoBytes(input, 4);
         plaintext = Arrays.copyOfRange(input, 0, plaintextLength);
         initializationVector = Arrays.copyOfRange(input, 6, 18);
@@ -112,23 +131,8 @@ public class SQRLStorage {
         return verifyingRecoveryBlock;
     }
 
-    public String fixString(String input) {
-        int i = 0;
-        String result = "";
-        for(String s : input.split("")) {
-            result += s;
-            if(i != 0 && i % 4 == 0) {
-                result += " ";
-            }
-            if(i != 0 && i % 20 == 0) {
-                result += "\n";
-            }
-            i++;
-        }
-        return result;
-    }
-
     public void handleIdentityBlock(byte[] input) throws Exception {
+
         rescue_plaintext = Arrays.copyOfRange(input, 0, 25);
         rescue_randomSalt = Arrays.copyOfRange(input, 4, 20);
         rescue_logNFactor = input[20];
