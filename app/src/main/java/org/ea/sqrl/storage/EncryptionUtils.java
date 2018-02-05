@@ -46,8 +46,8 @@ public class EncryptionUtils {
                 BigInteger reminder = digestInt.mod(BASE);
                 resultStr += (char)BASE56_ENCODE[reminder.intValue()];
                 md.reset();
-                i = 0;
                 line++;
+                i = 0;
             }
         }
         md.update(line);
