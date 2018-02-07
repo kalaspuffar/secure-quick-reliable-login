@@ -45,9 +45,9 @@ public class SQRLStorage {
     }
 
     public String fixString(String input) {
-        int i = 0<;
+        int i = 1;
         String result = "";
-        for(String s : input.split("")) {
+        for(char s : input.toCharArray()) {
             result += s;
             if(i != 0 && i % 4 == 0) {
                 result += " ";

@@ -57,6 +57,7 @@ public class ProgressionUpdater {
         if(dummy) return;
         this.max = max;
         this.progressBar.setMax(max);
+        this.progressBar.setProgress(0);
         this.progressText.setText("Time left: " + getTimeLeft());
     }
 }
