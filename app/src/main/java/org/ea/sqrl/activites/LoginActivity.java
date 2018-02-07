@@ -30,6 +30,7 @@ import java.io.FileInputStream;
 public class LoginActivity extends BaseActivity {
     private final CommunicationHandler commHandler = CommunicationHandler.getInstance();
     private TextView txtSite;
+    private TextView txtErrorMessage;
     private Button btnCreateAccount;
     private Button btnLogin;
     private String serverData = null;
@@ -42,6 +43,7 @@ public class LoginActivity extends BaseActivity {
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
+        txtErrorMessage.setText(commHandler.getErrorMessage(this));
         commHandler.printParams();
     }
 
@@ -50,6 +52,7 @@ public class LoginActivity extends BaseActivity {
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
+        txtErrorMessage.setText(commHandler.getErrorMessage(this));
         commHandler.printParams();
     }
 
@@ -58,6 +61,7 @@ public class LoginActivity extends BaseActivity {
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
+        txtErrorMessage.setText(commHandler.getErrorMessage(this));
         commHandler.printParams();
     }
 
@@ -67,6 +71,7 @@ public class LoginActivity extends BaseActivity {
         setContentView(R.layout.activity_login);
 
         txtSite = findViewById(R.id.txtSite);
+        txtErrorMessage = findViewById(R.id.txtErrorMessage);
         btnCreateAccount = findViewById(R.id.btnCreateAccount);
         btnLogin = findViewById(R.id.btnLogin);
         final Button btnScanNew = findViewById(R.id.btnScanNew);
@@ -89,8 +94,8 @@ public class LoginActivity extends BaseActivity {
                 btnCreateAccount.setVisibility(Button.INVISIBLE);
                 txtSite.setText("");
             } catch (Exception e) {
-                txtSite.setTextColor(Color.RED);
-                txtSite.setText(e.getMessage());
+                txtSite.setText("");
+                txtErrorMessage.setText(e.getMessage());
                 e.printStackTrace();
             }
         }).start());
@@ -102,8 +107,8 @@ public class LoginActivity extends BaseActivity {
                 btnCreateAccount.setVisibility(Button.INVISIBLE);
                 txtSite.setText("");
             } catch (Exception e) {
-                txtSite.setTextColor(Color.RED);
-                txtSite.setText(e.getMessage());
+                txtSite.setText("");
+                txtErrorMessage.setText(e.getMessage());
                 e.printStackTrace();
             }
         }).start());
@@ -123,7 +128,6 @@ public class LoginActivity extends BaseActivity {
                 final String domain = serverData.split("/")[2];
                 commHandler.setDomain(domain);
 
-                txtSite.setTextColor(Color.GRAY);
                 txtSite.setText(domain);
 
                 new Thread(() -> {
@@ -132,8 +136,8 @@ public class LoginActivity extends BaseActivity {
 
                         handler.post(() -> {
                             if(
-                                    commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                                    commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
+                                commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
+                                commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
                             ) {
                                 btnLogin.setVisibility(Button.VISIBLE);
                             } else if(commHandler.isTIFZero()){
@@ -145,8 +149,7 @@ public class LoginActivity extends BaseActivity {
                         });
                     } catch (Exception e) {
                         handler.post(() -> {
-                            txtSite.setTextColor(Color.RED);
-                            txtSite.setText(e.getMessage());
+                            txtErrorMessage.setText(e.getMessage());
                         });
                         e.printStackTrace();
                         return;

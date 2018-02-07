@@ -1,5 +1,7 @@
 package org.ea.sqrl.storage;
 
+import android.app.Activity;
+
 import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
@@ -7,6 +9,7 @@ import net.i2p.crypto.eddsa.spec.EdDSAParameterSpec;
 import net.i2p.crypto.eddsa.spec.EdDSAPrivateKeySpec;
 
 import org.ea.sqrl.ProgressionUpdater;
+import org.ea.sqrl.R;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -189,6 +192,44 @@ public class CommunicationHandler {
         if(!lastResponse.containsKey("tif")) return false;
         int tif = Integer.parseInt(lastResponse.get("tif"));
         return tif == 0;
+    }
+
+    public String getErrorMessage(Activity a) {
+        StringBuilder sb = new StringBuilder();
+        if(!lastResponse.containsKey("tif")) {
+            return a.getString(R.string.communication_incorrect_response);
+        }
+
+        if(isTIFBitSet(CommunicationHandler.TIF_BAD_ID_ASSOCIATION)) {
+            sb.append(a.getString(R.string.communication_bad_id_association));
+            sb.append("\n\n");
+        }
+
+        if(isTIFBitSet(CommunicationHandler.TIF_CLIENT_FAILURE)) {
+            sb.append(a.getString(R.string.communication_client_failure));
+            sb.append("\n\n");
+        }
+
+        if(isTIFBitSet(CommunicationHandler.TIF_COMMAND_FAILED)) {
+            sb.append(a.getString(R.string.communication_command_failed));
+            sb.append("\n\n");
+        }
+
+        if(isTIFBitSet(CommunicationHandler.TIF_FUNCTION_NOT_SUPPORTED)) {
+            sb.append(a.getString(R.string.communication_function_not_supported));
+            sb.append("\n\n");
+        }
+
+        if(isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)) {
+            sb.append(a.getString(R.string.communication_sqrl_disabled));
+            sb.append("\n\n");
+        }
+
+        if(isTIFBitSet(CommunicationHandler.TIF_TRANSIENT_ERROR)) {
+            sb.append(a.getString(R.string.communication_transient_error));
+            sb.append("\n\n");
+        }
+        return sb.toString();
     }
 
     public static void main(String[] args) {
