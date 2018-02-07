@@ -106,4 +106,6 @@ Daniel Persson
     <string name="error_incorrect_password">Unable to decrypt secret, check your password</string>
     <string name="button_decrypt_key">Decrypt key</string>
     <string name="decrypt_identity_message">You\'ve successfully scanned your secure identity. Please verify that the rescue data presented below corresponds to the data printed on your key page.</string>
+    <string name="title_activity_decrypting">SQRL - Unlock your identity</string>
+    <string name="title_activity_login">SQRL - Login</string>
 </resources>
