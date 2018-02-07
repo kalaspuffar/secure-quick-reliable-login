@@ -14,6 +14,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.storage.SQRLStorage;
 
 /**
  *
@@ -60,5 +61,4 @@ public class StartActivity extends BaseActivity {
             }
         }
     }
-
 }

@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.storage.SQRLStorage;
 
 /**
  *
@@ -137,5 +138,11 @@ public class IntroductionActivity extends AppCompatActivity {
             // Show 4 total pages.
             return 5;
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SQRLStorage.getInstance().clear();
     }
 }

@@ -12,7 +12,9 @@ import java.io.FileInputStream;
 import java.math.BigInteger;
 import java.security.Key;
 import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Random;
 
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
@@ -315,6 +317,38 @@ public class SQRLStorage {
         return HMacSha256.doFinal(domain.getBytes());
     }
 
+    public boolean hasEncryptedKeys() {
+        if(this.identityMasterKeyEncrypted != null) {
+            return true;
+        }
+        return false;
+    }
+
+
+    public boolean hasKeys() {
+        if(this.identityMasterKey != null) {
+            return true;
+        }
+        return false;
+    }
+
+    public void clear() {
+        try {
+            clearBytes(this.identityLockKey);
+            clearBytes(this.identityMasterKey);
+        } finally {
+            this.identityLockKey = null;
+            this.identityMasterKey = null;
+        }
+    }
+
+    private void clearBytes(byte[] data) {
+        Random r = new SecureRandom();
+        r.nextBytes(data);
+        Arrays.fill(data, (byte)0);
+        r.nextBytes(data);
+        Arrays.fill(data, (byte)255);
+    }
 }
 
 /*

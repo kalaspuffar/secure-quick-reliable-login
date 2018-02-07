@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 import org.ea.sqrl.BuildConfig;
 import org.ea.sqrl.R;
+import org.ea.sqrl.storage.SQRLStorage;
 
 /**
  *
@@ -49,5 +50,11 @@ public class BaseActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SQRLStorage.getInstance().clear();
     }
 }
