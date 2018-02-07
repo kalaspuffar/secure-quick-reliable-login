@@ -106,4 +106,13 @@ Daniel Persson
     <string name="error_incorrect_password">Unable to decrypt secret, check your password</string>
     <string name="button_decrypt_key">Decrypt key</string>
     <string name="decrypt_identity_message">You\'ve successfully scanned your secure identity. Please verify that the rescue data presented below corresponds to the data printed on your key page.</string>
+    <string name="title_activity_decrypting">SQRL - Unlock your identity</string>
+    <string name="title_activity_login">SQRL - Login</string>
+    <string name="communication_incorrect_response">Incorrect response, the server data didn\'t response with an error code. Try again later</string>
+    <string name="communication_bad_id_association">Bad ID Association: SQRL identity which may be associated with the query nut does not match the SQRL ID used to submit the query.</string>
+    <string name="communication_client_failure">Client failure: Some information in the query didn\'t make sense to the server so it won\'t handle this request.</string>
+    <string name="communication_command_failed">Command failed: The web server has encountered a problem successfully processing the query. </string>
+    <string name="communication_function_not_supported">Function(s) not supported: Requested one or more SQRL functions, that the server does not currently support.</string>
+    <string name="communication_sqrl_disabled">SQRL authentication for this identity has previously been disabled. To use this identity it needs to be enabled using recover code.</string>
+    <string name="communication_transient_error">Transient error: The server indicates that the signature(s) are correct, but something about the client's query prevented the command from completing.</string>
 </resources>

@@ -9,14 +9,22 @@ import org.ea.sqrl.ProgressionUpdater;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.math.BigInteger;
 import java.security.Key;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Random;
 
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ *
+ * @author Daniel Persson
+ */
 public class SQRLStorage {
     private static final String STORAGE_HEADER = "sqrldata";
     private static final int PASSWORD_PBKDF = 1;
@@ -39,9 +47,9 @@ public class SQRLStorage {
     }
 
     public String fixString(String input) {
-        int i = 0;
+        int i = 1;
         String result = "";
-        for(String s : input.split("")) {
+        for(char s : input.toCharArray()) {
             result += s;
             if(i != 0 && i % 4 == 0) {
                 result += " ";
@@ -75,7 +83,6 @@ public class SQRLStorage {
 
         String inputString = EncryptionUtils.encodeBase56(Arrays.copyOfRange(input, HEADER_LENGTH + passwordBlockLength, input.length));
         verifyingRecoveryBlock = fixString(inputString);
-        System.out.println(verifyingRecoveryBlock);
     }
 
     /**
@@ -283,10 +290,16 @@ public class SQRLStorage {
             fis.read(bytesArray);
             fis.close();
 
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update("tfJ8CRxisuQQGY3KRcv".getBytes("US-ASCII"));
+            md.update((byte)0);
+            BigInteger reminder = new BigInteger(1, md.digest()).mod(BigInteger.valueOf(56));
+            System.out.println(reminder.intValue());
+
             System.out.println(EncryptionUtils.byte2hex(bytesArray));
             SQRLStorage storage = SQRLStorage.getInstance();
             storage.read(bytesArray, true);
-            storage.decryptIdentityKey("Testing1234");
+            //storage.decryptIdentityKey("Testing1234");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -303,6 +316,38 @@ public class SQRLStorage {
         return HMacSha256.doFinal(domain.getBytes());
     }
 
+    public boolean hasEncryptedKeys() {
+        if(this.identityMasterKeyEncrypted != null) {
+            return true;
+        }
+        return false;
+    }
+
+
+    public boolean hasKeys() {
+        if(this.identityMasterKey != null) {
+            return true;
+        }
+        return false;
+    }
+
+    public void clear() {
+        try {
+            clearBytes(this.identityLockKey);
+            clearBytes(this.identityMasterKey);
+        } finally {
+            this.identityLockKey = null;
+            this.identityMasterKey = null;
+        }
+    }
+
+    private void clearBytes(byte[] data) {
+        Random r = new SecureRandom();
+        r.nextBytes(data);
+        Arrays.fill(data, (byte)0);
+        r.nextBytes(data);
+        Arrays.fill(data, (byte)255);
+    }
 }
 
 /*

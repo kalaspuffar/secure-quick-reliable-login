@@ -10,12 +10,15 @@ import android.view.MenuItem;
 
 import org.ea.sqrl.BuildConfig;
 import org.ea.sqrl.R;
+import org.ea.sqrl.storage.SQRLStorage;
 
 /**
- * Created by danielp on 2/2/18.
+ *
+ * @author Daniel Persson
  */
-
 public class BaseActivity extends AppCompatActivity {
+    public static final String EXTRA_MESSAGE = "org.ea.sqrl.QRCODE";
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_default, menu);
@@ -47,5 +50,11 @@ public class BaseActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SQRLStorage.getInstance().clear();
     }
 }
