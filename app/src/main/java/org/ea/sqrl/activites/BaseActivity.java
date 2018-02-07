@@ -16,6 +16,8 @@ import org.ea.sqrl.R;
  * @author Daniel Persson
  */
 public class BaseActivity extends AppCompatActivity {
+    public static final String EXTRA_MESSAGE = "org.ea.sqrl.QRCODE";
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_default, menu);

@@ -31,11 +31,6 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:screenOrientation="portrait"
-            android:name=".activites.ScanActivity"
-            android:label="@string/title_activity_scan_secret">
-        </activity>
-        <activity
-            android:screenOrientation="portrait"
             android:name=".activites.DecryptingActivity" />
         <activity
             android:screenOrientation="portrait"

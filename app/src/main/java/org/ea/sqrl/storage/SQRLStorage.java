@@ -81,7 +81,6 @@ public class SQRLStorage {
 
         String inputString = EncryptionUtils.encodeBase56(Arrays.copyOfRange(input, HEADER_LENGTH + passwordBlockLength, input.length));
         verifyingRecoveryBlock = fixString(inputString);
-        System.out.println(verifyingRecoveryBlock);
     }
 
     /**

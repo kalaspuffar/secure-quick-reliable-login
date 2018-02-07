@@ -1,6 +1,7 @@
 package org.ea.sqrl.activites;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,7 +33,7 @@ public class DecryptingActivity extends BaseActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            byte[] rawQRData = extras.getByteArray(ScanActivity.EXTRA_MESSAGE);
+            byte[] rawQRData = extras.getByteArray(EXTRA_MESSAGE);
             qrCodeData = EncryptionUtils.readSQRLQRCode(rawQRData);
         }
 
@@ -61,6 +62,7 @@ public class DecryptingActivity extends BaseActivity {
                     Intent intent = new Intent(DecryptingActivity.this, LoginActivity.class);
                     startActivity(intent);
                 } else {
+                    progressText.setTextColor(Color.RED);
                     progressText.setText(R.string.error_incorrect_password);
                 }
             } catch (Exception e) {
