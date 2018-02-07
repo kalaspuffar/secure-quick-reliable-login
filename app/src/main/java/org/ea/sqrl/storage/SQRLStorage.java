@@ -132,7 +132,6 @@ public class SQRLStorage {
     }
 
     public void handleIdentityBlock(byte[] input) throws Exception {
-
         rescue_plaintext = Arrays.copyOfRange(input, 0, 25);
         rescue_randomSalt = Arrays.copyOfRange(input, 4, 20);
         rescue_logNFactor = input[20];
@@ -225,7 +224,7 @@ public class SQRLStorage {
             cipher.update(identityLockKeyEncrypted);
             byte[] decryptionResult = cipher.doFinal(verificationTag);
             identityMasterKey = Arrays.copyOfRange(decryptionResult, 0, 32);
-            identityLockKeyEncrypted = Arrays.copyOfRange(decryptionResult, 32, 64);
+            identityLockKey = Arrays.copyOfRange(decryptionResult, 32, 64);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -322,6 +321,7 @@ public class SQRLStorage {
         {encrypted identity master key (IMK)}                           32 bytes
         {encrypted identity lock key (ILK)}                             32 bytes
         {verification tag}                                              16 bytes
+
         {length = 73}                                                   2 bytes
         {type = 2} – rescue code data                                   2 bytes
         {scrypt random salt}                                            16 bytes
@@ -329,6 +329,7 @@ public class SQRLStorage {
         {scrypt iteration count}                                        4 bytes
         {encrypted identity unlock key (IUK)}                           32 bytes
         {verification tag}                                              16 bytes
+
         {length = 54, 86, 118 or 150}                                   2 bytes
         {type = 3} – previous identity unlock keys                      2 bytes
         {edition >= 1} – count of all previous keys                     2 bytes
