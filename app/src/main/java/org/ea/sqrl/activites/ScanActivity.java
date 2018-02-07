@@ -11,6 +11,10 @@ import com.google.zxing.integration.android.IntentResult;
 
 import org.ea.sqrl.R;
 
+/**
+ *
+ * @author Daniel Persson
+ */
 public class ScanActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "org.ea.sqrl.QRCODE";
     public static final String SCAN_MODE_MESSAGE = "org.ea.sqrl.SCANMODE";

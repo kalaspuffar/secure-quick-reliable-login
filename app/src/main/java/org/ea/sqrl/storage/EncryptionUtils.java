@@ -15,19 +15,45 @@ import java.security.MessageDigest;
 import java.util.Arrays;
 
 /**
- * Created by woden on 2018-01-25.
+ *
+ * @author Daniel Persson
  */
-
 public class EncryptionUtils {
     private static final byte[] BASE56_ENCODE = "23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz".getBytes();
 
-    public static String encodeBase56(byte[] data) throws Exception {
+    /**
+     * This function will reverse a byte stream so we get the least significant byte first.
+     *
+     * @param data  input data stream.
+     * @return      reversed byte stream
+     */
+    private static byte[] reverse(byte[] data) {
         for(int i = 0; i < data.length / 2; i++) {
             byte temp = data[i];
             data[i] = data[data.length - i - 1];
             data[data.length - i - 1] = temp;
         }
+        return data;
+    }
 
+
+    /**
+     * This function will create an base56 string with the least significant byte first.
+     * We use the reverse function every time we need to do math operations on the byte stream
+     * in order to get the correct ordering on the bytes in our big integers.
+     *
+     * The string contains rows that each are 20 chars long. The first 19 characters come from the
+     * base56 encoded byte stream and the last byte is a checksum. So we will take the 19 characters
+     * of the line plus a zero based line number as our 20th character and then use a SHA-256 message
+     * digest in order to get the bytes that we reverse and modulus with 56 in order to get the last
+     * byte of the line.
+     *
+     * @param data          Input data stream
+     * @return              String of base56 encoded with checksum for each line.
+     * @throws Exception    Throws an exception if the platform doesn't support SHA-256.
+     */
+    public static String encodeBase56(byte[] data) throws Exception {
+        data = reverse(data);
         BigInteger largeNum = new BigInteger(1, data);
         final BigInteger BASE = BigInteger.valueOf(56);
         String resultStr = "";
@@ -35,23 +61,24 @@ public class EncryptionUtils {
         byte line = 0;
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         while(!largeNum.equals(BigInteger.ZERO)) {
-            BigInteger[] res = largeNum.divideAndRemainder(BASE);
-            largeNum = res[0];
-            resultStr += (char)BASE56_ENCODE[res[1].intValue()];
-            md.update(BASE56_ENCODE[res[1].intValue()]);
-            i++;
             if(i == 19) {
                 md.update(line);
-                BigInteger digestInt = new BigInteger(1, md.digest());
-                BigInteger reminder = digestInt.mod(BASE);
+                byte[] checksum = reverse(md.digest());
+                BigInteger reminder = new BigInteger(1, checksum).mod(BASE);
                 resultStr += (char)BASE56_ENCODE[reminder.intValue()];
                 md.reset();
                 line++;
                 i = 0;
             }
+            BigInteger[] res = largeNum.divideAndRemainder(BASE);
+            largeNum = res[0];
+            resultStr += (char)BASE56_ENCODE[res[1].intValue()];
+            md.update(BASE56_ENCODE[res[1].intValue()]);
+            i++;
         }
         md.update(line);
-        BigInteger reminder = new BigInteger(1, md.digest()).mod(BASE);
+        byte[] checksum = reverse(md.digest());
+        BigInteger reminder = new BigInteger(1, checksum).mod(BASE);
         resultStr += (char)BASE56_ENCODE[reminder.intValue()];
 
         return resultStr;

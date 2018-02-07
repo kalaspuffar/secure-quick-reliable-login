@@ -16,6 +16,10 @@ import org.ea.sqrl.storage.CommunicationHandler;
 import org.ea.sqrl.storage.EncryptionUtils;
 import org.ea.sqrl.storage.SQRLStorage;
 
+/**
+ *
+ * @author Daniel Persson
+ */
 public class DecryptingActivity extends BaseActivity {
 
     private Handler handler = new Handler();

@@ -8,6 +8,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+/**
+ *
+ * @author Daniel Persson
+ */
 public class ProgressionUpdater {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     private Handler handler;

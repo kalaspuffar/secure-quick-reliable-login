@@ -17,6 +17,10 @@ import org.ea.sqrl.storage.SQRLStorage;
 import java.io.File;
 import java.io.FileInputStream;
 
+/**
+ *
+ * @author Daniel Persson
+ */
 public class LoginActivity extends BaseActivity {
     private String serverData = null;
     private String queryLink = null;

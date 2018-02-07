@@ -9,7 +9,9 @@ import org.ea.sqrl.ProgressionUpdater;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.math.BigInteger;
 import java.security.Key;
+import java.security.MessageDigest;
 import java.util.Arrays;
 
 import javax.crypto.Cipher;
@@ -17,6 +19,10 @@ import javax.crypto.Mac;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ *
+ * @author Daniel Persson
+ */
 public class SQRLStorage {
     private static final String STORAGE_HEADER = "sqrldata";
     private static final int PASSWORD_PBKDF = 1;
@@ -39,7 +45,7 @@ public class SQRLStorage {
     }
 
     public String fixString(String input) {
-        int i = 0;
+        int i = 0<;
         String result = "";
         for(String s : input.split("")) {
             result += s;
@@ -284,10 +290,16 @@ public class SQRLStorage {
             fis.read(bytesArray);
             fis.close();
 
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update("tfJ8CRxisuQQGY3KRcv".getBytes("US-ASCII"));
+            md.update((byte)0);
+            BigInteger reminder = new BigInteger(1, md.digest()).mod(BigInteger.valueOf(56));
+            System.out.println(reminder.intValue());
+
             System.out.println(EncryptionUtils.byte2hex(bytesArray));
             SQRLStorage storage = SQRLStorage.getInstance();
             storage.read(bytesArray, true);
-            storage.decryptIdentityKey("Testing1234");
+            //storage.decryptIdentityKey("Testing1234");
         } catch (Exception e) {
             e.printStackTrace();
         }

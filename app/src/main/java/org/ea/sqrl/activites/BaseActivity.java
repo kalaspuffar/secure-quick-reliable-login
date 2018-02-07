@@ -12,9 +12,9 @@ import org.ea.sqrl.BuildConfig;
 import org.ea.sqrl.R;
 
 /**
- * Created by danielp on 2/2/18.
+ *
+ * @author Daniel Persson
  */
-
 public class BaseActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

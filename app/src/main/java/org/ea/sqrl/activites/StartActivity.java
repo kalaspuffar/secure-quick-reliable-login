@@ -10,6 +10,10 @@ import android.widget.TextView;
 
 import org.ea.sqrl.R;
 
+/**
+ *
+ * @author Daniel Persson
+ */
 public class StartActivity extends BaseActivity {
 
     @Override
