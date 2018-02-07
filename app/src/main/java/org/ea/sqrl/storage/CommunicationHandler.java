@@ -80,7 +80,6 @@ public class CommunicationHandler {
         EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
         EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(storage.getPrivateKey(domain), spec);
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(privKey.getA().toByteArray()));
-
         return sb.toString();
     }
 

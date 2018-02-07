@@ -51,10 +51,4 @@ public class BaseActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        SQRLStorage.getInstance().clear();
-    }
 }

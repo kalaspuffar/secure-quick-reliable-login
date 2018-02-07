@@ -332,6 +332,7 @@ public class SQRLStorage {
     }
 
     public void clear() {
+        if(!this.hasKeys()) return;
         try {
             clearBytes(this.identityLockKey);
             clearBytes(this.identityMasterKey);

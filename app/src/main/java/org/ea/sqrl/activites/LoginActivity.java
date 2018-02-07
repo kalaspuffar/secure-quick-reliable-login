@@ -78,8 +78,9 @@ public class LoginActivity extends BaseActivity {
 
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
-        integrator.setPrompt("Scan");
+        integrator.setPrompt("Scan site code");
         integrator.setCameraId(0);
+        integrator.setOrientationLocked(true);
         integrator.setBeepEnabled(false);
         integrator.setBarcodeImageEnabled(false);
 

@@ -35,6 +35,7 @@ public class StartActivity extends BaseActivity {
         integrator.setPrompt(this.getString(R.string.button_scan_secret));
         integrator.setCameraId(0);
         integrator.setBeepEnabled(false);
+        integrator.setOrientationLocked(true);
         integrator.setBarcodeImageEnabled(false);
 
         final Button btnScanSecret = findViewById(R.id.btnScanSecret);
