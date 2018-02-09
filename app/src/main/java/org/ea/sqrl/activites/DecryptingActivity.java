@@ -1,6 +1,7 @@
 package org.ea.sqrl.activites;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,7 +17,11 @@ import org.ea.sqrl.storage.CommunicationHandler;
 import org.ea.sqrl.storage.EncryptionUtils;
 import org.ea.sqrl.storage.SQRLStorage;
 
-public class DecryptingActivity extends AppCompatActivity {
+/**
+ *
+ * @author Daniel Persson
+ */
+public class DecryptingActivity extends BaseActivity {
 
     private Handler handler = new Handler();
     private byte[] qrCodeData;
@@ -28,7 +33,7 @@ public class DecryptingActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            byte[] rawQRData = extras.getByteArray(ScanActivity.EXTRA_MESSAGE);
+            byte[] rawQRData = extras.getByteArray(EXTRA_MESSAGE);
             qrCodeData = EncryptionUtils.readSQRLQRCode(rawQRData);
         }
 
@@ -36,27 +41,35 @@ public class DecryptingActivity extends AppCompatActivity {
         final EditText txtPassword = findViewById(R.id.txtPassword);
         final Button btnDecryptKey = findViewById(R.id.btnDecryptKey);
         final TextView progressText = findViewById(R.id.lblProgressText);
-        btnDecryptKey.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                new Thread(new Runnable() {
-                    public void run() {
-                        try {
-                            SQRLStorage storage = SQRLStorage.getInstance();
-                            storage.read(qrCodeData, true);
-                            storage.setProgressionUpdater(new ProgressionUpdater(handler, pbDecrypting, progressText));
-                            storage.decryptIdentityKey(txtPassword.getText().toString());
+        final TextView txtRecoveryKey = findViewById(R.id.txtRecoveryKey);
 
-                            Intent intent = new Intent(DecryptingActivity.this, ScanActivity.class);
-                            intent.putExtra(ScanActivity.SCAN_MODE_MESSAGE, ScanActivity.SCAN_MODE_LOGIN);
-                            startActivity(intent);
+        SQRLStorage storage = SQRLStorage.getInstance();
+        try {
+            storage.read(qrCodeData, true);
+            storage.setProgressionUpdater(new ProgressionUpdater(handler, pbDecrypting, progressText));
+        } catch (Exception e) {
+            System.out.println("ERROR: " + e.getMessage());
+            e.printStackTrace();
+        }
 
-                        } catch (Exception e) {
-                            System.out.println("ERROR: " + e.getMessage());
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
+        txtRecoveryKey.setText(storage.getVerifyingRecoveryBlock());
+
+        btnDecryptKey.setOnClickListener(v -> new Thread(() -> {
+            try {
+                boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString());
+
+                if(decryptStatus) {
+                    Intent intent = new Intent(DecryptingActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                } else {
+                    progressText.setTextColor(Color.RED);
+                    progressText.setText(R.string.error_incorrect_password);
+                }
+            } catch (Exception e) {
+                System.out.println("ERROR: " + e.getMessage());
+                e.printStackTrace();
             }
-        });
+
+        }).start());
     }
 }

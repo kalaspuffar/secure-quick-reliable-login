@@ -1,5 +1,7 @@
 package org.ea.sqrl;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Handler;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -8,6 +10,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+/**
+ *
+ * @author Daniel Persson
+ */
 public class ProgressionUpdater {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     private Handler handler;
@@ -38,6 +44,7 @@ public class ProgressionUpdater {
     public void incrementProgress() {
         if(dummy) return;
         handler.post(() -> progressBar.incrementProgressBy(1));
+        this.progressText.setTextColor(Color.GRAY);
         this.progressText.setText("Time left: " + getTimeLeft());
     }
 
@@ -53,6 +60,8 @@ public class ProgressionUpdater {
         if(dummy) return;
         this.max = max;
         this.progressBar.setMax(max);
+        this.progressBar.setProgress(0);
+        this.progressText.setTextColor(Color.GRAY);
         this.progressText.setText("Time left: " + getTimeLeft());
     }
 }

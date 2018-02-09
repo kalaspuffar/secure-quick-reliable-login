@@ -1,7 +1,5 @@
 package org.ea.sqrl.activites;
 
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -10,16 +8,21 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.storage.SQRLStorage;
 
+/**
+ *
+ * @author Daniel Persson
+ */
 public class IntroductionActivity extends AppCompatActivity {
 
     /**
@@ -52,38 +55,10 @@ public class IntroductionActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_introduction, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        Button btnClose = findViewById(R.id.btnClose);
+        btnClose.setOnClickListener(v -> new Thread(() -> {
+            IntroductionActivity.this.finish();
+        }).start());
     }
 
     /**
@@ -114,18 +89,23 @@ public class IntroductionActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_introduction, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+            TextView textView = rootView.findViewById(R.id.section_label);
+            textView.setMovementMethod(new ScrollingMovementMethod());
+
             switch (getArguments().getInt(ARG_SECTION_NUMBER)) {
                 case 0:
-                    textView.setText(getString(R.string.introduction_nutshell));
+                    textView.setText(getString(R.string.introduction_startpage));
                     break;
                 case 1:
-                    textView.setText(getString(R.string.introduction_password));
+                    textView.setText(getString(R.string.introduction_nutshell));
                     break;
                 case 2:
-                    textView.setText(getString(R.string.introduction_rescue_code));
+                    textView.setText(getString(R.string.introduction_password));
                     break;
                 case 3:
+                    textView.setText(getString(R.string.introduction_rescue_code));
+                    break;
+                case 4:
                     textView.setText(getString(R.string.introduction_backup));
                     break;
                 default:
@@ -156,7 +136,13 @@ public class IntroductionActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 4 total pages.
-            return 4;
+            return 5;
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SQRLStorage.getInstance().clear();
     }
 }

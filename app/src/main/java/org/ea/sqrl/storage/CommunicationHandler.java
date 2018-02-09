@@ -1,102 +1,126 @@
 package org.ea.sqrl.storage;
 
-import android.os.Build;
-import android.util.Base64;
+import android.app.Activity;
 
 import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
 import net.i2p.crypto.eddsa.spec.EdDSAParameterSpec;
 import net.i2p.crypto.eddsa.spec.EdDSAPrivateKeySpec;
-import net.i2p.crypto.eddsa.spec.EdDSAPublicKeySpec;
 
 import org.ea.sqrl.ProgressionUpdater;
+import org.ea.sqrl.R;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Signature;
-import java.security.cert.CertificateException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
 
+/**
+ *
+ * @author Daniel Persson
+ */
 public class CommunicationHandler {
+    private static CommunicationHandler instance = null;
+    private String domain;
+    private Map<String, String> lastResponse = new HashMap<>();
+    private String response;
 
-    public static String encodeUrlSafe(byte[] data) throws Exception {
-        if(Build.VERSION.BASE_OS != null) {
-            return Base64.encodeToString(data, Base64.NO_PADDING + Base64.URL_SAFE + Base64.NO_WRAP);
-        } else {
-            return java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(data);
+    public static final int TIF_CURRENT_ID_MATCH = 0;
+    public static final int TIF_PREVIOUS_ID_MATCH = 1;
+    public static final int TIF_IP_MATCHED = 2;
+    public static final int TIF_SQRL_DISABLED = 3;
+    public static final int TIF_FUNCTION_NOT_SUPPORTED = 4;
+    public static final int TIF_TRANSIENT_ERROR = 5;
+    public static final int TIF_COMMAND_FAILED = 6;
+    public static final int TIF_CLIENT_FAILURE = 7;
+    public static final int TIF_BAD_ID_ASSOCIATION = 8;
+
+    private CommunicationHandler() {}
+
+    public static CommunicationHandler getInstance() {
+        if(instance == null) {
+            instance = new CommunicationHandler();
         }
+        return instance;
     }
 
-    public static byte[] decodeUrlSafe(String data) throws Exception {
-        if(Build.VERSION.BASE_OS != null) {
-            return Base64.decode(data, Base64.NO_PADDING + Base64.URL_SAFE + Base64.NO_WRAP);
-        } else {
-            return java.util.Base64.getUrlDecoder().decode(data);
-        }
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 
-    public byte[] getPrivateKey(byte[] masterKey, String domain) throws Exception {
-        final Mac HMacSha256 = Mac.getInstance("HmacSHA256");
-        final SecretKeySpec key = new SecretKeySpec(masterKey, "HmacSHA256");
-        HMacSha256.init(key);
-        return HMacSha256.doFinal(domain.getBytes());
-    }
-
-    public String createClientQueryData() {
+    public String createClientQuery() throws Exception {
+        SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
-        sb.append("cmd=ident\r\n");
+        sb.append("cmd=query\r\n");
+        EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
+        EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(storage.getPrivateKey(domain), spec);
+        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(privKey.getA().toByteArray()));
+
         return sb.toString();
     }
 
-    public String createPostParams(String client, String server, byte[] privateKey) throws Exception {
+    public String createClientCreateAccount() throws Exception {
+        SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
+        sb.append("ver=1\r\n");
+        sb.append("cmd=ident\r\n");
         EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
-        EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(privateKey, spec);
-        client += "idk=" + encodeUrlSafe(privKey.getA().toByteArray());
+        EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(storage.getPrivateKey(domain), spec);
+        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(privKey.getA().toByteArray()));
+        return sb.toString();
+    }
 
+    public String createClientLogin() throws Exception {
+        SQRLStorage storage = SQRLStorage.getInstance();
+        StringBuilder sb = new StringBuilder();
+        sb.append("ver=1\r\n");
+        sb.append("cmd=ident\r\n");
+        EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
+        EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(storage.getPrivateKey(domain), spec);
+        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(privKey.getA().toByteArray()));
+
+        return sb.toString();
+    }
+
+    public String createPostParams(String client, String server) throws Exception {
+        EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
+        EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(SQRLStorage.getInstance().getPrivateKey(domain), spec);
+
+        StringBuilder sb = new StringBuilder();
         sb.append("client=");
-        sb.append(encodeUrlSafe(client.getBytes()));
+        sb.append(EncryptionUtils.encodeUrlSafe(client.getBytes()));
 
         sb.append("&server=");
-        sb.append(encodeUrlSafe(server.getBytes()));
-
-        sb.append("&idk=");
-        sb.append(encodeUrlSafe(privKey.getA().toByteArray()));
+        sb.append(EncryptionUtils.encodeUrlSafe(server.getBytes()));
 
         PrivateKey sKey = new EdDSAPrivateKey(privKey);
         Signature sgr = new EdDSAEngine(MessageDigest.getInstance(spec.getHashAlgorithm()));
         sgr.initSign(sKey);
-        sgr.update(encodeUrlSafe(client.getBytes()).getBytes());
-        sgr.update(encodeUrlSafe(server.getBytes()).getBytes());
+        sgr.update(EncryptionUtils.encodeUrlSafe(client.getBytes()).getBytes());
+        sgr.update(EncryptionUtils.encodeUrlSafe(server.getBytes()).getBytes());
         sb.append("&ids=");
-        sb.append(encodeUrlSafe(sgr.sign()));
+        sb.append(EncryptionUtils.encodeUrlSafe(sgr.sign()));
         return sb.toString();
     }
 
-    public String postRequest(String link, String data) throws Exception {
+    public void postRequest(String link, String data) throws Exception {
         StringBuilder result = new StringBuilder();
 
-        String httpsURL = "https://" + link;
+        String httpsURL = "https://" + domain + link;
+
         URL myurl = new URL(httpsURL);
         HttpsURLConnection con = (HttpsURLConnection) myurl.openConnection();
         con.setRequestMethod("POST");
@@ -123,17 +147,88 @@ public class CommunicationHandler {
         input.close();
 
         System.out.println("Resp Code:" + con.getResponseCode());
-        return result.toString();
+
+        setResponseData(result.toString());
     }
 
     public static void debugPostData(String data) throws Exception{
         String[] variables = data.split("&");
         for(String s : variables) {
             System.out.println(s);
-            byte[] bytes = decodeUrlSafe(s.split("=")[1]);
+            byte[] bytes = EncryptionUtils.decodeUrlSafe(s.split("=")[1]);
             System.out.println(Arrays.toString(bytes));
             System.out.println(new String(bytes));
         }
+    }
+
+
+    private void setResponseData(String responseData) throws Exception {
+        this.response = new String(EncryptionUtils.decodeUrlSafe(responseData));
+        for(String param : response.split("\r\n")) {
+            int firstEqualSign = param.indexOf("=");
+            if(firstEqualSign == -1) continue;
+            lastResponse.put(param.substring(0, firstEqualSign), param.substring(firstEqualSign+1));
+        }
+    }
+
+    public void printParams() {
+        for(Map.Entry<String, String> entry : lastResponse.entrySet()) {
+            System.out.println(entry.getKey() + "=" + entry.getValue());
+        }
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public boolean isTIFBitSet(int k) {
+        if(!lastResponse.containsKey("tif")) return false;
+        int tif = Integer.parseInt(lastResponse.get("tif"), 16);
+        return (tif & 1 << k) != 0;
+    }
+
+    public boolean isTIFZero() {
+        if(!lastResponse.containsKey("tif")) return false;
+        int tif = Integer.parseInt(lastResponse.get("tif"));
+        return tif == 0;
+    }
+
+    public String getErrorMessage(Activity a) {
+        StringBuilder sb = new StringBuilder();
+        if(!lastResponse.containsKey("tif")) {
+            return a.getString(R.string.communication_incorrect_response);
+        }
+
+        if(isTIFBitSet(CommunicationHandler.TIF_BAD_ID_ASSOCIATION)) {
+            sb.append(a.getString(R.string.communication_bad_id_association));
+            sb.append("\n\n");
+        }
+
+        if(isTIFBitSet(CommunicationHandler.TIF_CLIENT_FAILURE)) {
+            sb.append(a.getString(R.string.communication_client_failure));
+            sb.append("\n\n");
+        }
+
+        if(isTIFBitSet(CommunicationHandler.TIF_COMMAND_FAILED)) {
+            sb.append(a.getString(R.string.communication_command_failed));
+            sb.append("\n\n");
+        }
+
+        if(isTIFBitSet(CommunicationHandler.TIF_FUNCTION_NOT_SUPPORTED)) {
+            sb.append(a.getString(R.string.communication_function_not_supported));
+            sb.append("\n\n");
+        }
+
+        if(isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)) {
+            sb.append(a.getString(R.string.communication_sqrl_disabled));
+            sb.append("\n\n");
+        }
+
+        if(isTIFBitSet(CommunicationHandler.TIF_TRANSIENT_ERROR)) {
+            sb.append(a.getString(R.string.communication_transient_error));
+            sb.append("\n\n");
+        }
+        return sb.toString();
     }
 
     public static void main(String[] args) {
@@ -149,19 +244,29 @@ public class CommunicationHandler {
             storage.setProgressionUpdater(new ProgressionUpdater());
             storage.read(bytesArray, true);
             storage.decryptIdentityKey("Testing1234");
-            byte[] masterKey = storage.getMasterKey();
 
-            CommunicationHandler commHandler = new CommunicationHandler();
-            String sqrlLink = "sqrl://www.grc.com/sqrl?nut=jAXR0Ck8HlxlDJnFqiKavA";
+            CommunicationHandler commHandler = CommunicationHandler.getInstance();
+            String sqrlLink = "sqrl://www.grc.com/sqrl?nut=Goq4xz6i70frU7xu1-RDTQ";
             String domain = sqrlLink.split("/")[2];
-            String serverData = sqrlLink.substring(sqrlLink.indexOf("://")+3);
 
-            byte[] privateKey = commHandler.getPrivateKey(masterKey, domain);
-            String postData = commHandler.createPostParams(commHandler.createClientQueryData(), sqrlLink, privateKey);
+            int indexOfQuery = sqrlLink.indexOf("/", sqrlLink.indexOf("://")+3);
+            String queryLink = sqrlLink.substring(indexOfQuery);
 
-            System.out.println(commHandler.postRequest(serverData, postData));
+            System.out.println(queryLink);
+
+            commHandler.setDomain(domain);
+            String postData = commHandler.createPostParams(commHandler.createClientQuery(), sqrlLink);
+            commHandler.postRequest(queryLink, postData);
+            commHandler.printParams();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public String getQueryLink() {
+        if(!lastResponse.containsKey("qry")) {
+            return "";
+        }
+        return lastResponse.get("qry");
     }
 }

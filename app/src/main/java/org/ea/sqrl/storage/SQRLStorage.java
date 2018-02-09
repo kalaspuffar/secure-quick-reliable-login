@@ -9,20 +9,30 @@ import org.ea.sqrl.ProgressionUpdater;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.math.BigInteger;
 import java.security.Key;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Random;
 
 import javax.crypto.Cipher;
+import javax.crypto.Mac;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ *
+ * @author Daniel Persson
+ */
 public class SQRLStorage {
     private static final String STORAGE_HEADER = "sqrldata";
     private static final int PASSWORD_PBKDF = 1;
     private static final int RESCUECODE_PBKDF = 2;
     private static final int PREVIOUS_IDENTITY_KEYS = 3;
+    private static final int HEADER_LENGTH = 8;
     private ProgressionUpdater progressionUpdater;
-
+    private int passwordBlockLength = 0;
     private static SQRLStorage instance = null;
 
     private SQRLStorage() {
@@ -36,9 +46,24 @@ public class SQRLStorage {
         return instance;
     }
 
+    public String fixString(String input) {
+        int i = 1;
+        String result = "";
+        for(char s : input.toCharArray()) {
+            result += s;
+            if(i != 0 && i % 4 == 0) {
+                result += " ";
+                if(i % 20 == 0) {
+                    result += "\n";
+                }
+            }
+            i++;
+        }
+        return result;
+    }
+
     public void read(byte[] input, boolean full) throws Exception {
         String header = new String(Arrays.copyOfRange(input, 0, 8));
-
 
         if (!STORAGE_HEADER.equals(header)) throw new Exception("Incorrect header");
         int readOffset = 8;
@@ -55,6 +80,9 @@ public class SQRLStorage {
             readOffset += len;
             readLen = readOffset + 2;
         }
+
+        String inputString = EncryptionUtils.encodeBase56(Arrays.copyOfRange(input, HEADER_LENGTH + passwordBlockLength, input.length));
+        verifyingRecoveryBlock = fixString(inputString);
     }
 
     /**
@@ -79,6 +107,7 @@ public class SQRLStorage {
 
 
     public void handlePasswordBlock(byte[] input) {
+        passwordBlockLength = input.length;
         plaintextLength = getIntFromTwoBytes(input, 4);
         plaintext = Arrays.copyOfRange(input, 0, plaintextLength);
         initializationVector = Arrays.copyOfRange(input, 6, 18);
@@ -103,7 +132,13 @@ public class SQRLStorage {
     private byte[] rescue_identityLockKey;
     private byte[] rescue_verificationTag;
 
-    public void handleIdentityBlock(byte[] input) {
+    private String verifyingRecoveryBlock;
+
+    public String getVerifyingRecoveryBlock() {
+        return verifyingRecoveryBlock;
+    }
+
+    public void handleIdentityBlock(byte[] input) throws Exception {
         rescue_plaintext = Arrays.copyOfRange(input, 0, 25);
         rescue_randomSalt = Arrays.copyOfRange(input, 4, 20);
         rescue_logNFactor = input[20];
@@ -176,9 +211,9 @@ public class SQRLStorage {
      *
      * @param password  Password used to unlock the master key.
      */
-    public void decryptIdentityKey(String password) {
+    public boolean decryptIdentityKey(String password) {
         if(Build.VERSION.BASE_OS != null && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            return;
+            return false;
         }
         this.progressionUpdater.setMax(iterationCount);
 
@@ -196,10 +231,12 @@ public class SQRLStorage {
             cipher.update(identityLockKeyEncrypted);
             byte[] decryptionResult = cipher.doFinal(verificationTag);
             identityMasterKey = Arrays.copyOfRange(decryptionResult, 0, 32);
-            identityLockKeyEncrypted = Arrays.copyOfRange(decryptionResult, 32, 64);
+            identityLockKey = Arrays.copyOfRange(decryptionResult, 32, 64);
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     /**
@@ -208,9 +245,9 @@ public class SQRLStorage {
      *
      * @param rescueCode    Special rescueCode printed on paper in the format of 0000-0000-0000-0000-0000-0000
      */
-    public void decryptUnlockKey(String rescueCode) {
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            return;
+    public boolean decryptUnlockKey(String rescueCode) {
+        if(Build.VERSION.BASE_OS != null && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return false;
         }
 
         this.progressionUpdater.setMax(rescue_iterationCount);
@@ -233,7 +270,9 @@ public class SQRLStorage {
             rescue_identityLockKey = cipher.doFinal(rescue_verificationTag);
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     @Override
@@ -251,10 +290,16 @@ public class SQRLStorage {
             fis.read(bytesArray);
             fis.close();
 
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update("tfJ8CRxisuQQGY3KRcv".getBytes("US-ASCII"));
+            md.update((byte)0);
+            BigInteger reminder = new BigInteger(1, md.digest()).mod(BigInteger.valueOf(56));
+            System.out.println(reminder.intValue());
+
             System.out.println(EncryptionUtils.byte2hex(bytesArray));
             SQRLStorage storage = SQRLStorage.getInstance();
             storage.read(bytesArray, true);
-            storage.decryptIdentityKey("Testing1234");
+            //storage.decryptIdentityKey("Testing1234");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -264,8 +309,45 @@ public class SQRLStorage {
         this.progressionUpdater = progressionUpdater;
     }
 
-    public byte[] getMasterKey() {
-        return this.identityMasterKey;
+    public byte[] getPrivateKey(String domain) throws Exception {
+        final Mac HMacSha256 = Mac.getInstance("HmacSHA256");
+        final SecretKeySpec key = new SecretKeySpec(this.identityMasterKey, "HmacSHA256");
+        HMacSha256.init(key);
+        return HMacSha256.doFinal(domain.getBytes());
+    }
+
+    public boolean hasEncryptedKeys() {
+        if(this.identityMasterKeyEncrypted != null) {
+            return true;
+        }
+        return false;
+    }
+
+
+    public boolean hasKeys() {
+        if(this.identityMasterKey != null) {
+            return true;
+        }
+        return false;
+    }
+
+    public void clear() {
+        if(!this.hasKeys()) return;
+        try {
+            clearBytes(this.identityLockKey);
+            clearBytes(this.identityMasterKey);
+        } finally {
+            this.identityLockKey = null;
+            this.identityMasterKey = null;
+        }
+    }
+
+    private void clearBytes(byte[] data) {
+        Random r = new SecureRandom();
+        r.nextBytes(data);
+        Arrays.fill(data, (byte)0);
+        r.nextBytes(data);
+        Arrays.fill(data, (byte)255);
     }
 }
 
@@ -285,6 +367,7 @@ public class SQRLStorage {
         {encrypted identity master key (IMK)}                           32 bytes
         {encrypted identity lock key (ILK)}                             32 bytes
         {verification tag}                                              16 bytes
+
         {length = 73}                                                   2 bytes
         {type = 2} – rescue code data                                   2 bytes
         {scrypt random salt}                                            16 bytes
@@ -292,6 +375,7 @@ public class SQRLStorage {
         {scrypt iteration count}                                        4 bytes
         {encrypted identity unlock key (IUK)}                           32 bytes
         {verification tag}                                              16 bytes
+
         {length = 54, 86, 118 or 150}                                   2 bytes
         {type = 3} – previous identity unlock keys                      2 bytes
         {edition >= 1} – count of all previous keys                     2 bytes
