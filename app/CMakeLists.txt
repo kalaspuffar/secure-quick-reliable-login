@@ -1,0 +1,33 @@
+# Sets the minimum version of CMake required to build your native library.
+# This ensures that a certain set of CMake features is available to
+# your build.
+
+cmake_minimum_required(VERSION 3.4.1)
+
+# Specifies a library name, specifies whether the library is STATIC or
+# SHARED, and provides relative paths to the source code. You can
+# define multiple libraries by adding multiple add_library() commands,
+# and CMake builds them for you. When you build your app, Gradle
+# automatically packages shared libraries with your APK.
+
+add_library(
+    grc-aesgcm
+    SHARED
+    src/main/cpp/grc-aesgcm/gcm.c
+    src/main/cpp/grc-aesgcm/aes.c
+    src/main/cpp/grc-aesgcm/grcjni.c
+)
+
+#add_library(
+#    scrypt
+#    SHARED
+#    src/main/cpp/scrypt/crypto_scrypt-nosse.c
+#    src/main/cpp/scrypt/crypto_scrypt-sse.c
+#    src/main/cpp/scrypt/scrypt_jni.c
+#    src/main/cpp/scrypt/sha256.c
+#)
+
+include_directories(
+    src/main/cpp/grc-aesgcm/
+    #    src/main/cpp/scrypt/
+)

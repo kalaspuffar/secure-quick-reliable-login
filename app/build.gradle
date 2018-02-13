@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "org.ea.sqrl"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 26
         versionCode 1
         versionName "0.0.1"
@@ -12,7 +12,6 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
         }
     }
     buildToolsVersion '27.0.3'
@@ -20,6 +19,11 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    externalNativeBuild {
+        cmake {
+            path 'CMakeLists.txt'
+        }
     }
 }
 

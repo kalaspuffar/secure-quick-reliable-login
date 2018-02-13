@@ -1,12 +1,9 @@
 package org.ea.sqrl.activites;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,14 +11,10 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import org.ea.sqrl.ProgressionUpdater;
 import org.ea.sqrl.R;
 import org.ea.sqrl.storage.CommunicationHandler;
-import org.ea.sqrl.storage.EncryptionUtils;
+import org.ea.sqrl.utils.EncryptionUtils;
 import org.ea.sqrl.storage.SQRLStorage;
-
-import java.io.File;
-import java.io.FileInputStream;
 
 /**
  *

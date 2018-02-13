@@ -10,6 +10,7 @@ import net.i2p.crypto.eddsa.spec.EdDSAPrivateKeySpec;
 
 import org.ea.sqrl.ProgressionUpdater;
 import org.ea.sqrl.R;
+import org.ea.sqrl.utils.EncryptionUtils;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;

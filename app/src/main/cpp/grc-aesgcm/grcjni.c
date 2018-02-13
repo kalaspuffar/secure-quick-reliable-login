@@ -1,0 +1,52 @@
+#include <stdlib.h>
+#include "grcjni.h"
+#include "gcm.h"
+
+gcm_context* workContext;
+
+JNIEXPORT jint JNICALL
+Java_org_ea_sqrl_jni_Grc_1aesgcm_gcm_1initialize(JNIEnv *env, jclass type) {
+    workContext = malloc(sizeof(gcm_context));
+    return gcm_initialize();
+}
+
+JNIEXPORT jint JNICALL
+Java_org_ea_sqrl_jni_Grc_1aesgcm_gcm_1setkey(JNIEnv *env, jclass type, jbyteArray key_,
+        jint keysize) {
+    jbyte *key = (*env)->GetByteArrayElements(env, key_, NULL);
+
+    int result = gcm_setkey(workContext, key, keysize);
+
+    (*env)->ReleaseByteArrayElements(env, key_, key, 0);
+    return result;
+}
+
+JNIEXPORT jint JNICALL
+Java_org_ea_sqrl_jni_Grc_1aesgcm_gcm_1auth_1decrypt(JNIEnv *env, jclass type, jbyteArray iv_,
+                                                    jint iv_len, jbyteArray add_, jint add_len,
+                                                    jbyteArray input_, jbyteArray output_,
+                                                    jint length, jbyteArray tag_, jint tag_len) {
+    jbyte *iv = (*env)->GetByteArrayElements(env, iv_, NULL);
+    jbyte *add = (*env)->GetByteArrayElements(env, add_, NULL);
+    jbyte *input = (*env)->GetByteArrayElements(env, input_, NULL);
+    jbyte *output = (*env)->GetByteArrayElements(env, output_, NULL);
+    jbyte *tag = (*env)->GetByteArrayElements(env, tag_, NULL);
+
+    int result = gcm_auth_decrypt(workContext,
+                                  iv, iv_len,
+                                  add, add_len,
+                                  input, output, length,
+                                  tag, tag_len
+    );
+
+    (*env)->SetByteArrayRegion(env, output_, 0, length, output);
+
+    (*env)->ReleaseByteArrayElements(env, iv_, iv, 0);
+    (*env)->ReleaseByteArrayElements(env, add_, add, 0);
+    (*env)->ReleaseByteArrayElements(env, input_, input, 0);
+    (*env)->ReleaseByteArrayElements(env, output_, output, 0);
+    (*env)->ReleaseByteArrayElements(env, tag_, tag, 0);
+
+    return result;
+}
+
