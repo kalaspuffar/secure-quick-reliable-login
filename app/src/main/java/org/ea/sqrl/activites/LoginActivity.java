@@ -36,7 +36,7 @@ public class LoginActivity extends BaseActivity {
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
-        txtErrorMessage.setText(commHandler.getErrorMessage(this));
+        handler.post(() -> txtErrorMessage.setText(commHandler.getErrorMessage(this)));
         commHandler.printParams();
     }
 
@@ -45,7 +45,7 @@ public class LoginActivity extends BaseActivity {
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
-        txtErrorMessage.setText(commHandler.getErrorMessage(this));
+        handler.post(() -> txtErrorMessage.setText(commHandler.getErrorMessage(this)));
         commHandler.printParams();
     }
 
@@ -54,7 +54,7 @@ public class LoginActivity extends BaseActivity {
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
-        txtErrorMessage.setText(commHandler.getErrorMessage(this));
+        handler.post(() -> txtErrorMessage.setText(commHandler.getErrorMessage(this)));
         commHandler.printParams();
     }
 
@@ -84,28 +84,32 @@ public class LoginActivity extends BaseActivity {
         btnCreateAccount.setOnClickListener(v -> new Thread(() -> {
             try {
                 postCreateAccount(commHandler);
-                btnLogin.setVisibility(Button.INVISIBLE);
-                btnCreateAccount.setVisibility(Button.INVISIBLE);
-                txtSite.setText("");
             } catch (Exception e) {
-                txtSite.setText("");
-                txtErrorMessage.setText(e.getMessage());
+                handler.post(() -> txtErrorMessage.setText(e.getMessage()));
                 e.printStackTrace();
+            } finally {
+                resetTextGui();
             }
         }).start());
 
         btnLogin.setOnClickListener(v -> new Thread(() -> {
             try {
                 postLogin(commHandler);
-                btnLogin.setVisibility(Button.INVISIBLE);
-                btnCreateAccount.setVisibility(Button.INVISIBLE);
-                txtSite.setText("");
             } catch (Exception e) {
-                txtSite.setText("");
-                txtErrorMessage.setText(e.getMessage());
+                handler.post(() -> txtErrorMessage.setText(e.getMessage()));
                 e.printStackTrace();
+            } finally {
+                resetTextGui();
             }
         }).start());
+    }
+
+    private void resetTextGui() {
+        handler.post(() -> {
+            btnLogin.setVisibility(Button.INVISIBLE);
+            btnCreateAccount.setVisibility(Button.INVISIBLE);
+            txtSite.setText("");
+        });
     }
 
     @Override

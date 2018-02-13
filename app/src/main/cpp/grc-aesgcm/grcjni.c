@@ -15,7 +15,7 @@ Java_org_ea_sqrl_jni_Grc_1aesgcm_gcm_1setkey(JNIEnv *env, jclass type, jbyteArra
         jint keysize) {
     jbyte *key = (*env)->GetByteArrayElements(env, key_, NULL);
 
-    int result = gcm_setkey(workContext, key, keysize);
+    int result = gcm_setkey(workContext, (const unsigned char*)key, keysize);
 
     (*env)->ReleaseByteArrayElements(env, key_, key, 0);
     return result;
@@ -33,10 +33,10 @@ Java_org_ea_sqrl_jni_Grc_1aesgcm_gcm_1auth_1decrypt(JNIEnv *env, jclass type, jb
     jbyte *tag = (*env)->GetByteArrayElements(env, tag_, NULL);
 
     int result = gcm_auth_decrypt(workContext,
-                                  iv, iv_len,
-                                  add, add_len,
-                                  input, output, length,
-                                  tag, tag_len
+                                  (const unsigned char*)iv, iv_len,
+                                  (const unsigned char*)add, add_len,
+                                  (const unsigned char*)input, (unsigned char*)output, length,
+                                  (const unsigned char*)tag, tag_len
     );
 
     (*env)->SetByteArrayRegion(env, output_, 0, length, output);

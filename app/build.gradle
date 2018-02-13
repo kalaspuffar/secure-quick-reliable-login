@@ -9,13 +9,20 @@ android {
         versionCode 2
         versionName "0.0.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        externalNativeBuild {
+            cmake {
+                arguments '-DBUILD_TESTING=OFF', '-DANDROID_TOOLCHAIN=gcc'
+                cFlags "-DHAVE_CONFIG_H"
+                cppFlags "-std=c++14 -fexceptions -frtti"
+            }
+        }
     }
     buildTypes {
         release {
         }
     }
     buildToolsVersion '27.0.3'
-    sourceSets { main { jni.srcDirs = ['src/main/jni', 'src/main/jni/'] } }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

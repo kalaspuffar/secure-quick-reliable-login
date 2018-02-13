@@ -34,12 +34,16 @@ public class SQRLStorage {
     private SQRLStorage() {
         Grc_aesgcm.gcm_initialize();
 
+        /*
+            Here we look for the scrypt library and if we can't find it
+            on the system UnsatificedLinkError will be thrown and we will
+            fallback using a java version.
+         */
         try {
             System.loadLibrary("scrypt");
-            System.out.println("WE HAVE NATIVE SCRYPT");
-        } catch (Exception e) {
+            System.setProperty("com.lambdaworks.jni.loader", "sys");
+        } catch (UnsatisfiedLinkError e) {
             System.setProperty("com.lambdaworks.jni.loader", "nil");
-            System.out.println("NO NATIVE SCRYPT");
         }
     }
 

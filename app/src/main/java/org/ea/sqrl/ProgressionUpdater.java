@@ -43,9 +43,11 @@ public class ProgressionUpdater {
 
     public void incrementProgress() {
         if(dummy) return;
-        handler.post(() -> progressBar.incrementProgressBy(1));
-        this.progressText.setTextColor(Color.GRAY);
-        this.progressText.setText("Time left: " + getTimeLeft());
+        handler.post(() -> {
+            progressBar.incrementProgressBy(1);
+            progressText.setTextColor(Color.GRAY);
+            progressText.setText("Time left: " + getTimeLeft());
+        });
     }
 
     public void startTimer() {
@@ -59,9 +61,12 @@ public class ProgressionUpdater {
     public void setMax(int max) {
         if(dummy) return;
         this.max = max;
-        this.progressBar.setMax(max);
-        this.progressBar.setProgress(0);
-        this.progressText.setTextColor(Color.GRAY);
-        this.progressText.setText("Time left: " + getTimeLeft());
+
+        handler.post(() -> {
+            progressBar.setMax(max);
+            progressBar.setProgress(0);
+            progressText.setTextColor(Color.GRAY);
+            progressText.setText("Time left: " + getTimeLeft());
+        });
     }
 }
