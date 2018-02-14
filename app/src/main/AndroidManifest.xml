@@ -6,7 +6,7 @@
     android:versionName="0.0.2">
 
     <uses-sdk
-        android:minSdkVersion="19"
+        android:minSdkVersion="15"
         android:targetSdkVersion="26" />
 
     <uses-permission android:name="android.permission.CAMERA" />

@@ -1,7 +1,10 @@
 package org.ea.sqrl.storage;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.icu.lang.UCharacter;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import org.ea.sqrl.ProgressionUpdater;
 import org.ea.sqrl.jni.Grc_aesgcm;
@@ -229,7 +232,15 @@ public class SQRLStorage {
             System.arraycopy(identityMasterKeyEncrypted, 0, keys, 0, identityMasterKeyEncrypted.length);
             System.arraycopy(identityLockKeyEncrypted, 0, keys, identityMasterKeyEncrypted.length, identityLockKeyEncrypted.length);
 
-            if(Build.VERSION.BASE_OS != null && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            if(Build.VERSION.BASE_OS != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Key keySpec = new SecretKeySpec(key, "AES");
+                Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
+                GCMParameterSpec params = new GCMParameterSpec(128, initializationVector);
+                cipher.init(Cipher.DECRYPT_MODE, keySpec, params);
+                cipher.updateAAD(plaintext);
+                cipher.update(keys);
+                decryptionResult = cipher.doFinal(verificationTag);
+            } else {
                 Grc_aesgcm.gcm_setkey(key, key.length);
                 int res = Grc_aesgcm.gcm_auth_decrypt(
                         initializationVector, initializationVector.length,
@@ -239,14 +250,6 @@ public class SQRLStorage {
                 );
 
                 if (res == 0x55555555) return false;
-            } else {
-                Key keySpec = new SecretKeySpec(key, "AES");
-                Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
-                GCMParameterSpec params = new GCMParameterSpec(128, initializationVector);
-                cipher.init(Cipher.DECRYPT_MODE, keySpec, params);
-                cipher.updateAAD(plaintext);
-                cipher.update(keys);
-                decryptionResult = cipher.doFinal(verificationTag);
             }
 
             identityMasterKey = Arrays.copyOfRange(decryptionResult, 0, 32);
@@ -266,28 +269,35 @@ public class SQRLStorage {
      * @param rescueCode    Special rescueCode printed on paper in the format of 0000-0000-0000-0000-0000-0000
      */
     public boolean decryptUnlockKey(String rescueCode) {
-        if(Build.VERSION.BASE_OS != null && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            return false;
-        }
-
         this.progressionUpdater.setMax(rescue_iterationCount);
         rescueCode = rescueCode.replaceAll("-", "");
 
         try {
             byte[] key = EncryptionUtils.enSCrypt(rescueCode, rescue_randomSalt, rescue_logNFactor, 32, rescue_iterationCount, this.progressionUpdater);
-            System.out.println(EncryptionUtils.byte2hex(key));
-            //byte[] key = EncryptionUtils.hex2Byte("8ea530fa2e42a3bd8379e115c2b94fcf9e784e3720519611ab9db068277e2b7b");
 
             byte[] nullBytes = new byte[12];
             Arrays.fill(nullBytes, (byte)0);
 
-            Key keySpec = new SecretKeySpec(key, "AES");
-            Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
-            GCMParameterSpec params = new GCMParameterSpec(128, nullBytes);
-            cipher.init(Cipher.DECRYPT_MODE, keySpec, params);
-            cipher.updateAAD(rescue_plaintext);
-            cipher.update(rescue_identityLockKeyEncrypted);
-            rescue_identityLockKey = cipher.doFinal(rescue_verificationTag);
+            if(Build.VERSION.BASE_OS != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Key keySpec = new SecretKeySpec(key, "AES");
+                Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
+                GCMParameterSpec params = new GCMParameterSpec(128, nullBytes);
+                cipher.init(Cipher.DECRYPT_MODE, keySpec, params);
+                cipher.updateAAD(rescue_plaintext);
+                cipher.update(rescue_identityLockKeyEncrypted);
+                rescue_identityLockKey = cipher.doFinal(rescue_verificationTag);
+            } else {
+                Grc_aesgcm.gcm_setkey(key, key.length);
+                int res = Grc_aesgcm.gcm_auth_decrypt(
+                        nullBytes, nullBytes.length,
+                        plaintext, plaintextLength,
+                        rescue_identityLockKeyEncrypted, rescue_identityLockKey,
+                        rescue_identityLockKeyEncrypted.length,
+                        verificationTag, verificationTag.length
+                );
+
+                if (res == 0x55555555) return false;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return false;
