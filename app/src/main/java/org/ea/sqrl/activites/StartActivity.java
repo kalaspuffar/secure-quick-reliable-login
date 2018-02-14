@@ -39,9 +39,9 @@ public class StartActivity extends BaseActivity {
         integrator.setBarcodeImageEnabled(false);
 
         final Button btnScanSecret = findViewById(R.id.btnScanSecret);
-        btnScanSecret.setOnClickListener(v -> new Thread(() -> {
-            integrator.initiateScan();
-        }).start());
+        btnScanSecret.setOnClickListener(
+                v -> new Thread(() -> integrator.initiateScan()).start()
+        );
     }
 
     @Override

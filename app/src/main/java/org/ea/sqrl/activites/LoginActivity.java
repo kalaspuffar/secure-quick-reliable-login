@@ -77,9 +77,9 @@ public class LoginActivity extends BaseActivity {
         integrator.setBeepEnabled(false);
         integrator.setBarcodeImageEnabled(false);
 
-        btnScanNew.setOnClickListener(v -> new Thread(() -> {
-            integrator.initiateScan();
-        }).start());
+        btnScanNew.setOnClickListener(
+                v -> new Thread(() -> integrator.initiateScan()).start()
+        );
 
         btnCreateAccount.setOnClickListener(v -> new Thread(() -> {
             try {
