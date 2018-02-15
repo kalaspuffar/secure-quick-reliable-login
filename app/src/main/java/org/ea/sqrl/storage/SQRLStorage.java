@@ -1,15 +1,12 @@
 package org.ea.sqrl.storage;
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.icu.lang.UCharacter;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
-
 import org.ea.sqrl.ProgressionUpdater;
 import org.ea.sqrl.jni.Grc_aesgcm;
 import org.ea.sqrl.utils.EncryptionUtils;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.security.Key;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -103,9 +100,9 @@ public class SQRLStorage {
     private byte[] plaintext;
     private byte[] initializationVector;
     private byte[] randomSalt;
-    private int   logNFactor;
-    private int iterationCount;
-    private int optionFlags;
+    private byte logNFactor;
+    private int  iterationCount;
+    private int  optionFlags;
     private byte hintLength;
     private byte timeInSecondsToRunPWEnScryptOnPassword;
     private int idleTimoutInMinutes;
@@ -159,7 +156,7 @@ public class SQRLStorage {
     }
 
     private byte[] previous_plaintext;
-    private int previous_countOfKeys;
+    private int previous_countOfKeys = 0;
     private byte[] previous_key1;
     private byte[] previous_key2;
     private byte[] previous_key3;
@@ -215,6 +212,16 @@ public class SQRLStorage {
         return (input[offset] & 0xff) | ((input[offset + 1] & 0xff) << 8) | (input[offset + 2] & 0xff) << 16 | ((input[offset + 3] & 0xff) << 24);
     }
 
+    private byte[] getIntToTwoBytes(int input) {
+        byte[] res = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(input).array();
+        return Arrays.copyOfRange(res, 0 , 2);
+    }
+
+    private byte[] getIntToFourBytes(int input) {
+        return ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(input).array();
+    }
+
+
     /**
      * Decrypt the identity key, this has the master key used to login to sites and also the lock
      * key that we supply to the sites in order to unlock at a later date if the master key ever
@@ -226,11 +233,8 @@ public class SQRLStorage {
         this.progressionUpdater.setMax(iterationCount);
         try {
             byte[] key = EncryptionUtils.enSCrypt(password, randomSalt, logNFactor, 32, iterationCount, this.progressionUpdater);
-
-            byte[] keys = new byte[identityMasterKeyEncrypted.length + identityLockKeyEncrypted.length];
-            byte[] decryptionResult = new byte[keys.length];
-            System.arraycopy(identityMasterKeyEncrypted, 0, keys, 0, identityMasterKeyEncrypted.length);
-            System.arraycopy(identityLockKeyEncrypted, 0, keys, identityMasterKeyEncrypted.length, identityLockKeyEncrypted.length);
+            byte[] identityKeys = EncryptionUtils.combine(identityMasterKeyEncrypted, identityLockKeyEncrypted);
+            byte[] decryptionResult = new byte[identityKeys.length];
 
             if(Build.VERSION.BASE_OS != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Key keySpec = new SecretKeySpec(key, "AES");
@@ -238,14 +242,14 @@ public class SQRLStorage {
                 GCMParameterSpec params = new GCMParameterSpec(128, initializationVector);
                 cipher.init(Cipher.DECRYPT_MODE, keySpec, params);
                 cipher.updateAAD(plaintext);
-                cipher.update(keys);
+                cipher.update(identityKeys);
                 decryptionResult = cipher.doFinal(verificationTag);
             } else {
                 Grc_aesgcm.gcm_setkey(key, key.length);
                 int res = Grc_aesgcm.gcm_auth_decrypt(
                         initializationVector, initializationVector.length,
                         plaintext, plaintextLength,
-                        keys, decryptionResult, keys.length,
+                        identityKeys, decryptionResult, identityKeys.length,
                         verificationTag, verificationTag.length
                 );
 
@@ -357,12 +361,14 @@ public class SQRLStorage {
 
     public static void main(String[] args) {
         try {
-            String rawQRCodeData = "71a48c7371726c3a2f2f7371";
-            //String rawQRCodeData = "4ce7"; //"7371726c646174617d0001002d0031d32536a67c4661faef7631d4a7854da64297af4bda01438eca39a40921000000f10104010f0085de0eea7b76134eee4e0b2d638955ad5fd253d857c86177151d30a956182abc55b80316da5c22fcc9b92c4f5a4850f5a4ecb6b948f05b297de13b1a7698cbee461c5e7ef0f8759e659a7ad853555be64900020079d1d5da2d4b046212f43da2f7b0a39709ca000000d5dd50893d516c8175291f7d905b5bf5636d26fee5d3f8801375f7824b09a2a824de7fc41451ca13e610d5591d568db60ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11";
+            //String rawQRCodeData = "71a48c7371726c3a2f2f7371";
+            String rawQRCodeData = "4ce7371726c646174617d0001002d0031d32536a67c4661faef7631d4a7854da64297af4bda01438eca39a40921000000f10104010f0085de0eea7b76134eee4e0b2d638955ad5fd253d857c86177151d30a956182abc55b80316da5c22fcc9b92c4f5a4850f5a4ecb6b948f05b297de13b1a7698cbee461c5e7ef0f8759e659a7ad853555be64900020079d1d5da2d4b046212f43da2f7b0a39709ca000000d5dd50893d516c8175291f7d905b5bf5636d26fee5d3f8801375f7824b09a2a824de7fc41451ca13e610d5591d568db60ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11";
             byte[] bytesArray = EncryptionUtils.readSQRLQRCode(EncryptionUtils.hex2Byte(rawQRCodeData));
 
             SQRLStorage storage = SQRLStorage.getInstance();
             storage.read(bytesArray, true);
+
+            byte[] saveData = storage.createSaveData();
 
             /*
             File file = new File("Testing.sqrl");
@@ -387,6 +393,31 @@ public class SQRLStorage {
             e.printStackTrace();
         }
     }
+
+    private byte[] createSaveData() {
+        byte[] result = "sqrldata".getBytes();
+        byte[]  blockArr = EncryptionUtils.combine(plaintext, identityMasterKeyEncrypted);
+        blockArr = EncryptionUtils.combine(blockArr, identityLockKeyEncrypted);
+        blockArr = EncryptionUtils.combine(blockArr, verificationTag);
+        result = EncryptionUtils.combine(result, blockArr);
+
+        if (previous_countOfKeys > 0) {
+            byte[] prevBlockArr = EncryptionUtils.combine(previous_plaintext, previous_key1);
+            if (previous_countOfKeys > 1) {
+                prevBlockArr = EncryptionUtils.combine(prevBlockArr, previous_key2);
+            }
+            if (previous_countOfKeys > 2) {
+                prevBlockArr = EncryptionUtils.combine(prevBlockArr, previous_key3);
+            }
+            if (previous_countOfKeys > 3) {
+                prevBlockArr = EncryptionUtils.combine(prevBlockArr, previous_key4);
+            }
+            prevBlockArr = EncryptionUtils.combine(prevBlockArr, previous_verificationTag);
+            result = EncryptionUtils.combine(result, prevBlockArr);
+        }
+        return result;
+    }
+
 }
 
 /*

@@ -19,6 +19,14 @@ import java.util.BitSet;
 public class EncryptionUtils {
     private static final byte[] BASE56_ENCODE = "23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz".getBytes();
 
+
+    public static byte[] combine(byte[] a, byte[] b) {
+        byte[] keys = new byte[a.length + b.length];
+        System.arraycopy(a, 0, keys, 0, a.length);
+        System.arraycopy(b, 0, keys, a.length, b.length);
+        return keys;
+    }
+
     /**
      * This function will reverse a byte stream so we get the least significant byte first.
      *
