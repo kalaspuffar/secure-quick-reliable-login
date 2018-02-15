@@ -12,6 +12,13 @@ public class Grc_aesgcm {
             byte[] tag, int tag_len
     );
 
+    public static native int gcm_encrypt_and_tag(
+            byte[] iv, int iv_len,
+            byte[] add, int add_len,
+            byte[] input, byte[] output, int length,
+            byte[] tag, int tag_len
+    );
+
     static {
         System.loadLibrary("grc-aesgcm");
     }

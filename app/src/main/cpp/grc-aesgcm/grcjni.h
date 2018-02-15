@@ -16,4 +16,11 @@ Java_org_ea_sqrl_jni_Grc_1aesgcm_gcm_1auth_1decrypt(JNIEnv *env, jclass type, jb
                                                     jbyteArray input_, jbyteArray output_,
                                                     jint length, jbyteArray tag_, jint tag_len);
 
+JNIEXPORT jint JNICALL
+Java_org_ea_sqrl_jni_Grc_1aesgcm_gcm_1encrypt_1and_1tag(JNIEnv *env, jclass type, jbyteArray iv_,
+                                                        jint iv_len, jbyteArray add_, jint add_len,
+                                                        jbyteArray input_, jbyteArray output_,
+                                                        jint length, jbyteArray tag_,
+                                                        jint tag_len);
+
 #endif //SECURE_QUICK_RESPONSE_LOGIN_JNI_H
