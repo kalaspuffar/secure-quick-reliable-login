@@ -117,4 +117,18 @@ Daniel Persson
     <string name="communication_transient_error">Transient error: The server indicates that the signature(s) are correct, but something about the query prevented the command from completing.</string>
     <string name="current_id">current_id</string>
     <string name="preferences">org.ea.sqrl.preferences</string>
+    <string name="title_activity_main">SQRL - Main</string>
+    <string name="identity_unlock">Use identity</string>
+    <string name="button_import_identity">Import Identity</string>
+    <string name="button_settings">Settings and options</string>
+    <string name="button_create_identity">Create new identity</string>
+    <string name="button_remove_identity">Remove identity</string>
+    <string name="button_rename_identity">Rename identity</string>
+    <string name="button_export_identity">Export identity</string>
+    <string name="button_reset_password">Reset password</string>
+    <string name="button_forget_quickpass">Forget quick pass</string>
+    <string name="button_rekey_identity">Rekey identity</string>
+    <string name="button_change_password">Change password</string>
+    <string name="not_implemented_title">Not implemented</string>
+    <string name="not_implemented_text">This functionality isn\'t yet implemented</string>
 </resources>

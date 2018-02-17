@@ -36,7 +36,7 @@ public class StartActivity extends BaseActivity {
         setContentView(R.layout.activity_start);
 
         if (mDbHelper.hasIdentities()) {
-            Intent intent = new Intent(this, DecryptingActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
 

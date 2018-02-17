@@ -90,7 +90,9 @@ public class IdentityDBHelper extends SQLiteOpenHelper {
 
         Map<Long, String> identities = new HashMap<>();
         while(cursor.moveToNext()) {
-            identities.put(cursor.getLong(0), cursor.getString(1));
+            Long id = cursor.getLong(0);
+            String name = cursor.getString(1);
+            identities.put(id, name != null ? name : "ID " + id);
         }
         return identities;
     }
