@@ -19,6 +19,9 @@ import java.util.BitSet;
 public class EncryptionUtils {
     private static final byte[] BASE56_ENCODE = "23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz".getBytes();
 
+    public static byte[] combine(byte[] a, byte b) {
+        return combine(a, new byte[] {b});
+    }
 
     public static byte[] combine(byte[] a, byte[] b) {
         byte[] keys = new byte[a.length + b.length];

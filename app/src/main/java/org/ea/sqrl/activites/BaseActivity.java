@@ -1,8 +1,8 @@
 package org.ea.sqrl.activites;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -10,14 +10,24 @@ import android.view.MenuItem;
 
 import org.ea.sqrl.BuildConfig;
 import org.ea.sqrl.R;
-import org.ea.sqrl.storage.SQRLStorage;
+import org.ea.sqrl.database.IdentityDBHelper;
 
 /**
  *
  * @author Daniel Persson
  */
 public class BaseActivity extends AppCompatActivity {
-    public static final String EXTRA_MESSAGE = "org.ea.sqrl.QRCODE";
+    protected final IdentityDBHelper mDbHelper;
+
+    public BaseActivity() {
+        mDbHelper = new IdentityDBHelper(this.getApplicationContext());
+    }
+
+    @Override
+    protected void onDestroy() {
+        mDbHelper.close();
+        super.onDestroy();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

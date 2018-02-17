@@ -1,6 +1,9 @@
 package org.ea.sqrl.activites;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Bundle;
@@ -11,6 +14,7 @@ import android.widget.TextView;
 
 import org.ea.sqrl.ProgressionUpdater;
 import org.ea.sqrl.R;
+import org.ea.sqrl.database.IdentityContract.IdentityEntry;
 import org.ea.sqrl.utils.EncryptionUtils;
 import org.ea.sqrl.storage.SQRLStorage;
 
@@ -28,11 +32,12 @@ public class DecryptingActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_decrypting);
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            byte[] rawQRData = extras.getByteArray(EXTRA_MESSAGE);
-            qrCodeData = EncryptionUtils.readSQRLQRCode(rawQRData);
-        } else {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        //int defaultValue = getResources().getInteger(R.integer.saved_high_score_default);
+        long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+        byte[] qrCodeData = mDbHelper.getIdentityData(currentId);
+
+        if (qrCodeData.length == 0) {
             Intent intent = new Intent(DecryptingActivity.this, StartActivity.class);
             startActivity(intent);
         }

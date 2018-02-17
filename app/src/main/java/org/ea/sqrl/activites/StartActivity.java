@@ -1,6 +1,9 @@
 package org.ea.sqrl.activites;
 
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -14,7 +17,10 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.database.IdentityContract;
 import org.ea.sqrl.storage.SQRLStorage;
+
+import java.util.Map;
 
 /**
  *
@@ -26,6 +32,11 @@ public class StartActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+
+        if (mDbHelper.hasIdentities()) {
+            Intent intent = new Intent(this, DecryptingActivity.class);
+            startActivity(intent);
+        }
 
         final TextView txtWelcomeMessage = findViewById(R.id.txtWelcomeMessage);
         txtWelcomeMessage.setMovementMethod(new ScrollingMovementMethod());
@@ -52,13 +63,15 @@ public class StartActivity extends BaseActivity {
                 Log.d("MainActivity", "Cancelled scan");
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
-                try {
-                    Intent intent = new Intent(this, DecryptingActivity.class);
-                    intent.putExtra(EXTRA_MESSAGE, result.getRawBytes());
-                    startActivity(intent);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                long newIdentityId = mDbHelper.newIdentity(result.getRawBytes());
+
+                SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putLong(getString(R.string.current_id), newIdentityId);
+                editor.commit();
+
+                Intent intent = new Intent(this, DecryptingActivity.class);
+                startActivity(intent);
             }
         }
     }
