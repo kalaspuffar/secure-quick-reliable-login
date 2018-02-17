@@ -60,60 +60,54 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         integrator.setOrientationLocked(true);
         integrator.setBarcodeImageEnabled(false);
 
-        final Button btnLoadIdentity = findViewById(R.id.btnImportIdentity);
-        btnLoadIdentity.setOnClickListener(
-                v -> new Thread(() -> integrator.initiateScan()).start()
-        );
-
-
         final Button btnImportIdentity = findViewById(R.id.btnImportIdentity);
         btnImportIdentity.setOnClickListener(
-                v -> new Thread(() -> showNotImplementedDialog()).start()
+                v -> new Thread(() -> integrator.initiateScan()).start()
         );
 
         final Button btnSettings = findViewById(R.id.btnSettings);
         btnSettings.setOnClickListener(
-                v -> new Thread(() -> showNotImplementedDialog()).start()
+                v -> showNotImplementedDialog()
         );
 
         final Button btnCreate = findViewById(R.id.btnCreate);
         btnCreate.setOnClickListener(
-                v -> new Thread(() -> showNotImplementedDialog()).start()
+                v -> showNotImplementedDialog()
         );
 
         final Button btnRemove = findViewById(R.id.btnRemove);
         btnRemove.setOnClickListener(
-                v -> new Thread(() -> showNotImplementedDialog()).start()
+                v -> showNotImplementedDialog()
         );
 
         final Button btnRename = findViewById(R.id.btnRename);
         btnRename.setOnClickListener(
-                v -> new Thread(() -> showNotImplementedDialog()).start()
+                v -> showNotImplementedDialog()
         );
 
         final Button btnExport = findViewById(R.id.btnExport);
         btnExport.setOnClickListener(
-                v -> new Thread(() -> showNotImplementedDialog()).start()
+                v -> showNotImplementedDialog()
         );
 
         final Button btnReset = findViewById(R.id.btnReset);
         btnReset.setOnClickListener(
-                v -> new Thread(() -> showNotImplementedDialog()).start()
+                v -> showNotImplementedDialog()
         );
 
         final Button btnForgetQuickPass = findViewById(R.id.btnForgetQuickPass);
         btnForgetQuickPass.setOnClickListener(
-                v -> new Thread(() -> showNotImplementedDialog()).start()
+                v -> showNotImplementedDialog()
         );
 
         final Button btnRekey = findViewById(R.id.btnRekey);
         btnRekey.setOnClickListener(
-                v -> new Thread(() -> showNotImplementedDialog()).start()
+                v -> showNotImplementedDialog()
         );
 
         final Button btnChangePassword = findViewById(R.id.btnChangePassword);
         btnChangePassword.setOnClickListener(
-                v -> new Thread(() -> showNotImplementedDialog()).start()
+                v -> showNotImplementedDialog()
         );
     }
 

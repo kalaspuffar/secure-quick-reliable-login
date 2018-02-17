@@ -42,17 +42,19 @@
             android:name=".activites.StartActivity"
             android:label="@string/title_activity_start"
             android:screenOrientation="portrait">
+
+        </activity>
+        <activity
+            android:name=".activites.MainActivity"
+            android:label="@string/title_activity_main"
+            android:screenOrientation="portrait"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activites.MainActivity"
-            android:label="@string/title_activity_main"
-            android:screenOrientation="portrait"
-            />
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"

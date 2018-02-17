@@ -169,4 +169,9 @@ public class LoginActivity extends BaseActivity {
         if(intent != null) startActivity(intent);
     }
 
+    @Override
+    protected void onStop() {
+        SQRLStorage.getInstance().clear();
+        super.onStop();
+    }
 }
