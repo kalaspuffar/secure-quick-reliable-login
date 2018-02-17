@@ -411,7 +411,7 @@ public class SQRLStorage {
         }
     }
 
-    private byte[] createSaveData() {
+    public byte[] createSaveData() {
         updateIdentityPlaintext();
         updateRescuePlaintext();
         updatePreviousPlaintext();

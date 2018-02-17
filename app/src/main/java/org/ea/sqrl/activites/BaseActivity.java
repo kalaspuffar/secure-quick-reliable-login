@@ -20,7 +20,7 @@ public class BaseActivity extends AppCompatActivity {
     protected final IdentityDBHelper mDbHelper;
 
     public BaseActivity() {
-        mDbHelper = new IdentityDBHelper(this.getApplicationContext());
+        mDbHelper = new IdentityDBHelper(this);
     }
 
     @Override

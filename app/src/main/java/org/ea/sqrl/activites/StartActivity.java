@@ -16,9 +16,11 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import org.ea.sqrl.ProgressionUpdater;
 import org.ea.sqrl.R;
 import org.ea.sqrl.database.IdentityContract;
 import org.ea.sqrl.storage.SQRLStorage;
+import org.ea.sqrl.utils.EncryptionUtils;
 
 import java.util.Map;
 
@@ -63,9 +65,21 @@ public class StartActivity extends BaseActivity {
                 Log.d("MainActivity", "Cancelled scan");
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
-                long newIdentityId = mDbHelper.newIdentity(result.getRawBytes());
+                SQRLStorage storage = SQRLStorage.getInstance();
+                try {
+                    byte[] qrCodeData = EncryptionUtils.readSQRLQRCode(result.getRawBytes());
+                    storage.read(qrCodeData, true);
+                } catch (Exception e) {
+                    System.out.println("ERROR: " + e.getMessage());
+                    e.printStackTrace();
+                    return;
+                }
+                long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
 
-                SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
+                        getString(R.string.preferences),
+                        Context.MODE_PRIVATE
+                );
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putLong(getString(R.string.current_id), newIdentityId);
                 editor.commit();
