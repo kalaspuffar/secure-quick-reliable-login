@@ -51,13 +51,13 @@
         <activity
             android:name=".activites.MainActivity"
             android:label="@string/title_activity_main"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"
             tools:replace="android:screenOrientation" />
+        <activity android:name=".activites.ShowIdentityActivity"></activity>
     </application>
 
 </manifest>

@@ -131,4 +131,8 @@ Daniel Persson
     <string name="button_change_password">Change password</string>
     <string name="not_implemented_title">Not implemented</string>
     <string name="not_implemented_text">This functionality isn\'t yet implemented</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="identity_rename_title">New name of identity</string>
 </resources>

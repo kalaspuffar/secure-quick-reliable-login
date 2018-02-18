@@ -7,10 +7,15 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -26,6 +31,7 @@ import java.util.Map;
 public class MainActivity extends BaseActivity implements AdapterView.OnItemSelectedListener {
     private Spinner cboxIdentity;
     private Map<Long, String> identities;
+    private PopupWindow renamePopupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +57,35 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     startActivity(intent);
                 }).start()
         );
+
+        LayoutInflater layoutInflater = (LayoutInflater)getBaseContext()
+                .getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        View popupView = layoutInflater.inflate(R.layout.fragment_rename, null);
+
+        renamePopupWindow =new PopupWindow(popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
+                true);
+
+        renamePopupWindow.setTouchable(true);
+        renamePopupWindow.setFocusable(true);
+        EditText txtIdentityName = popupView.findViewById(R.id.txtIdentityName);
+
+        ((Button) popupView.findViewById(R.id.btnOk))
+                .setOnClickListener(v -> {
+
+                    SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
+                            getString(R.string.preferences),
+                            Context.MODE_PRIVATE
+                    );
+                    long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+                    if(currentId != 0) {
+                        mDbHelper.updateIdentityName(currentId, txtIdentityName.getText().toString());
+                        updateSpinnerData(currentId);
+                    }
+                    txtIdentityName.setText("");
+                    renamePopupWindow.dismiss();
+                });
 
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
@@ -92,12 +127,15 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         final Button btnRename = findViewById(R.id.btnRename);
         btnRename.setOnClickListener(
-                v -> showNotImplementedDialog()
+                v -> renamePopupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0)
         );
 
         final Button btnExport = findViewById(R.id.btnExport);
         btnExport.setOnClickListener(
-                v -> showNotImplementedDialog()
+                v -> new Thread(() -> {
+                    Intent intent = new Intent(this, ShowIdentityActivity.class);
+                    startActivity(intent);
+                }).start()
         );
 
         final Button btnReset = findViewById(R.id.btnReset);
