@@ -57,7 +57,11 @@
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"
             tools:replace="android:screenOrientation" />
-        <activity android:name=".activites.ShowIdentityActivity"></activity>
+        <activity
+            android:name=".activites.ShowIdentityActivity"
+            android:label="@string/title_activity_show_identity"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>
