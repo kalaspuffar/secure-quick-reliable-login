@@ -77,7 +77,17 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         final Button btnRemove = findViewById(R.id.btnRemove);
         btnRemove.setOnClickListener(
-                v -> showNotImplementedDialog()
+                v -> {
+                    SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
+                            getString(R.string.preferences),
+                            Context.MODE_PRIVATE
+                    );
+                    long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+                    if(currentId != 0) {
+                        mDbHelper.deleteIdentity(currentId);
+                        updateSpinnerData(currentId);
+                    }
+                }
         );
 
         final Button btnRename = findViewById(R.id.btnRename);
@@ -140,6 +150,27 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         editor.commit();
     }
 
+    private int getPosition(long currentId) {
+        int i = 0;
+        for(Long l : identities.keySet()) {
+            if (l == currentId) return i;
+            i++;
+        }
+        return 0;
+    }
+
+    private void updateSpinnerData(long currentId) {
+        identities = mDbHelper.getIdentitys();
+
+        ArrayAdapter adapter = new ArrayAdapter(
+                this,
+                android.R.layout.simple_spinner_item,
+                identities.values().toArray(new String[identities.size()])
+        );
+        cboxIdentity.setAdapter(adapter);
+        cboxIdentity.setSelection(getPosition(currentId));
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
@@ -167,14 +198,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 editor.putLong(getString(R.string.current_id), newIdentityId);
                 editor.commit();
 
-                identities = mDbHelper.getIdentitys();
-
-                ArrayAdapter adapter = new ArrayAdapter(
-                        this,
-                        android.R.layout.simple_spinner_item,
-                        identities.values().toArray(new String[identities.size()])
-                );
-                cboxIdentity.setAdapter(adapter);
+                updateSpinnerData(newIdentityId);
             }
         }
     }

@@ -84,7 +84,7 @@ public class StartActivity extends BaseActivity {
                 editor.putLong(getString(R.string.current_id), newIdentityId);
                 editor.commit();
 
-                Intent intent = new Intent(this, DecryptingActivity.class);
+                Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
             }
         }
