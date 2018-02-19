@@ -32,6 +32,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     private Spinner cboxIdentity;
     private Map<Long, String> identities;
     private PopupWindow renamePopupWindow;
+    private Button btnUnlockIdentity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,14 +44,14 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         ArrayAdapter adapter = new ArrayAdapter(
             this,
-            android.R.layout.simple_spinner_item,
+            R.layout.simple_spinner_item,
             identities.values().toArray(new String[identities.size()])
         );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
         cboxIdentity.setAdapter(adapter);
         cboxIdentity.setOnItemSelectedListener(this);
 
-        final Button btnUnlockIdentity = findViewById(R.id.btnUnlockIdentity);
+        btnUnlockIdentity = findViewById(R.id.btnUnlockIdentity);
         btnUnlockIdentity.setOnClickListener(
                 v -> new Thread(() -> {
                     Intent intent = new Intent(this, DecryptingActivity.class);
@@ -186,6 +187,16 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putLong(getString(R.string.current_id), keyArray[pos]);
         editor.commit();
+
+        SQRLStorage storage = SQRLStorage.getInstance();
+        try {
+            byte[] identityData = mDbHelper.getIdentityData(keyArray[pos]);
+            storage.read(identityData, true);
+            btnUnlockIdentity.setEnabled(storage.hasIdentityBlock());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private int getPosition(long currentId) {
@@ -202,7 +213,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         ArrayAdapter adapter = new ArrayAdapter(
                 this,
-                android.R.layout.simple_spinner_item,
+                R.layout.simple_spinner_item,
                 identities.values().toArray(new String[identities.size()])
         );
         cboxIdentity.setAdapter(adapter);

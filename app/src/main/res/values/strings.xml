@@ -137,4 +137,5 @@ Daniel Persson
     <string name="identity_rename_title">New name of identity</string>
     <string name="title_activity_show_identity">SQRL - Show identity</string>
     <string name="button_rename_ok">rename</string>
+    <string name="current_identity_title">Current identity</string>
 </resources>

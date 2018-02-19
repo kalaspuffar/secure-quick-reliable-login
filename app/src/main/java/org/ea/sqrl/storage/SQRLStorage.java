@@ -32,6 +32,10 @@ public class SQRLStorage {
     private int passwordBlockLength = 0;
     private static SQRLStorage instance = null;
 
+    private boolean hasIdentityBlock = false;
+    private boolean hasRescueBlock = false;
+    private boolean hasPreviousBlock = false;
+
     private SQRLStorage() {
         Grc_aesgcm.gcm_initialize();
 
@@ -74,6 +78,11 @@ public class SQRLStorage {
     public void read(byte[] input, boolean full) throws Exception {
         String header = new String(Arrays.copyOfRange(input, 0, 8));
 
+        hasIdentityBlock = false;
+        hasRescueBlock = false;
+        hasPreviousBlock = false;
+        passwordBlockLength = 0;
+
         if (!STORAGE_HEADER.equals(header)) throw new Exception("Incorrect header");
         int readOffset = 8;
         int readLen = readOffset + 2;
@@ -115,7 +124,7 @@ public class SQRLStorage {
     private byte[] identityLockKey;
 
 
-    public void handlePasswordBlock(byte[] input) {
+    public void handleIdentityBlock(byte[] input) {
         passwordBlockLength = input.length;
         identityPlaintextLength = getIntFromTwoBytes(input, 4);
         identityPlaintext = Arrays.copyOfRange(input, 0, identityPlaintextLength);
@@ -130,6 +139,7 @@ public class SQRLStorage {
         identityMasterKeyEncrypted = Arrays.copyOfRange(input, 45, 77);
         identityLockKeyEncrypted = Arrays.copyOfRange(input, 77, 109);
         identityVerificationTag = Arrays.copyOfRange(input, 109, 125);
+        hasIdentityBlock = true;
     }
 
 
@@ -147,13 +157,15 @@ public class SQRLStorage {
         return verifyingRecoveryBlock;
     }
 
-    public void handleIdentityBlock(byte[] input) throws Exception {
+    public void handleRecoveryBlock(byte[] input) throws Exception {
         rescuePlaintext = Arrays.copyOfRange(input, 0, 25);
         rescueRandomSalt = Arrays.copyOfRange(input, 4, 20);
         rescueLogNFactor = input[20];
         rescueIterationCount = getIntFromFourBytes(input, 21);
         rescueIdentityLockKeyEncrypted = Arrays.copyOfRange(input, 25, 57);
         rescueVerificationTag = Arrays.copyOfRange(input, 57, 73);
+
+        hasRescueBlock = true;
     }
 
     private byte[] previousPlaintext;
@@ -183,6 +195,7 @@ public class SQRLStorage {
             lastKeyEnd += 32;
         }
         previousVerificationTag = Arrays.copyOfRange(input, lastKeyEnd, lastKeyEnd + 16);
+        hasPreviousBlock = true;
     }
 
 
@@ -191,10 +204,10 @@ public class SQRLStorage {
 
         switch (type) {
             case PASSWORD_PBKDF:
-                handlePasswordBlock(input);
+                handleIdentityBlock(input);
                 break;
             case RESCUECODE_PBKDF:
-                handleIdentityBlock(input);
+                handleRecoveryBlock(input);
                 break;
             case PREVIOUS_IDENTITY_KEYS:
                 handlePreviousIdentityBlock(input);
@@ -362,6 +375,7 @@ public class SQRLStorage {
     }
 
     private void updateIdentityPlaintext() {
+        if(!hasIdentityBlock) return;
         byte[] newPlaintext = getIntToTwoBytes(PASSWORD_PBKDF);
         newPlaintext = EncryptionUtils.combine(newPlaintext, getIntToTwoBytes(identityPlaintextLength));
         newPlaintext = EncryptionUtils.combine(newPlaintext, initializationVector);
@@ -385,6 +399,8 @@ public class SQRLStorage {
     }
 
     private void updateRescuePlaintext() {
+        if(!hasRescueBlock) return;
+
         byte[] newPlaintext = getIntToTwoBytes(RESCUECODE_PBKDF);
         newPlaintext = EncryptionUtils.combine(newPlaintext, rescueRandomSalt);
         newPlaintext = EncryptionUtils.combine(newPlaintext, rescueLogNFactor);
@@ -400,6 +416,8 @@ public class SQRLStorage {
     }
 
     private void updatePreviousPlaintext() {
+        if(!hasPreviousBlock) return;
+
         if (previousCountOfKeys > 0) {
             byte[] newPlaintext = getIntToTwoBytes(PREVIOUS_IDENTITY_KEYS);
             newPlaintext = EncryptionUtils.combine(newPlaintext, getIntToTwoBytes(previousCountOfKeys));
@@ -419,16 +437,20 @@ public class SQRLStorage {
         updatePreviousPlaintext();
 
         byte[] result = "sqrldata".getBytes();
-        result = EncryptionUtils.combine(result, identityPlaintext);
-        result = EncryptionUtils.combine(result, identityMasterKeyEncrypted);
-        result = EncryptionUtils.combine(result, identityLockKeyEncrypted);
-        result = EncryptionUtils.combine(result, identityVerificationTag);
+        if(hasIdentityBlock) {
+            result = EncryptionUtils.combine(result, identityPlaintext);
+            result = EncryptionUtils.combine(result, identityMasterKeyEncrypted);
+            result = EncryptionUtils.combine(result, identityLockKeyEncrypted);
+            result = EncryptionUtils.combine(result, identityVerificationTag);
+        }
 
-        result = EncryptionUtils.combine(result, rescuePlaintext);
-        result = EncryptionUtils.combine(result, rescueIdentityLockKeyEncrypted);
-        result = EncryptionUtils.combine(result, rescueVerificationTag);
+        if(hasRescueBlock) {
+            result = EncryptionUtils.combine(result, rescuePlaintext);
+            result = EncryptionUtils.combine(result, rescueIdentityLockKeyEncrypted);
+            result = EncryptionUtils.combine(result, rescueVerificationTag);
+        }
 
-        if (previousCountOfKeys > 0) {
+        if (hasPreviousBlock && previousCountOfKeys > 0) {
             result = EncryptionUtils.combine(result, previousPlaintext);
             result = EncryptionUtils.combine(result, previousKey1);
             if (previousCountOfKeys > 1) {
@@ -483,6 +505,10 @@ public class SQRLStorage {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean hasIdentityBlock() {
+        return hasIdentityBlock;
     }
 }
 
