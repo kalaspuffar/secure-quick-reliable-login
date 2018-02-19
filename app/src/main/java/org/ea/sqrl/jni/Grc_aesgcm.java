@@ -19,6 +19,8 @@ public class Grc_aesgcm {
             byte[] tag, int tag_len
     );
 
+    public static native void gcm_zero_ctx();
+
     static {
         System.loadLibrary("grc-aesgcm");
     }

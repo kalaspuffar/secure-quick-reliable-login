@@ -33,7 +33,7 @@ public class SQRLStorage {
     private static SQRLStorage instance = null;
 
     private SQRLStorage() {
-        //Grc_aesgcm.gcm_initialize();
+        Grc_aesgcm.gcm_initialize();
 
         /*
             Here we look for the scrypt library and if we can't find it
@@ -252,6 +252,7 @@ public class SQRLStorage {
                         identityKeys, decryptionResult, identityKeys.length,
                         identityVerificationTag, identityVerificationTag.length
                 );
+                Grc_aesgcm.gcm_zero_ctx();
 
                 if (res == 0x55555555) return false;
             }
@@ -299,6 +300,7 @@ public class SQRLStorage {
                         rescueIdentityLockKeyEncrypted.length,
                         identityVerificationTag, identityVerificationTag.length
                 );
+                Grc_aesgcm.gcm_zero_ctx();
 
                 if (res == 0x55555555) return false;
             }

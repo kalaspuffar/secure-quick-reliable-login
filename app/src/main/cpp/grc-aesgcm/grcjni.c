@@ -82,3 +82,8 @@ Java_org_ea_sqrl_jni_Grc_1aesgcm_gcm_1encrypt_1and_1tag(JNIEnv *env, jclass type
 
     return result;
 }
+
+JNIEXPORT void JNICALL
+Java_org_ea_sqrl_jni_Grc_1aesgcm_gcm_1zero_1ctx(JNIEnv *env, jclass type) {
+    gcm_zero_ctx(workContext);
+}

@@ -23,4 +23,7 @@ Java_org_ea_sqrl_jni_Grc_1aesgcm_gcm_1encrypt_1and_1tag(JNIEnv *env, jclass type
                                                         jint length, jbyteArray tag_,
                                                         jint tag_len);
 
+JNIEXPORT void JNICALL
+Java_org_ea_sqrl_jni_Grc_1aesgcm_gcm_1zero_1ctx(JNIEnv *env, jclass type);
+
 #endif //SECURE_QUICK_RESPONSE_LOGIN_JNI_H
