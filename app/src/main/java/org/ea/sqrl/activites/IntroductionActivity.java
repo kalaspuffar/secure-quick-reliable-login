@@ -55,7 +55,7 @@ public class IntroductionActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        Button btnClose = findViewById(R.id.btnOk);
+        Button btnClose = findViewById(R.id.btnRename);
         btnClose.setOnClickListener(v -> new Thread(() -> {
             IntroductionActivity.this.finish();
         }).start());

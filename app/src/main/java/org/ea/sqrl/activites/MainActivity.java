@@ -71,7 +71,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         renamePopupWindow.setFocusable(true);
         EditText txtIdentityName = popupView.findViewById(R.id.txtIdentityName);
 
-        ((Button) popupView.findViewById(R.id.btnOk))
+        ((Button) popupView.findViewById(R.id.btnRename))
                 .setOnClickListener(v -> {
 
                     SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
