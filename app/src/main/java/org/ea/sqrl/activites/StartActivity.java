@@ -14,7 +14,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import org.ea.sqrl.R;
-import org.ea.sqrl.storage.SQRLStorage;
+import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.EncryptionUtils;
 
 /**
@@ -33,6 +33,7 @@ public class StartActivity extends BaseActivity {
 
         if (mDbHelper.hasIdentities()) {
             Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra(START_USER_MODE, START_USER_MODE_RETURNING_USER);
             startActivity(intent);
         }
 
@@ -49,7 +50,11 @@ public class StartActivity extends BaseActivity {
 
         final Button btnScanSecret = findViewById(R.id.btnScanSecret);
         btnScanSecret.setOnClickListener(
-                v -> new Thread(() -> integrator.initiateScan()).start()
+                v -> {
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.putExtra(START_USER_MODE, START_USER_MODE_NEW_USER);
+                    startActivity(intent);
+                }
         );
     }
 

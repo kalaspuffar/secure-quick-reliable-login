@@ -17,7 +17,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
-import org.ea.sqrl.storage.SQRLStorage;
+import org.ea.sqrl.processors.SQRLStorage;
 
 /**
  * This activity is used to inform the user about the different features, techniques use cases

@@ -162,6 +162,28 @@ public class EncryptionUtils {
         return xorKey;
     }
 
+    public static int enSCrypt(byte[] xorKey, String password, byte[] randomSalt, int logNFactor, int dkLen, int secondsToRun, ProgressionUpdater progressionUpdater) throws Exception {
+        long startTime = System.nanoTime();
+        progressionUpdater.startTimer();
+        byte[] key = SCrypt.scrypt(password.getBytes(), randomSalt, 1 << logNFactor, 256, 1, dkLen);
+        xorKey = xor(key, xorKey);
+        progressionUpdater.endTimer();
+
+        progressionUpdater.incrementProgress();
+
+        int iterationCount = 1;
+        long time = System.nanoTime() - startTime;
+        while(time < secondsToRun * 1000 * 1000) {
+            key = SCrypt.scrypt(password.getBytes(), key, 1 << logNFactor, 256, 1, dkLen);
+            xorKey = xor(key, xorKey);
+            progressionUpdater.incrementProgress();
+            time = System.nanoTime() - startTime;
+            iterationCount++;
+        }
+        return iterationCount;
+    }
+
+
     public static String bitsToString(BitSet b) {
         StringBuilder s = new StringBuilder();
         for( int i = 0; i < b.length();  i++ ) {

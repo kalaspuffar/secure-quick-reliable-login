@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,14 +17,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import org.ea.sqrl.ProgressionUpdater;
 import org.ea.sqrl.R;
-import org.ea.sqrl.storage.SQRLStorage;
+import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.EncryptionUtils;
 
 import java.util.Map;
@@ -36,10 +40,13 @@ import java.util.Map;
  * @author Daniel Persson
  */
 public class MainActivity extends BaseActivity implements AdapterView.OnItemSelectedListener {
+    private Handler handler = new Handler();
     private Spinner cboxIdentity;
     private Map<Long, String> identities;
     private PopupWindow renamePopupWindow;
+    private PopupWindow importPopupWindow;
     private Button btnUnlockIdentity;
+    private boolean useIdentity = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,42 +65,11 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         cboxIdentity.setAdapter(adapter);
         cboxIdentity.setOnItemSelectedListener(this);
 
-        btnUnlockIdentity = findViewById(R.id.btnUnlockIdentity);
-        btnUnlockIdentity.setOnClickListener(
-                v -> new Thread(() -> {
-                    Intent intent = new Intent(this, DecryptingActivity.class);
-                    startActivity(intent);
-                }).start()
-        );
-
         LayoutInflater layoutInflater = (LayoutInflater)getBaseContext()
                 .getSystemService(LAYOUT_INFLATER_SERVICE);
 
-        View popupView = layoutInflater.inflate(R.layout.fragment_rename, null);
-
-        renamePopupWindow =new PopupWindow(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                true);
-
-        renamePopupWindow.setTouchable(true);
-        renamePopupWindow.setFocusable(true);
-        EditText txtIdentityName = popupView.findViewById(R.id.txtIdentityName);
-
-        ((Button) popupView.findViewById(R.id.btnRename))
-                .setOnClickListener(v -> {
-
-                    SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                            getString(R.string.preferences),
-                            Context.MODE_PRIVATE
-                    );
-                    long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
-                    if(currentId != 0) {
-                        mDbHelper.updateIdentityName(currentId, txtIdentityName.getText().toString());
-                        updateSpinnerData(currentId);
-                    }
-                    txtIdentityName.setText("");
-                    renamePopupWindow.dismiss();
-                });
+        setupRenamePopupWindow(layoutInflater);
+        setupImportPopupWindow(layoutInflater);
 
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
@@ -103,9 +79,26 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         integrator.setOrientationLocked(true);
         integrator.setBarcodeImageEnabled(false);
 
+        Intent intent = getIntent();
+        int startMode = intent.getIntExtra(START_USER_MODE, 0);
+        if(startMode == START_USER_MODE_NEW_USER) {
+            integrator.initiateScan();
+        }
+
+        btnUnlockIdentity = findViewById(R.id.btnUnlockIdentity);
+        btnUnlockIdentity.setOnClickListener(
+                v -> {
+                    useIdentity = true;
+                    integrator.initiateScan();
+                }
+        );
+
         final Button btnImportIdentity = findViewById(R.id.btnImportIdentity);
         btnImportIdentity.setOnClickListener(
-                v -> new Thread(() -> integrator.initiateScan()).start()
+                v -> {
+                    useIdentity = false;
+                    integrator.initiateScan();
+                }
         );
 
         final Button btnSettings = findViewById(R.id.btnSettings);
@@ -135,14 +128,13 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         final Button btnRename = findViewById(R.id.btnRename);
         btnRename.setOnClickListener(
-                v -> renamePopupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0)
+                v -> renamePopupWindow.showAtLocation(this.getCurrentFocus(), Gravity.CENTER, 0, 0)
         );
 
         final Button btnExport = findViewById(R.id.btnExport);
         btnExport.setOnClickListener(
                 v -> new Thread(() -> {
-                    Intent intent = new Intent(this, ShowIdentityActivity.class);
-                    startActivity(intent);
+                    startActivity(new Intent(this, ShowIdentityActivity.class));
                 }).start()
         );
 
@@ -166,6 +158,101 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 v -> showNotImplementedDialog()
         );
     }
+
+    public void setupRenamePopupWindow(LayoutInflater layoutInflater) {
+        View popupView = layoutInflater.inflate(R.layout.fragment_rename, null);
+
+        renamePopupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
+                true);
+
+        renamePopupWindow.setTouchable(true);
+        renamePopupWindow.setFocusable(true);
+        final EditText txtIdentityName = popupView.findViewById(R.id.txtIdentityName);
+
+        ((Button) popupView.findViewById(R.id.btnRename))
+                .setOnClickListener(v -> {
+
+                    SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
+                            getString(R.string.preferences),
+                            Context.MODE_PRIVATE
+                    );
+                    long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+                    if(currentId != 0) {
+                        mDbHelper.updateIdentityName(currentId, txtIdentityName.getText().toString());
+                        updateSpinnerData(currentId);
+                    }
+                    txtIdentityName.setText("");
+                    renamePopupWindow.dismiss();
+                });
+    }
+
+    public void setupImportPopupWindow(LayoutInflater layoutInflater) {
+        View popupView = layoutInflater.inflate(R.layout.fragment_decrypt, null);
+
+        importPopupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
+                true);
+
+        importPopupWindow.setTouchable(true);
+        importPopupWindow.setFocusable(true);
+
+        final ProgressBar pbDecrypting = popupView.findViewById(R.id.pbDecrypting);
+        final EditText txtPassword = popupView.findViewById(R.id.txtPassword);
+        final Button btnDecryptKey = popupView.findViewById(R.id.btnDecryptKey);
+        final TextView progressText = popupView.findViewById(R.id.lblProgressText);
+        final TextView txtRecoveryKey = popupView.findViewById(R.id.txtRecoveryKey);
+
+        SQRLStorage storage = SQRLStorage.getInstance();
+        try {
+            storage.setProgressionUpdater(new ProgressionUpdater(handler, pbDecrypting, progressText));
+        } catch (Exception e) {
+            System.out.println("ERROR: " + e.getMessage());
+            e.printStackTrace();
+            return;
+        }
+
+        txtRecoveryKey.setText(storage.getVerifyingRecoveryBlock());
+
+        btnDecryptKey.setOnClickListener(v -> new Thread(() -> {
+            try {
+                boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString());
+                if(decryptStatus) {
+                    System.out.println("Could not decrypt identity");
+                    return;
+                }
+
+                boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
+                if(encryptStatus) {
+                    System.out.println("Could not encrypt identity");
+                    return;
+                }
+
+            } catch (Exception e) {
+                System.out.println("ERROR: " + e.getMessage());
+                e.printStackTrace();
+            } finally {
+                txtPassword.setText("");
+                importPopupWindow.dismiss();
+            }
+            long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
+
+            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
+                    getString(R.string.preferences),
+                    Context.MODE_PRIVATE
+            );
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putLong(getString(R.string.current_id), newIdentityId);
+            editor.commit();
+
+            updateSpinnerData(newIdentityId);
+
+            if(useIdentity) {
+                startActivity(new Intent(this, LoginActivity.class));
+            }
+        }).start());
+    }
+
 
     public void showNotImplementedDialog() {
         AlertDialog.Builder builder;
@@ -236,25 +323,15 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
                 SQRLStorage storage = SQRLStorage.getInstance();
+                byte[] qrCodeData = EncryptionUtils.readSQRLQRCode(result.getRawBytes());
                 try {
-                    byte[] qrCodeData = EncryptionUtils.readSQRLQRCode(result.getRawBytes());
                     storage.read(qrCodeData, true);
+                    importPopupWindow.showAtLocation(this.getCurrentFocus(), Gravity.CENTER, 0, 0);
                 } catch (Exception e) {
                     System.out.println("ERROR: " + e.getMessage());
                     e.printStackTrace();
                     return;
                 }
-                long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
-
-                SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                        getString(R.string.preferences),
-                        Context.MODE_PRIVATE
-                );
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putLong(getString(R.string.current_id), newIdentityId);
-                editor.commit();
-
-                updateSpinnerData(newIdentityId);
             }
         }
     }

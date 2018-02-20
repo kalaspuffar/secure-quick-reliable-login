@@ -12,9 +12,9 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import org.ea.sqrl.R;
-import org.ea.sqrl.storage.CommunicationHandler;
+import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.utils.EncryptionUtils;
-import org.ea.sqrl.storage.SQRLStorage;
+import org.ea.sqrl.processors.SQRLStorage;
 
 /**
  * This activity is used to scan sites and display the domain before the user logs in. This also

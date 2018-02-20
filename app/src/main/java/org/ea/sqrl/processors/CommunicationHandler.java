@@ -1,4 +1,4 @@
-package org.ea.sqrl.storage;
+package org.ea.sqrl.processors;
 
 import android.app.Activity;
 

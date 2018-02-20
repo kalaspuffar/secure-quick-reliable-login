@@ -1,4 +1,4 @@
-package org.ea.sqrl.storage;
+package org.ea.sqrl.processors;
 
 import android.os.Build;
 import org.ea.sqrl.ProgressionUpdater;
@@ -375,6 +375,62 @@ public class SQRLStorage {
         Arrays.fill(data, (byte)0);
         r.nextBytes(data);
         Arrays.fill(data, (byte)255);
+    }
+
+    /**
+     * Decrypt the identity key, this has the master key used to login to sites and also the lock
+     * key that we supply to the sites in order to unlock at a later date if the master key ever
+     * gets compromised.
+     *
+     * @param password  Password used to unlock the master key.
+     */
+    public boolean encryptIdentityKey(String password, EntropyHarvester entropyHarvester) {
+        if(!this.hasKeys()) return false;
+        this.progressionUpdater.setMax(iterationCount);
+        try {
+            entropyHarvester.fetchRandom(this.randomSalt);
+
+            byte[] key = new byte[32];
+            iterationCount = EncryptionUtils.enSCrypt(key, password, randomSalt, logNFactor, 32, timeInSecondsToRunPWEnScryptOnPassword, this.progressionUpdater);
+            byte[] identityKeys = EncryptionUtils.combine(identityMasterKeyEncrypted, identityLockKeyEncrypted);
+            byte[] encryptionResult = new byte[identityKeys.length + identityVerificationTag.length];
+
+            entropyHarvester.fetchRandom(this.initializationVector);
+
+            if(Build.VERSION.BASE_OS != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Key keySpec = new SecretKeySpec(key, "AES");
+                Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
+                GCMParameterSpec params = new GCMParameterSpec(128, initializationVector);
+                cipher.init(Cipher.ENCRYPT_MODE, keySpec, params);
+                cipher.updateAAD(identityPlaintext);
+                cipher.update(identityKeys);
+                encryptionResult = cipher.doFinal();
+                this.identityMasterKeyEncrypted = Arrays.copyOfRange(encryptionResult, 0, 32);
+                this.identityLockKeyEncrypted = Arrays.copyOfRange(encryptionResult, 32, 64);
+                this.identityVerificationTag = Arrays.copyOfRange(encryptionResult, 64, 76);
+            } else {
+                byte[] resultVerificationTag = new byte[12];
+
+                Grc_aesgcm.gcm_setkey(key, key.length);
+                int res = Grc_aesgcm.gcm_encrypt_and_tag(
+                        initializationVector, initializationVector.length,
+                        identityPlaintext, identityPlaintextLength,
+                        identityKeys, encryptionResult, identityKeys.length,
+                        resultVerificationTag, resultVerificationTag.length
+                );
+                Grc_aesgcm.gcm_zero_ctx();
+
+                if (res == 0x55555555) return false;
+
+                this.identityMasterKeyEncrypted = Arrays.copyOfRange(encryptionResult, 0, 32);
+                this.identityLockKeyEncrypted = Arrays.copyOfRange(encryptionResult, 32, 64);
+                this.identityVerificationTag = resultVerificationTag;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     private void updateIdentityPlaintext() {

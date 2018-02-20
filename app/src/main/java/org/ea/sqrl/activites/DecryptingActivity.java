@@ -3,7 +3,6 @@ package org.ea.sqrl.activites;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Bundle;
@@ -14,8 +13,7 @@ import android.widget.TextView;
 
 import org.ea.sqrl.ProgressionUpdater;
 import org.ea.sqrl.R;
-import org.ea.sqrl.utils.EncryptionUtils;
-import org.ea.sqrl.storage.SQRLStorage;
+import org.ea.sqrl.processors.SQRLStorage;
 
 /**
  *
@@ -24,7 +22,6 @@ import org.ea.sqrl.storage.SQRLStorage;
 public class DecryptingActivity extends BaseActivity {
 
     private Handler handler = new Handler();
-    private byte[] qrCodeData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

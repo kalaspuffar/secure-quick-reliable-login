@@ -19,7 +19,7 @@ import com.google.zxing.qrcode.QRCodeWriter;
 
 import org.ea.sqrl.ProgressionUpdater;
 import org.ea.sqrl.R;
-import org.ea.sqrl.storage.SQRLStorage;
+import org.ea.sqrl.processors.SQRLStorage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import org.ea.sqrl.BuildConfig;
 import org.ea.sqrl.R;
 import org.ea.sqrl.database.IdentityDBHelper;
+import org.ea.sqrl.processors.EntropyHarvester;
 
 /**
  * This base activity is inherited by all other activities. We place logic used for menus,
@@ -19,10 +20,20 @@ import org.ea.sqrl.database.IdentityDBHelper;
  * @author Daniel Persson
  */
 public class BaseActivity extends AppCompatActivity {
+    protected static final String START_USER_MODE = "org.ea.sqrl.START_MODE";
+    protected static final int START_USER_MODE_NEW_USER = 1;
+    protected static final int START_USER_MODE_RETURNING_USER = 2;
+
     protected final IdentityDBHelper mDbHelper;
+    protected EntropyHarvester entropyHarvester;
 
     public BaseActivity() {
         mDbHelper = new IdentityDBHelper(this);
+        try {
+            entropyHarvester = new EntropyHarvester();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
