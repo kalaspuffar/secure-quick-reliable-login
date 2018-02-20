@@ -28,6 +28,13 @@ import org.ea.sqrl.utils.EncryptionUtils;
 
 import java.util.Map;
 
+/**
+ * This main activity is the hub of the application where the user lands for daily use. It should
+ * make it easy to reach all the functions you use often and hide things that you don't need
+ * regularly.
+ *
+ * @author Daniel Persson
+ */
 public class MainActivity extends BaseActivity implements AdapterView.OnItemSelectedListener {
     private Spinner cboxIdentity;
     private Map<Long, String> identities;

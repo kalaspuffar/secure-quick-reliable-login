@@ -3,6 +3,7 @@ package org.ea.sqrl.database;
 import android.provider.BaseColumns;
 
 /**
+ * This contract handles the few peaces of data we store in our identity database.
  *
  * @author Daniel Persson
  */

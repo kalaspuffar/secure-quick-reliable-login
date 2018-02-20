@@ -29,6 +29,8 @@ import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
+ * This handler creates different queries to servers and parses the response so we can talk over
+ * the SQRL protocol seamlessly.
  *
  * @author Daniel Persson
  */

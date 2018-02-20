@@ -17,6 +17,8 @@ import org.ea.sqrl.utils.EncryptionUtils;
 import org.ea.sqrl.storage.SQRLStorage;
 
 /**
+ * This activity is used to scan sites and display the domain before the user logs in. This also
+ * makes it possible to create new accounts.
  *
  * @author Daniel Persson
  */

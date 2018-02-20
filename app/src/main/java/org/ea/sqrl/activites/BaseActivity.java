@@ -13,6 +13,8 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.database.IdentityDBHelper;
 
 /**
+ * This base activity is inherited by all other activities. We place logic used for menus,
+ * background processes and other things that are untied to the current context of the application.
  *
  * @author Daniel Persson
  */

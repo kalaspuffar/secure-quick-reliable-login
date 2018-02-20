@@ -20,6 +20,9 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.storage.SQRLStorage;
 
 /**
+ * This activity is used to inform the user about the different features, techniques use cases
+ * of SQRL. This knowledge base should give the user a good understanding of the client application.
+ * Using a scrollable page adapter we can show multiple pages of text to read.
  *
  * @author Daniel Persson
  */

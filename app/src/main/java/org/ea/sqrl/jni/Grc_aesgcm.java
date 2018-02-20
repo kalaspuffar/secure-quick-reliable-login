@@ -1,5 +1,12 @@
 package org.ea.sqrl.jni;
 
+/**
+ * This is a JNI bridge to the GRC AesGcm functionallity implemented by Steve and used when native
+ * implementation is not available on the platform. In Android Oreo and above AESGCM is present on
+ * the platform.
+ *
+ * @author Daniel Persson
+ */
 public class Grc_aesgcm {
     public static native int gcm_initialize();
 

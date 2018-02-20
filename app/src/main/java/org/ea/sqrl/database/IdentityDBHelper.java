@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * This little database handle makes it possible to create a new data store and save identities with
+ * a specific name and update the current data as well as the name for the currently selected
+ * identity.
  *
  * @author Daniel Persson
  */

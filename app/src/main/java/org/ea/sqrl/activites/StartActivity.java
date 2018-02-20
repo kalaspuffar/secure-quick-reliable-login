@@ -1,14 +1,11 @@
 package org.ea.sqrl.activites;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,15 +13,14 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import org.ea.sqrl.ProgressionUpdater;
 import org.ea.sqrl.R;
-import org.ea.sqrl.database.IdentityContract;
 import org.ea.sqrl.storage.SQRLStorage;
 import org.ea.sqrl.utils.EncryptionUtils;
 
-import java.util.Map;
-
 /**
+ * Start activity should be a base for the user so we bring them into the application and they know
+ * how to use it when installed and identities are added. So where we add some text for to inform
+ * as well as a link to import your first identity.
  *
  * @author Daniel Persson
  */

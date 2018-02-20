@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.TimeZone;
 
 /**
+ * Small class to handle the progression of a decryption process. We show the time and
+ * progress bar to the user so they know the application are working on their identity.
  *
  * @author Daniel Persson
  */

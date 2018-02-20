@@ -18,6 +18,9 @@ import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
+ * This class handles the S4 Storage data. We can load identities from disk, QRCode or pure
+ * text in order to decrypt and handle your identities. We also provide secure keys to use
+ * for logging in and creating accounts.
  *
  * @author Daniel Persson
  */

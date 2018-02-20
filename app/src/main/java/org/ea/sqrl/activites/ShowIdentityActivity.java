@@ -27,6 +27,12 @@ import java.util.Hashtable;
 
 import io.nayuki.qrcodegen.QrCode;
 
+/**
+ * This activity shows an identity. Both the QRCode you can scan to export the identity to another
+ * device and it also shows the rescue data used by the rescue code in order to restore identity.
+ *
+ * @author Daniel Persson
+ */
 public class ShowIdentityActivity extends BaseActivity {
 
     @Override
