@@ -1,6 +1,7 @@
 package org.ea.sqrl.activites;
 
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -8,6 +9,9 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.media.AudioAttributes;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -78,6 +82,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         setupRenamePopupWindow(layoutInflater);
         setupImportPopupWindow(layoutInflater);
 
+        /*
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
         integrator.setPrompt(this.getString(R.string.button_scan_secret));
@@ -107,6 +112,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     integrator.initiateScan();
                 }
         );
+        */
 
         final Button btnSettings = findViewById(R.id.btnSettings);
         btnSettings.setOnClickListener(
@@ -266,8 +272,17 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 
             String CHANNEL_ID = "my_channel_01";
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_DEFAULT);
+                notificationChannel.setDescription("Channel description");
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
+
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(this, CHANNEL_ID)
+                            .setDefaults(Notification.DEFAULT_LIGHTS)
                             .setSmallIcon(R.drawable.ic_stat_sqrl_logo_vector_outline)
                             .setContentTitle(getString(R.string.notification_identity_unlocked))
                             .setContentText(getString(R.string.notification_identity_unlocked_desc));
@@ -283,6 +298,8 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                             PendingIntent.FLAG_UPDATE_CURRENT
                     );
             mBuilder.setContentIntent(resultPendingIntent);
+            mBuilder.setAutoCancel(true);
+
             NotificationManager mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -292,6 +309,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     this,
                     NotificationChannel.DEFAULT_CHANNEL_ID
             )
+                    .setDefaults(Notification.DEFAULT_LIGHTS)
                     .setSmallIcon(R.drawable.ic_stat_sqrl_logo_vector_outline)
                     .setContentTitle(getString(R.string.notification_identity_unlocked))
                     .setContentText(getString(R.string.notification_identity_unlocked_desc));
@@ -305,6 +323,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                             PendingIntent.FLAG_UPDATE_CURRENT
                     );
             mBuilder.setContentIntent(resultPendingIntent);
+            mBuilder.setAutoCancel(true);
 
             NotificationManager mNotifyMgr =
                     (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
