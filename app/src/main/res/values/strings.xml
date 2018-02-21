@@ -129,4 +129,6 @@ Daniel Persson
     <string name="notification_identity_unlocked">Identity unlocked</string>
     <string name="clear_identity_fail">Identity was not cleared</string>
     <string name="clear_identity_success">Identity is cleared</string>
+    <string name="decrypt_identity_fail">Decrypting identity failed, please try with another password.</string>
+    <string name="encrypt_identity_fail">Encryption of your newly imported identity failed, please try again</string>
 </resources>

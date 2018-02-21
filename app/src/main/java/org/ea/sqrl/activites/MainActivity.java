@@ -220,14 +220,20 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             try {
                 boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString());
                 if(!decryptStatus) {
-                    System.out.println("Could not decrypt identity");
+                    handler.post(() -> {
+                        Toast.makeText(this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG);
+                        txtPassword.setText("");
+                    });
                     return;
                 }
 
                 if(!useIdentity) {
                     boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
                     if (!encryptStatus) {
-                        System.out.println("Could not encrypt identity");
+                        handler.post(() -> {
+                            Toast.makeText(this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG);
+                            txtPassword.setText("");
+                        });
                         return;
                     }
                     storage.clear();
@@ -250,7 +256,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
             handler.post(() -> {
                 updateSpinnerData(newIdentityId);
-
                 txtPassword.setText("");
                 decryptPopupWindow.dismiss();
             });
@@ -396,10 +401,12 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 byte[] qrCodeData = EncryptionUtils.readSQRLQRCode(result.getRawBytes());
                 try {
                     storage.read(qrCodeData, true);
-                    final TextView txtRecoveryKey = decryptPopupWindow.getContentView().findViewById(R.id.txtRecoveryKey);
-                    txtRecoveryKey.setText(storage.getVerifyingRecoveryBlock());
-                    decryptPopupWindow.showAtLocation(decryptPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
 
+                    handler.postDelayed(() -> {
+                        final TextView txtRecoveryKey = decryptPopupWindow.getContentView().findViewById(R.id.txtRecoveryKey);
+                        txtRecoveryKey.setText(storage.getVerifyingRecoveryBlock());
+                        decryptPopupWindow.showAtLocation(decryptPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                    }, 100);
                 } catch (Exception e) {
                     System.out.println("ERROR: " + e.getMessage());
                     e.printStackTrace();
