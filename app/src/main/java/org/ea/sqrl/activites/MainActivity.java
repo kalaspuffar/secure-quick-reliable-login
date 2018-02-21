@@ -1,12 +1,17 @@
 package org.ea.sqrl.activites;
 
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -52,6 +57,8 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        showClearNotification();
 
         cboxIdentity = findViewById(R.id.cboxIdentity);
         identities = mDbHelper.getIdentitys();
@@ -249,11 +256,61 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             updateSpinnerData(newIdentityId);
 
             if(useIdentity) {
+                showClearNotification();
                 startActivity(new Intent(this, LoginActivity.class));
             }
         }).start());
     }
 
+    public void showClearNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+
+            String CHANNEL_ID = "my_channel_01";
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(this, CHANNEL_ID)
+                            .setSmallIcon(R.drawable.ic_stat_sqrl_logo_vector_outline)
+                            .setContentTitle(getString(R.string.notification_identity_unlocked))
+                            .setContentText(getString(R.string.notification_identity_unlocked_desc));
+
+            Intent resultIntent = new Intent(this, ClearIdentityActivity.class);
+
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+            stackBuilder.addParentStack(ClearIdentityActivity.class);
+            stackBuilder.addNextIntent(resultIntent);
+            PendingIntent resultPendingIntent =
+                    stackBuilder.getPendingIntent(
+                            0,
+                            PendingIntent.FLAG_UPDATE_CURRENT
+                    );
+            mBuilder.setContentIntent(resultPendingIntent);
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+            mNotificationManager.notify(NOTIFICATION_IDENTITY_UNLOCKED, mBuilder.build());
+        } else {
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+                    this,
+                    NotificationChannel.DEFAULT_CHANNEL_ID
+            )
+                    .setSmallIcon(R.drawable.ic_stat_sqrl_logo_vector_outline)
+                    .setContentTitle(getString(R.string.notification_identity_unlocked))
+                    .setContentText(getString(R.string.notification_identity_unlocked_desc));
+
+            Intent resultIntent = new Intent(this, ClearIdentityActivity.class);
+            PendingIntent resultPendingIntent =
+                    PendingIntent.getActivity(
+                            this,
+                            0,
+                            resultIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT
+                    );
+            mBuilder.setContentIntent(resultPendingIntent);
+
+            NotificationManager mNotifyMgr =
+                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            mNotifyMgr.notify(NOTIFICATION_IDENTITY_UNLOCKED, mBuilder.build());
+        }
+    }
 
     public void showNotImplementedDialog() {
         AlertDialog.Builder builder;

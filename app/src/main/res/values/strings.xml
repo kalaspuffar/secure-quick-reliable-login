@@ -54,7 +54,7 @@ But PLEASE do make backups, since NO ONE knows your unique 77-digit private iden
     <string name="title_activity_scan_secret">ScanSecretActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="title_activity_start">SQRL - Welcome</string>
+    <string name="title_activity_start">SQRL</string>
     <string name="welcome_message"><b>Welcome to the Secure Quick Reliable Login client.</b>
 This client will store your encrypted keys securely on this device. Then you may open your vault and use one of the keys to authenticate yourself to a server.
 
@@ -124,4 +124,9 @@ Daniel Persson
     <string name="current_identity_title">Current identity</string>
     <string name="import_password_title">Please enter password to import</string>
     <string name="button_start_import">Scan a new identity</string>
+    <string name="title_activity_clear_identity">SQRL - Clear unlocked identity</string>
+    <string name="notification_identity_unlocked_desc">Your identity is unlocked and available in your device memory. To be secure it should be removed after use. Click here to clear your identity from memory.</string>
+    <string name="notification_identity_unlocked">Identity unlocked</string>
+    <string name="clear_identity_fail">Identity was not cleared</string>
+    <string name="clear_identity_success">Identity is cleared</string>
 </resources>
