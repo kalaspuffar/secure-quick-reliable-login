@@ -27,10 +27,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activites.DecryptingActivity"
-            android:label="@string/title_activity_decrypting"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activites.LoginActivity"
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait" />

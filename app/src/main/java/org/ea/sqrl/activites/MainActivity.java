@@ -62,8 +62,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        showClearNotification();
-
         cboxIdentity = findViewById(R.id.cboxIdentity);
         identities = mDbHelper.getIdentitys();
 
@@ -82,7 +80,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         setupRenamePopupWindow(layoutInflater);
         setupImportPopupWindow(layoutInflater);
 
-        /*
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
         integrator.setPrompt(this.getString(R.string.button_scan_secret));
@@ -114,7 +111,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     integrator.initiateScan();
                 }
         );
-        */
 
         final Button btnSettings = findViewById(R.id.btnSettings);
         btnSettings.setOnClickListener(
@@ -143,7 +139,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         final Button btnRename = findViewById(R.id.btnRename);
         btnRename.setOnClickListener(
-                v -> renamePopupWindow.showAtLocation(this.getCurrentFocus(), Gravity.CENTER, 0, 0)
+                v -> renamePopupWindow.showAtLocation(renamePopupWindow.getContentView(), Gravity.CENTER, 0, 0)
         );
 
         final Button btnExport = findViewById(R.id.btnExport);
@@ -234,9 +230,10 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                         System.out.println("Could not encrypt identity");
                         return;
                     }
+                    storage.clear();
+                } else {
+                    showClearNotification();
                 }
-                storage.clear();
-
             } catch (Exception e) {
                 System.out.println("ERROR: " + e.getMessage());
                 e.printStackTrace();
@@ -259,7 +256,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             });
 
             if(useIdentity) {
-                showClearNotification();
                 startActivity(new Intent(this, LoginActivity.class));
             }
         }).start());
