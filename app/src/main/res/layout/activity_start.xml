@@ -16,6 +16,7 @@
         android:layout_marginTop="32dp"
         android:text="@string/welcome_message"
         android:textSize="18sp"
+        android:autoLink="web"
         android:scrollbars = "vertical"
         app:layout_constraintBottom_toTopOf="@+id/btnScanSecret"
         app:layout_constraintEnd_toEndOf="parent"

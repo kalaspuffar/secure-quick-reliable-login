@@ -56,7 +56,11 @@
         <activity
             android:name=".activites.ShowIdentityActivity"
             android:label="@string/title_activity_show_identity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activites.ClearIdentityActivity"
+            android:label="@string/title_activity_clear_identity"
+            android:screenOrientation="portrait" />
             />
     </application>
 

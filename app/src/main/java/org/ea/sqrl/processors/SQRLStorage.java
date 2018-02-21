@@ -408,7 +408,7 @@ public class SQRLStorage {
                 encryptionResult = cipher.doFinal();
                 this.identityMasterKeyEncrypted = Arrays.copyOfRange(encryptionResult, 0, 32);
                 this.identityLockKeyEncrypted = Arrays.copyOfRange(encryptionResult, 32, 64);
-                this.identityVerificationTag = Arrays.copyOfRange(encryptionResult, 64, 76);
+                this.identityVerificationTag = Arrays.copyOfRange(encryptionResult, 64, 80);
             } else {
                 byte[] resultVerificationTag = new byte[12];
 

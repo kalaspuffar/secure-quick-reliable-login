@@ -162,12 +162,8 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intent = null;
-        if(!SQRLStorage.getInstance().hasEncryptedKeys()) {
-            intent = new Intent(this, StartActivity.class);
-        } else if(!SQRLStorage.getInstance().hasKeys()) {
-            intent = new Intent(this, DecryptingActivity.class);
+        if(!SQRLStorage.getInstance().hasKeys()) {
+            startActivity(new Intent(this, MainActivity.class));
         }
-        if(intent != null) startActivity(intent);
     }
 }
