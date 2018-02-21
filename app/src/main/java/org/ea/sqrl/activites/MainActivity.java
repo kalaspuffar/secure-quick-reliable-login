@@ -227,6 +227,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     System.out.println("Could not encrypt identity");
                     return;
                 }
+                storage.clear();
 
             } catch (Exception e) {
                 System.out.println("ERROR: " + e.getMessage());
