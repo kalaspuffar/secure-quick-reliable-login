@@ -391,8 +391,9 @@ public class SQRLStorage {
             entropyHarvester.fetchRandom(this.randomSalt);
 
             byte[] key = new byte[32];
-            iterationCount = EncryptionUtils.enSCrypt(key, password, randomSalt, logNFactor, 32, timeInSecondsToRunPWEnScryptOnPassword, this.progressionUpdater);
-            byte[] identityKeys = EncryptionUtils.combine(identityMasterKeyEncrypted, identityLockKeyEncrypted);
+            Arrays.fill(key, (byte)0);
+            this.iterationCount = EncryptionUtils.enSCrypt(key, password, randomSalt, logNFactor, 32, timeInSecondsToRunPWEnScryptOnPassword, this.progressionUpdater);
+            byte[] identityKeys = EncryptionUtils.combine(identityMasterKey, identityLockKey);
             byte[] encryptionResult = new byte[identityKeys.length + identityVerificationTag.length];
 
             entropyHarvester.fetchRandom(this.initializationVector);

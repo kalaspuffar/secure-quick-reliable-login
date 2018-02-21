@@ -43,6 +43,11 @@ public class ProgressionUpdater {
         return sdf.format(new Date(timeLeftInMilliSeconds));
     }
 
+    public String setTimeLeft(long timeLeftInMilliSeconds) {
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return sdf.format(new Date(timeLeftInMilliSeconds));
+    }
+
     public void incrementProgress() {
         if(dummy) return;
         handler.post(() -> {

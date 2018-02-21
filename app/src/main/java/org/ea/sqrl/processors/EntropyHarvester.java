@@ -16,8 +16,7 @@ public class EntropyHarvester implements Runnable {
     private final SecureRandom sr;
 
     public EntropyHarvester() throws Exception {
-        sr = SecureRandom.getInstance("SHA512");
-        sr.setSeed(System.currentTimeMillis());
+        sr = SecureRandom.getInstance("SHA1PRNG");
     }
 
     public void fetchRandom(byte[] buffer) {

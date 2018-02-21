@@ -44,7 +44,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     private Spinner cboxIdentity;
     private Map<Long, String> identities;
     private PopupWindow renamePopupWindow;
-    private PopupWindow importPopupWindow;
+    private PopupWindow decryptPopupWindow;
     private Button btnUnlockIdentity;
     private boolean useIdentity = false;
 
@@ -89,7 +89,9 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         btnUnlockIdentity.setOnClickListener(
                 v -> {
                     useIdentity = true;
-                    integrator.initiateScan();
+                    final TextView txtRecoveryKey = decryptPopupWindow.getContentView().findViewById(R.id.txtRecoveryKey);
+                    txtRecoveryKey.setText(SQRLStorage.getInstance().getVerifyingRecoveryBlock());
+                    decryptPopupWindow.showAtLocation(decryptPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                 }
         );
 
@@ -190,50 +192,40 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     public void setupImportPopupWindow(LayoutInflater layoutInflater) {
         View popupView = layoutInflater.inflate(R.layout.fragment_decrypt, null);
 
-        importPopupWindow = new PopupWindow(popupView,
+        decryptPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
                 true);
 
-        importPopupWindow.setTouchable(true);
-        importPopupWindow.setFocusable(true);
+        decryptPopupWindow.setTouchable(true);
+        decryptPopupWindow.setFocusable(true);
 
         final ProgressBar pbDecrypting = popupView.findViewById(R.id.pbDecrypting);
         final EditText txtPassword = popupView.findViewById(R.id.txtPassword);
         final Button btnDecryptKey = popupView.findViewById(R.id.btnDecryptKey);
         final TextView progressText = popupView.findViewById(R.id.lblProgressText);
-        final TextView txtRecoveryKey = popupView.findViewById(R.id.txtRecoveryKey);
 
         SQRLStorage storage = SQRLStorage.getInstance();
-        try {
-            storage.setProgressionUpdater(new ProgressionUpdater(handler, pbDecrypting, progressText));
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
-            e.printStackTrace();
-            return;
-        }
-
-        txtRecoveryKey.setText(storage.getVerifyingRecoveryBlock());
+        storage.setProgressionUpdater(new ProgressionUpdater(handler, pbDecrypting, progressText));
 
         btnDecryptKey.setOnClickListener(v -> new Thread(() -> {
             try {
                 boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString());
-                if(decryptStatus) {
+                if(!decryptStatus) {
                     System.out.println("Could not decrypt identity");
                     return;
                 }
 
-                boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
-                if(encryptStatus) {
-                    System.out.println("Could not encrypt identity");
-                    return;
+                if(!useIdentity) {
+                    boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
+                    if (!encryptStatus) {
+                        System.out.println("Could not encrypt identity");
+                        return;
+                    }
                 }
 
             } catch (Exception e) {
                 System.out.println("ERROR: " + e.getMessage());
                 e.printStackTrace();
-            } finally {
-                txtPassword.setText("");
-                importPopupWindow.dismiss();
             }
             long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
 
@@ -245,7 +237,12 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             editor.putLong(getString(R.string.current_id), newIdentityId);
             editor.commit();
 
-            updateSpinnerData(newIdentityId);
+            handler.post(() -> {
+                updateSpinnerData(newIdentityId);
+
+                txtPassword.setText("");
+                decryptPopupWindow.dismiss();
+            });
 
             if(useIdentity) {
                 startActivity(new Intent(this, LoginActivity.class));
@@ -326,7 +323,10 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 byte[] qrCodeData = EncryptionUtils.readSQRLQRCode(result.getRawBytes());
                 try {
                     storage.read(qrCodeData, true);
-                    importPopupWindow.showAtLocation(this.getCurrentFocus(), Gravity.CENTER, 0, 0);
+                    final TextView txtRecoveryKey = decryptPopupWindow.getContentView().findViewById(R.id.txtRecoveryKey);
+                    txtRecoveryKey.setText(storage.getVerifyingRecoveryBlock());
+                    decryptPopupWindow.showAtLocation(decryptPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+
                 } catch (Exception e) {
                     System.out.println("ERROR: " + e.getMessage());
                     e.printStackTrace();
