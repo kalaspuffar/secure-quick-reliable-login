@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.AudioAttributes;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -275,15 +276,21 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_DEFAULT);
                 notificationChannel.setDescription("Channel description");
+                notificationChannel.enableVibration(false);
+                notificationChannel.enableLights(false);
                 notificationManager.createNotificationChannel(notificationChannel);
             }
 
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(this, CHANNEL_ID)
-                            .setDefaults(Notification.DEFAULT_LIGHTS)
                             .setSmallIcon(R.drawable.ic_stat_sqrl_logo_vector_outline)
                             .setContentTitle(getString(R.string.notification_identity_unlocked))
                             .setContentText(getString(R.string.notification_identity_unlocked_desc));
+
+            mBuilder.setAutoCancel(true);
+            long[] v = {};
+            mBuilder.setVibrate(v);
+            mBuilder.setSound(null);
 
             Intent resultIntent = new Intent(this, ClearIdentityActivity.class);
 
@@ -296,7 +303,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                             PendingIntent.FLAG_UPDATE_CURRENT
                     );
             mBuilder.setContentIntent(resultPendingIntent);
-            mBuilder.setAutoCancel(true);
 
             NotificationManager mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
