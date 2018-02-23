@@ -63,6 +63,8 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        showClearNotification();
+
         cboxIdentity = findViewById(R.id.cboxIdentity);
         identities = mDbHelper.getIdentitys();
 
@@ -270,27 +272,31 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     public void showClearNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 
-            String CHANNEL_ID = "my_channel_01";
+            String CHANNEL_ID = "sqrl_notify_01";
 
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_DEFAULT);
-                notificationChannel.setDescription("Channel description");
+                NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "SQRL Notification Channel", NotificationManager.IMPORTANCE_DEFAULT);
                 notificationChannel.enableVibration(false);
                 notificationChannel.enableLights(false);
+                notificationChannel.setSound(null, null);
+
                 notificationManager.createNotificationChannel(notificationChannel);
             }
 
+            long[] v = {};
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(this, CHANNEL_ID)
                             .setSmallIcon(R.drawable.ic_stat_sqrl_logo_vector_outline)
                             .setContentTitle(getString(R.string.notification_identity_unlocked))
-                            .setContentText(getString(R.string.notification_identity_unlocked_desc));
+                            .setContentText(getString(R.string.notification_identity_unlocked_title))
+                            .setAutoCancel(true)
+                            .setVibrate(v)
+                            .setSound(null)
+                            .setStyle(new NotificationCompat.BigTextStyle()
+                                    .bigText(getString(R.string.notification_identity_unlocked_desc)));
 
-            mBuilder.setAutoCancel(true);
-            long[] v = {};
-            mBuilder.setVibrate(v);
-            mBuilder.setSound(null);
+
 
             Intent resultIntent = new Intent(this, ClearIdentityActivity.class);
 
@@ -328,6 +334,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     );
             mBuilder.setContentIntent(resultPendingIntent);
             mBuilder.setAutoCancel(true);
+            mBuilder.setSound(Uri.parse("android.resource://"+getPackageName()+"/raw/silence"));
 
             NotificationManager mNotifyMgr =
                     (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

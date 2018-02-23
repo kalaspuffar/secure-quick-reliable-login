@@ -22,8 +22,8 @@ public class ClearIdentityActivity extends AppCompatActivity {
         final ImageView imgClearIdentity = findViewById(R.id.imgClearIdentity);
         final TextView txtClearIdentity = findViewById(R.id.txtClearIdentity);
 
-        final Drawable failureImage = getResources().getDrawable(android.R.drawable.stat_sys_download_done);
-        final Drawable successImage = getResources().getDrawable(android.R.drawable.stat_notify_error);
+        final Drawable failureImage = getResources().getDrawable(R.drawable.ic_clean_identity_fail);
+        final Drawable successImage = getResources().getDrawable(R.drawable.ic_clean_identity_success);
 
         imgClearIdentity.setImageDrawable(failureImage);
         txtClearIdentity.setText(getString(R.string.clear_identity_fail));

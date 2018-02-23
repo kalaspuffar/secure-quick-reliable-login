@@ -386,7 +386,8 @@ public class SQRLStorage {
      */
     public boolean encryptIdentityKey(String password, EntropyHarvester entropyHarvester) {
         if(!this.hasKeys()) return false;
-        this.progressionUpdater.setMax(iterationCount);
+        this.progressionUpdater.clear();
+
         try {
             entropyHarvester.fetchRandom(this.randomSalt);
 
@@ -398,6 +399,8 @@ public class SQRLStorage {
 
             entropyHarvester.fetchRandom(this.initializationVector);
 
+            this.updateIdentityPlaintext();
+
             if(Build.VERSION.BASE_OS != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Key keySpec = new SecretKeySpec(key, "AES");
                 Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
@@ -406,11 +409,14 @@ public class SQRLStorage {
                 cipher.updateAAD(identityPlaintext);
                 cipher.update(identityKeys);
                 encryptionResult = cipher.doFinal();
+
+                System.out.println(encryptionResult.length);
+
                 this.identityMasterKeyEncrypted = Arrays.copyOfRange(encryptionResult, 0, 32);
                 this.identityLockKeyEncrypted = Arrays.copyOfRange(encryptionResult, 32, 64);
                 this.identityVerificationTag = Arrays.copyOfRange(encryptionResult, 64, 80);
             } else {
-                byte[] resultVerificationTag = new byte[12];
+                byte[] resultVerificationTag = new byte[16];
 
                 Grc_aesgcm.gcm_setkey(key, key.length);
                 int res = Grc_aesgcm.gcm_encrypt_and_tag(
