@@ -27,7 +27,6 @@ public class ProgressionUpdater {
     private boolean dummy = false;
 
     public ProgressionUpdater() {
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         dummy = true;
     }
 
@@ -39,12 +38,14 @@ public class ProgressionUpdater {
     }
 
     public String getTimeLeft() {
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         long timeLeftInMilliSeconds = (endTime - startTime) * (max - progressBar.getProgress());
         return sdf.format(new Date(timeLeftInMilliSeconds));
     }
 
     public void setTimeLeft(long timeLeftInMilliSeconds) {
         handler.post(() -> {
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
             progressText.setTextColor(Color.GRAY);
             progressText.setText("Time left: " + sdf.format(new Date(timeLeftInMilliSeconds)));
         });

@@ -63,8 +63,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        showClearNotification();
-
         cboxIdentity = findViewById(R.id.cboxIdentity);
         identities = mDbHelper.getIdentitys();
 
@@ -247,6 +245,16 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 System.out.println("ERROR: " + e.getMessage());
                 e.printStackTrace();
             }
+
+            if(useIdentity) {
+                startActivity(new Intent(this, LoginActivity.class));
+                handler.post(() -> {
+                    txtPassword.setText("");
+                    decryptPopupWindow.dismiss();
+                });
+                return;
+            }
+
             long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
 
             SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
@@ -263,9 +271,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 decryptPopupWindow.dismiss();
             });
 
-            if(useIdentity) {
-                startActivity(new Intent(this, LoginActivity.class));
-            }
         }).start());
     }
 

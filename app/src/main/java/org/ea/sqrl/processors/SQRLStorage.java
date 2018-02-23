@@ -248,7 +248,7 @@ public class SQRLStorage {
     public boolean decryptIdentityKey(String password) {
         this.progressionUpdater.setMax(iterationCount);
         try {
-            byte[] key = EncryptionUtils.enSCrypt(password, randomSalt, logNFactor, 32, iterationCount, this.progressionUpdater);
+            byte[] key = EncryptionUtils.enSCryptIterations(password, randomSalt, logNFactor, 32, iterationCount, this.progressionUpdater);
             byte[] identityKeys = EncryptionUtils.combine(identityMasterKeyEncrypted, identityLockKeyEncrypted);
             byte[] decryptionResult = new byte[identityKeys.length];
 
@@ -294,7 +294,7 @@ public class SQRLStorage {
         rescueCode = rescueCode.replaceAll("-", "");
 
         try {
-            byte[] key = EncryptionUtils.enSCrypt(rescueCode, rescueRandomSalt, rescueLogNFactor, 32, rescueIterationCount, this.progressionUpdater);
+            byte[] key = EncryptionUtils.enSCryptIterations(rescueCode, rescueRandomSalt, rescueLogNFactor, 32, rescueIterationCount, this.progressionUpdater);
 
             byte[] nullBytes = new byte[12];
             Arrays.fill(nullBytes, (byte)0);
@@ -391,11 +391,12 @@ public class SQRLStorage {
         try {
             entropyHarvester.fetchRandom(this.randomSalt);
 
-            byte[] key = new byte[32];
-            Arrays.fill(key, (byte)0);
-            this.iterationCount = EncryptionUtils.enSCrypt(key, password, randomSalt, logNFactor, 32, timeInSecondsToRunPWEnScryptOnPassword, this.progressionUpdater);
+            byte[] encResult = EncryptionUtils.enSCryptTime(password, randomSalt, logNFactor, 32, timeInSecondsToRunPWEnScryptOnPassword, this.progressionUpdater);
+            this.iterationCount = getIntFromFourBytes(encResult, 0);
+            byte[] key = Arrays.copyOfRange(encResult, 4, 36);
+
             byte[] identityKeys = EncryptionUtils.combine(identityMasterKey, identityLockKey);
-            byte[] encryptionResult = new byte[identityKeys.length + identityVerificationTag.length];
+            byte[] encryptionResult = new byte[identityKeys.length];
 
             entropyHarvester.fetchRandom(this.initializationVector);
 
@@ -409,8 +410,6 @@ public class SQRLStorage {
                 cipher.updateAAD(identityPlaintext);
                 cipher.update(identityKeys);
                 encryptionResult = cipher.doFinal();
-
-                System.out.println(encryptionResult.length);
 
                 this.identityMasterKeyEncrypted = Arrays.copyOfRange(encryptionResult, 0, 32);
                 this.identityLockKeyEncrypted = Arrays.copyOfRange(encryptionResult, 32, 64);
@@ -433,6 +432,7 @@ public class SQRLStorage {
                 this.identityLockKeyEncrypted = Arrays.copyOfRange(encryptionResult, 32, 64);
                 this.identityVerificationTag = resultVerificationTag;
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;

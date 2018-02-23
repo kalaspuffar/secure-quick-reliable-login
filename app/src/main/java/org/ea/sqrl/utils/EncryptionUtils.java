@@ -8,6 +8,8 @@ import com.lambdaworks.crypto.SCrypt;
 import org.ea.sqrl.ProgressionUpdater;
 
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -145,7 +147,7 @@ public class EncryptionUtils {
         return result;
     }
 
-    public static byte[] enSCrypt(String password, byte[] randomSalt, int logNFactor, int dkLen, int iterationCount, ProgressionUpdater progressionUpdater) throws Exception {
+    public static byte[] enSCryptIterations(String password, byte[] randomSalt, int logNFactor, int dkLen, int iterationCount, ProgressionUpdater progressionUpdater) throws Exception {
         progressionUpdater.startTimer();
         byte[] key = SCrypt.scrypt(password.getBytes(), randomSalt, 1 << logNFactor, 256, 1, dkLen);
         progressionUpdater.endTimer();
@@ -162,12 +164,18 @@ public class EncryptionUtils {
         return xorKey;
     }
 
-    public static int enSCrypt(byte[] xorKey, String password, byte[] randomSalt, int logNFactor, int dkLen, int secondsToRun, ProgressionUpdater progressionUpdater) throws Exception {
+    private static byte[] getIntToFourBytes(int input) {
+        return ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(input).array();
+    }
+
+
+    public static byte[] enSCryptTime(String password, byte[] randomSalt, int logNFactor, int dkLen, byte secondsToRun, ProgressionUpdater progressionUpdater) throws Exception {
         long startTime = System.nanoTime();
         progressionUpdater.setMax(1);
         progressionUpdater.setTimeLeft(secondsToRun * 1000);
         byte[] key = SCrypt.scrypt(password.getBytes(), randomSalt, 1 << logNFactor, 256, 1, dkLen);
-        xorKey = xor(key, xorKey);
+
+        byte[] xorKey = Arrays.copyOf(key, key.length);
 
         int iterationCount = 1;
         long time = System.nanoTime() - startTime;
@@ -179,7 +187,7 @@ public class EncryptionUtils {
             iterationCount++;
         }
         progressionUpdater.incrementProgress();
-        return iterationCount;
+        return EncryptionUtils.combine(getIntToFourBytes(iterationCount), xorKey);
     }
 
 
