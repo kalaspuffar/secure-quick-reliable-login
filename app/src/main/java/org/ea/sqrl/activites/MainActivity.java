@@ -79,6 +79,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 .getSystemService(LAYOUT_INFLATER_SERVICE);
 
         setupRenamePopupWindow(layoutInflater);
+        setupLoginPopupWindow(layoutInflater);
         setupImportPopupWindow(layoutInflater);
 
         final IntentIntegrator integrator = new IntentIntegrator(this);
@@ -198,10 +199,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     }
 
     private final CommunicationHandler commHandler = CommunicationHandler.getInstance();
-    private TextView txtSite;
     private TextView txtErrorMessage;
-    private Button btnCreateAccount;
-    private Button btnLogin;
     private String serverData = null;
     private String queryLink = null;
 
@@ -242,6 +240,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         loginPopupWindow.setTouchable(true);
         loginPopupWindow.setFocusable(true);
         final EditText txtLoginPassword = popupView.findViewById(R.id.txtLoginPassword);
+        txtErrorMessage = popupView.findViewById(R.id.txtErrorMessage);
 
         ((Button) popupView.findViewById(R.id.btnLogin))
                 .setOnClickListener(v -> {
@@ -251,7 +250,17 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                             Context.MODE_PRIVATE
                     );
                     long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+
                     if(currentId != 0) {
+
+                        boolean decryptionOk = SQRLStorage.getInstance().decryptIdentityKey(txtLoginPassword.getText().toString());
+                        if(decryptionOk) {
+                            showClearNotification();
+                        } else {
+                            txtErrorMessage.setText(getString(R.string.decrypt_identity_fail));
+                            return;
+                        }
+
                         new Thread(() -> {
                             try {
                                 postQuery(commHandler);
@@ -315,31 +324,18 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     return;
                 }
 
-                if(!useIdentity) {
-                    boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
-                    if (!encryptStatus) {
-                        handler.post(() -> {
-                            Toast.makeText(this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG);
-                            txtPassword.setText("");
-                        });
-                        return;
-                    }
-                    storage.clear();
-                } else {
-                    showClearNotification();
+                boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
+                if (!encryptStatus) {
+                    handler.post(() -> {
+                        Toast.makeText(this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG);
+                        txtPassword.setText("");
+                    });
+                    return;
                 }
+                storage.clear();
             } catch (Exception e) {
                 System.out.println("ERROR: " + e.getMessage());
                 e.printStackTrace();
-            }
-
-            if(useIdentity) {
-                startActivity(new Intent(this, LoginActivity.class));
-                handler.post(() -> {
-                    txtPassword.setText("");
-                    decryptPopupWindow.dismiss();
-                });
-                return;
             }
 
             long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
@@ -512,14 +508,13 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     handler.postDelayed(() -> {
                         final TextView txtSite = loginPopupWindow.getContentView().findViewById(R.id.txtSite);
                         txtSite.setText(domain);
-                        decryptPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                        loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                     }, 100);
                 } else {
                     SQRLStorage storage = SQRLStorage.getInstance();
                     byte[] qrCodeData = EncryptionUtils.readSQRLQRCode(result.getRawBytes());
                     try {
                         storage.read(qrCodeData, true);
-
 
                         handler.postDelayed(() -> {
                             final TextView txtRecoveryKey = decryptPopupWindow.getContentView().findViewById(R.id.txtRecoveryKey);
