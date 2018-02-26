@@ -64,4 +64,9 @@
     <string name="notification_identity_unlocked_title">Your identity is unlocked in your device memory.</string>
     <string name="login_verify_domain_text">Using this protocol you may login to the scanned url. Please check that the scanned domain is the same as the place you want to visit before entering password</string>
     <string name="login_domain_title">Do you want to login to:</string>
+    <string name="change_password_retype">Type password again to verify</string>
+    <string name="change_password_current">Current password</string>
+    <string name="change_password_new_password">Please choose a new password</string>
+    <string name="button_change_password">Change password</string>
+    <string name="change_password_retyped_password_do_not_match">Retyped password don\'t match new password.</string>
 </resources>

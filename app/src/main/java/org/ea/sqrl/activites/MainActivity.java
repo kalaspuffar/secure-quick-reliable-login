@@ -56,7 +56,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     private Button btnUnlockIdentity;
     private boolean useIdentity = false;
     private PopupWindow loginPopupWindow;
-    private boolean loginAction = false;
+    private PopupWindow changePasswordPopupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +81,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         setupRenamePopupWindow(layoutInflater);
         setupLoginPopupWindow(layoutInflater);
         setupImportPopupWindow(layoutInflater);
+        setupChangePasswordPopupWindow(layoutInflater);
 
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
@@ -142,6 +143,11 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 v -> renamePopupWindow.showAtLocation(renamePopupWindow.getContentView(), Gravity.CENTER, 0, 0)
         );
 
+        final Button btnChangePassword = findViewById(R.id.btnChangePassword);
+        btnChangePassword.setOnClickListener(
+                v -> changePasswordPopupWindow.showAtLocation(changePasswordPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
+        );
+
         final Button btnExport = findViewById(R.id.btnExport);
         btnExport.setOnClickListener(
                 v -> new Thread(() -> {
@@ -161,11 +167,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         final Button btnRekey = findViewById(R.id.btnRekey);
         btnRekey.setOnClickListener(
-                v -> showNotImplementedDialog()
-        );
-
-        final Button btnChangePassword = findViewById(R.id.btnChangePassword);
-        btnChangePassword.setOnClickListener(
                 v -> showNotImplementedDialog()
         );
     }
@@ -356,6 +357,71 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         }).start());
     }
+
+    public void setupChangePasswordPopupWindow(LayoutInflater layoutInflater) {
+        View popupView = layoutInflater.inflate(R.layout.fragment_change_password, null);
+
+        changePasswordPopupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
+                true);
+
+        changePasswordPopupWindow.setTouchable(true);
+        changePasswordPopupWindow.setFocusable(true);
+
+        final EditText txtCurrentPassword = popupView.findViewById(R.id.txtCurrentPassword);
+        final EditText txtNewPassword = popupView.findViewById(R.id.txtNewPassword);
+        final EditText txtRetypePassword = popupView.findViewById(R.id.txtRetypePassword);
+        final Button btnChangePassword = popupView.findViewById(R.id.btnChangePassword);
+
+        if(!txtNewPassword.getText().toString().equals(txtRetypePassword.getText().toString())) {
+            Toast.makeText(this, getString(R.string.change_password_retyped_password_do_not_match), Toast.LENGTH_LONG);
+            return;
+        }
+
+        SQRLStorage storage = SQRLStorage.getInstance();
+
+        btnChangePassword.setOnClickListener(v -> new Thread(() -> {
+            try {
+                boolean decryptStatus = storage.decryptIdentityKey(txtCurrentPassword.getText().toString());
+                if(!decryptStatus) {
+                    handler.post(() -> {
+                        Toast.makeText(this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG);
+                        txtCurrentPassword.setText("");
+                    });
+                    return;
+                }
+
+                boolean encryptStatus = storage.encryptIdentityKey(txtNewPassword.getText().toString(), entropyHarvester);
+                if (!encryptStatus) {
+                    handler.post(() -> {
+                        Toast.makeText(this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG);
+                        txtNewPassword.setText("");
+                    });
+                    return;
+                }
+                storage.clear();
+
+                SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
+                        getString(R.string.preferences),
+                        Context.MODE_PRIVATE
+                );
+                long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+                mDbHelper.updateIdentityData(currentId, storage.createSaveData());
+            } catch (Exception e) {
+                System.out.println("ERROR: " + e.getMessage());
+                e.printStackTrace();
+            }
+
+            handler.post(() -> {
+                txtCurrentPassword.setText("");
+                txtNewPassword.setText("");
+                txtRetypePassword.setText("");
+                changePasswordPopupWindow.dismiss();
+            });
+
+        }).start());
+    }
+
 
     public void showClearNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
