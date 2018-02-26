@@ -132,4 +132,6 @@ Daniel Persson
     <string name="decrypt_identity_fail">Decrypting identity failed, please try with another password.</string>
     <string name="encrypt_identity_fail">Encryption of your newly imported identity failed, please try again</string>
     <string name="notification_identity_unlocked_title">Your identity is unlocked in your device memory.</string>
+    <string name="login_verify_domain_text">Using this protocol you may login to the scanned url. Please check that the scanned domain is the same as the place you want to visit before entering password</string>
+    <string name="login_domain_title">Do you want to login to:</string>
 </resources>

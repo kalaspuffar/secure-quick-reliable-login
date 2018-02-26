@@ -44,8 +44,9 @@
             android:layout_marginTop="16dp"
             android:text="@string/button_login"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtSite" />
+            app:layout_constraintTop_toBottomOf="@+id/txtLoginPassword" />
 
         <TextView
             android:id="@+id/textView3"
@@ -53,8 +54,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
-            android:text="Do you want to login to:"
+            android:layout_marginTop="16dp"
+            android:text="@string/login_domain_title"
             android:textAlignment="center"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -68,7 +69,7 @@
             android:layout_marginEnd="24dp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="32dp"
-            android:text="Using this protocol you may login to the scanned url. Please check that the scanned domain is the same as the place you want to visit"
+            android:text="@string/login_verify_domain_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -84,6 +85,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
+
+        <EditText
+            android:id="@+id/txtLoginPassword"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:inputType="textCapCharacters|textPassword"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtSite" />
 
 
     </android.support.constraint.ConstraintLayout>

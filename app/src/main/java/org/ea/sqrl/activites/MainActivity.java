@@ -9,9 +9,6 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.media.AudioAttributes;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,6 +34,7 @@ import com.google.zxing.integration.android.IntentResult;
 
 import org.ea.sqrl.ProgressionUpdater;
 import org.ea.sqrl.R;
+import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.EncryptionUtils;
 
@@ -57,6 +55,8 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     private PopupWindow decryptPopupWindow;
     private Button btnUnlockIdentity;
     private boolean useIdentity = false;
+    private PopupWindow loginPopupWindow;
+    private boolean loginAction = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,9 +99,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         btnUnlockIdentity.setOnClickListener(
                 v -> {
                     useIdentity = true;
-                    final TextView txtRecoveryKey = decryptPopupWindow.getContentView().findViewById(R.id.txtRecoveryKey);
-                    txtRecoveryKey.setText(SQRLStorage.getInstance().getVerifyingRecoveryBlock());
-                    decryptPopupWindow.showAtLocation(decryptPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                    integrator.initiateScan();
                 }
         );
 
@@ -196,6 +194,95 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     }
                     txtIdentityName.setText("");
                     renamePopupWindow.dismiss();
+                });
+    }
+
+    private final CommunicationHandler commHandler = CommunicationHandler.getInstance();
+    private TextView txtSite;
+    private TextView txtErrorMessage;
+    private Button btnCreateAccount;
+    private Button btnLogin;
+    private String serverData = null;
+    private String queryLink = null;
+
+    private void postQuery(CommunicationHandler commHandler) throws Exception {
+        String postData = commHandler.createPostParams(commHandler.createClientQuery(), serverData);
+        commHandler.postRequest(queryLink, postData);
+        serverData = commHandler.getResponse();
+        queryLink = commHandler.getQueryLink();
+        handler.post(() -> txtErrorMessage.setText(commHandler.getErrorMessage(this)));
+        commHandler.printParams();
+    }
+
+    private void postCreateAccount(CommunicationHandler commHandler) throws Exception {
+        String postData = commHandler.createPostParams(commHandler.createClientCreateAccount(), serverData);
+        commHandler.postRequest(queryLink, postData);
+        serverData = commHandler.getResponse();
+        queryLink = commHandler.getQueryLink();
+        handler.post(() -> txtErrorMessage.setText(commHandler.getErrorMessage(this)));
+        commHandler.printParams();
+    }
+
+    private void postLogin(CommunicationHandler commHandler) throws Exception {
+        String postData = commHandler.createPostParams(commHandler.createClientLogin(), serverData);
+        commHandler.postRequest(queryLink, postData);
+        serverData = commHandler.getResponse();
+        queryLink = commHandler.getQueryLink();
+        handler.post(() -> txtErrorMessage.setText(commHandler.getErrorMessage(this)));
+        commHandler.printParams();
+    }
+
+    public void setupLoginPopupWindow(LayoutInflater layoutInflater) {
+        View popupView = layoutInflater.inflate(R.layout.fragment_login, null);
+
+        loginPopupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
+                true);
+
+        loginPopupWindow.setTouchable(true);
+        loginPopupWindow.setFocusable(true);
+        final EditText txtLoginPassword = popupView.findViewById(R.id.txtLoginPassword);
+
+        ((Button) popupView.findViewById(R.id.btnLogin))
+                .setOnClickListener(v -> {
+
+                    SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
+                            getString(R.string.preferences),
+                            Context.MODE_PRIVATE
+                    );
+                    long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+                    if(currentId != 0) {
+                        new Thread(() -> {
+                            try {
+                                postQuery(commHandler);
+
+                                if(
+                                    commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
+                                    commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
+                                ) {
+                                    postLogin(commHandler);
+                                } else if(commHandler.isTIFZero()){
+                                    postCreateAccount(commHandler);
+                                } else {
+                                    txtLoginPassword.setText("");
+                                    handler.post(() -> txtErrorMessage.setText(commHandler.getErrorMessage(this)));
+                                }
+                            } catch (Exception e) {
+                                handler.post(() -> {
+                                    txtErrorMessage.setText(e.getMessage());
+                                });
+                                e.printStackTrace();
+                                return;
+                            }
+
+                            handler.post(() -> {
+                                txtErrorMessage.setText("");
+                                txtLoginPassword.setText("");
+                                loginPopupWindow.dismiss();
+                            });
+
+                        }).start();
+                    }
                 });
     }
 
@@ -415,20 +502,35 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 Log.d("MainActivity", "Cancelled scan");
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
-                SQRLStorage storage = SQRLStorage.getInstance();
-                byte[] qrCodeData = EncryptionUtils.readSQRLQRCode(result.getRawBytes());
-                try {
-                    storage.read(qrCodeData, true);
+                if(useIdentity) {
+                    serverData = EncryptionUtils.readSQRLQRCodeAsString(result.getRawBytes());
+                    int indexOfQuery = serverData.indexOf("/", serverData.indexOf("://") + 3);
+                    queryLink = serverData.substring(indexOfQuery);
+                    final String domain = serverData.split("/")[2];
+                    commHandler.setDomain(domain);
 
                     handler.postDelayed(() -> {
-                        final TextView txtRecoveryKey = decryptPopupWindow.getContentView().findViewById(R.id.txtRecoveryKey);
-                        txtRecoveryKey.setText(storage.getVerifyingRecoveryBlock());
-                        decryptPopupWindow.showAtLocation(decryptPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                        final TextView txtSite = loginPopupWindow.getContentView().findViewById(R.id.txtSite);
+                        txtSite.setText(domain);
+                        decryptPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                     }, 100);
-                } catch (Exception e) {
-                    System.out.println("ERROR: " + e.getMessage());
-                    e.printStackTrace();
-                    return;
+                } else {
+                    SQRLStorage storage = SQRLStorage.getInstance();
+                    byte[] qrCodeData = EncryptionUtils.readSQRLQRCode(result.getRawBytes());
+                    try {
+                        storage.read(qrCodeData, true);
+
+
+                        handler.postDelayed(() -> {
+                            final TextView txtRecoveryKey = decryptPopupWindow.getContentView().findViewById(R.id.txtRecoveryKey);
+                            txtRecoveryKey.setText(storage.getVerifyingRecoveryBlock());
+                            decryptPopupWindow.showAtLocation(decryptPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                        }, 100);
+                    } catch (Exception e) {
+                        System.out.println("ERROR: " + e.getMessage());
+                        e.printStackTrace();
+                        return;
+                    }
                 }
             }
         }
