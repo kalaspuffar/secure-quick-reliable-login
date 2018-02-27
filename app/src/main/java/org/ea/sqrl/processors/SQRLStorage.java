@@ -1,7 +1,7 @@
 package org.ea.sqrl.processors;
 
 import android.os.Build;
-import org.ea.sqrl.ProgressionUpdater;
+
 import org.ea.sqrl.jni.Grc_aesgcm;
 import org.ea.sqrl.utils.EncryptionUtils;
 
@@ -575,6 +575,60 @@ public class SQRLStorage {
 
     public boolean hasIdentityBlock() {
         return hasIdentityBlock;
+    }
+
+    public void setHintLength(int hintLength) {
+        this.hintLength = (byte)hintLength;
+    }
+
+    public void setPasswordVerify(int passwordVerify) {
+        this.timeInSecondsToRunPWEnScryptOnPassword = (byte)passwordVerify;
+    }
+
+    public void setIdleTimeout(int idleTimeout) {
+        this.idleTimoutInMinutes = idleTimeout;
+    }
+
+    public void setSQRLOnly(boolean SQRLOnly) {
+        System.out.println("Before: "+ optionFlags);
+        if(SQRLOnly) {
+            optionFlags |= 1 << 2;
+        } else {
+            optionFlags &= ~(1 << 2);
+        }
+
+        System.out.println("After: "+ optionFlags);
+    }
+
+    public void setNoByPass(boolean noByPass) {
+        System.out.println("Before: "+ optionFlags);
+        if(noByPass) {
+            optionFlags |= 1 << 3;
+        } else {
+            optionFlags &= ~(1 << 3);
+        }
+
+        System.out.println("After: "+ optionFlags);
+    }
+
+    public int getHintLength() {
+        return this.hintLength;
+    }
+
+    public int getPasswordVerify() {
+        return this.timeInSecondsToRunPWEnScryptOnPassword;
+    }
+
+    public int getIdleTimeout()  {
+        return this.idleTimoutInMinutes;
+    }
+
+    public boolean isSQRLOnly() {
+        return ((optionFlags >> 2) & 1) == 1;
+    }
+
+    public boolean isNoByPass() {
+        return ((optionFlags >> 3) & 1) == 1;
     }
 }
 

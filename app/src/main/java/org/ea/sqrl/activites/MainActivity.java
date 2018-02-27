@@ -32,7 +32,7 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import org.ea.sqrl.ProgressionUpdater;
+import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;

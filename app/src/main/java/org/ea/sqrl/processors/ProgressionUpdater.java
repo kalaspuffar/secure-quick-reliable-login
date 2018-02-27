@@ -1,4 +1,4 @@
-package org.ea.sqrl;
+package org.ea.sqrl.processors;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;

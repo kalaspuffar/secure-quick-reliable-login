@@ -1,29 +1,15 @@
 package org.ea.sqrl.activites;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
-
-import org.ea.sqrl.ProgressionUpdater;
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Hashtable;
 
 import io.nayuki.qrcodegen.QrCode;
 
@@ -65,9 +51,7 @@ public class ShowIdentityActivity extends BaseActivity {
         txtIdentityText.setText(storage.getVerifyingRecoveryBlock());
 
         final Button btnCloseIdentity = findViewById(R.id.btnCloseIdentity);
-        btnCloseIdentity.setOnClickListener(v -> {
-            ShowIdentityActivity.this.finish();
-        });
+        btnCloseIdentity.setOnClickListener(v -> ShowIdentityActivity.this.finish());
 
         ImageView imageView = findViewById(R.id.imgQRCode);
         Bitmap bitmap = QrCode.encodeBinary(storage.createSaveData(), QrCode.Ecc.MEDIUM).toImage(10, 0);

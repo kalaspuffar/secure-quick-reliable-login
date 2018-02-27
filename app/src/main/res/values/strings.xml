@@ -68,4 +68,17 @@
     <string name="change_password_current">Current password</string>
     <string name="change_password_new_password">Please choose a new password</string>
     <string name="change_password_retyped_password_do_not_match">Retyped password don\'t match new password.</string>
+    <string name="title_activity_settings">SQRL - Settings</string>
+    <string name="settings_hint_length">hint length (characters)</string>
+    <string name="settings_password_verify">password verify (seconds)</string>
+    <string name="settings_idle_timeout">idle timeout (minutes)</string>
+    <string name="settings_sqrl_only">Request SQRL only login</string>
+    <string name="settings_no_sqrl_bypass">Request no SQRL bypass</string>
+    <string name="settings_save">Save</string>
+    <string name="settings_cancel">Cancel</string>
+    <string name="settings_fragment_save">Save</string>
+    <string name="settings_hint_length_not_number">hint length input is not a number</string>
+    <string name="settings_idle_timeout_not_number">Idle timeout input is not a number</string>
+    <string name="settings_password_verify_not_number">Password verify input is not a number</string>
+    <string name="settings_hint_length_to_large">Hint length value is to large. (0-255)</string>
 </resources>

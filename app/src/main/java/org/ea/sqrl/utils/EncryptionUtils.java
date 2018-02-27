@@ -5,7 +5,7 @@ import android.util.Base64;
 
 import com.lambdaworks.crypto.SCrypt;
 
-import org.ea.sqrl.ProgressionUpdater;
+import org.ea.sqrl.processors.ProgressionUpdater;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
