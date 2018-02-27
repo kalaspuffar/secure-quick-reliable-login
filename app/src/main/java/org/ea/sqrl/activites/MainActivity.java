@@ -115,7 +115,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         final Button btnSettings = findViewById(R.id.btnSettings);
         btnSettings.setOnClickListener(
-                v -> showNotImplementedDialog()
+                v -> startActivity(new Intent(this, SettingsActivity.class))
         );
 
         final Button btnCreate = findViewById(R.id.btnCreate);
