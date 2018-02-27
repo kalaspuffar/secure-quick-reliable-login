@@ -1,21 +1,52 @@
 package org.ea.sqrl.processors;
 
 import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.util.Log;
+
+import net.i2p.crypto.eddsa.EdDSAEngine;
+import net.i2p.crypto.eddsa.EdDSAPrivateKey;
+import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
+import net.i2p.crypto.eddsa.spec.EdDSAParameterSpec;
+import net.i2p.crypto.eddsa.spec.EdDSAPrivateKeySpec;
 
 import org.ea.sqrl.jni.Grc_aesgcm;
 import org.ea.sqrl.utils.EncryptionUtils;
 
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.security.AlgorithmParameters;
 import java.security.Key;
+import java.security.KeyFactory;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.Signature;
+import java.security.spec.ECGenParameterSpec;
+import java.security.spec.ECPrivateKeySpec;
+import java.security.spec.ECPublicKeySpec;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 import java.util.Random;
 
+import javax.crypto.AEADBadTagException;
 import javax.crypto.Cipher;
+import javax.crypto.KeyAgreement;
 import javax.crypto.Mac;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.DHPrivateKeySpec;
+import javax.crypto.spec.DHPublicKeySpec;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+
+import br.eti.balena.security.ecdh.curve25519.Curve25519;
+import br.eti.balena.security.ecdh.curve25519.Curve25519KeyAgreement;
+import br.eti.balena.security.ecdh.curve25519.Curve25519PrivateKey;
+import br.eti.balena.security.ecdh.curve25519.Curve25519PublicKey;
 
 /**
  * This class handles the S4 Storage data. We can load identities from disk, QRCode or pure
@@ -31,6 +62,7 @@ public class SQRLStorage {
     private static final int PREVIOUS_IDENTITY_KEYS = 3;
     private static final int HEADER_LENGTH = 8;
     private static final int BLOCK_SIZE_LENGTH = 2;
+    private static final String STORAGE_TAG = "SQRLStorage";
     private ProgressionUpdater progressionUpdater;
     private int passwordBlockLength = 0;
     private static SQRLStorage instance = null;
@@ -252,14 +284,18 @@ public class SQRLStorage {
             byte[] identityKeys = EncryptionUtils.combine(identityMasterKeyEncrypted, identityLockKeyEncrypted);
             byte[] decryptionResult = new byte[identityKeys.length];
 
-            if(Build.VERSION.BASE_OS != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (Build.VERSION.BASE_OS != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Key keySpec = new SecretKeySpec(key, "AES");
                 Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
                 GCMParameterSpec params = new GCMParameterSpec(128, initializationVector);
                 cipher.init(Cipher.DECRYPT_MODE, keySpec, params);
                 cipher.updateAAD(identityPlaintext);
                 cipher.update(identityKeys);
-                decryptionResult = cipher.doFinal(identityVerificationTag);
+                try {
+                    decryptionResult = cipher.doFinal(identityVerificationTag);
+                } catch (AEADBadTagException badTag) {
+                    return false;
+                }
             } else {
                 Grc_aesgcm.gcm_setkey(key, key.length);
                 int res = Grc_aesgcm.gcm_auth_decrypt(
@@ -275,9 +311,8 @@ public class SQRLStorage {
 
             identityMasterKey = Arrays.copyOfRange(decryptionResult, 0, 32);
             identityLockKey = Arrays.copyOfRange(decryptionResult, 32, 64);
-
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(SQRLStorage.STORAGE_TAG, e.getMessage(), e);
             return false;
         }
         return true;
@@ -306,7 +341,11 @@ public class SQRLStorage {
                 cipher.init(Cipher.DECRYPT_MODE, keySpec, params);
                 cipher.updateAAD(rescuePlaintext);
                 cipher.update(rescueIdentityLockKeyEncrypted);
-                rescueIdentityLockKey = cipher.doFinal(rescueVerificationTag);
+                try {
+                    rescueIdentityLockKey = cipher.doFinal(rescueVerificationTag);
+                } catch (AEADBadTagException badTag) {
+                    return false;
+                }
             } else {
                 Grc_aesgcm.gcm_setkey(key, key.length);
                 int res = Grc_aesgcm.gcm_auth_decrypt(
@@ -321,7 +360,7 @@ public class SQRLStorage {
                 if (res == 0x55555555) return false;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(SQRLStorage.STORAGE_TAG, e.getMessage(), e);
             return false;
         }
         return true;
@@ -533,55 +572,37 @@ public class SQRLStorage {
         return result;
     }
 
-    public static void main(String[] args) {
-        try {
-            //String rawQRCodeData = "71a48c7371726c3a2f2f7371";
-            String rawQRCodeData = "4ce7371726c646174617d0001002d0031d32536a67c4661faef7631d4a7854da64297af4bda01438eca39a40921000000f10104010f0085de0eea7b76134eee4e0b2d638955ad5fd253d857c86177151d30a956182abc55b80316da5c22fcc9b92c4f5a4850f5a4ecb6b948f05b297de13b1a7698cbee461c5e7ef0f8759e659a7ad853555be64900020079d1d5da2d4b046212f43da2f7b0a39709ca000000d5dd50893d516c8175291f7d905b5bf5636d26fee5d3f8801375f7824b09a2a824de7fc41451ca13e610d5591d568db60ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11";
-            byte[] bytesArray = EncryptionUtils.readSQRLQRCode(EncryptionUtils.hex2Byte(rawQRCodeData));
-
-            SQRLStorage storage = SQRLStorage.getInstance();
-            storage.read(bytesArray, true);
-
-            byte[] saveData = storage.createSaveData();
-
-            System.out.println(EncryptionUtils.byte2hex(bytesArray));
-            System.out.println(EncryptionUtils.byte2hex(saveData));
-
-            System.out.println(Arrays.equals(bytesArray, saveData));
-
-            /*
-            File file = new File("Testing.sqrl");
-            byte[] bytesArray = new byte[(int) file.length()];
-
-            FileInputStream fis = new FileInputStream(file);
-            fis.read(bytesArray);
-            fis.close();
-
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update("tfJ8CRxisuQQGY3KRcv".getBytes("US-ASCII"));
-            md.update((byte)0);
-            BigInteger reminder = new BigInteger(1, md.digest()).mod(BigInteger.valueOf(56));
-            System.out.println(reminder.intValue());
-
-            System.out.println(EncryptionUtils.byte2hex(bytesArray));
-            SQRLStorage storage = SQRLStorage.getInstance();
-            storage.read(bytesArray, true);
-            //storage.decryptIdentityKey("Testing1234");
-            */
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 
     public String getServerUnlockKey(EntropyHarvester entropyHarvester) {
         /*
         VerifyUnlock := 	SignPublic( DHKA( IdentityLock, RandomLock ))
 ServerUnlock := 	MakePublic( RandomLock )
         */
-        KeyAgreement keyAggreement = KeyAgreement.getInstance("ECDH");
-        
-        
+        try {
+            byte[] randomLock = new byte[32];
+            entropyHarvester.fetchRandom(randomLock);
+
+            Curve25519KeyAgreement keyAgreement = new Curve25519KeyAgreement(new Curve25519PrivateKey(this.identityLockKey));
+            keyAgreement.doFinal(new Curve25519PublicKey(randomLock));
+            byte[] bytesToSign = keyAgreement.generateSecret();
+
+
+            EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
+            EdDSAPrivateKeySpec serverUnlock = new EdDSAPrivateKeySpec(randomLock, spec);
+            EdDSAPrivateKeySpec verifyUnlock = new EdDSAPrivateKeySpec(bytesToSign, spec);
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("suk=");
+            sb.append(EncryptionUtils.encodeUrlSafe(serverUnlock.getA().toByteArray()));
+            sb.append("\r\n");
+            sb.append("vuk=");
+            sb.append(EncryptionUtils.encodeUrlSafe(verifyUnlock.getA().toByteArray()));
+            sb.append("\r\n");
+            return sb.toString();
+        } catch (Exception e) {
+            Log.e(SQRLStorage.STORAGE_TAG, e.getMessage(), e);
+        }
+        return "";
     }
 
     public boolean hasIdentityBlock() {
@@ -641,7 +662,49 @@ ServerUnlock := 	MakePublic( RandomLock )
     public boolean isNoByPass() {
         return ((optionFlags >> 3) & 1) == 1;
     }
+
+
+    public static void main(String[] args) {
+        try {
+            //String rawQRCodeData = "71a48c7371726c3a2f2f7371";
+            String rawQRCodeData = "4ce7371726c646174617d0001002d0031d32536a67c4661faef7631d4a7854da64297af4bda01438eca39a40921000000f10104010f0085de0eea7b76134eee4e0b2d638955ad5fd253d857c86177151d30a956182abc55b80316da5c22fcc9b92c4f5a4850f5a4ecb6b948f05b297de13b1a7698cbee461c5e7ef0f8759e659a7ad853555be64900020079d1d5da2d4b046212f43da2f7b0a39709ca000000d5dd50893d516c8175291f7d905b5bf5636d26fee5d3f8801375f7824b09a2a824de7fc41451ca13e610d5591d568db60ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11";
+            byte[] bytesArray = EncryptionUtils.readSQRLQRCode(EncryptionUtils.hex2Byte(rawQRCodeData));
+
+            SQRLStorage storage = SQRLStorage.getInstance();
+            storage.read(bytesArray, true);
+
+            byte[] saveData = storage.createSaveData();
+
+            System.out.println(EncryptionUtils.byte2hex(bytesArray));
+            System.out.println(EncryptionUtils.byte2hex(saveData));
+
+            System.out.println(Arrays.equals(bytesArray, saveData));
+
+            /*
+            File file = new File("Testing.sqrl");
+            byte[] bytesArray = new byte[(int) file.length()];
+
+            FileInputStream fis = new FileInputStream(file);
+            fis.read(bytesArray);
+            fis.close();
+
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update("tfJ8CRxisuQQGY3KRcv".getBytes("US-ASCII"));
+            md.update((byte)0);
+            BigInteger reminder = new BigInteger(1, md.digest()).mod(BigInteger.valueOf(56));
+            System.out.println(reminder.intValue());
+
+            System.out.println(EncryptionUtils.byte2hex(bytesArray));
+            SQRLStorage storage = SQRLStorage.getInstance();
+            storage.read(bytesArray, true);
+            //storage.decryptIdentityKey("Testing1234");
+            */
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
+
 
 /*
         sqrldata – lowercase signature means binary follows             8 bytes

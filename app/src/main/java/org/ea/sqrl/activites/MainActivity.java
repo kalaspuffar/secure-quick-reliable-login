@@ -214,7 +214,10 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     }
 
     private void postCreateAccount(CommunicationHandler commHandler) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientCreateAccount(), serverData);
+        String postData = commHandler.createPostParams(
+                commHandler.createClientCreateAccount(entropyHarvester),
+                serverData
+        );
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();

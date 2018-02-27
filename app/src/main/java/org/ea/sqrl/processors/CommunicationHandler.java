@@ -74,11 +74,14 @@ public class CommunicationHandler {
         return sb.toString();
     }
 
-    public String createClientCreateAccount() throws Exception {
+    public String createClientCreateAccount(EntropyHarvester entropyHarvester) throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=ident\r\n");
+
+        sb.append(storage.getServerUnlockKey(entropyHarvester));
+
         EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
         EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(storage.getPrivateKey(domain), spec);
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(privKey.getA().toByteArray()));
