@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.widget.Button;
@@ -38,7 +39,7 @@ public class StartActivity extends BaseActivity {
         }
 
         final TextView txtWelcomeMessage = findViewById(R.id.txtWelcomeMessage);
-        txtWelcomeMessage.setMovementMethod(new ScrollingMovementMethod());
+        txtWelcomeMessage.setMovementMethod(LinkMovementMethod.getInstance());
 
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
