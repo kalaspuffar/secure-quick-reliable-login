@@ -58,7 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:text="@string/button_create_identity"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -102,7 +102,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:text="@string/button_reset_password"
         app:layout_constraintBottom_toTopOf="@+id/btnCreate"
         app:layout_constraintStart_toStartOf="parent" />
@@ -134,11 +134,11 @@
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:text="@string/button_change_password"
-        app:layout_constraintBottom_toTopOf="@+id/btnReset"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnRename" />
 
     <TextView
         android:id="@+id/textView5"
