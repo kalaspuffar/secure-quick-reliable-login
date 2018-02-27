@@ -573,6 +573,17 @@ public class SQRLStorage {
         }
     }
 
+
+    public String getServerUnlockKey(EntropyHarvester entropyHarvester) {
+        /*
+        VerifyUnlock := 	SignPublic( DHKA( IdentityLock, RandomLock ))
+ServerUnlock := 	MakePublic( RandomLock )
+        */
+        KeyAgreement keyAggreement = KeyAgreement.getInstance("ECDH");
+        
+        
+    }
+
     public boolean hasIdentityBlock() {
         return hasIdentityBlock;
     }
