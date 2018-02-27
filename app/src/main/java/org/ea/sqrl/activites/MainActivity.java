@@ -319,7 +319,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString());
                 if(!decryptStatus) {
                     handler.post(() -> {
-                        Toast.makeText(this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG);
+                        Toast.makeText(MainActivity.this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG).show();
                         txtPassword.setText("");
                     });
                     return;
@@ -328,7 +328,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
                 if (!encryptStatus) {
                     handler.post(() -> {
-                        Toast.makeText(this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG);
+                        Toast.makeText(MainActivity.this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG).show();
                         txtPassword.setText("");
                     });
                     return;
@@ -371,46 +371,50 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         final EditText txtCurrentPassword = popupView.findViewById(R.id.txtCurrentPassword);
         final EditText txtNewPassword = popupView.findViewById(R.id.txtNewPassword);
         final EditText txtRetypePassword = popupView.findViewById(R.id.txtRetypePassword);
-        final Button btnChangePassword = popupView.findViewById(R.id.btnChangePassword);
-
-        if(!txtNewPassword.getText().toString().equals(txtRetypePassword.getText().toString())) {
-            Toast.makeText(this, getString(R.string.change_password_retyped_password_do_not_match), Toast.LENGTH_LONG);
-            return;
-        }
 
         SQRLStorage storage = SQRLStorage.getInstance();
 
+        final Button btnChangePassword = popupView.findViewById(R.id.btnDoChangePassword);
         btnChangePassword.setOnClickListener(v -> new Thread(() -> {
-            try {
-                boolean decryptStatus = storage.decryptIdentityKey(txtCurrentPassword.getText().toString());
-                if(!decryptStatus) {
-                    handler.post(() -> {
-                        Toast.makeText(this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG);
-                        txtCurrentPassword.setText("");
-                    });
-                    return;
-                }
-
-                boolean encryptStatus = storage.encryptIdentityKey(txtNewPassword.getText().toString(), entropyHarvester);
-                if (!encryptStatus) {
-                    handler.post(() -> {
-                        Toast.makeText(this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG);
-                        txtNewPassword.setText("");
-                    });
-                    return;
-                }
-                storage.clear();
-
-                SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                        getString(R.string.preferences),
-                        Context.MODE_PRIVATE
-                );
-                long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
-                mDbHelper.updateIdentityData(currentId, storage.createSaveData());
-            } catch (Exception e) {
-                System.out.println("ERROR: " + e.getMessage());
-                e.printStackTrace();
+            if(!txtNewPassword.getText().toString().equals(txtRetypePassword.getText().toString())) {
+                handler.post(() -> {
+                    Toast.makeText(MainActivity.this, getString(R.string.change_password_retyped_password_do_not_match), Toast.LENGTH_LONG).show();
+                    txtCurrentPassword.setText("");
+                    txtNewPassword.setText("");
+                    txtRetypePassword.setText("");
+                });
+                return;
             }
+
+            boolean decryptStatus = storage.decryptIdentityKey(txtCurrentPassword.getText().toString());
+            if(!decryptStatus) {
+                handler.post(() -> {
+                    Toast.makeText(MainActivity.this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG).show();
+                    txtCurrentPassword.setText("");
+                    txtNewPassword.setText("");
+                    txtRetypePassword.setText("");
+                });
+                return;
+            }
+
+            boolean encryptStatus = storage.encryptIdentityKey(txtNewPassword.getText().toString(), entropyHarvester);
+            if (!encryptStatus) {
+                handler.post(() -> {
+                    Toast.makeText(MainActivity.this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG).show();
+                    txtCurrentPassword.setText("");
+                    txtNewPassword.setText("");
+                    txtRetypePassword.setText("");
+                });
+                return;
+            }
+            storage.clear();
+
+            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
+                    getString(R.string.preferences),
+                    Context.MODE_PRIVATE
+            );
+            long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+            mDbHelper.updateIdentityData(currentId, storage.createSaveData());
 
             handler.post(() -> {
                 txtCurrentPassword.setText("");
@@ -562,7 +566,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         if(result != null) {
             if(result.getContents() == null) {
                 Log.d("MainActivity", "Cancelled scan");
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
                 if(useIdentity) {
                     serverData = EncryptionUtils.readSQRLQRCodeAsString(result.getRawBytes());
