@@ -17,6 +17,8 @@ import java.util.TimeZone;
  * @author Daniel Persson
  */
 public class ProgressionUpdater {
+    private static final String TAG = "ProgressionUpdater";
+
     private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     private Handler handler;
     private ProgressBar progressBar;

@@ -48,6 +48,8 @@ import java.util.Map;
  * @author Daniel Persson
  */
 public class MainActivity extends BaseActivity implements AdapterView.OnItemSelectedListener {
+    private static final String TAG = "MainActivity";
+
     private Handler handler = new Handler();
     private Spinner cboxIdentity;
     private Map<Long, String> identities;
@@ -284,7 +286,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                                 handler.post(() -> {
                                     txtErrorMessage.setText(e.getMessage());
                                 });
-                                e.printStackTrace();
+                                Log.e(TAG, e.getMessage(), e);
                                 return;
                             }
 
@@ -338,8 +340,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 }
                 storage.clear();
             } catch (Exception e) {
-                System.out.println("ERROR: " + e.getMessage());
-                e.printStackTrace();
+                Log.e(TAG, e.getMessage(), e);
             }
 
             long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
@@ -538,7 +539,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             btnUnlockIdentity.setEnabled(storage.hasIdentityBlock());
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage(), e);
         }
     }
 
@@ -595,8 +596,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                             decryptPopupWindow.showAtLocation(decryptPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                         }, 100);
                     } catch (Exception e) {
-                        System.out.println("ERROR: " + e.getMessage());
-                        e.printStackTrace();
+                        Log.e(TAG, e.getMessage(), e);
                         return;
                     }
                 }

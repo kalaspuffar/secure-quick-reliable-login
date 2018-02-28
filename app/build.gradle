@@ -6,8 +6,8 @@ android {
         applicationId "org.ea.sqrl"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 7
-        versionName "0.1.0"
+        versionCode 8
+        versionName "0.1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         externalNativeBuild {

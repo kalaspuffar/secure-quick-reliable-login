@@ -1,11 +1,8 @@
 package org.ea.sqrl.processors;
 
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
 
-import net.i2p.crypto.eddsa.EdDSAEngine;
-import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
 import net.i2p.crypto.eddsa.spec.EdDSAParameterSpec;
 import net.i2p.crypto.eddsa.spec.EdDSAPrivateKeySpec;
@@ -13,37 +10,19 @@ import net.i2p.crypto.eddsa.spec.EdDSAPrivateKeySpec;
 import org.ea.sqrl.jni.Grc_aesgcm;
 import org.ea.sqrl.utils.EncryptionUtils;
 
-import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.security.AlgorithmParameters;
 import java.security.Key;
-import java.security.KeyFactory;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.Signature;
-import java.security.spec.ECGenParameterSpec;
-import java.security.spec.ECPrivateKeySpec;
-import java.security.spec.ECPublicKeySpec;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 import java.util.Random;
 
 import javax.crypto.AEADBadTagException;
 import javax.crypto.Cipher;
-import javax.crypto.KeyAgreement;
 import javax.crypto.Mac;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.DHPrivateKeySpec;
-import javax.crypto.spec.DHPublicKeySpec;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import br.eti.balena.security.ecdh.curve25519.Curve25519;
 import br.eti.balena.security.ecdh.curve25519.Curve25519KeyAgreement;
 import br.eti.balena.security.ecdh.curve25519.Curve25519PrivateKey;
 import br.eti.balena.security.ecdh.curve25519.Curve25519PublicKey;
@@ -56,13 +35,13 @@ import br.eti.balena.security.ecdh.curve25519.Curve25519PublicKey;
  * @author Daniel Persson
  */
 public class SQRLStorage {
+    private static final String TAG = "SQRLStorage";
     private static final String STORAGE_HEADER = "sqrldata";
     private static final int PASSWORD_PBKDF = 1;
     private static final int RESCUECODE_PBKDF = 2;
     private static final int PREVIOUS_IDENTITY_KEYS = 3;
     private static final int HEADER_LENGTH = 8;
     private static final int BLOCK_SIZE_LENGTH = 2;
-    private static final String STORAGE_TAG = "SQRLStorage";
     private ProgressionUpdater progressionUpdater;
     private int passwordBlockLength = 0;
     private static SQRLStorage instance = null;
@@ -312,7 +291,7 @@ public class SQRLStorage {
             identityMasterKey = Arrays.copyOfRange(decryptionResult, 0, 32);
             identityLockKey = Arrays.copyOfRange(decryptionResult, 32, 64);
         } catch (Exception e) {
-            Log.e(SQRLStorage.STORAGE_TAG, e.getMessage(), e);
+            Log.e(SQRLStorage.TAG, e.getMessage(), e);
             return false;
         }
         return true;
@@ -360,7 +339,7 @@ public class SQRLStorage {
                 if (res == 0x55555555) return false;
             }
         } catch (Exception e) {
-            Log.e(SQRLStorage.STORAGE_TAG, e.getMessage(), e);
+            Log.e(SQRLStorage.TAG, e.getMessage(), e);
             return false;
         }
         return true;
@@ -473,7 +452,7 @@ public class SQRLStorage {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage(), e);
             return false;
         }
         return true;
@@ -600,7 +579,7 @@ ServerUnlock := 	MakePublic( RandomLock )
             sb.append("\r\n");
             return sb.toString();
         } catch (Exception e) {
-            Log.e(SQRLStorage.STORAGE_TAG, e.getMessage(), e);
+            Log.e(TAG, e.getMessage(), e);
         }
         return "";
     }
@@ -622,25 +601,19 @@ ServerUnlock := 	MakePublic( RandomLock )
     }
 
     public void setSQRLOnly(boolean SQRLOnly) {
-        System.out.println("Before: "+ optionFlags);
         if(SQRLOnly) {
             optionFlags |= 1 << 2;
         } else {
             optionFlags &= ~(1 << 2);
         }
-
-        System.out.println("After: "+ optionFlags);
     }
 
     public void setNoByPass(boolean noByPass) {
-        System.out.println("Before: "+ optionFlags);
         if(noByPass) {
             optionFlags |= 1 << 3;
         } else {
             optionFlags &= ~(1 << 3);
         }
-
-        System.out.println("After: "+ optionFlags);
     }
 
     public int getHintLength() {

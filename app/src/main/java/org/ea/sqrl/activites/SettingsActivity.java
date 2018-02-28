@@ -22,6 +22,8 @@ import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.processors.SQRLStorage;
 
 public class SettingsActivity extends BaseActivity {
+    private static final String TAG = "SettingsActivity";
+
     private Handler handler = new Handler();
     private PopupWindow savePopupWindow;
 

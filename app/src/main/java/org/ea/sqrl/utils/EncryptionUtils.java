@@ -2,6 +2,7 @@ package org.ea.sqrl.utils;
 
 import android.os.Build;
 import android.util.Base64;
+import android.util.Log;
 
 import com.lambdaworks.crypto.SCrypt;
 
@@ -19,6 +20,7 @@ import java.util.BitSet;
  * @author Daniel Persson
  */
 public class EncryptionUtils {
+    private static final String TAG = "EncryptionUtils";
     private static final byte[] BASE56_ENCODE = "23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz".getBytes();
 
     public static byte[] combine(byte[] a, byte b) {
@@ -252,7 +254,7 @@ public class EncryptionUtils {
         try {
             return new String(readSQRLQRCode(rawHexData), "ASCII");
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage(), e);
         }
         return "";
     }

@@ -1,5 +1,8 @@
 package org.ea.sqrl.processors;
 
+import android.os.Build;
+import android.util.Log;
+
 import java.security.SecureRandom;
 
 /**
@@ -13,10 +16,16 @@ import java.security.SecureRandom;
  * @author Daniel Persson
  */
 public class EntropyHarvester implements Runnable {
+    private static final String TAG = "EntropyHarvester";
+
     private final SecureRandom sr;
 
     public EntropyHarvester() throws Exception {
-        sr = SecureRandom.getInstance("SHA1PRNG");
+        if(Build.VERSION.BASE_OS != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            sr = SecureRandom.getInstanceStrong();
+        } else {
+            sr = SecureRandom.getInstance("SHA1PRNG");
+        }
     }
 
     public void fetchRandom(byte[] buffer) {
@@ -25,6 +34,6 @@ public class EntropyHarvester implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("NOT IMPLEMENTED YET!");
+        Log.d(TAG, "NOT IMPLEMENTED YET!");
     }
 }

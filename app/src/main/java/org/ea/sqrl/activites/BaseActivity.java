@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -20,6 +21,8 @@ import org.ea.sqrl.processors.EntropyHarvester;
  * @author Daniel Persson
  */
 public class BaseActivity extends AppCompatActivity {
+    private static final String TAG = "BaseActivity";
+
     protected static final String START_USER_MODE = "org.ea.sqrl.START_MODE";
     protected static final int START_USER_MODE_NEW_USER = 1;
     protected static final int START_USER_MODE_RETURNING_USER = 2;
@@ -33,7 +36,7 @@ public class BaseActivity extends AppCompatActivity {
         try {
             entropyHarvester = new EntropyHarvester();
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage(), e);
         }
     }
 

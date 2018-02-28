@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import io.nayuki.qrcodegen.QrCode;
  * @author Daniel Persson
  */
 public class ShowIdentityActivity extends BaseActivity {
+    private static final String TAG = "ShowIdentityActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +45,7 @@ public class ShowIdentityActivity extends BaseActivity {
         try {
             storage.read(qrCodeData, true);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage(), e);
             ShowIdentityActivity.this.finish();
         }
 

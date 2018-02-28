@@ -1,6 +1,7 @@
 package org.ea.sqrl.processors;
 
 import android.app.Activity;
+import android.util.Log;
 
 import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
@@ -34,6 +35,8 @@ import javax.net.ssl.HttpsURLConnection;
  * @author Daniel Persson
  */
 public class CommunicationHandler {
+    private static final String TAG = "CommunicationHandler";
+
     private static CommunicationHandler instance = null;
     private String domain;
     private Map<String, String> lastResponse = new HashMap<>();
@@ -151,7 +154,7 @@ public class CommunicationHandler {
         }
         input.close();
 
-        System.out.println("Resp Code:" + con.getResponseCode());
+        Log.d(TAG, "Resp Code:" + con.getResponseCode());
 
         setResponseData(result.toString());
     }
@@ -159,10 +162,10 @@ public class CommunicationHandler {
     public static void debugPostData(String data) throws Exception{
         String[] variables = data.split("&");
         for(String s : variables) {
-            System.out.println(s);
+            Log.d(TAG, s);
             byte[] bytes = EncryptionUtils.decodeUrlSafe(s.split("=")[1]);
-            System.out.println(Arrays.toString(bytes));
-            System.out.println(new String(bytes));
+            Log.d(TAG, Arrays.toString(bytes));
+            Log.d(TAG, new String(bytes));
         }
     }
 
@@ -178,7 +181,7 @@ public class CommunicationHandler {
 
     public void printParams() {
         for(Map.Entry<String, String> entry : lastResponse.entrySet()) {
-            System.out.println(entry.getKey() + "=" + entry.getValue());
+            Log.d(TAG, entry.getKey() + "=" + entry.getValue());
         }
     }
 
@@ -256,8 +259,6 @@ public class CommunicationHandler {
 
             int indexOfQuery = sqrlLink.indexOf("/", sqrlLink.indexOf("://")+3);
             String queryLink = sqrlLink.substring(indexOfQuery);
-
-            System.out.println(queryLink);
 
             commHandler.setDomain(domain);
             String postData = commHandler.createPostParams(commHandler.createClientQuery(), sqrlLink);

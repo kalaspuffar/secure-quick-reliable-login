@@ -26,6 +26,7 @@ import org.ea.sqrl.utils.EncryptionUtils;
  * @author Daniel Persson
  */
 public class StartActivity extends BaseActivity {
+    private static final String TAG = "StartActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +65,7 @@ public class StartActivity extends BaseActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result != null) {
             if(result.getContents() == null) {
-                Log.d("MainActivity", "Cancelled scan");
+                Log.d(TAG, "Cancelled scan");
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
                 SQRLStorage storage = SQRLStorage.getInstance();
@@ -72,8 +73,7 @@ public class StartActivity extends BaseActivity {
                     byte[] qrCodeData = EncryptionUtils.readSQRLQRCode(result.getRawBytes());
                     storage.read(qrCodeData, true);
                 } catch (Exception e) {
-                    System.out.println("ERROR: " + e.getMessage());
-                    e.printStackTrace();
+                    Log.e(TAG, e.getMessage(), e);
                     return;
                 }
                 long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
