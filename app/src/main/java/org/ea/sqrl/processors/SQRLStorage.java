@@ -9,6 +9,8 @@ import net.i2p.crypto.eddsa.spec.EdDSAPrivateKeySpec;
 
 import org.ea.sqrl.jni.Grc_aesgcm;
 import org.ea.sqrl.utils.EncryptionUtils;
+import org.libsodium.jni.NaCl;
+import org.libsodium.jni.Sodium;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -22,10 +24,6 @@ import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-
-import br.eti.balena.security.ecdh.curve25519.Curve25519KeyAgreement;
-import br.eti.balena.security.ecdh.curve25519.Curve25519PrivateKey;
-import br.eti.balena.security.ecdh.curve25519.Curve25519PublicKey;
 
 /**
  * This class handles the S4 Storage data. We can load identities from disk, QRCode or pure
@@ -52,6 +50,7 @@ public class SQRLStorage {
 
     private SQRLStorage() {
         Grc_aesgcm.gcm_initialize();
+        NaCl.sodium();
 
         /*
             Here we look for the scrypt library and if we can't find it
@@ -555,27 +554,27 @@ public class SQRLStorage {
     public String getServerUnlockKey(EntropyHarvester entropyHarvester) {
         /*
         VerifyUnlock := 	SignPublic( DHKA( IdentityLock, RandomLock ))
-ServerUnlock := 	MakePublic( RandomLock )
+        ServerUnlock := 	MakePublic( RandomLock )
         */
         try {
             byte[] randomLock = new byte[32];
             entropyHarvester.fetchRandom(randomLock);
 
-            Curve25519KeyAgreement keyAgreement = new Curve25519KeyAgreement(new Curve25519PrivateKey(this.identityLockKey));
-            keyAgreement.doFinal(new Curve25519PublicKey(randomLock));
-            byte[] bytesToSign = keyAgreement.generateSecret();
+            byte[] bytesToSign = new byte[32];
+            byte[] serverUnlock = new byte[32];
+            byte[] notimportant = new byte[32];
+            byte[] verifyUnlock = new byte[32];
 
-
-            EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
-            EdDSAPrivateKeySpec serverUnlock = new EdDSAPrivateKeySpec(randomLock, spec);
-            EdDSAPrivateKeySpec verifyUnlock = new EdDSAPrivateKeySpec(bytesToSign, spec);
+            Sodium.crypto_scalarmult(bytesToSign, this.identityLockKey, randomLock);
+            Sodium.crypto_sign_seed_keypair(notimportant, verifyUnlock, bytesToSign);
+            Sodium.crypto_sign_ed25519_sk_to_pk(serverUnlock, randomLock);
 
             StringBuilder sb = new StringBuilder();
             sb.append("suk=");
-            sb.append(EncryptionUtils.encodeUrlSafe(serverUnlock.getA().toByteArray()));
+            sb.append(EncryptionUtils.encodeUrlSafe(serverUnlock));
             sb.append("\r\n");
             sb.append("vuk=");
-            sb.append(EncryptionUtils.encodeUrlSafe(verifyUnlock.getA().toByteArray()));
+            sb.append(EncryptionUtils.encodeUrlSafe(verifyUnlock));
             sb.append("\r\n");
             return sb.toString();
         } catch (Exception e) {

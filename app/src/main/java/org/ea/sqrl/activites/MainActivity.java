@@ -37,6 +37,8 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.EncryptionUtils;
+import org.libsodium.jni.NaCl;
+import org.libsodium.jni.Sodium;
 
 import java.util.Map;
 
@@ -122,7 +124,31 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         final Button btnCreate = findViewById(R.id.btnCreate);
         btnCreate.setOnClickListener(
-                v -> showNotImplementedDialog()
+                v -> {
+                    Sodium sodium = NaCl.sodium();
+                    String Password = "hunter2";
+                    byte[] key = new byte[Sodium.crypto_box_seedbytes()];
+                    byte[] passwd = Password.getBytes();
+                    byte[] salt = new byte[]{ 88, (byte)240, (byte)185, 66, (byte)195, 101, (byte)160, (byte)138, (byte)137, 78, 1, 2, 3, 4, 5, 6};
+
+                    Sodium.crypto_pwhash(
+                            key,
+                            key.length,
+                            passwd,
+                            passwd.length,
+                            salt,
+                            Sodium.crypto_pwhash_opslimit_interactive(),
+                            Sodium.crypto_pwhash_memlimit_interactive(),
+                            Sodium.crypto_pwhash_alg_default()
+                    );
+
+                    byte[] dst_public_Key = new byte[32];
+                    byte[] dst_private_key = new byte[32];
+                    byte[] src_seed = new byte[32];
+                    entropyHarvester.fetchRandom(src_seed);
+                    Sodium.crypto_sign_seed_keypair(dst_public_Key, dst_private_key, src_seed);
+                    //showNotImplementedDialog();
+                }
         );
 
         final Button btnRemove = findViewById(R.id.btnRemove);
@@ -276,11 +302,16 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                                     commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
                                 ) {
                                     postLogin(commHandler);
-                                } else if(commHandler.isTIFZero()){
+                                } else if(
+                                    !commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) &&
+                                    !commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
+                                ){
                                     postCreateAccount(commHandler);
                                 } else {
-                                    txtLoginPassword.setText("");
-                                    handler.post(() -> txtErrorMessage.setText(commHandler.getErrorMessage(this)));
+                                    handler.post(() -> {
+                                        txtLoginPassword.setText("");
+                                        txtErrorMessage.setText(commHandler.getErrorMessage(this));
+                                    });
                                 }
                             } catch (Exception e) {
                                 handler.post(() -> {

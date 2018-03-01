@@ -11,6 +11,7 @@ import net.i2p.crypto.eddsa.spec.EdDSAPrivateKeySpec;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.utils.EncryptionUtils;
+import org.libsodium.jni.Sodium;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -96,10 +97,13 @@ public class CommunicationHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=ident\r\n");
+/*
+        byte[] identityKey = new byte[32];
+        Sodium.crypto_sign_ed25519_sk_to_pk(identityKey, storage.getPrivateKey(domain));
+*/
         EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
         EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(storage.getPrivateKey(domain), spec);
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(privKey.getA().toByteArray()));
-
         return sb.toString();
     }
 
@@ -162,10 +166,10 @@ public class CommunicationHandler {
     public static void debugPostData(String data) throws Exception{
         String[] variables = data.split("&");
         for(String s : variables) {
-            Log.d(TAG, s);
+            Log.d(TAG,s);
             byte[] bytes = EncryptionUtils.decodeUrlSafe(s.split("=")[1]);
-            Log.d(TAG, Arrays.toString(bytes));
-            Log.d(TAG, new String(bytes));
+            Log.d(TAG,Arrays.toString(bytes));
+            Log.d(TAG,new String(bytes));
         }
     }
 
@@ -259,6 +263,8 @@ public class CommunicationHandler {
 
             int indexOfQuery = sqrlLink.indexOf("/", sqrlLink.indexOf("://")+3);
             String queryLink = sqrlLink.substring(indexOfQuery);
+
+            System.out.println(queryLink);
 
             commHandler.setDomain(domain);
             String postData = commHandler.createPostParams(commHandler.createClientQuery(), sqrlLink);
