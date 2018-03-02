@@ -360,6 +360,18 @@ public class SQRLStorage {
         return HMacSha256.doFinal(domain.getBytes());
     }
 
+    public byte[] getPublicKey(String domain) throws Exception {
+        EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
+        EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(this.getPrivateKey(domain), spec);
+        return privKey.getA().toByteArray();
+/*
+        byte[] identityKey = new byte[32];
+        Sodium.crypto_scalarmult_base(identityKey, this.getPrivateKey(domain));
+        return identityKey;
+*/
+    }
+
+
     public boolean hasEncryptedKeys() {
         if(this.identityMasterKeyEncrypted != null) {
             return true;

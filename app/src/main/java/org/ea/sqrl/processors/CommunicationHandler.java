@@ -71,10 +71,7 @@ public class CommunicationHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=query\r\n");
-        EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
-        EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(storage.getPrivateKey(domain), spec);
-        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(privKey.getA().toByteArray()));
-
+        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(domain)));
         return sb.toString();
     }
 
@@ -83,12 +80,8 @@ public class CommunicationHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=ident\r\n");
-
         sb.append(storage.getServerUnlockKey(entropyHarvester));
-
-        EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
-        EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(storage.getPrivateKey(domain), spec);
-        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(privKey.getA().toByteArray()));
+        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(domain)));
         return sb.toString();
     }
 
@@ -97,13 +90,7 @@ public class CommunicationHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=ident\r\n");
-/*
-        byte[] identityKey = new byte[32];
-        Sodium.crypto_sign_ed25519_sk_to_pk(identityKey, storage.getPrivateKey(domain));
-*/
-        EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
-        EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(storage.getPrivateKey(domain), spec);
-        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(privKey.getA().toByteArray()));
+        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(domain)));
         return sb.toString();
     }
 
