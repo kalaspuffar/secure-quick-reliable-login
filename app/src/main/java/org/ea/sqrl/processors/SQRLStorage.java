@@ -555,6 +555,20 @@ public class SQRLStorage {
         /*
         VerifyUnlock := 	SignPublic( DHKA( IdentityLock, RandomLock ))
         ServerUnlock := 	MakePublic( RandomLock )
+<
+        libsodium crypto_scalarmult_base()
+        in: secret key = RLK
+        out: public key = SUK
+
+        libsodium crypto_scalarmult()
+        in: private key = RLK
+        in: public key = ILK
+        out: shared key = DHK
+
+        libsodium crypto_sign_seed_keypair()
+        in: seed = DHK
+        out: public key = VUK
+
         */
         try {
             byte[] randomLock = new byte[32];
@@ -562,12 +576,12 @@ public class SQRLStorage {
 
             byte[] bytesToSign = new byte[32];
             byte[] serverUnlock = new byte[32];
-            byte[] notimportant = new byte[32];
+            byte[] notImportant = new byte[32];
             byte[] verifyUnlock = new byte[32];
 
-            Sodium.crypto_scalarmult(bytesToSign, this.identityLockKey, randomLock);
-            Sodium.crypto_sign_seed_keypair(notimportant, verifyUnlock, bytesToSign);
-            Sodium.crypto_sign_ed25519_sk_to_pk(serverUnlock, randomLock);
+            Sodium.crypto_scalarmult_base(serverUnlock, randomLock);
+            Sodium.crypto_scalarmult(bytesToSign, randomLock, this.identityLockKey);
+            Sodium.crypto_sign_seed_keypair(verifyUnlock, notImportant, bytesToSign);
 
             StringBuilder sb = new StringBuilder();
             sb.append("suk=");
