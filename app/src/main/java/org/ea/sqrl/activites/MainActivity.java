@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -624,6 +625,8 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                         handler.postDelayed(() -> {
                             final TextView txtRecoveryKey = decryptPopupWindow.getContentView().findViewById(R.id.txtRecoveryKey);
                             txtRecoveryKey.setText(storage.getVerifyingRecoveryBlock());
+                            txtRecoveryKey.setMovementMethod(LinkMovementMethod.getInstance());
+
                             decryptPopupWindow.showAtLocation(decryptPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                         }, 100);
                     } catch (Exception e) {
