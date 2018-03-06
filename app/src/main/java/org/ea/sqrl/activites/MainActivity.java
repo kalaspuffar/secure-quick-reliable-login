@@ -622,6 +622,14 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     try {
                         storage.read(qrCodeData, true);
 
+                        if(!storage.hasEncryptedKeys()) {
+                            Toast.makeText(MainActivity.this, R.string.identity_compressed_format_not_supported, Toast.LENGTH_LONG);
+                            if(!mDbHelper.hasIdentities()) {
+                                startActivity(new Intent(this, StartActivity.class));
+                            }
+                            return;
+                        }
+
                         handler.postDelayed(() -> {
                             final TextView txtRecoveryKey = decryptPopupWindow.getContentView().findViewById(R.id.txtRecoveryKey);
                             txtRecoveryKey.setText(storage.getVerifyingRecoveryBlock());
