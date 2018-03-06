@@ -3,10 +3,6 @@ package org.ea.sqrl.processors;
 import android.os.Build;
 import android.util.Log;
 
-import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
-import net.i2p.crypto.eddsa.spec.EdDSAParameterSpec;
-import net.i2p.crypto.eddsa.spec.EdDSAPrivateKeySpec;
-
 import org.ea.sqrl.jni.Grc_aesgcm;
 import org.ea.sqrl.utils.EncryptionUtils;
 import org.libsodium.jni.NaCl;
@@ -353,22 +349,27 @@ public class SQRLStorage {
         this.progressionUpdater = progressionUpdater;
     }
 
-    public byte[] getPrivateKey(String domain) throws Exception {
+    public byte[] getKeySeed(String domain) throws Exception {
         final Mac HMacSha256 = Mac.getInstance("HmacSHA256");
         final SecretKeySpec key = new SecretKeySpec(this.identityMasterKey, "HmacSHA256");
         HMacSha256.init(key);
         return HMacSha256.doFinal(domain.getBytes());
     }
 
+    public byte[] getPrivateKey(String domain) throws Exception {
+        byte[] publicKey = new byte[32];
+        byte[] privateKey = new byte[64];
+
+        Sodium.crypto_sign_seed_keypair(publicKey, privateKey, getKeySeed(domain));
+        return privateKey;
+    }
+
     public byte[] getPublicKey(String domain) throws Exception {
-        EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
-        EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(this.getPrivateKey(domain), spec);
-        return privKey.getA().toByteArray();
-/*
-        byte[] identityKey = new byte[32];
-        Sodium.crypto_scalarmult_base(identityKey, this.getPrivateKey(domain));
-        return identityKey;
-*/
+        byte[] publicKey = new byte[32];
+        byte[] privateKey = new byte[64];
+
+        Sodium.crypto_sign_seed_keypair(publicKey, privateKey, getKeySeed(domain));
+        return publicKey;
     }
 
 

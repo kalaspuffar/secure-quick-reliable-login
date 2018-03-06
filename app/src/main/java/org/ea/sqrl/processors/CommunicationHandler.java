@@ -3,12 +3,6 @@ package org.ea.sqrl.processors;
 import android.app.Activity;
 import android.util.Log;
 
-import net.i2p.crypto.eddsa.EdDSAEngine;
-import net.i2p.crypto.eddsa.EdDSAPrivateKey;
-import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
-import net.i2p.crypto.eddsa.spec.EdDSAParameterSpec;
-import net.i2p.crypto.eddsa.spec.EdDSAPrivateKeySpec;
-
 import org.ea.sqrl.R;
 import org.ea.sqrl.utils.EncryptionUtils;
 import org.libsodium.jni.Sodium;
@@ -20,9 +14,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.security.MessageDigest;
-import java.security.PrivateKey;
-import java.security.Signature;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -95,9 +86,6 @@ public class CommunicationHandler {
     }
 
     public String createPostParams(String client, String server) throws Exception {
-        EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("Ed25519");
-        EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(SQRLStorage.getInstance().getPrivateKey(domain), spec);
-
         StringBuilder sb = new StringBuilder();
         sb.append("client=");
         sb.append(EncryptionUtils.encodeUrlSafe(client.getBytes()));
@@ -105,13 +93,26 @@ public class CommunicationHandler {
         sb.append("&server=");
         sb.append(EncryptionUtils.encodeUrlSafe(server.getBytes()));
 
-        PrivateKey sKey = new EdDSAPrivateKey(privKey);
-        Signature sgr = new EdDSAEngine(MessageDigest.getInstance(spec.getHashAlgorithm()));
-        sgr.initSign(sKey);
-        sgr.update(EncryptionUtils.encodeUrlSafe(client.getBytes()).getBytes());
-        sgr.update(EncryptionUtils.encodeUrlSafe(server.getBytes()).getBytes());
+        SQRLStorage storage = SQRLStorage.getInstance();
+        byte[] message = EncryptionUtils.combine(
+                EncryptionUtils.encodeUrlSafe(client.getBytes()).getBytes(),
+                EncryptionUtils.encodeUrlSafe(server.getBytes()).getBytes()
+                );
+
+        byte[] signed_message = new byte[Sodium.crypto_sign_bytes() + message.length];
+        int[] signed_message_len = new int[1];
+
+        Sodium.crypto_sign(
+                signed_message,
+                signed_message_len,
+                message,
+                message.length,
+                storage.getPrivateKey(domain)
+        );
+
         sb.append("&ids=");
-        sb.append(EncryptionUtils.encodeUrlSafe(sgr.sign()));
+        sb.append(EncryptionUtils.encodeUrlSafe(Arrays.copyOfRange(signed_message, 0, Sodium.crypto_sign_bytes())));
+
         return sb.toString();
     }
 

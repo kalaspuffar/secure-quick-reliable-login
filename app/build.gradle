@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "org.ea.sqrl"
         minSdkVersion 15
@@ -20,11 +21,6 @@ android {
             }
         }
     }
-    buildTypes {
-        release {
-        }
-    }
-    buildToolsVersion '27.0.3'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -45,7 +41,6 @@ dependencies {
     implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
     implementation 'com.google.zxing:core:3.2.1'
     implementation 'com.lambdaworks:scrypt:1.4.0'
-    implementation 'net.i2p.crypto:eddsa:0.2.0'
     implementation 'com.github.joshjdevl.libsodiumjni:libsodium-jni-aar:1.0.8'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
