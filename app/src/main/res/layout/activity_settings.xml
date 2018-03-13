@@ -91,21 +91,19 @@
 
     <Button
         android:id="@+id/btnSettingsSave"
-        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:text="@string/settings_save"
-        app:layout_constraintTop_toBottomOf="@+id/cbSettingsNoBypass"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cbSettingsNoBypass" />
 
     <Button
         android:id="@+id/btnSettingsCancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Widget.AppCompat.Button.Colored"
         android:text="@string/settings_cancel"
         android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"

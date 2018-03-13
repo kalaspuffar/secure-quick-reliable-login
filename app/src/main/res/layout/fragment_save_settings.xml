@@ -38,7 +38,6 @@
 
         <Button
             android:id="@+id/btnSaveSettings"
-            style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_marginBottom="16dp"
@@ -73,7 +72,7 @@
             android:layout_marginEnd="30dp"
             android:layout_marginStart="30dp"
             android:layout_marginTop="16dp"
-            android:text="Password"
+            android:text="@string/save_settings_password"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             android:textSize="24sp"

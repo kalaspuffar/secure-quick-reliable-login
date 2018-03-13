@@ -8,9 +8,9 @@
 
     <Button
         android:id="@+id/btnUnlockIdentity"
-        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
         android:text="@string/identity_unlock"
@@ -32,9 +32,9 @@
 
     <Button
         android:id="@+id/btnImportIdentity"
-        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/button_import_identity"
@@ -43,9 +43,9 @@
 
     <Button
         android:id="@+id/btnSettings"
-        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:text="@string/button_settings"
@@ -54,10 +54,10 @@
 
     <Button
         android:id="@+id/btnCreate"
-        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:text="@string/button_create_identity"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -65,9 +65,9 @@
 
     <Button
         android:id="@+id/btnRemove"
-        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/button_remove_identity"
@@ -76,9 +76,9 @@
 
     <Button
         android:id="@+id/btnRename"
-        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/button_rename_identity"
@@ -87,9 +87,9 @@
 
     <Button
         android:id="@+id/btnExport"
-        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/button_export_identity"
@@ -98,10 +98,10 @@
 
     <Button
         android:id="@+id/btnReset"
-        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:text="@string/button_reset_password"
         app:layout_constraintBottom_toTopOf="@+id/btnCreate"
@@ -109,10 +109,10 @@
 
     <Button
         android:id="@+id/btnForgetQuickPass"
-        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp"
         android:text="@string/button_forget_quickpass"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -120,10 +120,10 @@
 
     <Button
         android:id="@+id/btnRekey"
-        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp"
         android:text="@string/button_rekey_identity"
         app:layout_constraintBottom_toTopOf="@+id/btnForgetQuickPass"
@@ -131,9 +131,9 @@
 
     <Button
         android:id="@+id/btnChangePassword"
-        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/button_change_password"
