@@ -7,14 +7,14 @@ android {
         applicationId "org.ea.sqrl"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 10
-        versionName "0.1.3"
+        versionCode 11
+        versionName "0.1.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
         externalNativeBuild {
             cmake {
-                arguments '-DBUILD_TESTING=OFF', '-DANDROID_TOOLCHAIN=gcc'
+                arguments '-DBUILD_TESTING=OFF', '-DANDROID_TOOLCHAIN=gcc', '-DANDROID_ABI=armeabi'
                 cFlags "-DHAVE_CONFIG_H"
                 cppFlags "-std=c++14 -fexceptions -frtti"
 
