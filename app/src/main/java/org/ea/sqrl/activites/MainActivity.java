@@ -59,6 +59,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     private PopupWindow renamePopupWindow;
     private PopupWindow decryptPopupWindow;
     private Button btnUnlockIdentity;
+    private EditText txtIdentityName;
     private boolean useIdentity = false;
     private PopupWindow loginPopupWindow;
     private PopupWindow changePasswordPopupWindow;
@@ -169,7 +170,17 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         final Button btnRename = findViewById(R.id.btnRename);
         btnRename.setOnClickListener(
-                v -> renamePopupWindow.showAtLocation(renamePopupWindow.getContentView(), Gravity.CENTER, 0, 0)
+                v -> {
+                    SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
+                            getString(R.string.preferences),
+                            Context.MODE_PRIVATE
+                    );
+                    long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+                    if(currentId != 0) {
+                        txtIdentityName.setText(mDbHelper.getIdentityName(currentId));
+                    }
+                    renamePopupWindow.showAtLocation(renamePopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                }
         );
 
         final Button btnChangePassword = findViewById(R.id.btnChangePassword);
@@ -209,7 +220,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         renamePopupWindow.setTouchable(true);
         renamePopupWindow.setFocusable(true);
-        final EditText txtIdentityName = popupView.findViewById(R.id.txtIdentityName);
+        txtIdentityName = popupView.findViewById(R.id.txtIdentityName);
 
         ((Button) popupView.findViewById(R.id.btnRename))
                 .setOnClickListener(v -> {

@@ -139,4 +139,9 @@ public class IdentityDBHelper extends SQLiteOpenHelper {
         Map<Long, String> identities = getIdentitys();
         return identities.size() > 0;
     }
+
+    public String getIdentityName(long currentId) {
+        Map<Long, String> identities = this.getIdentitys();
+        return identities.get(currentId);
+    }
 }
