@@ -2,7 +2,7 @@
 
 This repository is an implementation for SQRL (Secure Quick Reliable Login) on android.
 
-***This repository is in active development and haven't reached first viable implentation yet***
+***This repository is in active development***
 
 ## Usage
 
