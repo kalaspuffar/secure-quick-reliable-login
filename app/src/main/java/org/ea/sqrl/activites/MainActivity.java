@@ -20,10 +20,12 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -61,6 +63,8 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     private PopupWindow loginPopupWindow;
     private PopupWindow changePasswordPopupWindow;
 
+    private FrameLayout progressBarHolder;
+
     private Button btnUnlockIdentity;
     private EditText txtIdentityName;
     private boolean useIdentity = false;
@@ -69,6 +73,8 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        progressBarHolder = findViewById(R.id.progressBarHolder);
 
         cboxIdentity = findViewById(R.id.cboxIdentity);
         identities = mDbHelper.getIdentitys();
@@ -238,6 +244,20 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     txtIdentityName.setText("");
                     renamePopupWindow.dismiss();
                 });
+    }
+
+    private void showProgressBar() {
+        AlphaAnimation inAnimation = new AlphaAnimation(0f, 1f);
+        inAnimation.setDuration(200);
+        progressBarHolder.setAnimation(inAnimation);
+        progressBarHolder.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgressBar() {
+        AlphaAnimation outAnimation = new AlphaAnimation(1f, 0f);
+        outAnimation.setDuration(200);
+        progressBarHolder.setAnimation(outAnimation);
+        progressBarHolder.setVisibility(View.GONE);
     }
 
     private final CommunicationHandler commHandler = CommunicationHandler.getInstance();

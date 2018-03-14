@@ -14,7 +14,7 @@ android {
 
         externalNativeBuild {
             cmake {
-                arguments '-DBUILD_TESTING=OFF', '-DANDROID_TOOLCHAIN=gcc', '-DANDROID_ABI=armeabi'
+                arguments '-DBUILD_TESTING=OFF', '-DANDROID_TOOLCHAIN=gcc'
                 cFlags "-DHAVE_CONFIG_H"
                 cppFlags "-std=c++14 -fexceptions -frtti"
 
