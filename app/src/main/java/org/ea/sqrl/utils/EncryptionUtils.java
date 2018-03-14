@@ -212,24 +212,6 @@ public class EncryptionUtils {
      * @return  The string without any extra information.
      */
     public static byte[] readSQRLQRCode(byte[] rawHexData) {
-/*
-        MyBitSet bits = new MyBitSet(rawHexData);
-        MyBitSet header = bits.get(0, 4);
-        MyBitSet num = bits.get(4, 8);
-        MyBitSet total = bits.get(8, 12);
-        //MyBitSet len = bits.get(12, 20);
-        MyBitSet len = bits.get(4, 12);
-
-        System.out.println(bits);
-        System.out.println(header);
-        System.out.println(num);
-        System.out.println(num.toInt());
-        System.out.println(total);
-        System.out.println(total.toInt());
-        System.out.println(len);
-        System.out.println(len.toInt());
-*/
-
         String string = EncryptionUtils.byte2hex(rawHexData);
         System.out.println(string);
         int start = string.indexOf("7371726c64617461");
@@ -239,6 +221,9 @@ public class EncryptionUtils {
         if(start == -1) {
             start = string.indexOf("71726c3a2f2f");
         }
+
+        if(start == -1) return new byte[0];
+
         int end = string.lastIndexOf("ec11");
         string = string.substring(start, end);
         while(string.endsWith("ec11")) {
