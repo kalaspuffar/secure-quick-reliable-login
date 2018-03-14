@@ -20,8 +20,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        tools:replace="android:allowBackup"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:allowBackup">
         <activity
             android:name=".activites.IntroductionActivity"
             android:label="@string/app_name"
@@ -55,10 +55,13 @@
             android:label="@string/title_activity_clear_identity"
             android:screenOrientation="portrait" />
         />
-        <activity android:name=".activites.SettingsActivity"
+        <activity
+            android:name=".activites.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait" />
+        <activity android:name=".activites.AdvancedActivity"
+            android:label="@string/title_activity_advanced"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
