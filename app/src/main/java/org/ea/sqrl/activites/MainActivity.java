@@ -58,11 +58,12 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     private Map<Long, String> identities;
     private PopupWindow renamePopupWindow;
     private PopupWindow decryptPopupWindow;
+    private PopupWindow loginPopupWindow;
+    private PopupWindow changePasswordPopupWindow;
+
     private Button btnUnlockIdentity;
     private EditText txtIdentityName;
     private boolean useIdentity = false;
-    private PopupWindow loginPopupWindow;
-    private PopupWindow changePasswordPopupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -605,6 +606,21 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         );
         cboxIdentity.setAdapter(adapter);
         cboxIdentity.setSelection(getPosition(currentId));
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (renamePopupWindow != null && renamePopupWindow.isShowing()) {
+            renamePopupWindow.dismiss();
+        } else if (decryptPopupWindow != null && decryptPopupWindow.isShowing()) {
+            decryptPopupWindow.dismiss();
+        } else if (loginPopupWindow != null && loginPopupWindow.isShowing()) {
+            loginPopupWindow.dismiss();
+        } else if (changePasswordPopupWindow != null && changePasswordPopupWindow.isShowing()) {
+            changePasswordPopupWindow.dismiss();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
