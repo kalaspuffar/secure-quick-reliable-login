@@ -81,4 +81,6 @@
     <string name="settings_hint_length_to_large">Hint length value is to large. (0-255)</string>
     <string name="identity_compressed_format_not_supported">Identities saved in a compressed format isn\'t supported yet.</string>
     <string name="save_settings_password">Password</string>
+    <string name="save_identity_to">Save identity to</string>
+    <string name="title_activity_advanced">SQRL - Advanced operations</string>
 </resources>

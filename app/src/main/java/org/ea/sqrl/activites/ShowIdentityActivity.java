@@ -1,6 +1,7 @@
 package org.ea.sqrl.activites;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -35,7 +36,7 @@ public class ShowIdentityActivity extends BaseActivity {
         //int defaultValue = getResources().getInteger(R.integer.saved_high_score_default);
         long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
 
-        byte[] qrCodeData = mDbHelper.getIdentityData(currentId);
+        final byte[] qrCodeData = mDbHelper.getIdentityData(currentId);
         if (qrCodeData.length == 0) {
             ShowIdentityActivity.this.finish();
         }
@@ -53,7 +54,17 @@ public class ShowIdentityActivity extends BaseActivity {
         txtIdentityText.setText(storage.getVerifyingRecoveryBlock());
 
         final Button btnCloseIdentity = findViewById(R.id.btnCloseIdentity);
-        btnCloseIdentity.setOnClickListener(v -> ShowIdentityActivity.this.finish());
+        btnCloseIdentity.setOnClickListener(
+                v -> {
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, qrCodeData);
+                    sendIntent.setType("application/octet-stream");
+                    startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.save_identity_to)));
+
+                    ShowIdentityActivity.this.finish();
+                }
+        );
 
         ImageView imageView = findViewById(R.id.imgQRCode);
         Bitmap bitmap = QrCode.encodeBinary(storage.createSaveData(), QrCode.Ecc.MEDIUM).toImage(10, 0);
