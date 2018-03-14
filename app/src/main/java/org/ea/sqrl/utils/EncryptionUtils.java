@@ -221,10 +221,12 @@ public class EncryptionUtils {
         if(start == -1) {
             start = string.indexOf("71726c3a2f2f");
         }
-
         if(start == -1) return new byte[0];
 
         int end = string.lastIndexOf("ec11");
+
+        if(end == -1) end = string.length();
+
         string = string.substring(start, end);
         while(string.endsWith("ec11")) {
             string = string.substring(0, string.length()-4);
