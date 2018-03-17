@@ -38,12 +38,12 @@
         android:layout_height="0dp"
         android:layout_marginBottom="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_constraintBottom_toTopOf="@+id/btnRename"
+        app:layout_constraintBottom_toTopOf="@+id/btnCloseIntroduction"
         app:layout_constraintStart_toStartOf="@+id/appbar"
         app:layout_constraintTop_toBottomOf="@+id/appbar" />
 
     <Button
-        android:id="@+id/btnRename"
+        android:id="@+id/btnCloseIntroduction"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

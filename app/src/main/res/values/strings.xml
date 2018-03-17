@@ -83,4 +83,5 @@
     <string name="save_settings_password">Password</string>
     <string name="save_identity_to">Save identity to</string>
     <string name="title_activity_advanced">SQRL - Advanced operations</string>
+    <string name="main_selected_identity">Selected identity</string>
 </resources>
