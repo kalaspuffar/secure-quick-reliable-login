@@ -258,7 +258,7 @@ public class SQRLStorage {
             byte[] identityKeys = EncryptionUtils.combine(identityMasterKeyEncrypted, identityLockKeyEncrypted);
             byte[] decryptionResult = new byte[identityKeys.length];
 
-            if (Build.VERSION.BASE_OS != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (Build.DEVICE != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Key keySpec = new SecretKeySpec(key, "AES");
                 Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
                 GCMParameterSpec params = new GCMParameterSpec(128, initializationVector);
@@ -308,7 +308,7 @@ public class SQRLStorage {
             byte[] nullBytes = new byte[12];
             Arrays.fill(nullBytes, (byte)0);
 
-            if(Build.VERSION.BASE_OS != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if(Build.DEVICE != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Key keySpec = new SecretKeySpec(key, "AES");
                 Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
                 GCMParameterSpec params = new GCMParameterSpec(128, nullBytes);
@@ -432,7 +432,7 @@ public class SQRLStorage {
 
             this.updateIdentityPlaintext();
 
-            if(Build.VERSION.BASE_OS != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if(Build.DEVICE != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Key keySpec = new SecretKeySpec(key, "AES");
                 Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
                 GCMParameterSpec params = new GCMParameterSpec(128, initializationVector);

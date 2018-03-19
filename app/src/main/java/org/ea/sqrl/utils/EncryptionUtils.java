@@ -126,7 +126,7 @@ public class EncryptionUtils {
     }
 
     public static String encodeUrlSafe(byte[] data) throws Exception {
-        if(Build.VERSION.BASE_OS != null) {
+        if(Build.DEVICE != null) {
             return Base64.encodeToString(data, Base64.NO_PADDING + Base64.URL_SAFE + Base64.NO_WRAP);
         } else {
             return java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(data);
@@ -134,7 +134,7 @@ public class EncryptionUtils {
     }
 
     public static byte[] decodeUrlSafe(String data) throws Exception {
-        if(Build.VERSION.BASE_OS != null) {
+        if(Build.DEVICE != null) {
             return Base64.decode(data, Base64.NO_PADDING + Base64.URL_SAFE + Base64.NO_WRAP);
         } else {
             return java.util.Base64.getUrlDecoder().decode(data);
