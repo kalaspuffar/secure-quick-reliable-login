@@ -16,7 +16,9 @@ import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,8 +91,10 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         cboxIdentity.setAdapter(adapter);
         cboxIdentity.setOnItemSelectedListener(this);
 
-        LayoutInflater layoutInflater = (LayoutInflater)getBaseContext()
+        LayoutInflater inflater = (LayoutInflater)getBaseContext()
                 .getSystemService(LAYOUT_INFLATER_SERVICE);
+        final Context contextThemeWrapper = new ContextThemeWrapper(this, R.style.AppTheme);
+        LayoutInflater layoutInflater = inflater.cloneInContext(contextThemeWrapper);
 
         setupRenamePopupWindow(layoutInflater);
         setupLoginPopupWindow(layoutInflater);
@@ -225,10 +229,9 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         renamePopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                true);
+                false);
 
         renamePopupWindow.setTouchable(true);
-        renamePopupWindow.setFocusable(true);
         txtIdentityName = popupView.findViewById(R.id.txtIdentityName);
 
         popupView.findViewById(R.id.btnRename).setOnClickListener(v -> {
@@ -305,10 +308,9 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         loginPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                true);
+                false);
 
         loginPopupWindow.setTouchable(true);
-        loginPopupWindow.setFocusable(true);
         final EditText txtLoginPassword = popupView.findViewById(R.id.txtLoginPassword);
         txtErrorMessage = popupView.findViewById(R.id.txtErrorMessage);
 
@@ -376,10 +378,9 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         decryptPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                true);
+                false);
 
         decryptPopupWindow.setTouchable(true);
-        decryptPopupWindow.setFocusable(true);
 
         final ProgressBar pbDecrypting = popupView.findViewById(R.id.pbDecrypting);
         final EditText txtPassword = popupView.findViewById(R.id.txtPassword);
@@ -437,10 +438,9 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         changePasswordPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                true);
+                false);
 
         changePasswordPopupWindow.setTouchable(true);
-        changePasswordPopupWindow.setFocusable(true);
 
         final EditText txtCurrentPassword = popupView.findViewById(R.id.txtCurrentPassword);
         final EditText txtNewPassword = popupView.findViewById(R.id.txtNewPassword);

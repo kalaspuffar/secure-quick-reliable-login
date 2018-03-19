@@ -1,7 +1,7 @@
 <resources>
     <!-- Base application theme. -->
     <style name="AppTheme" parent="CommonTheme">
-
+        <item name="buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
