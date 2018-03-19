@@ -229,7 +229,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         renamePopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                false);
+                true);
 
         renamePopupWindow.setTouchable(true);
         txtIdentityName = popupView.findViewById(R.id.txtIdentityName);
@@ -308,7 +308,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         loginPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                false);
+                true);
 
         loginPopupWindow.setTouchable(true);
         final EditText txtLoginPassword = popupView.findViewById(R.id.txtLoginPassword);
@@ -378,7 +378,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         decryptPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                false);
+                true);
 
         decryptPopupWindow.setTouchable(true);
 
@@ -438,9 +438,10 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         changePasswordPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                false);
+                true);
 
         changePasswordPopupWindow.setTouchable(true);
+
 
         final EditText txtCurrentPassword = popupView.findViewById(R.id.txtCurrentPassword);
         final EditText txtNewPassword = popupView.findViewById(R.id.txtNewPassword);
