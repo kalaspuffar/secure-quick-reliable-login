@@ -134,6 +134,8 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         final Button btnCreate = findViewById(R.id.btnCreate);
         btnCreate.setOnClickListener(
                 v -> {
+                    showNotImplementedDialog();
+
                     Sodium sodium = NaCl.sodium();
                     String Password = "hunter2";
                     byte[] key = new byte[Sodium.crypto_box_seedbytes()];
@@ -156,7 +158,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     byte[] src_seed = new byte[32];
                     entropyHarvester.fetchRandom(src_seed);
                     Sodium.crypto_sign_seed_keypair(dst_public_Key, dst_private_key, src_seed);
-                    //showNotImplementedDialog();
                 }
         );
 
@@ -229,8 +230,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         renamePopupWindow.setFocusable(true);
         txtIdentityName = popupView.findViewById(R.id.txtIdentityName);
 
-        ((Button) popupView.findViewById(R.id.btnRename))
-                .setOnClickListener(v -> {
+        popupView.findViewById(R.id.btnRename).setOnClickListener(v -> {
 
                     SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
                             getString(R.string.preferences),
@@ -247,17 +247,21 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     }
 
     private void showProgressBar() {
-        AlphaAnimation inAnimation = new AlphaAnimation(0f, 1f);
-        inAnimation.setDuration(200);
-        progressBarHolder.setAnimation(inAnimation);
-        progressBarHolder.setVisibility(View.VISIBLE);
+        handler.post(() -> {
+            AlphaAnimation inAnimation = new AlphaAnimation(0f, 1f);
+            inAnimation.setDuration(200);
+            progressBarHolder.setAnimation(inAnimation);
+            progressBarHolder.setVisibility(View.VISIBLE);
+        });
     }
 
     private void hideProgressBar() {
-        AlphaAnimation outAnimation = new AlphaAnimation(1f, 0f);
-        outAnimation.setDuration(200);
-        progressBarHolder.setAnimation(outAnimation);
-        progressBarHolder.setVisibility(View.GONE);
+        handler.post(() -> {
+            AlphaAnimation outAnimation = new AlphaAnimation(1f, 0f);
+            outAnimation.setDuration(200);
+            progressBarHolder.setAnimation(outAnimation);
+            progressBarHolder.setVisibility(View.GONE);
+        });
     }
 
     private final CommunicationHandler commHandler = CommunicationHandler.getInstance();
@@ -307,8 +311,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         final EditText txtLoginPassword = popupView.findViewById(R.id.txtLoginPassword);
         txtErrorMessage = popupView.findViewById(R.id.txtErrorMessage);
 
-        ((Button) popupView.findViewById(R.id.btnLogin))
-                .setOnClickListener(v -> {
+        popupView.findViewById(R.id.btnLogin).setOnClickListener(v -> {
 
                     SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
                             getString(R.string.preferences),
@@ -326,7 +329,10 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                             return;
                         }
 
+                        loginPopupWindow.dismiss();
+
                         new Thread(() -> {
+                            showProgressBar();
                             try {
                                 postQuery(commHandler);
 
@@ -347,17 +353,16 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                                     });
                                 }
                             } catch (Exception e) {
-                                handler.post(() -> {
-                                    txtErrorMessage.setText(e.getMessage());
-                                });
+                                handler.post(() -> txtErrorMessage.setText(e.getMessage()));
                                 Log.e(TAG, e.getMessage(), e);
                                 return;
+                            } finally {
+                                hideProgressBar();
                             }
 
                             handler.post(() -> {
                                 txtErrorMessage.setText("");
                                 txtLoginPassword.setText("");
-                                loginPopupWindow.dismiss();
                             });
 
                         }).start();
@@ -454,28 +459,35 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 return;
             }
 
-            boolean decryptStatus = storage.decryptIdentityKey(txtCurrentPassword.getText().toString());
-            if(!decryptStatus) {
-                handler.post(() -> {
-                    Toast.makeText(MainActivity.this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG).show();
-                    txtCurrentPassword.setText("");
-                    txtNewPassword.setText("");
-                    txtRetypePassword.setText("");
-                });
-                return;
-            }
+            handler.post(() -> changePasswordPopupWindow.dismiss());
+            showProgressBar();
 
-            boolean encryptStatus = storage.encryptIdentityKey(txtNewPassword.getText().toString(), entropyHarvester);
-            if (!encryptStatus) {
-                handler.post(() -> {
-                    Toast.makeText(MainActivity.this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG).show();
-                    txtCurrentPassword.setText("");
-                    txtNewPassword.setText("");
-                    txtRetypePassword.setText("");
-                });
-                return;
+            try {
+                boolean decryptStatus = storage.decryptIdentityKey(txtCurrentPassword.getText().toString());
+                if (!decryptStatus) {
+                    handler.post(() -> {
+                        Toast.makeText(MainActivity.this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG).show();
+                        txtCurrentPassword.setText("");
+                        txtNewPassword.setText("");
+                        txtRetypePassword.setText("");
+                    });
+                    return;
+                }
+
+                boolean encryptStatus = storage.encryptIdentityKey(txtNewPassword.getText().toString(), entropyHarvester);
+                if (!encryptStatus) {
+                    handler.post(() -> {
+                        Toast.makeText(MainActivity.this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG).show();
+                        txtCurrentPassword.setText("");
+                        txtNewPassword.setText("");
+                        txtRetypePassword.setText("");
+                    });
+                    return;
+                }
+            } finally {
+                storage.clear();
+                hideProgressBar();
             }
-            storage.clear();
 
             SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
                     getString(R.string.preferences),
@@ -488,7 +500,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 txtCurrentPassword.setText("");
                 txtNewPassword.setText("");
                 txtRetypePassword.setText("");
-                changePasswordPopupWindow.dismiss();
             });
 
         }).start());
