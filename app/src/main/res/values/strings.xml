@@ -88,4 +88,5 @@
     <string name="button_reset_password_ok">Reset</string>
     <string name="reset_password_new">New password</string>
     <string name="reset_password_desc">In order to set a new password without knowing the old one you need to supply the rescue code given to you at identity creation. Then you supply a new password and we will create a password secured identity.</string>
+    <string name="save_settings_title">Save settings</string>
 </resources>
