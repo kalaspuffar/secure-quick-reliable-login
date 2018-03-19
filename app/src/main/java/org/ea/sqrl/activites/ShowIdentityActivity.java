@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ShareCompat;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -12,6 +15,9 @@ import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
+
+import java.io.File;
+import java.io.FileOutputStream;
 
 import io.nayuki.qrcodegen.QrCode;
 
@@ -33,7 +39,6 @@ public class ShowIdentityActivity extends BaseActivity {
                 getString(R.string.preferences),
                 Context.MODE_PRIVATE
         );
-        //int defaultValue = getResources().getInteger(R.integer.saved_high_score_default);
         long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
 
         if(currentId == 0) return;
@@ -58,12 +63,6 @@ public class ShowIdentityActivity extends BaseActivity {
         final Button btnCloseIdentity = findViewById(R.id.btnCloseIdentity);
         btnCloseIdentity.setOnClickListener(
                 v -> {
-                    Intent sendIntent = new Intent();
-                    sendIntent.setAction(Intent.ACTION_SEND);
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, qrCodeData);
-                    sendIntent.setType("application/octet-stream");
-                    startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.save_identity_to)));
-
                     ShowIdentityActivity.this.finish();
                 }
         );
