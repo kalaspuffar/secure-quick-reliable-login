@@ -9,7 +9,7 @@
     <EditText
         android:id="@+id/txtSettingsHintLength"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="number"
@@ -20,7 +20,7 @@
     <EditText
         android:id="@+id/txtSettingsPasswordVerify"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="number"
@@ -31,7 +31,7 @@
     <EditText
         android:id="@+id/txtSettingsIdleTimeout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="number"
@@ -72,7 +72,7 @@
     <CheckBox
         android:id="@+id/cbSettingsSQRLOnly"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginTop="24dp"
         android:text="@string/settings_sqrl_only"
         app:layout_constraintEnd_toEndOf="parent"
@@ -82,7 +82,7 @@
     <CheckBox
         android:id="@+id/cbSettingsNoBypass"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginTop="16dp"
         android:text="@string/settings_no_sqrl_bypass"
         app:layout_constraintEnd_toEndOf="parent"

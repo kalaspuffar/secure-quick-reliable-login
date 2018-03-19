@@ -36,6 +36,8 @@ public class ShowIdentityActivity extends BaseActivity {
         //int defaultValue = getResources().getInteger(R.integer.saved_high_score_default);
         long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
 
+        if(currentId == 0) return;
+
         final byte[] qrCodeData = mDbHelper.getIdentityData(currentId);
         if (qrCodeData.length == 0) {
             ShowIdentityActivity.this.finish();

@@ -21,7 +21,7 @@ public class EntropyHarvester implements Runnable {
     private final SecureRandom sr;
 
     public EntropyHarvester() throws Exception {
-        if(Build.VERSION.BASE_OS != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Build.VERSION.BASE_OS != null) {
             sr = SecureRandom.getInstanceStrong();
         } else {
             sr = SecureRandom.getInstance("SHA1PRNG");
