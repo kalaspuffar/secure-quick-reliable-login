@@ -67,6 +67,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     private PopupWindow loginPopupWindow;
     private PopupWindow changePasswordPopupWindow;
     private PopupWindow resetPasswordPopupWindow;
+    private PopupWindow progressPopupWindow;
 
     private FrameLayout progressBarHolder;
 
@@ -101,6 +102,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         setupImportPopupWindow(getLayoutInflater());
         setupChangePasswordPopupWindow(getLayoutInflater());
         setupResetPasswordPopupWindow(getLayoutInflater());
+        setupProgressPopupWindow(getLayoutInflater());
 
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
@@ -324,6 +326,18 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         return true;
     }
 
+    public void setupProgressPopupWindow(LayoutInflater layoutInflater) {
+        View popupView = layoutInflater.inflate(R.layout.fragment_progress, null);
+
+        progressPopupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
+                false);
+
+        final ProgressBar progressBar = popupView.findViewById(R.id.pbProgress);
+        final TextView lblProgressText = popupView.findViewById(R.id.lblProgressText);
+        SQRLStorage storage = SQRLStorage.getInstance();
+        storage.setProgressionUpdater(new ProgressionUpdater(handler, progressBar, lblProgressText));
+    }
 
     public void setupResetPasswordPopupWindow(LayoutInflater layoutInflater) {
         View popupView = layoutInflater.inflate(R.layout.fragment_reset_password, null);
@@ -355,7 +369,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             if(!checkRescueCode(txtRecoverCode6)) return;
 
             resetPasswordPopupWindow.dismiss();
-            showProgressBar();
+            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
 
             new Thread(() -> {
                 try {
@@ -413,7 +427,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     }
                 } finally {
                     storage.clear();
-                    hideProgressBar();
+                    progressPopupWindow.dismiss();
                     txtResetPasswordNewPassword.setText("");
                     txtRecoverCode1.setText("");
                     txtRecoverCode2.setText("");
@@ -512,51 +526,56 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         storage.setProgressionUpdater(new ProgressionUpdater(handler, pbDecrypting, progressText));
 
         popupView.findViewById(R.id.btnCloseImportIdentity).setOnClickListener(v -> decryptPopupWindow.dismiss());
-        btnDecryptKey.setOnClickListener(v -> new Thread(() -> {
-            try {
-                boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString());
-                if(!decryptStatus) {
-                    handler.post(() -> {
-                        Toast.makeText(MainActivity.this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG).show();
-                        txtPassword.setText("");
-                    });
-                    return;
+        btnDecryptKey.setOnClickListener(v -> {
+            decryptPopupWindow.dismiss();
+            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+
+            new Thread(() -> {
+                try {
+                    boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString());
+                    if(!decryptStatus) {
+                        handler.post(() -> {
+                            Toast.makeText(MainActivity.this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG).show();
+                            txtPassword.setText("");
+                        });
+                        return;
+                    }
+
+                    boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
+                    if (!encryptStatus) {
+                        handler.post(() -> {
+                            Toast.makeText(MainActivity.this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG).show();
+                            txtPassword.setText("");
+                        });
+                        return;
+                    }
+                    storage.clear();
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage(), e);
                 }
 
-                boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
-                if (!encryptStatus) {
-                    handler.post(() -> {
-                        Toast.makeText(MainActivity.this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG).show();
-                        txtPassword.setText("");
-                    });
-                    return;
-                }
-                storage.clear();
-            } catch (Exception e) {
-                Log.e(TAG, e.getMessage(), e);
-            }
+                long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
 
-            long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
+                SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
+                        getString(R.string.preferences),
+                        Context.MODE_PRIVATE
+                );
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putLong(getString(R.string.current_id), newIdentityId);
+                editor.commit();
 
-            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                    getString(R.string.preferences),
-                    Context.MODE_PRIVATE
-            );
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putLong(getString(R.string.current_id), newIdentityId);
-            editor.commit();
+                handler.post(() -> {
+                    updateSpinnerData(newIdentityId);
+                    txtPassword.setText("");
+                    progressPopupWindow.dismiss();
 
-            handler.post(() -> {
-                updateSpinnerData(newIdentityId);
-                txtPassword.setText("");
-                decryptPopupWindow.dismiss();
-
-                if(newIdentityId != 0) {
-                    txtIdentityName.setText(mDbHelper.getIdentityName(newIdentityId));
-                    renamePopupWindow.showAtLocation(renamePopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                }
-            });
-        }).start());
+                    if(newIdentityId != 0) {
+                        txtIdentityName.setText(mDbHelper.getIdentityName(newIdentityId));
+                        renamePopupWindow.showAtLocation(renamePopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                    }
+                });
+            }).start();
+        });
     }
 
     public void setupChangePasswordPopupWindow(LayoutInflater layoutInflater) {
@@ -587,8 +606,8 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 return;
             }
 
-            handler.post(() -> changePasswordPopupWindow.dismiss());
-            showProgressBar();
+            changePasswordPopupWindow.dismiss();
+            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
 
             new Thread(() -> {
                 try {
@@ -615,7 +634,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     }
                 } finally {
                     storage.clear();
-                    hideProgressBar();
+                    handler.post(() -> progressPopupWindow.dismiss());
                 }
 
                 SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
