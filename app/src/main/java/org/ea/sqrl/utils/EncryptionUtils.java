@@ -232,7 +232,6 @@ public class EncryptionUtils {
      */
     public static byte[] readSQRLQRCode(byte[] rawHexData) {
         String string = EncryptionUtils.byte2hex(rawHexData);
-        System.out.println(string);
         int start = string.indexOf("7371726c64617461");
         if(start == -1) {
             start = string.indexOf("7371726c3a2f2f");

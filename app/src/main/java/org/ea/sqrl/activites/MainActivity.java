@@ -797,10 +797,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                         storage.read(qrCodeData);
 
                         if(!storage.hasEncryptedKeys()) {
-                            Toast.makeText(MainActivity.this, R.string.identity_compressed_format_not_supported, Toast.LENGTH_LONG);
-                            if(!mDbHelper.hasIdentities()) {
-                                startActivity(new Intent(this, StartActivity.class));
-                            }
+                            resetPasswordPopupWindow.showAtLocation(resetPasswordPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                             return;
                         }
 
