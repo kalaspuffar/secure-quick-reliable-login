@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/main_view"
     tools:context="org.ea.sqrl.activites.MainActivity">
 
 
@@ -15,6 +16,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:text="@string/current_identity_title"
+        android:duplicateParentState="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,6 +32,7 @@
         android:layout_marginTop="8dp"
         android:contentDescription="@string/main_selected_identity"
         android:minHeight="48dp"
+        android:duplicateParentState="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,6 +45,7 @@
         android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
+        android:duplicateParentState="true"
         android:text="@string/identity_unlock"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cboxIdentity" />
@@ -53,6 +57,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:duplicateParentState="true"
         android:text="@string/button_settings"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cboxIdentity" />
@@ -64,6 +69,7 @@
         android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
+        android:duplicateParentState="true"
         android:text="@string/button_import_identity"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnUnlockIdentity" />
@@ -75,6 +81,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
+        android:duplicateParentState="true"
         android:text="@string/button_create_identity"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -86,6 +93,7 @@
         android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
+        android:duplicateParentState="true"
         android:text="@string/button_remove_identity"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnImportIdentity" />
@@ -97,6 +105,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:duplicateParentState="true"
         android:text="@string/button_rename_identity"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnExport" />
@@ -108,6 +117,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:duplicateParentState="true"
         android:text="@string/button_export_identity"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
@@ -119,6 +129,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
+        android:duplicateParentState="true"
         android:text="@string/button_reset_password"
         app:layout_constraintBottom_toTopOf="@+id/btnCreate"
         app:layout_constraintStart_toStartOf="parent" />
@@ -130,6 +141,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp"
+        android:duplicateParentState="true"
         android:text="@string/button_forget_quickpass"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -141,6 +153,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp"
+        android:duplicateParentState="true"
         android:text="@string/button_rekey_identity"
         app:layout_constraintBottom_toTopOf="@+id/btnForgetQuickPass"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -152,6 +165,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:duplicateParentState="true"
         android:text="@string/button_change_password"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnRename" />

@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NotificationCompat;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -71,6 +72,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
     private Button btnUnlockIdentity;
     private EditText txtIdentityName;
+    private ConstraintLayout mainView;
     private boolean useIdentity = false;
 
     @Override
@@ -82,6 +84,8 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         cboxIdentity = findViewById(R.id.cboxIdentity);
         identities = mDbHelper.getIdentitys();
+
+        mainView = findViewById(R.id.main_view);
 
         ArrayAdapter adapter = new ArrayAdapter(
             this,
@@ -255,6 +259,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
     private void showProgressBar() {
         handler.post(() -> {
+            mainView.setEnabled(false);
             AlphaAnimation inAnimation = new AlphaAnimation(0f, 1f);
             inAnimation.setDuration(200);
             progressBarHolder.setAnimation(inAnimation);
@@ -264,6 +269,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
     private void hideProgressBar() {
         handler.post(() -> {
+            mainView.setEnabled(true);
             AlphaAnimation outAnimation = new AlphaAnimation(1f, 0f);
             outAnimation.setDuration(200);
             progressBarHolder.setAnimation(outAnimation);
