@@ -101,6 +101,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         setupLoginPopupWindow(layoutInflater);
         setupImportPopupWindow(layoutInflater);
         setupChangePasswordPopupWindow(layoutInflater);
+        setupResetPasswordPopupWindow(layoutInflater);
 
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
@@ -211,7 +212,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         final Button btnReset = findViewById(R.id.btnReset);
         btnReset.setOnClickListener(
-                v -> showNotImplementedDialog()
+                v -> resetPasswordPopupWindow.showAtLocation(resetPasswordPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
         );
 
         final Button btnForgetQuickPass = findViewById(R.id.btnForgetQuickPass);
