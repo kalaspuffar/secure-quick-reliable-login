@@ -111,8 +111,6 @@ public class SQRLStorage {
 
         String inputString = EncryptionUtils.encodeBase56(Arrays.copyOfRange(input, HEADER_LENGTH + passwordBlockLength, input.length));
         verifyingRecoveryBlock = fixString(inputString);
-
-        System.out.println(this.logNFactor);
     }
 
     /**
@@ -363,6 +361,8 @@ public class SQRLStorage {
                     return false;
                 }
             } else {
+                rescueIdentityLockKey = new byte[rescueIdentityLockKeyEncrypted.length];
+
                 Grc_aesgcm.gcm_setkey(key, key.length);
                 int res = Grc_aesgcm.gcm_auth_decrypt(
                         nullBytes, nullBytes.length,
@@ -470,8 +470,10 @@ public class SQRLStorage {
             this.setPasswordVerify(5);
             this.optionFlags = 0x1f3;
             this.logNFactor = 9;
+            this.identityPlaintextLength = 45;
             this.randomSalt = new byte[16];
             this.initializationVector = new byte[12];
+            this.hasIdentityBlock = true;
         }
 
         try {
@@ -482,7 +484,6 @@ public class SQRLStorage {
             byte[] key = Arrays.copyOfRange(encResult, 4, 36);
 
             byte[] identityKeys = EncryptionUtils.combine(identityMasterKey, identityLockKey);
-            byte[] encryptionResult = new byte[identityKeys.length];
 
             entropyHarvester.fetchRandom(this.initializationVector);
 
@@ -495,13 +496,14 @@ public class SQRLStorage {
                 cipher.init(Cipher.ENCRYPT_MODE, keySpec, params);
                 cipher.updateAAD(identityPlaintext);
                 cipher.update(identityKeys);
-                encryptionResult = cipher.doFinal();
+                byte[] encryptionResult = cipher.doFinal();
 
                 this.identityMasterKeyEncrypted = Arrays.copyOfRange(encryptionResult, 0, 32);
                 this.identityLockKeyEncrypted = Arrays.copyOfRange(encryptionResult, 32, 64);
                 this.identityVerificationTag = Arrays.copyOfRange(encryptionResult, 64, 80);
             } else {
                 byte[] resultVerificationTag = new byte[16];
+                byte[] encryptionResult = new byte[identityKeys.length];
 
                 Grc_aesgcm.gcm_setkey(key, key.length);
                 int res = Grc_aesgcm.gcm_encrypt_and_tag(

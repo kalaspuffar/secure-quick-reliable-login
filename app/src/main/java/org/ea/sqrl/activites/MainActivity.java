@@ -427,14 +427,16 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     }
                 } finally {
                     storage.clear();
-                    progressPopupWindow.dismiss();
-                    txtResetPasswordNewPassword.setText("");
-                    txtRecoverCode1.setText("");
-                    txtRecoverCode2.setText("");
-                    txtRecoverCode3.setText("");
-                    txtRecoverCode4.setText("");
-                    txtRecoverCode5.setText("");
-                    txtRecoverCode6.setText("");
+                    handler.post(() -> {
+                        progressPopupWindow.dismiss();
+                        txtResetPasswordNewPassword.setText("");
+                        txtRecoverCode1.setText("");
+                        txtRecoverCode2.setText("");
+                        txtRecoverCode3.setText("");
+                        txtRecoverCode4.setText("");
+                        txtRecoverCode5.setText("");
+                        txtRecoverCode6.setText("");
+                    });
                 }
             }).start();
         });
@@ -587,13 +589,11 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         changePasswordPopupWindow.setTouchable(true);
 
-
         final EditText txtCurrentPassword = popupView.findViewById(R.id.txtCurrentPassword);
         final EditText txtNewPassword = popupView.findViewById(R.id.txtNewPassword);
         final EditText txtRetypePassword = popupView.findViewById(R.id.txtRetypePassword);
 
         SQRLStorage storage = SQRLStorage.getInstance();
-
 
         popupView.findViewById(R.id.btnCloseChangePassword).setOnClickListener(v -> changePasswordPopupWindow.dismiss());
         final Button btnChangePassword = popupView.findViewById(R.id.btnDoChangePassword);
