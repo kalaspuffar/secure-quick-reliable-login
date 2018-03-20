@@ -92,6 +92,7 @@ public class SettingsActivity extends BaseActivity {
         SQRLStorage storage = SQRLStorage.getInstance();
         storage.setProgressionUpdater(new ProgressionUpdater(handler, pbDecrypting, progressText));
 
+        popupView.findViewById(R.id.btnCloseSaveSettings).setOnClickListener(v -> savePopupWindow.dismiss());
         final Button btnSaveSettings = popupView.findViewById(R.id.btnSaveSettings);
         btnSaveSettings.setOnClickListener(v -> new Thread(() -> {
             boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString());

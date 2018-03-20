@@ -46,9 +46,9 @@
     <string name="button_change_password">Change password</string>
     <string name="not_implemented_title">Not implemented</string>
     <string name="not_implemented_text">This functionality isn\'t yet implemented</string>
-    <string name="identity_rename_title">New name of identity</string>
+    <string name="identity_rename_title">Rename identity</string>
     <string name="title_activity_show_identity">SQRL - Show identity</string>
-    <string name="button_rename_ok">rename</string>
+    <string name="button_rename_ok">Rename</string>
     <string name="current_identity_title">Current identity</string>
     <string name="import_password_title">Please enter password to import</string>
     <string name="button_start_import">Scan a new identity</string>
@@ -89,4 +89,15 @@
     <string name="reset_password_new">New password</string>
     <string name="reset_password_desc">In order to set a new password without knowing the old one you need to supply the rescue code given to you at identity creation. Then you supply a new password and we will create a password secured identity.</string>
     <string name="save_settings_title">Save settings</string>
+    <string name="login_title">Login</string>
+    <string name="import_title">Import identity</string>
+    <string name="import_identity_password">Password</string>
+    <string name="rename_identity_desc">New name</string>
+    <string name="reset_password_rescuecode_1">Rescue code part 1</string>
+    <string name="reset_password_rescuecode_2">Rescue code part 2</string>
+    <string name="reset_password_rescuecode_3">Rescue code part 3</string>
+    <string name="reset_password_rescuecode_4">Rescue code part 4</string>
+    <string name="reset_password_rescuecode_5">Rescue code part 5</string>
+    <string name="reset_password_rescuecode_6">Rescue code part 6</string>
+    <string name="change_password_title">Change password</string>
 </resources>

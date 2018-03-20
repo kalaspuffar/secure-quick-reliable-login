@@ -65,6 +65,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     private PopupWindow decryptPopupWindow;
     private PopupWindow loginPopupWindow;
     private PopupWindow changePasswordPopupWindow;
+    private PopupWindow resetPasswordPopupWindow;
 
     private FrameLayout progressBarHolder;
 
@@ -234,6 +235,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         renamePopupWindow.setTouchable(true);
         txtIdentityName = popupView.findViewById(R.id.txtIdentityName);
 
+        popupView.findViewById(R.id.btnCloseRename).setOnClickListener(v -> renamePopupWindow.dismiss());
         popupView.findViewById(R.id.btnRename).setOnClickListener(v -> {
 
                     SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
@@ -303,6 +305,32 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         commHandler.printParams();
     }
 
+
+    public void setupResetPasswordPopupWindow(LayoutInflater layoutInflater) {
+        View popupView = layoutInflater.inflate(R.layout.fragment_reset_password, null);
+
+        resetPasswordPopupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
+                true);
+
+        resetPasswordPopupWindow.setTouchable(true);
+
+        popupView.findViewById(R.id.btnCloseResetPassword).setOnClickListener(v -> resetPasswordPopupWindow.dismiss());
+        popupView.findViewById(R.id.btnResetPassword).setOnClickListener(v -> {
+
+            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
+                    getString(R.string.preferences),
+                    Context.MODE_PRIVATE
+            );
+            long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+
+            if(currentId != 0) {
+            }
+
+            resetPasswordPopupWindow.dismiss();
+        });
+    }
+
     public void setupLoginPopupWindow(LayoutInflater layoutInflater) {
         View popupView = layoutInflater.inflate(R.layout.fragment_login, null);
 
@@ -314,6 +342,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         final EditText txtLoginPassword = popupView.findViewById(R.id.txtLoginPassword);
         txtErrorMessage = popupView.findViewById(R.id.txtErrorMessage);
 
+        popupView.findViewById(R.id.btnCloseLogin).setOnClickListener(v -> loginPopupWindow.dismiss());
         popupView.findViewById(R.id.btnLogin).setOnClickListener(v -> {
 
                     SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
@@ -390,6 +419,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         SQRLStorage storage = SQRLStorage.getInstance();
         storage.setProgressionUpdater(new ProgressionUpdater(handler, pbDecrypting, progressText));
 
+        popupView.findViewById(R.id.btnCloseImportIdentity).setOnClickListener(v -> decryptPopupWindow.dismiss());
         btnDecryptKey.setOnClickListener(v -> new Thread(() -> {
             try {
                 boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString());
@@ -449,6 +479,8 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         SQRLStorage storage = SQRLStorage.getInstance();
 
+
+        popupView.findViewById(R.id.btnCloseChangePassword).setOnClickListener(v -> changePasswordPopupWindow.dismiss());
         final Button btnChangePassword = popupView.findViewById(R.id.btnDoChangePassword);
         btnChangePassword.setOnClickListener(v -> new Thread(() -> {
             if(!txtNewPassword.getText().toString().equals(txtRetypePassword.getText().toString())) {

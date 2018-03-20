@@ -9,7 +9,7 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout2"
         android:layout_width="match_parent"
-        android:layout_height="353dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:background="@android:color/background_light"
@@ -23,10 +23,11 @@
         tools:layout_conversion_absoluteWidth="359dp">
 
         <ImageButton
-            android:id="@+id/imageButton3"
+            android:id="@+id/btnCloseSaveSettings"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
             android:background="@android:color/transparent"
             app:layout_constraintStart_toStartOf="parent"
@@ -84,6 +85,7 @@
             android:layout_marginStart="30dp"
             android:ems="10"
             android:inputType="textPassword"
+            android:contentDescription="@string/save_settings_password"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.233"
             app:layout_constraintStart_toStartOf="parent"
@@ -98,9 +100,6 @@
             android:layout_marginTop="16dp"
             android:text="@string/save_settings_password"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            android:textSize="24sp"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
