@@ -71,7 +71,7 @@ public class StartActivity extends BaseActivity {
                 SQRLStorage storage = SQRLStorage.getInstance();
                 try {
                     byte[] qrCodeData = EncryptionUtils.readSQRLQRCode(result.getRawBytes());
-                    storage.read(qrCodeData, true);
+                    storage.read(qrCodeData);
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage(), e);
                     return;

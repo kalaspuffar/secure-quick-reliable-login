@@ -51,7 +51,7 @@ public class ShowIdentityActivity extends BaseActivity {
 
         SQRLStorage storage = SQRLStorage.getInstance();
         try {
-            storage.read(qrCodeData, true);
+            storage.read(qrCodeData);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
             ShowIdentityActivity.this.finish();

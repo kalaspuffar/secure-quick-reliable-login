@@ -651,7 +651,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         SQRLStorage storage = SQRLStorage.getInstance();
         try {
             byte[] identityData = mDbHelper.getIdentityData(keyArray[pos]);
-            storage.read(identityData, true);
+            storage.read(identityData);
             btnUnlockIdentity.setEnabled(storage.hasIdentityBlock());
 
         } catch (Exception e) {
@@ -719,7 +719,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     SQRLStorage storage = SQRLStorage.getInstance();
                     byte[] qrCodeData = EncryptionUtils.readSQRLQRCode(result.getRawBytes());
                     try {
-                        storage.read(qrCodeData, true);
+                        storage.read(qrCodeData);
 
                         if(!storage.hasEncryptedKeys()) {
                             Toast.makeText(MainActivity.this, R.string.identity_compressed_format_not_supported, Toast.LENGTH_LONG);

@@ -242,7 +242,7 @@ public class CommunicationHandler {
 
             SQRLStorage storage = SQRLStorage.getInstance();
             storage.setProgressionUpdater(new ProgressionUpdater());
-            storage.read(bytesArray, true);
+            storage.read(bytesArray);
             storage.decryptIdentityKey("Testing1234");
 
             CommunicationHandler commHandler = CommunicationHandler.getInstance();

@@ -84,7 +84,7 @@ public class SQRLStorage {
         return result;
     }
 
-    public void read(byte[] input, boolean full) throws Exception {
+    public void read(byte[] input) throws Exception {
         String header = new String(Arrays.copyOfRange(input, 0, 8));
 
         hasIdentityBlock = false;
@@ -150,7 +150,6 @@ public class SQRLStorage {
         identityVerificationTag = Arrays.copyOfRange(input, 109, 125);
         hasIdentityBlock = true;
     }
-
 
     private byte[] rescuePlaintext;
     private byte[] rescueRandomSalt;
@@ -258,7 +257,7 @@ public class SQRLStorage {
             byte[] identityKeys = EncryptionUtils.combine(identityMasterKeyEncrypted, identityLockKeyEncrypted);
             byte[] decryptionResult = new byte[identityKeys.length];
 
-            if (Build.DEVICE != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Key keySpec = new SecretKeySpec(key, "AES");
                 Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
                 GCMParameterSpec params = new GCMParameterSpec(128, initializationVector);
@@ -308,7 +307,7 @@ public class SQRLStorage {
             byte[] nullBytes = new byte[12];
             Arrays.fill(nullBytes, (byte)0);
 
-            if(Build.DEVICE != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Key keySpec = new SecretKeySpec(key, "AES");
                 Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
                 GCMParameterSpec params = new GCMParameterSpec(128, nullBytes);
@@ -670,14 +669,17 @@ public class SQRLStorage {
             byte[] bytesArray = EncryptionUtils.readSQRLQRCode(EncryptionUtils.hex2Byte(rawQRCodeData));
 
             SQRLStorage storage = SQRLStorage.getInstance();
-            storage.read(bytesArray, true);
+            storage.setProgressionUpdater(new ProgressionUpdater());
+            storage.read(bytesArray);
 
+            /*
             byte[] saveData = storage.createSaveData();
 
             System.out.println(EncryptionUtils.byte2hex(bytesArray));
             System.out.println(EncryptionUtils.byte2hex(saveData));
 
             System.out.println(Arrays.equals(bytesArray, saveData));
+            */
 
             /*
             File file = new File("Testing.sqrl");
@@ -692,12 +694,8 @@ public class SQRLStorage {
             md.update((byte)0);
             BigInteger reminder = new BigInteger(1, md.digest()).mod(BigInteger.valueOf(56));
             System.out.println(reminder.intValue());
-
-            System.out.println(EncryptionUtils.byte2hex(bytesArray));
-            SQRLStorage storage = SQRLStorage.getInstance();
-            storage.read(bytesArray, true);
-            //storage.decryptIdentityKey("Testing1234");
             */
+
         } catch (Exception e) {
             e.printStackTrace();
         }

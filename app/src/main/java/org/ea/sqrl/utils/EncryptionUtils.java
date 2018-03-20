@@ -149,6 +149,25 @@ public class EncryptionUtils {
         return result;
     }
 
+    public static byte[] enHash(byte[] bytesToHash) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            bytesToHash = digest.digest(bytesToHash);
+            byte[] xorKey = Arrays.copyOf(bytesToHash, bytesToHash.length);
+
+            for(int i=0; i<15; i++) {
+                bytesToHash = digest.digest(bytesToHash);
+                xorKey = xor(xorKey, bytesToHash);
+            }
+
+            return xorKey;
+
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+            return new byte[0];
+        }
+    }
+
     public static byte[] enSCryptIterations(String password, byte[] randomSalt, int logNFactor, int dkLen, int iterationCount, ProgressionUpdater progressionUpdater) throws Exception {
         progressionUpdater.startTimer();
         byte[] key = SCrypt.scrypt(password.getBytes(), randomSalt, 1 << logNFactor, 256, 1, dkLen);
