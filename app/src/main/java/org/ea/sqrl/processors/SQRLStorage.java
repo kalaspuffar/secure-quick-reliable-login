@@ -85,6 +85,7 @@ public class SQRLStorage {
     }
 
     public void read(byte[] input) throws Exception {
+        this.cleanIdentity();
         String header = new String(Arrays.copyOfRange(input, 0, 8));
 
         hasIdentityBlock = false;
@@ -131,7 +132,6 @@ public class SQRLStorage {
 
     private byte[] identityMasterKey;
     private byte[] identityLockKey;
-
 
     public void handleIdentityBlock(byte[] input) {
         passwordBlockLength = input.length;
@@ -206,7 +206,6 @@ public class SQRLStorage {
         hasPreviousBlock = true;
     }
 
-
     public void handleBlock(byte[] input) throws Exception {
         int type = getIntFromTwoBytes(input, 2);
 
@@ -224,6 +223,48 @@ public class SQRLStorage {
                 throw new Exception("Unknown type "+type);
         }
     }
+
+    private void cleanIdentity() {
+        this.identityPlaintextLength = -1;
+        this.identityPlaintext = null;
+        this.initializationVector = null;
+        this.randomSalt = null;
+        this.logNFactor = -1;
+        this.iterationCount = -1;
+        this.optionFlags = -1;
+        this.hintLength = -1;
+        this.timeInSecondsToRunPWEnScryptOnPassword = -1;
+        this.idleTimoutInMinutes = -1;
+        this.identityMasterKeyEncrypted = null;
+        this.identityLockKeyEncrypted = null;
+        this.identityVerificationTag = null;
+        if(this.identityMasterKey != null)
+            clearBytes(this.identityMasterKey);
+        if(this.identityLockKey != null)
+            clearBytes(this.identityLockKey);
+        this.identityMasterKey = null;
+        this.identityLockKey = null;
+
+        this.rescuePlaintext = null;
+        this.rescueRandomSalt = null;
+        this.rescueLogNFactor = -1;
+        this.rescueIterationCount = -1;
+        this.rescueIdentityLockKeyEncrypted = null;
+        if(this.rescueIdentityLockKey != null)
+            clearBytes(this.rescueIdentityLockKey);
+        this.rescueIdentityLockKey = null;
+        this.rescueVerificationTag = null;
+        this.verifyingRecoveryBlock = null;
+
+        this.previousPlaintext = null;
+        this.previousCountOfKeys = 0;
+        this.previousKey1 = null;
+        this.previousKey2 = null;
+        this.previousKey3 = null;
+        this.previousKey4 = null;
+        this.previousVerificationTag = null;
+    }
+
 
     private int getIntFromTwoBytes(byte[] input, int offset) {
         return (input[offset] & 0xff) | ((input[offset + 1] & 0xff) << 8);
@@ -323,10 +364,10 @@ public class SQRLStorage {
                 Grc_aesgcm.gcm_setkey(key, key.length);
                 int res = Grc_aesgcm.gcm_auth_decrypt(
                         nullBytes, nullBytes.length,
-                        identityPlaintext, identityPlaintextLength,
+                        rescuePlaintext, rescuePlaintext.length,
                         rescueIdentityLockKeyEncrypted, rescueIdentityLockKey,
                         rescueIdentityLockKeyEncrypted.length,
-                        identityVerificationTag, identityVerificationTag.length
+                        rescueVerificationTag, rescueVerificationTag.length
                 );
                 Grc_aesgcm.gcm_zero_ctx();
 
@@ -420,6 +461,16 @@ public class SQRLStorage {
     public boolean encryptIdentityKey(String password, EntropyHarvester entropyHarvester) {
         if(!this.hasKeys()) return false;
         this.progressionUpdater.clear();
+
+        if(!this.hasEncryptedKeys()) {
+            this.setHintLength(4);
+            this.setIdleTimeout(5);
+            this.setPasswordVerify(5);
+            this.optionFlags = 0x1f3;
+            this.logNFactor = 9;
+            this.randomSalt = new byte[16];
+            this.initializationVector = new byte[12];
+        }
 
         try {
             entropyHarvester.fetchRandom(this.randomSalt);

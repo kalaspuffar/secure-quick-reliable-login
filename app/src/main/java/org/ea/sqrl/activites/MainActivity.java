@@ -73,7 +73,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     private Button btnUnlockIdentity;
     private EditText txtIdentityName;
     private ConstraintLayout mainView;
-    private boolean useIdentity = false;
+    private boolean importIdentity = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +95,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
         cboxIdentity.setAdapter(adapter);
         cboxIdentity.setOnItemSelectedListener(this);
-        
+
         setupRenamePopupWindow(getLayoutInflater());
         setupLoginPopupWindow(getLayoutInflater());
         setupImportPopupWindow(getLayoutInflater());
@@ -119,7 +119,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         btnUnlockIdentity = findViewById(R.id.btnUnlockIdentity);
         btnUnlockIdentity.setOnClickListener(
                 v -> {
-                    useIdentity = true;
+                    importIdentity = false;
                     integrator.initiateScan();
                 }
         );
@@ -127,7 +127,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         final Button btnImportIdentity = findViewById(R.id.btnImportIdentity);
         btnImportIdentity.setOnClickListener(
                 v -> {
-                    useIdentity = false;
+                    importIdentity = true;
                     integrator.initiateScan();
                 }
         );
@@ -347,64 +347,82 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
             SQRLStorage storage = SQRLStorage.getInstance();
 
-            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                    getString(R.string.preferences),
-                    Context.MODE_PRIVATE
-            );
-            long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
-            if(currentId != 0) {
-                if(!checkRescueCode(txtRecoverCode1)) return;
-                if(!checkRescueCode(txtRecoverCode2)) return;
-                if(!checkRescueCode(txtRecoverCode3)) return;
-                if(!checkRescueCode(txtRecoverCode4)) return;
-                if(!checkRescueCode(txtRecoverCode5)) return;
-                if(!checkRescueCode(txtRecoverCode6)) return;
+            if(!checkRescueCode(txtRecoverCode1)) return;
+            if(!checkRescueCode(txtRecoverCode2)) return;
+            if(!checkRescueCode(txtRecoverCode3)) return;
+            if(!checkRescueCode(txtRecoverCode4)) return;
+            if(!checkRescueCode(txtRecoverCode5)) return;
+            if(!checkRescueCode(txtRecoverCode6)) return;
 
-                resetPasswordPopupWindow.dismiss();
-                showProgressBar();
+            resetPasswordPopupWindow.dismiss();
+            showProgressBar();
 
-                new Thread(() -> {
-                    try {
-                        String rescueCode = txtRecoverCode1.getText().toString();
-                        rescueCode += txtRecoverCode2.getText().toString();
-                        rescueCode += txtRecoverCode3.getText().toString();
-                        rescueCode += txtRecoverCode4.getText().toString();
-                        rescueCode += txtRecoverCode5.getText().toString();
-                        rescueCode += txtRecoverCode6.getText().toString();
+            new Thread(() -> {
+                try {
+                    String rescueCode = txtRecoverCode1.getText().toString();
+                    rescueCode += txtRecoverCode2.getText().toString();
+                    rescueCode += txtRecoverCode3.getText().toString();
+                    rescueCode += txtRecoverCode4.getText().toString();
+                    rescueCode += txtRecoverCode5.getText().toString();
+                    rescueCode += txtRecoverCode6.getText().toString();
 
-                        boolean decryptionOk = storage.decryptUnlockKey(rescueCode);
-                        if (!decryptionOk) {
-                            handler.post(() ->
-                                Toast.makeText(MainActivity.this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG).show()
-                            );
-                            return;
-                        }
-
-                        storage.reInitializeMasterKeyIdentity();
-
-                        boolean encryptStatus = storage.encryptIdentityKey(txtResetPasswordNewPassword.getText().toString(), entropyHarvester);
-                        if (!encryptStatus) {
-                            handler.post(() ->
-                                Toast.makeText(MainActivity.this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG).show()
-                            );
-                            return;
-                        }
-                        storage.clear();
-
-                        mDbHelper.updateIdentityData(currentId, storage.createSaveData());
-                    } finally {
-                        storage.clear();
-                        hideProgressBar();
-                        txtResetPasswordNewPassword.setText("");
-                        txtRecoverCode1.setText("");
-                        txtRecoverCode2.setText("");
-                        txtRecoverCode3.setText("");
-                        txtRecoverCode4.setText("");
-                        txtRecoverCode5.setText("");
-                        txtRecoverCode6.setText("");
+                    boolean decryptionOk = storage.decryptUnlockKey(rescueCode);
+                    if (!decryptionOk) {
+                        handler.post(() ->
+                            Toast.makeText(MainActivity.this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG).show()
+                        );
+                        return;
                     }
-                }).start();
-            }
+
+                    storage.reInitializeMasterKeyIdentity();
+
+                    boolean encryptStatus = storage.encryptIdentityKey(txtResetPasswordNewPassword.getText().toString(), entropyHarvester);
+                    if (!encryptStatus) {
+                        handler.post(() ->
+                            Toast.makeText(MainActivity.this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG).show()
+                        );
+                        return;
+                    }
+                    storage.clear();
+
+                    SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
+                            getString(R.string.preferences),
+                            Context.MODE_PRIVATE
+                    );
+
+                    if(importIdentity) {
+                        long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putLong(getString(R.string.current_id), newIdentityId);
+                        editor.commit();
+
+                        handler.post(() -> {
+                            updateSpinnerData(newIdentityId);
+                            decryptPopupWindow.dismiss();
+
+                            if(newIdentityId != 0) {
+                                txtIdentityName.setText(mDbHelper.getIdentityName(newIdentityId));
+                                renamePopupWindow.showAtLocation(renamePopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                            }
+                        });
+                    } else {
+                        long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+                        if(currentId != 0) {
+                            mDbHelper.updateIdentityData(currentId, storage.createSaveData());
+                        }
+                    }
+                } finally {
+                    storage.clear();
+                    hideProgressBar();
+                    txtResetPasswordNewPassword.setText("");
+                    txtRecoverCode1.setText("");
+                    txtRecoverCode2.setText("");
+                    txtRecoverCode3.setText("");
+                    txtRecoverCode4.setText("");
+                    txtRecoverCode5.setText("");
+                    txtRecoverCode6.setText("");
+                }
+            }).start();
         });
     }
 
@@ -773,7 +791,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 Log.d("MainActivity", "Cancelled scan");
                 Toast.makeText(MainActivity.this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
-                if(useIdentity) {
+                if(!importIdentity) {
                     serverData = EncryptionUtils.readSQRLQRCodeAsString(result.getRawBytes());
                     int indexOfQuery = serverData.indexOf("/", serverData.indexOf("://") + 3);
                     queryLink = serverData.substring(indexOfQuery);
