@@ -260,6 +260,11 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             progressBarHolder.setAnimation(inAnimation);
             progressBarHolder.setVisibility(View.VISIBLE);
         });
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
     }
 
     private void hideProgressBar() {
@@ -345,62 +350,59 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         popupView.findViewById(R.id.btnCloseLogin).setOnClickListener(v -> loginPopupWindow.dismiss());
         popupView.findViewById(R.id.btnLogin).setOnClickListener(v -> {
+            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
+                    getString(R.string.preferences),
+                    Context.MODE_PRIVATE
+            );
+            long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
 
-                    SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                            getString(R.string.preferences),
-                            Context.MODE_PRIVATE
-                    );
-                    long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+            if(currentId != 0) {
+                loginPopupWindow.dismiss();
+                showProgressBar();
 
-                    if(currentId != 0) {
+                boolean decryptionOk = SQRLStorage.getInstance().decryptIdentityKey(txtLoginPassword.getText().toString());
+                if(decryptionOk) {
+                    showClearNotification();
+                } else {
+                    txtErrorMessage.setText(getString(R.string.decrypt_identity_fail));
+                    return;
+                }
 
-                        boolean decryptionOk = SQRLStorage.getInstance().decryptIdentityKey(txtLoginPassword.getText().toString());
-                        if(decryptionOk) {
-                            showClearNotification();
+                new Thread(() -> {
+                    try {
+                        postQuery(commHandler);
+
+                        if(
+                            commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
+                            commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
+                        ) {
+                            postLogin(commHandler);
+                        } else if(
+                            !commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) &&
+                            !commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
+                        ){
+                            postCreateAccount(commHandler);
                         } else {
-                            txtErrorMessage.setText(getString(R.string.decrypt_identity_fail));
-                            return;
-                        }
-
-                        loginPopupWindow.dismiss();
-
-                        new Thread(() -> {
-                            showProgressBar();
-                            try {
-                                postQuery(commHandler);
-
-                                if(
-                                    commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                                    commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
-                                ) {
-                                    postLogin(commHandler);
-                                } else if(
-                                    !commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) &&
-                                    !commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
-                                ){
-                                    postCreateAccount(commHandler);
-                                } else {
-                                    handler.post(() -> {
-                                        txtLoginPassword.setText("");
-                                        txtErrorMessage.setText(commHandler.getErrorMessage(this));
-                                    });
-                                }
-                            } catch (Exception e) {
-                                handler.post(() -> txtErrorMessage.setText(e.getMessage()));
-                                Log.e(TAG, e.getMessage(), e);
-                                return;
-                            } finally {
-                                hideProgressBar();
-                            }
-
                             handler.post(() -> {
-                                txtErrorMessage.setText("");
                                 txtLoginPassword.setText("");
+                                txtErrorMessage.setText(commHandler.getErrorMessage(this));
                             });
-
-                        }).start();
+                        }
+                    } catch (Exception e) {
+                        handler.post(() -> txtErrorMessage.setText(e.getMessage()));
+                        Log.e(TAG, e.getMessage(), e);
+                        return;
+                    } finally {
+                        hideProgressBar();
                     }
-                });
+
+                    handler.post(() -> {
+                        txtErrorMessage.setText("");
+                        txtLoginPassword.setText("");
+                    });
+                }).start();
+            }
+        });
     }
 
     public void setupImportPopupWindow(LayoutInflater layoutInflater) {
