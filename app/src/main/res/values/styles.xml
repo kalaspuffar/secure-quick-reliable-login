@@ -4,11 +4,6 @@
         <item name="buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
-        <item name="buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
-    </style>
-
     <!-- Base application theme. -->
     <style name="CommonTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->

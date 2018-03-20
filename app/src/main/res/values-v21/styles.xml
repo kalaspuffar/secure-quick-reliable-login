@@ -10,11 +10,6 @@
         <item name="buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
-        <item name="buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
-    </style>
-
     <style name="spinnerItemStyle" parent="android:Widget.TextView.SpinnerItem" />
     <style name="spinnerDropDownItemStyle" parent="android:TextAppearance.Widget.TextView.SpinnerItem" />
 </resources>
