@@ -95,17 +95,12 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
         cboxIdentity.setAdapter(adapter);
         cboxIdentity.setOnItemSelectedListener(this);
-
-        LayoutInflater inflater = (LayoutInflater)getBaseContext()
-                .getSystemService(LAYOUT_INFLATER_SERVICE);
-        final Context contextThemeWrapper = new ContextThemeWrapper(this, R.style.AppTheme);
-        LayoutInflater layoutInflater = inflater.cloneInContext(contextThemeWrapper);
-
-        setupRenamePopupWindow(layoutInflater);
-        setupLoginPopupWindow(layoutInflater);
-        setupImportPopupWindow(layoutInflater);
-        setupChangePasswordPopupWindow(layoutInflater);
-        setupResetPasswordPopupWindow(layoutInflater);
+        
+        setupRenamePopupWindow(getLayoutInflater());
+        setupLoginPopupWindow(getLayoutInflater());
+        setupImportPopupWindow(getLayoutInflater());
+        setupChangePasswordPopupWindow(getLayoutInflater());
+        setupResetPasswordPopupWindow(getLayoutInflater());
 
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
