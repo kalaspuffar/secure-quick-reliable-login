@@ -462,8 +462,12 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 updateSpinnerData(newIdentityId);
                 txtPassword.setText("");
                 decryptPopupWindow.dismiss();
-            });
 
+                if(newIdentityId != 0) {
+                    txtIdentityName.setText(mDbHelper.getIdentityName(newIdentityId));
+                    renamePopupWindow.showAtLocation(renamePopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                }
+            });
         }).start());
     }
 
