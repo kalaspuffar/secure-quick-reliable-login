@@ -260,11 +260,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             progressBarHolder.setAnimation(inAnimation);
             progressBarHolder.setVisibility(View.VISIBLE);
         });
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
     }
 
     private void hideProgressBar() {
@@ -360,15 +355,15 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 loginPopupWindow.dismiss();
                 showProgressBar();
 
-                boolean decryptionOk = SQRLStorage.getInstance().decryptIdentityKey(txtLoginPassword.getText().toString());
-                if(decryptionOk) {
-                    showClearNotification();
-                } else {
-                    txtErrorMessage.setText(getString(R.string.decrypt_identity_fail));
-                    return;
-                }
-
                 new Thread(() -> {
+                    boolean decryptionOk = SQRLStorage.getInstance().decryptIdentityKey(txtLoginPassword.getText().toString());
+                    if(decryptionOk) {
+                        showClearNotification();
+                    } else {
+                        txtErrorMessage.setText(getString(R.string.decrypt_identity_fail));
+                        return;
+                    }
+
                     try {
                         postQuery(commHandler);
 
@@ -485,61 +480,60 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         popupView.findViewById(R.id.btnCloseChangePassword).setOnClickListener(v -> changePasswordPopupWindow.dismiss());
         final Button btnChangePassword = popupView.findViewById(R.id.btnDoChangePassword);
-        btnChangePassword.setOnClickListener(v -> new Thread(() -> {
+        btnChangePassword.setOnClickListener(v -> {
             if(!txtNewPassword.getText().toString().equals(txtRetypePassword.getText().toString())) {
-                handler.post(() -> {
-                    Toast.makeText(MainActivity.this, getString(R.string.change_password_retyped_password_do_not_match), Toast.LENGTH_LONG).show();
-                    txtCurrentPassword.setText("");
-                    txtNewPassword.setText("");
-                    txtRetypePassword.setText("");
-                });
+                Toast.makeText(MainActivity.this, getString(R.string.change_password_retyped_password_do_not_match), Toast.LENGTH_LONG).show();
+                txtCurrentPassword.setText("");
+                txtNewPassword.setText("");
+                txtRetypePassword.setText("");
                 return;
             }
 
             handler.post(() -> changePasswordPopupWindow.dismiss());
             showProgressBar();
 
-            try {
-                boolean decryptStatus = storage.decryptIdentityKey(txtCurrentPassword.getText().toString());
-                if (!decryptStatus) {
-                    handler.post(() -> {
-                        Toast.makeText(MainActivity.this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG).show();
-                        txtCurrentPassword.setText("");
-                        txtNewPassword.setText("");
-                        txtRetypePassword.setText("");
-                    });
-                    return;
+            new Thread(() -> {
+                try {
+                    boolean decryptStatus = storage.decryptIdentityKey(txtCurrentPassword.getText().toString());
+                    if (!decryptStatus) {
+                        handler.post(() -> {
+                            Toast.makeText(MainActivity.this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG).show();
+                            txtCurrentPassword.setText("");
+                            txtNewPassword.setText("");
+                            txtRetypePassword.setText("");
+                        });
+                        return;
+                    }
+
+                    boolean encryptStatus = storage.encryptIdentityKey(txtNewPassword.getText().toString(), entropyHarvester);
+                    if (!encryptStatus) {
+                        handler.post(() -> {
+                            Toast.makeText(MainActivity.this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG).show();
+                            txtCurrentPassword.setText("");
+                            txtNewPassword.setText("");
+                            txtRetypePassword.setText("");
+                        });
+                        return;
+                    }
+                } finally {
+                    storage.clear();
+                    hideProgressBar();
                 }
 
-                boolean encryptStatus = storage.encryptIdentityKey(txtNewPassword.getText().toString(), entropyHarvester);
-                if (!encryptStatus) {
-                    handler.post(() -> {
-                        Toast.makeText(MainActivity.this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG).show();
-                        txtCurrentPassword.setText("");
-                        txtNewPassword.setText("");
-                        txtRetypePassword.setText("");
-                    });
-                    return;
-                }
-            } finally {
-                storage.clear();
-                hideProgressBar();
-            }
+                SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
+                        getString(R.string.preferences),
+                        Context.MODE_PRIVATE
+                );
+                long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+                mDbHelper.updateIdentityData(currentId, storage.createSaveData());
 
-            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                    getString(R.string.preferences),
-                    Context.MODE_PRIVATE
-            );
-            long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
-            mDbHelper.updateIdentityData(currentId, storage.createSaveData());
-
-            handler.post(() -> {
-                txtCurrentPassword.setText("");
-                txtNewPassword.setText("");
-                txtRetypePassword.setText("");
-            });
-
-        }).start());
+                handler.post(() -> {
+                    txtCurrentPassword.setText("");
+                    txtNewPassword.setText("");
+                    txtRetypePassword.setText("");
+                });
+            }).start();
+        });
     }
 
 
