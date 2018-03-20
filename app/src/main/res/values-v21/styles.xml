@@ -3,7 +3,6 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="CommonTheme">
         <!-- All customization of the theme for this version -->
-        <item name="android:windowTranslucentStatus">true</item>
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
         <item name="android:navigationBarColor">@color/colorPrimary</item>
         <item name="android:windowEnterTransition">@android:transition/slide_right</item>
@@ -12,7 +11,9 @@
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
+        <item name="buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
+    </style>
 
     <style name="spinnerItemStyle" parent="android:Widget.TextView.SpinnerItem" />
     <style name="spinnerDropDownItemStyle" parent="android:TextAppearance.Widget.TextView.SpinnerItem" />

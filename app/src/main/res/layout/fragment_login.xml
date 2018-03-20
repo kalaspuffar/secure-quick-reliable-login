@@ -22,17 +22,17 @@
         tools:layout_conversion_absoluteHeight="142dp"
         tools:layout_conversion_absoluteWidth="359dp">
 
-        <ImageButton
+        <Button
             android:id="@+id/btnCloseLogin"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
-            android:background="@android:color/transparent"
+            android:text="X"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="?attr/actionModeCloseDrawable" />
+            />
 
         <TextView
             android:id="@+id/textView15"
