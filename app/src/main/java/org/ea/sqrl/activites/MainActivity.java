@@ -312,6 +312,23 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         commHandler.printParams();
     }
 
+    private boolean checkRescueCode(EditText code) {
+        if(code.length() != 4) {
+            Toast.makeText(MainActivity.this, getString(R.string.rescue_code_incorrect_input), Toast.LENGTH_LONG).show();
+            code.requestFocus();
+            return false;
+        }
+
+        try {
+            Integer.parseInt(code.getText().toString());
+        } catch (NumberFormatException nfe) {
+            Toast.makeText(MainActivity.this, getString(R.string.rescue_code_incorrect_input), Toast.LENGTH_LONG).show();
+            code.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
 
     public void setupResetPasswordPopupWindow(LayoutInflater layoutInflater) {
         View popupView = layoutInflater.inflate(R.layout.fragment_reset_password, null);
@@ -322,19 +339,77 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         resetPasswordPopupWindow.setTouchable(true);
 
+        final EditText txtRecoverCode1 = popupView.findViewById(R.id.txtRecoverCode1);
+        final EditText txtRecoverCode2 = popupView.findViewById(R.id.txtRecoverCode2);
+        final EditText txtRecoverCode3 = popupView.findViewById(R.id.txtRecoverCode3);
+        final EditText txtRecoverCode4 = popupView.findViewById(R.id.txtRecoverCode4);
+        final EditText txtRecoverCode5 = popupView.findViewById(R.id.txtRecoverCode5);
+        final EditText txtRecoverCode6 = popupView.findViewById(R.id.txtRecoverCode6);
+        final EditText txtResetPasswordNewPassword = popupView.findViewById(R.id.txtResetPasswordNewPassword);
+
         popupView.findViewById(R.id.btnCloseResetPassword).setOnClickListener(v -> resetPasswordPopupWindow.dismiss());
         popupView.findViewById(R.id.btnResetPassword).setOnClickListener(v -> {
+
+            SQRLStorage storage = SQRLStorage.getInstance();
 
             SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
                     getString(R.string.preferences),
                     Context.MODE_PRIVATE
             );
             long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
-
             if(currentId != 0) {
-            }
+                if(!checkRescueCode(txtRecoverCode1)) return;
+                if(!checkRescueCode(txtRecoverCode2)) return;
+                if(!checkRescueCode(txtRecoverCode3)) return;
+                if(!checkRescueCode(txtRecoverCode4)) return;
+                if(!checkRescueCode(txtRecoverCode5)) return;
+                if(!checkRescueCode(txtRecoverCode6)) return;
 
-            resetPasswordPopupWindow.dismiss();
+                resetPasswordPopupWindow.dismiss();
+                showProgressBar();
+
+                new Thread(() -> {
+                    try {
+                        String rescueCode = txtRecoverCode1.getText().toString();
+                        rescueCode += txtRecoverCode2.getText().toString();
+                        rescueCode += txtRecoverCode3.getText().toString();
+                        rescueCode += txtRecoverCode4.getText().toString();
+                        rescueCode += txtRecoverCode5.getText().toString();
+                        rescueCode += txtRecoverCode6.getText().toString();
+
+                        boolean decryptionOk = storage.decryptUnlockKey(rescueCode);
+                        if (!decryptionOk) {
+                            handler.post(() ->
+                                Toast.makeText(MainActivity.this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG).show()
+                            );
+                            return;
+                        }
+
+                        storage.reInitializeMasterKeyIdentity();
+
+                        boolean encryptStatus = storage.encryptIdentityKey(txtResetPasswordNewPassword.getText().toString(), entropyHarvester);
+                        if (!encryptStatus) {
+                            handler.post(() ->
+                                Toast.makeText(MainActivity.this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG).show()
+                            );
+                            return;
+                        }
+                        storage.clear();
+
+                        mDbHelper.updateIdentityData(currentId, storage.createSaveData());
+                    } finally {
+                        storage.clear();
+                        hideProgressBar();
+                        txtResetPasswordNewPassword.setText("");
+                        txtRecoverCode1.setText("");
+                        txtRecoverCode2.setText("");
+                        txtRecoverCode3.setText("");
+                        txtRecoverCode4.setText("");
+                        txtRecoverCode5.setText("");
+                        txtRecoverCode6.setText("");
+                    }
+                }).start();
+            }
         });
     }
 

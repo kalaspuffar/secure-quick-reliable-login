@@ -392,9 +392,13 @@ public class SQRLStorage {
         try {
             clearBytes(this.identityLockKey);
             clearBytes(this.identityMasterKey);
+            if(this.rescueIdentityLockKey != null) {
+                clearBytes(this.rescueIdentityLockKey);
+            }
         } finally {
             this.identityLockKey = null;
             this.identityMasterKey = null;
+            this.rescueIdentityLockKey = null;
         }
     }
 
@@ -560,6 +564,15 @@ public class SQRLStorage {
             result = EncryptionUtils.combine(result, previousVerificationTag);
         }
         return result;
+    }
+
+    public void reInitializeMasterKeyIdentity() {
+        if(this.rescueIdentityLockKey != null) {
+            this.identityMasterKey = EncryptionUtils.enHash(this.rescueIdentityLockKey);
+            this.identityLockKey = this.rescueIdentityLockKey;
+            clearBytes(this.rescueIdentityLockKey);
+            this.rescueIdentityLockKey = null;
+        }
     }
 
 
