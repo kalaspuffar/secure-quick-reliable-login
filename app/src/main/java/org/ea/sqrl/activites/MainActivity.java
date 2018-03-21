@@ -116,6 +116,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         int startMode = intent.getIntExtra(START_USER_MODE, 0);
         if(startMode == START_USER_MODE_NEW_USER) {
             integrator.initiateScan();
+            importIdentity = true;
         }
 
         btnUnlockIdentity = findViewById(R.id.btnUnlockIdentity);
@@ -830,7 +831,9 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                         storage.read(qrCodeData);
 
                         if(!storage.hasEncryptedKeys()) {
-                            resetPasswordPopupWindow.showAtLocation(resetPasswordPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                            handler.postDelayed(() -> {
+                                resetPasswordPopupWindow.showAtLocation(resetPasswordPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                            }, 100);
                             return;
                         }
 
