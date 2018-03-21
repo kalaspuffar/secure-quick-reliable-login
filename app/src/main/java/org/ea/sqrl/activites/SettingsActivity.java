@@ -3,6 +3,7 @@ package org.ea.sqrl.activites;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -32,11 +33,14 @@ public class SettingsActivity extends BaseActivity {
     private EditText txtSettingsIdleTimeout;
     private CheckBox cbSettingsSQRLOnly;
     private CheckBox cbSettingsNoBypass;
+    private View root;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        root = findViewById(R.id.settingsActivityView);
 
         LayoutInflater layoutInflater = (LayoutInflater)getBaseContext()
                 .getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -69,7 +73,7 @@ public class SettingsActivity extends BaseActivity {
             return Integer.parseInt(txt.getText().toString());
         } catch (NumberFormatException nfe) {
             handler.post(() -> {
-                Toast.makeText(SettingsActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                Snackbar.make(root, errorMessage, Snackbar.LENGTH_LONG).show();
             });
         }
         return -1;
@@ -98,7 +102,7 @@ public class SettingsActivity extends BaseActivity {
             boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString());
             if(!decryptStatus) {
                 handler.post(() -> {
-                    Toast.makeText(SettingsActivity.this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG).show();
+                    Snackbar.make(root, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                     txtPassword.setText("");
                 });
                 return;
@@ -108,7 +112,7 @@ public class SettingsActivity extends BaseActivity {
             if(hintLength == -1) return;
             if(hintLength > 255) {
                 handler.post(() -> {
-                    Toast.makeText(SettingsActivity.this, getString(R.string.settings_hint_length_to_large), Toast.LENGTH_LONG).show();
+                    Snackbar.make(root, getString(R.string.settings_hint_length_to_large), Snackbar.LENGTH_LONG).show();
                 });
                 return;
             }
@@ -126,7 +130,7 @@ public class SettingsActivity extends BaseActivity {
             boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
             if (!encryptStatus) {
                 handler.post(() -> {
-                    Toast.makeText(SettingsActivity.this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG).show();
+                    Snackbar.make(root, getString(R.string.encrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                     txtPassword.setText("");
                 });
                 return;

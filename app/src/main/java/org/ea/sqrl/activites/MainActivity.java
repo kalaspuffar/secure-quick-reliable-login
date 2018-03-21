@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -86,7 +87,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         cboxIdentity = findViewById(R.id.cboxIdentity);
         identities = mDbHelper.getIdentitys();
 
-        mainView = findViewById(R.id.main_view);
+        mainView = findViewById(R.id.mainActivityView);
 
         ArrayAdapter adapter = new ArrayAdapter(
             this,
@@ -313,7 +314,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
     private boolean checkRescueCode(EditText code) {
         if(code.length() != 4) {
-            Toast.makeText(MainActivity.this, getString(R.string.rescue_code_incorrect_input), Toast.LENGTH_LONG).show();
+            Snackbar.make(mainView, getString(R.string.rescue_code_incorrect_input), Snackbar.LENGTH_LONG).show();
             code.requestFocus();
             return false;
         }
@@ -321,7 +322,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         try {
             Integer.parseInt(code.getText().toString());
         } catch (NumberFormatException nfe) {
-            Toast.makeText(MainActivity.this, getString(R.string.rescue_code_incorrect_input), Toast.LENGTH_LONG).show();
+            Snackbar.make(mainView, getString(R.string.rescue_code_incorrect_input), Snackbar.LENGTH_LONG).show();
             code.requestFocus();
             return false;
         }
@@ -385,7 +386,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     boolean decryptionOk = storage.decryptUnlockKey(rescueCode);
                     if (!decryptionOk) {
                         handler.post(() ->
-                            Toast.makeText(MainActivity.this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG).show()
+                            Snackbar.make(mainView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show()
                         );
                         return;
                     }
@@ -395,7 +396,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     boolean encryptStatus = storage.encryptIdentityKey(txtResetPasswordNewPassword.getText().toString(), entropyHarvester);
                     if (!encryptStatus) {
                         handler.post(() ->
-                            Toast.makeText(MainActivity.this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG).show()
+                            Snackbar.make(mainView, getString(R.string.encrypt_identity_fail), Snackbar.LENGTH_LONG).show()
                         );
                         return;
                     }
@@ -539,7 +540,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString());
                     if(!decryptStatus) {
                         handler.post(() -> {
-                            Toast.makeText(MainActivity.this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG).show();
+                            Snackbar.make(mainView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                             txtPassword.setText("");
                         });
                         return;
@@ -548,7 +549,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
                     if (!encryptStatus) {
                         handler.post(() -> {
-                            Toast.makeText(MainActivity.this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG).show();
+                            Snackbar.make(mainView, getString(R.string.encrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                             txtPassword.setText("");
                         });
                         return;
@@ -601,7 +602,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         final Button btnChangePassword = popupView.findViewById(R.id.btnDoChangePassword);
         btnChangePassword.setOnClickListener(v -> {
             if(!txtNewPassword.getText().toString().equals(txtRetypePassword.getText().toString())) {
-                Toast.makeText(MainActivity.this, getString(R.string.change_password_retyped_password_do_not_match), Toast.LENGTH_LONG).show();
+                Snackbar.make(mainView, getString(R.string.change_password_retyped_password_do_not_match), Snackbar.LENGTH_LONG).show();
                 txtCurrentPassword.setText("");
                 txtNewPassword.setText("");
                 txtRetypePassword.setText("");
@@ -616,7 +617,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     boolean decryptStatus = storage.decryptIdentityKey(txtCurrentPassword.getText().toString());
                     if (!decryptStatus) {
                         handler.post(() -> {
-                            Toast.makeText(MainActivity.this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG).show();
+                            Snackbar.make(mainView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                             txtCurrentPassword.setText("");
                             txtNewPassword.setText("");
                             txtRetypePassword.setText("");
@@ -627,7 +628,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     boolean encryptStatus = storage.encryptIdentityKey(txtNewPassword.getText().toString(), entropyHarvester);
                     if (!encryptStatus) {
                         handler.post(() -> {
-                            Toast.makeText(MainActivity.this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG).show();
+                            Snackbar.make(mainView, getString(R.string.encrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                             txtCurrentPassword.setText("");
                             txtNewPassword.setText("");
                             txtRetypePassword.setText("");
@@ -810,7 +811,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         if(result != null) {
             if(result.getContents() == null) {
                 Log.d("MainActivity", "Cancelled scan");
-                Toast.makeText(MainActivity.this, "Cancelled", Toast.LENGTH_LONG).show();
+                Snackbar.make(mainView, "Cancelled", Snackbar.LENGTH_LONG).show();
             } else {
                 if(!importIdentity) {
                     serverData = EncryptionUtils.readSQRLQRCodeAsString(result.getRawBytes());

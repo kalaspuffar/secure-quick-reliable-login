@@ -4,9 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.text.method.LinkMovementMethod;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,11 +28,14 @@ import org.ea.sqrl.utils.EncryptionUtils;
  */
 public class StartActivity extends BaseActivity {
     private static final String TAG = "StartActivity";
+    private View root;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+
+        root = findViewById(R.id.startActivityView);
 
         if (mDbHelper.hasIdentities()) {
             Intent intent = new Intent(this, MainActivity.class);
@@ -66,7 +70,7 @@ public class StartActivity extends BaseActivity {
         if(result != null) {
             if(result.getContents() == null) {
                 Log.d(TAG, "Cancelled scan");
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+                Snackbar.make(root, "Cancelled", Snackbar.LENGTH_LONG).show();
             } else {
                 SQRLStorage storage = SQRLStorage.getInstance();
                 try {
