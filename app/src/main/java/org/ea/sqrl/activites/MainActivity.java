@@ -67,13 +67,14 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     private PopupWindow loginPopupWindow;
     private PopupWindow changePasswordPopupWindow;
     private PopupWindow resetPasswordPopupWindow;
+    private PopupWindow progressPopupWindow;
 
     private FrameLayout progressBarHolder;
 
     private Button btnUnlockIdentity;
     private EditText txtIdentityName;
     private ConstraintLayout mainView;
-    private boolean useIdentity = false;
+    private boolean importIdentity = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,16 +97,12 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         cboxIdentity.setAdapter(adapter);
         cboxIdentity.setOnItemSelectedListener(this);
 
-        LayoutInflater inflater = (LayoutInflater)getBaseContext()
-                .getSystemService(LAYOUT_INFLATER_SERVICE);
-        final Context contextThemeWrapper = new ContextThemeWrapper(this, R.style.AppTheme);
-        LayoutInflater layoutInflater = inflater.cloneInContext(contextThemeWrapper);
-
-        setupRenamePopupWindow(layoutInflater);
-        setupLoginPopupWindow(layoutInflater);
-        setupImportPopupWindow(layoutInflater);
-        setupChangePasswordPopupWindow(layoutInflater);
-        setupResetPasswordPopupWindow(layoutInflater);
+        setupRenamePopupWindow(getLayoutInflater());
+        setupLoginPopupWindow(getLayoutInflater());
+        setupImportPopupWindow(getLayoutInflater());
+        setupChangePasswordPopupWindow(getLayoutInflater());
+        setupResetPasswordPopupWindow(getLayoutInflater());
+        setupProgressPopupWindow(getLayoutInflater());
 
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
@@ -124,7 +121,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         btnUnlockIdentity = findViewById(R.id.btnUnlockIdentity);
         btnUnlockIdentity.setOnClickListener(
                 v -> {
-                    useIdentity = true;
+                    importIdentity = false;
                     integrator.initiateScan();
                 }
         );
@@ -132,7 +129,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         final Button btnImportIdentity = findViewById(R.id.btnImportIdentity);
         btnImportIdentity.setOnClickListener(
                 v -> {
-                    useIdentity = false;
+                    importIdentity = true;
                     integrator.initiateScan();
                 }
         );
@@ -330,6 +327,18 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         return true;
     }
 
+    public void setupProgressPopupWindow(LayoutInflater layoutInflater) {
+        View popupView = layoutInflater.inflate(R.layout.fragment_progress, null);
+
+        progressPopupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
+                false);
+
+        final ProgressBar progressBar = popupView.findViewById(R.id.pbProgress);
+        final TextView lblProgressText = popupView.findViewById(R.id.lblProgressText);
+        SQRLStorage storage = SQRLStorage.getInstance();
+        storage.setProgressionUpdater(new ProgressionUpdater(handler, progressBar, lblProgressText));
+    }
 
     public void setupResetPasswordPopupWindow(LayoutInflater layoutInflater) {
         View popupView = layoutInflater.inflate(R.layout.fragment_reset_password, null);
@@ -353,54 +362,74 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
             SQRLStorage storage = SQRLStorage.getInstance();
 
-            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                    getString(R.string.preferences),
-                    Context.MODE_PRIVATE
-            );
-            long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
-            if(currentId != 0) {
-                if(!checkRescueCode(txtRecoverCode1)) return;
-                if(!checkRescueCode(txtRecoverCode2)) return;
-                if(!checkRescueCode(txtRecoverCode3)) return;
-                if(!checkRescueCode(txtRecoverCode4)) return;
-                if(!checkRescueCode(txtRecoverCode5)) return;
-                if(!checkRescueCode(txtRecoverCode6)) return;
+            if(!checkRescueCode(txtRecoverCode1)) return;
+            if(!checkRescueCode(txtRecoverCode2)) return;
+            if(!checkRescueCode(txtRecoverCode3)) return;
+            if(!checkRescueCode(txtRecoverCode4)) return;
+            if(!checkRescueCode(txtRecoverCode5)) return;
+            if(!checkRescueCode(txtRecoverCode6)) return;
 
-                resetPasswordPopupWindow.dismiss();
-                showProgressBar();
+            resetPasswordPopupWindow.dismiss();
+            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
 
-                new Thread(() -> {
-                    try {
-                        String rescueCode = txtRecoverCode1.getText().toString();
-                        rescueCode += txtRecoverCode2.getText().toString();
-                        rescueCode += txtRecoverCode3.getText().toString();
-                        rescueCode += txtRecoverCode4.getText().toString();
-                        rescueCode += txtRecoverCode5.getText().toString();
-                        rescueCode += txtRecoverCode6.getText().toString();
+            new Thread(() -> {
+                try {
+                    String rescueCode = txtRecoverCode1.getText().toString();
+                    rescueCode += txtRecoverCode2.getText().toString();
+                    rescueCode += txtRecoverCode3.getText().toString();
+                    rescueCode += txtRecoverCode4.getText().toString();
+                    rescueCode += txtRecoverCode5.getText().toString();
+                    rescueCode += txtRecoverCode6.getText().toString();
 
-                        boolean decryptionOk = storage.decryptUnlockKey(rescueCode);
-                        if (!decryptionOk) {
-                            handler.post(() ->
-                                Toast.makeText(MainActivity.this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG).show()
-                            );
-                            return;
+                    boolean decryptionOk = storage.decryptUnlockKey(rescueCode);
+                    if (!decryptionOk) {
+                        handler.post(() ->
+                            Toast.makeText(MainActivity.this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG).show()
+                        );
+                        return;
+                    }
+
+                    storage.reInitializeMasterKeyIdentity();
+
+                    boolean encryptStatus = storage.encryptIdentityKey(txtResetPasswordNewPassword.getText().toString(), entropyHarvester);
+                    if (!encryptStatus) {
+                        handler.post(() ->
+                            Toast.makeText(MainActivity.this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG).show()
+                        );
+                        return;
+                    }
+                    storage.clear();
+
+                    SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
+                            getString(R.string.preferences),
+                            Context.MODE_PRIVATE
+                    );
+
+                    if(importIdentity) {
+                        long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putLong(getString(R.string.current_id), newIdentityId);
+                        editor.commit();
+
+                        handler.post(() -> {
+                            updateSpinnerData(newIdentityId);
+                            decryptPopupWindow.dismiss();
+
+                            if(newIdentityId != 0) {
+                                txtIdentityName.setText(mDbHelper.getIdentityName(newIdentityId));
+                                renamePopupWindow.showAtLocation(renamePopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                            }
+                        });
+                    } else {
+                        long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+                        if(currentId != 0) {
+                            mDbHelper.updateIdentityData(currentId, storage.createSaveData());
                         }
-
-                        storage.reInitializeMasterKeyIdentity();
-
-                        boolean encryptStatus = storage.encryptIdentityKey(txtResetPasswordNewPassword.getText().toString(), entropyHarvester);
-                        if (!encryptStatus) {
-                            handler.post(() ->
-                                Toast.makeText(MainActivity.this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG).show()
-                            );
-                            return;
-                        }
-                        storage.clear();
-
-                        mDbHelper.updateIdentityData(currentId, storage.createSaveData());
-                    } finally {
-                        storage.clear();
-                        hideProgressBar();
+                    }
+                } finally {
+                    storage.clear();
+                    handler.post(() -> {
+                        progressPopupWindow.dismiss();
                         txtResetPasswordNewPassword.setText("");
                         txtRecoverCode1.setText("");
                         txtRecoverCode2.setText("");
@@ -408,9 +437,9 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                         txtRecoverCode4.setText("");
                         txtRecoverCode5.setText("");
                         txtRecoverCode6.setText("");
-                    }
-                }).start();
-            }
+                    });
+                }
+            }).start();
         });
     }
 
@@ -500,51 +529,56 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         storage.setProgressionUpdater(new ProgressionUpdater(handler, pbDecrypting, progressText));
 
         popupView.findViewById(R.id.btnCloseImportIdentity).setOnClickListener(v -> decryptPopupWindow.dismiss());
-        btnDecryptKey.setOnClickListener(v -> new Thread(() -> {
-            try {
-                boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString());
-                if(!decryptStatus) {
-                    handler.post(() -> {
-                        Toast.makeText(MainActivity.this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG).show();
-                        txtPassword.setText("");
-                    });
-                    return;
+        btnDecryptKey.setOnClickListener(v -> {
+            decryptPopupWindow.dismiss();
+            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+
+            new Thread(() -> {
+                try {
+                    boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString());
+                    if(!decryptStatus) {
+                        handler.post(() -> {
+                            Toast.makeText(MainActivity.this, getString(R.string.decrypt_identity_fail), Toast.LENGTH_LONG).show();
+                            txtPassword.setText("");
+                        });
+                        return;
+                    }
+
+                    boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
+                    if (!encryptStatus) {
+                        handler.post(() -> {
+                            Toast.makeText(MainActivity.this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG).show();
+                            txtPassword.setText("");
+                        });
+                        return;
+                    }
+                    storage.clear();
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage(), e);
                 }
 
-                boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
-                if (!encryptStatus) {
-                    handler.post(() -> {
-                        Toast.makeText(MainActivity.this, getString(R.string.encrypt_identity_fail), Toast.LENGTH_LONG).show();
-                        txtPassword.setText("");
-                    });
-                    return;
-                }
-                storage.clear();
-            } catch (Exception e) {
-                Log.e(TAG, e.getMessage(), e);
-            }
+                long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
 
-            long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
+                SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
+                        getString(R.string.preferences),
+                        Context.MODE_PRIVATE
+                );
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putLong(getString(R.string.current_id), newIdentityId);
+                editor.commit();
 
-            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                    getString(R.string.preferences),
-                    Context.MODE_PRIVATE
-            );
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putLong(getString(R.string.current_id), newIdentityId);
-            editor.commit();
+                handler.post(() -> {
+                    updateSpinnerData(newIdentityId);
+                    txtPassword.setText("");
+                    progressPopupWindow.dismiss();
 
-            handler.post(() -> {
-                updateSpinnerData(newIdentityId);
-                txtPassword.setText("");
-                decryptPopupWindow.dismiss();
-
-                if(newIdentityId != 0) {
-                    txtIdentityName.setText(mDbHelper.getIdentityName(newIdentityId));
-                    renamePopupWindow.showAtLocation(renamePopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                }
-            });
-        }).start());
+                    if(newIdentityId != 0) {
+                        txtIdentityName.setText(mDbHelper.getIdentityName(newIdentityId));
+                        renamePopupWindow.showAtLocation(renamePopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                    }
+                });
+            }).start();
+        });
     }
 
     public void setupChangePasswordPopupWindow(LayoutInflater layoutInflater) {
@@ -556,13 +590,11 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         changePasswordPopupWindow.setTouchable(true);
 
-
         final EditText txtCurrentPassword = popupView.findViewById(R.id.txtCurrentPassword);
         final EditText txtNewPassword = popupView.findViewById(R.id.txtNewPassword);
         final EditText txtRetypePassword = popupView.findViewById(R.id.txtRetypePassword);
 
         SQRLStorage storage = SQRLStorage.getInstance();
-
 
         popupView.findViewById(R.id.btnCloseChangePassword).setOnClickListener(v -> changePasswordPopupWindow.dismiss());
         final Button btnChangePassword = popupView.findViewById(R.id.btnDoChangePassword);
@@ -575,8 +607,8 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 return;
             }
 
-            handler.post(() -> changePasswordPopupWindow.dismiss());
-            showProgressBar();
+            changePasswordPopupWindow.dismiss();
+            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
 
             new Thread(() -> {
                 try {
@@ -603,7 +635,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     }
                 } finally {
                     storage.clear();
-                    hideProgressBar();
+                    handler.post(() -> progressPopupWindow.dismiss());
                 }
 
                 SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
@@ -779,7 +811,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 Log.d("MainActivity", "Cancelled scan");
                 Toast.makeText(MainActivity.this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
-                if(useIdentity) {
+                if(!importIdentity) {
                     serverData = EncryptionUtils.readSQRLQRCodeAsString(result.getRawBytes());
                     int indexOfQuery = serverData.indexOf("/", serverData.indexOf("://") + 3);
                     queryLink = serverData.substring(indexOfQuery);
