@@ -146,7 +146,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         btnCreate.setOnClickListener(
                 v -> {
                     showNotImplementedDialog();
-
+/*
                     Sodium sodium = NaCl.sodium();
                     String Password = "hunter2";
                     byte[] key = new byte[Sodium.crypto_box_seedbytes()];
@@ -169,6 +169,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     byte[] src_seed = new byte[32];
                     entropyHarvester.fetchRandom(src_seed);
                     Sodium.crypto_sign_seed_keypair(dst_public_Key, dst_private_key, src_seed);
+*/
                 }
         );
 

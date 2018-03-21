@@ -251,7 +251,7 @@ public class CommunicationHandler {
 
             int indexOfQuery = sqrlLink.indexOf("/", sqrlLink.indexOf("://")+3);
             String queryLink = sqrlLink.substring(indexOfQuery);
-            
+
             commHandler.setDomain(domain);
             String postData = commHandler.createPostParams(commHandler.createClientQuery(), sqrlLink);
             commHandler.postRequest(queryLink, postData);

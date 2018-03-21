@@ -47,18 +47,6 @@ public class SQRLStorage {
     private SQRLStorage() {
         Grc_aesgcm.gcm_initialize();
         NaCl.sodium();
-
-        /*
-            Here we look for the scrypt library and if we can't find it
-            on the system UnsatificedLinkError will be thrown and we will
-            fallback using a java version.
-         */
-        try {
-            System.loadLibrary("scrypt");
-            System.setProperty("com.lambdaworks.jni.loader", "sys");
-        } catch (UnsatisfiedLinkError e) {
-            System.setProperty("com.lambdaworks.jni.loader", "nil");
-        }
     }
 
     public static SQRLStorage getInstance() {
@@ -684,7 +672,12 @@ public class SQRLStorage {
             SQRLStorage storage = SQRLStorage.getInstance();
             storage.setProgressionUpdater(new ProgressionUpdater());
             storage.read(bytesArray);
-
+/*
+            boolean ok = storage.decryptIdentityKey("Testing1234");
+            System.out.println(ok);
+            boolean ok2 = storage.decryptUnlockKey("3304-9688-5754-6944-1932-9846");
+            System.out.println(ok2);
+*/
             /*
             byte[] saveData = storage.createSaveData();
 

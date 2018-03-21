@@ -4,9 +4,8 @@ import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
 
-import com.lambdaworks.crypto.SCrypt;
-
 import org.ea.sqrl.processors.ProgressionUpdater;
+import org.libsodium.jni.Sodium;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -170,14 +169,17 @@ public class EncryptionUtils {
 
     public static byte[] enSCryptIterations(String password, byte[] randomSalt, int logNFactor, int dkLen, int iterationCount, ProgressionUpdater progressionUpdater) throws Exception {
         progressionUpdater.startTimer();
-        byte[] key = SCrypt.scrypt(password.getBytes(), randomSalt, 1 << logNFactor, 256, 1, dkLen);
-        progressionUpdater.endTimer();
 
+        byte[] key = new byte[dkLen];
+        byte[] pwdBytes = password.getBytes();
+        Sodium.crypto_pwhash_scryptsalsa208sha256_ll(pwdBytes, pwdBytes.length, randomSalt, randomSalt.length, 1 << logNFactor, 256, 1, key, key.length);
+
+        progressionUpdater.endTimer();
         progressionUpdater.incrementProgress();
 
         byte[] xorKey = Arrays.copyOf(key, key.length);
         for(int i = 1; i < iterationCount; i++) {
-            key = SCrypt.scrypt(password.getBytes(), key, 1 << logNFactor, 256, 1, dkLen);
+            Sodium.crypto_pwhash_scryptsalsa208sha256_ll(pwdBytes, pwdBytes.length, key, key.length, 1 << logNFactor, 256, 1, key, key.length);
             xorKey = xor(key, xorKey);
             progressionUpdater.incrementProgress();
         }
@@ -194,14 +196,17 @@ public class EncryptionUtils {
         long startTime = System.currentTimeMillis();
         progressionUpdater.setMax(1);
         progressionUpdater.setTimeLeft(0);
-        byte[] key = SCrypt.scrypt(password.getBytes(), randomSalt, 1 << logNFactor, 256, 1, dkLen);
 
-        byte[] xorKey = Arrays.copyOf(key, key.length);
+        byte[] key = new byte[dkLen];
+        byte[] pwdBytes = password.getBytes();
+
+        Sodium.crypto_pwhash_scryptsalsa208sha256_ll(pwdBytes, pwdBytes.length, randomSalt, randomSalt.length, 1 << logNFactor, 256, 1, key, key.length);
 
         int iterationCount = 1;
         long time = System.currentTimeMillis() - startTime;
+        byte[] xorKey = Arrays.copyOf(key, key.length);
         while(time < (secondsToRun * 1000)) {
-            key = SCrypt.scrypt(password.getBytes(), key, 1 << logNFactor, 256, 1, dkLen);
+            Sodium.crypto_pwhash_scryptsalsa208sha256_ll(pwdBytes, pwdBytes.length, key, key.length, 1 << logNFactor, 256, 1, key, key.length);
             xorKey = xor(key, xorKey);
             time = System.currentTimeMillis() - startTime;
             progressionUpdater.setTimeLeft(time);

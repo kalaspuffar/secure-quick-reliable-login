@@ -18,15 +18,6 @@ add_library(
     src/main/cpp/grc-aesgcm/grcjni.c
 )
 
-add_library(
-    scrypt
-    SHARED
-    src/main/cpp/scrypt/crypto_scrypt-nosse.c
-    src/main/cpp/scrypt/scrypt_jni.c
-    src/main/cpp/scrypt/sha256.c
-)
-
 include_directories(
     src/main/cpp/grc-aesgcm/
-    src/main/cpp/scrypt/
 )
