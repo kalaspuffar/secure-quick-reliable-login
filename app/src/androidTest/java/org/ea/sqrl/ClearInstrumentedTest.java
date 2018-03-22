@@ -28,12 +28,12 @@ public class ClearInstrumentedTest {
     @Rule
     public ActivityTestRule<ClearIdentityActivity> activityRule =
             new ActivityTestRule<>(ClearIdentityActivity.class);
-/*
+
     @BeforeClass
     public static void enableAccessibilityChecks() {
-        AccessibilityChecks.enable().setRunChecksFromRootView(true);
+        AccessabilitySingelton.getInstance();
     }
-*/
+
     @Test
     public void testAccessability() throws Exception {
         activityRule.getActivity();

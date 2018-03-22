@@ -5,6 +5,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import org.ea.sqrl.activites.MainActivity;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,12 +24,12 @@ public class MainInstrumentedTest {
     @Rule
     public ActivityTestRule<MainActivity> activityRule =
             new ActivityTestRule<>(MainActivity.class);
-/*
+
     @BeforeClass
     public static void enableAccessibilityChecks() {
-        AccessibilityChecks.enable().setRunChecksFromRootView(true);
+        AccessabilitySingelton.getInstance();
     }
-*/
+
     @Test
     public void testAccessability() throws Exception {
         activityRule.getActivity();

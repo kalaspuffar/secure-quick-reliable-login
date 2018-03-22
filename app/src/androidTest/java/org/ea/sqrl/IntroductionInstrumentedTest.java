@@ -26,12 +26,12 @@ public class IntroductionInstrumentedTest {
     @Rule
     public ActivityTestRule<IntroductionActivity> activityRule =
             new ActivityTestRule<>(IntroductionActivity.class);
-/*
+
     @BeforeClass
     public static void enableAccessibilityChecks() {
-        AccessibilityChecks.enable().setRunChecksFromRootView(true);
+        AccessabilitySingelton.getInstance();
     }
-*/
+
     @Test
     public void testAccessability() throws Exception {
         activityRule.getActivity();

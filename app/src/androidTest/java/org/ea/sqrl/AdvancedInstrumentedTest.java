@@ -30,7 +30,7 @@ public class AdvancedInstrumentedTest {
 
     @BeforeClass
     public static void enableAccessibilityChecks() {
-        AccessibilityChecks.enable().setRunChecksFromRootView(true);
+        AccessabilitySingelton.getInstance();
     }
 
     @Test
