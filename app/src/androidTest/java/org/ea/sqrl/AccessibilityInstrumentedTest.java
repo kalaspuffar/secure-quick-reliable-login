@@ -35,31 +35,31 @@ import static org.junit.Assert.assertEquals;
 public class AccessibilityInstrumentedTest {
     @Rule
     public ActivityTestRule<AdvancedActivity> advancedActivityRule =
-            new ActivityTestRule<>(AdvancedActivity.class);
+            new ActivityTestRule<>(AdvancedActivity.class, true, false);
 
     @Rule
     public ActivityTestRule<ClearIdentityActivity> clearIdentityActivityRule =
-            new ActivityTestRule<>(ClearIdentityActivity.class);
+            new ActivityTestRule<>(ClearIdentityActivity.class, true, false);
 
     @Rule
     public ActivityTestRule<IntroductionActivity> introductionActivityRule =
-            new ActivityTestRule<>(IntroductionActivity.class);
+            new ActivityTestRule<>(IntroductionActivity.class, true, false);
 
     @Rule
     public ActivityTestRule<MainActivity> mainActivityRule =
-            new ActivityTestRule<>(MainActivity.class);
+            new ActivityTestRule<>(MainActivity.class, true, false);
 
     @Rule
     public ActivityTestRule<SettingsActivity> settingsActivityRule =
-            new ActivityTestRule<>(SettingsActivity.class);
+            new ActivityTestRule<>(SettingsActivity.class, true, false);
 
     @Rule
     public ActivityTestRule<ShowIdentityActivity> showIdentityActivityRule =
-            new ActivityTestRule<>(ShowIdentityActivity.class);
+            new ActivityTestRule<>(ShowIdentityActivity.class, true, false);
 
     @Rule
     public ActivityTestRule<StartActivity> startActivityRule =
-            new ActivityTestRule<>(StartActivity.class);
+            new ActivityTestRule<>(StartActivity.class, true, false);
 
     @BeforeClass
     public static void enableAccessibilityChecks() {
