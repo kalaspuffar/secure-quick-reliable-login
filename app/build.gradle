@@ -45,8 +45,8 @@ dependencies {
     implementation 'com.github.joshjdevl.libsodiumjni:libsodium-jni-aar:1.0.6'
 
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.0'
     androidTestImplementation 'com.android.support.test:runner:1.0.0'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.0'
     androidTestImplementation 'com.android.support.test.espresso:espresso-accessibility:3.0.0'
     androidTestImplementation 'com.google.guava:guava:20.0'
 }
