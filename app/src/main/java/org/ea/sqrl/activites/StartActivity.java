@@ -37,7 +37,9 @@ public class StartActivity extends BaseActivity {
 
         root = findViewById(R.id.startActivityView);
 
-        if (mDbHelper.hasIdentities()) {
+        boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
+
+        if (!runningTest && mDbHelper.hasIdentities()) {
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(START_USER_MODE, START_USER_MODE_RETURNING_USER);
             startActivity(intent);
