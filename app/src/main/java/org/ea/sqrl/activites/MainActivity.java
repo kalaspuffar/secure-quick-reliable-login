@@ -183,6 +183,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     if(currentId != 0) {
                         mDbHelper.deleteIdentity(currentId);
                         updateSpinnerData(currentId);
+                        Snackbar.make(mainView, getString(R.string.main_identity_removed), Snackbar.LENGTH_LONG).show();
                     }
                 }
         );

@@ -103,4 +103,5 @@
     <string name="rescue_code_incorrect_input">Rescue code part need to be 4 numbers</string>
     <string name="progress_title">Working</string>
     <string name="login_identity_password">Password</string>
+    <string name="main_identity_removed">Identity removed</string>
 </resources>
