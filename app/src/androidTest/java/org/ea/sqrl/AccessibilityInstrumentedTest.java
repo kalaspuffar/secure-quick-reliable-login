@@ -129,8 +129,9 @@ public class AccessibilityInstrumentedTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, StartActivity.class);
+        intent.putExtra("RUNNING_TEST", true);
         startActivityRule.launchActivity(intent);
 
-        onView(withId(R.id.txtWelcomeMessage)).perform(click());
+        onView(withId(R.id.startActivityView)).perform(click());
     }
 }
