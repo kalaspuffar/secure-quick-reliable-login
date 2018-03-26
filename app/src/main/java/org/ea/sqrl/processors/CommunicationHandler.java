@@ -66,6 +66,24 @@ public class CommunicationHandler {
         return sb.toString();
     }
 
+    public String createClientDisable() throws Exception {
+        SQRLStorage storage = SQRLStorage.getInstance();
+        StringBuilder sb = new StringBuilder();
+        sb.append("ver=1\r\n");
+        sb.append("cmd=disable\r\n");
+        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(domain)));
+        return sb.toString();
+    }
+
+    public String createClientEnable() throws Exception {
+        SQRLStorage storage = SQRLStorage.getInstance();
+        StringBuilder sb = new StringBuilder();
+        sb.append("ver=1\r\n");
+        sb.append("cmd=enable\r\n");
+        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(domain)));
+        return sb.toString();
+    }
+
     public String createClientCreateAccount(EntropyHarvester entropyHarvester) throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
@@ -86,6 +104,10 @@ public class CommunicationHandler {
     }
 
     public String createPostParams(String client, String server) throws Exception {
+        return createPostParams(client, server, false);
+    }
+
+    public String createPostParams(String client, String server, boolean unlockServerKey) throws Exception {
         StringBuilder sb = new StringBuilder();
         sb.append("client=");
         sb.append(EncryptionUtils.encodeUrlSafe(client.getBytes()));
@@ -112,6 +134,18 @@ public class CommunicationHandler {
 
         sb.append("&ids=");
         sb.append(EncryptionUtils.encodeUrlSafe(Arrays.copyOfRange(signed_message, 0, Sodium.crypto_sign_bytes())));
+        if(unlockServerKey) {
+
+            Sodium.crypto_sign(
+                    signed_message,
+                    signed_message_len,
+                    message,
+                    message.length,
+                    storage.getUnlockRequestSigningKey(getServerUnlockKey())
+            );
+            sb.append("&urs=");
+            sb.append(EncryptionUtils.encodeUrlSafe(Arrays.copyOfRange(signed_message, 0, Sodium.crypto_sign_bytes())));
+        }
 
         return sb.toString();
     }
@@ -240,13 +274,17 @@ public class CommunicationHandler {
             fis.read(bytesArray);
             fis.close();
 
+            System.out.println(EncryptionUtils.byte2hex(bytesArray));
+            if(true) System.exit(0);
+
+
             SQRLStorage storage = SQRLStorage.getInstance();
             storage.setProgressionUpdater(new ProgressionUpdater());
             storage.read(bytesArray);
             storage.decryptIdentityKey("Testing1234");
 
             CommunicationHandler commHandler = CommunicationHandler.getInstance();
-            String sqrlLink = "sqrl://www.grc.com/sqrl?nut=Goq4xz6i70frU7xu1-RDTQ";
+            String sqrlLink = "sqrl://www.grc.com/sqrl?nut=WJ1LHhkhd-8O6oMiO1RuQw";
             String domain = sqrlLink.split("/")[2];
 
             int indexOfQuery = sqrlLink.indexOf("/", sqrlLink.indexOf("://")+3);
@@ -266,5 +304,13 @@ public class CommunicationHandler {
             return "";
         }
         return lastResponse.get("qry");
+    }
+
+    public byte[] getServerUnlockKey() throws Exception{
+
+        if(!lastResponse.containsKey("suk")) {
+            return new byte[32];
+        }
+        return EncryptionUtils.decodeUrlSafe(lastResponse.get("suk"));
     }
 }

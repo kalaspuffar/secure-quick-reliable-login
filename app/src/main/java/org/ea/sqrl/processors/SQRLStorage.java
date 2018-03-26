@@ -640,6 +640,32 @@ public class SQRLStorage {
         }
     }
 
+    public byte[] getUnlockRequestSigningKey(byte[] serverUnlock) {
+        /*
+        UnlockRequestSigning := SignPrivate( DHKA( ServerUnlock, IdentityUnlock ))
+        */
+
+        byte[] bytesToSign = new byte[32];
+        byte[] notImportant = new byte[32];
+        byte[] unlockRequestSign = new byte[64];
+
+        Sodium.crypto_scalarmult(bytesToSign, serverUnlock, this.identityLockKey);
+        Sodium.crypto_sign_seed_keypair(notImportant, unlockRequestSign, bytesToSign);
+        return unlockRequestSign;
+    }
+
+
+    public String getUnlockRequestSigning(byte[] serverUnlock) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append("&urs=");
+            sb.append(EncryptionUtils.encodeUrlSafe(getUnlockRequestSigningKey(serverUnlock)));
+            return sb.toString();
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+        return "";
+    }
 
     public String getServerUnlockKey(EntropyHarvester entropyHarvester) {
         /*
