@@ -34,7 +34,7 @@ public class WorkTest {
         Log.d(TAG, "Well I didit it! " + didIt);
 
         CommunicationHandler commHandler = CommunicationHandler.getInstance();
-        String sqrlLink = "sqrl://www.grc.com/sqrl?nut=xnTzrks_wwk6frtGX8GA8g";
+        String sqrlLink = "sqrl://www.grc.com/sqrl?nut=Vnnsn47mSIcYVTgnAFrCGw";
         String domain = sqrlLink.split("/")[2];
 
         int indexOfQuery = sqrlLink.indexOf("/", sqrlLink.indexOf("://")+3);

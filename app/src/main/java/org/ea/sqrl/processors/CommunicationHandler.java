@@ -124,18 +124,7 @@ public class CommunicationHandler {
         byte[] signed_message = new byte[Sodium.crypto_sign_bytes() + message.length];
         int[] signed_message_len = new int[1];
 
-        Sodium.crypto_sign(
-                signed_message,
-                signed_message_len,
-                message,
-                message.length,
-                storage.getPrivateKey(domain)
-        );
-
-        sb.append("&ids=");
-        sb.append(EncryptionUtils.encodeUrlSafe(Arrays.copyOfRange(signed_message, 0, Sodium.crypto_sign_bytes())));
         if(unlockServerKey) {
-
             Sodium.crypto_sign(
                     signed_message,
                     signed_message_len,
@@ -146,6 +135,16 @@ public class CommunicationHandler {
             sb.append("&urs=");
             sb.append(EncryptionUtils.encodeUrlSafe(Arrays.copyOfRange(signed_message, 0, Sodium.crypto_sign_bytes())));
         }
+
+        Sodium.crypto_sign(
+                signed_message,
+                signed_message_len,
+                message,
+                message.length,
+                storage.getPrivateKey(domain)
+        );
+        sb.append("&ids=");
+        sb.append(EncryptionUtils.encodeUrlSafe(Arrays.copyOfRange(signed_message, 0, Sodium.crypto_sign_bytes())));
 
         return sb.toString();
     }
@@ -307,7 +306,6 @@ public class CommunicationHandler {
     }
 
     public byte[] getServerUnlockKey() throws Exception{
-
         if(!lastResponse.containsKey("suk")) {
             return new byte[32];
         }
