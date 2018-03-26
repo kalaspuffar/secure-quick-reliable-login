@@ -4,6 +4,11 @@
         <item name="buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
     </style>
 
+    <style name="AppTheme.ActionBar" parent="Widget.AppCompat.Light.ActionBar">
+        <item name="android:height">48dp</item>
+        <item name="height">48dp</item>
+    </style>
+
     <!-- Base application theme. -->
     <style name="CommonTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->

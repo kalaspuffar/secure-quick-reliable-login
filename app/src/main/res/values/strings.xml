@@ -102,4 +102,5 @@
     <string name="change_password_title">Change password</string>
     <string name="rescue_code_incorrect_input">Rescue code part need to be 4 numbers</string>
     <string name="progress_title">Working</string>
+    <string name="login_identity_password">Password</string>
 </resources>
