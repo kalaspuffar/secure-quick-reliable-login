@@ -18,9 +18,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,12 +28,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -45,8 +41,6 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.EncryptionUtils;
-import org.libsodium.jni.NaCl;
-import org.libsodium.jni.Sodium;
 
 import java.util.Map;
 
@@ -72,7 +66,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
     private FrameLayout progressBarHolder;
 
-    private Button btnUnlockIdentity;
+    private Button btnUseIdentity;
     private EditText txtIdentityName;
     private ConstraintLayout mainView;
     private boolean importIdentity = false;
@@ -120,8 +114,8 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             importIdentity = true;
         }
 
-        btnUnlockIdentity = findViewById(R.id.btnUnlockIdentity);
-        btnUnlockIdentity.setOnClickListener(
+        btnUseIdentity = findViewById(R.id.btnUseIdentity);
+        btnUseIdentity.setOnClickListener(
                 v -> {
                     importIdentity = false;
                     integrator.initiateScan();
@@ -763,7 +757,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         try {
             byte[] identityData = mDbHelper.getIdentityData(keyArray[pos]);
             storage.read(identityData);
-            btnUnlockIdentity.setEnabled(storage.hasIdentityBlock());
+            btnUseIdentity.setEnabled(storage.hasIdentityBlock());
 
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
