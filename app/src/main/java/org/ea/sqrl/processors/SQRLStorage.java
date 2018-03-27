@@ -45,7 +45,7 @@ public class SQRLStorage {
     private boolean hasPreviousBlock = false;
 
     private SQRLStorage() {
-        Grc_aesgcm.gcm_initialize();
+//        Grc_aesgcm.gcm_initialize();
         NaCl.sodium();
     }
 
@@ -143,8 +143,8 @@ public class SQRLStorage {
     private byte[] rescueRandomSalt;
     private byte rescueLogNFactor;
     private int rescueIterationCount;
-    private byte[] rescueIdentityLockKeyEncrypted;
-    private byte[] rescueIdentityLockKey;
+    private byte[] rescueIdentityUnlockKeyEncrypted;
+    private byte[] rescueIdentityUnlockKey;
     private byte[] rescueVerificationTag;
 
     private String verifyingRecoveryBlock;
@@ -158,7 +158,7 @@ public class SQRLStorage {
         rescueRandomSalt = Arrays.copyOfRange(input, 4, 20);
         rescueLogNFactor = input[20];
         rescueIterationCount = getIntFromFourBytes(input, 21);
-        rescueIdentityLockKeyEncrypted = Arrays.copyOfRange(input, 25, 57);
+        rescueIdentityUnlockKeyEncrypted = Arrays.copyOfRange(input, 25, 57);
         rescueVerificationTag = Arrays.copyOfRange(input, 57, 73);
 
         hasRescueBlock = true;
@@ -237,10 +237,10 @@ public class SQRLStorage {
         this.rescueRandomSalt = null;
         this.rescueLogNFactor = -1;
         this.rescueIterationCount = -1;
-        this.rescueIdentityLockKeyEncrypted = null;
-        if(this.rescueIdentityLockKey != null)
-            clearBytes(this.rescueIdentityLockKey);
-        this.rescueIdentityLockKey = null;
+        this.rescueIdentityUnlockKeyEncrypted = null;
+        if(this.rescueIdentityUnlockKey != null)
+            clearBytes(this.rescueIdentityUnlockKey);
+        this.rescueIdentityUnlockKey = null;
         this.rescueVerificationTag = null;
         this.verifyingRecoveryBlock = null;
 
@@ -342,21 +342,21 @@ public class SQRLStorage {
                 GCMParameterSpec params = new GCMParameterSpec(128, nullBytes);
                 cipher.init(Cipher.DECRYPT_MODE, keySpec, params);
                 cipher.updateAAD(rescuePlaintext);
-                cipher.update(rescueIdentityLockKeyEncrypted);
+                cipher.update(rescueIdentityUnlockKeyEncrypted);
                 try {
-                    rescueIdentityLockKey = cipher.doFinal(rescueVerificationTag);
+                    rescueIdentityUnlockKey = cipher.doFinal(rescueVerificationTag);
                 } catch (AEADBadTagException badTag) {
                     return false;
                 }
             } else {
-                rescueIdentityLockKey = new byte[rescueIdentityLockKeyEncrypted.length];
+                rescueIdentityUnlockKey = new byte[rescueIdentityUnlockKeyEncrypted.length];
 
                 Grc_aesgcm.gcm_setkey(key, key.length);
                 int res = Grc_aesgcm.gcm_auth_decrypt(
                         nullBytes, nullBytes.length,
                         rescuePlaintext, rescuePlaintext.length,
-                        rescueIdentityLockKeyEncrypted, rescueIdentityLockKey,
-                        rescueIdentityLockKeyEncrypted.length,
+                        rescueIdentityUnlockKeyEncrypted, rescueIdentityUnlockKey,
+                        rescueIdentityUnlockKeyEncrypted.length,
                         rescueVerificationTag, rescueVerificationTag.length
                 );
                 Grc_aesgcm.gcm_zero_ctx();
@@ -423,13 +423,13 @@ public class SQRLStorage {
         try {
             clearBytes(this.identityLockKey);
             clearBytes(this.identityMasterKey);
-            if(this.rescueIdentityLockKey != null) {
-                clearBytes(this.rescueIdentityLockKey);
+            if(this.rescueIdentityUnlockKey != null) {
+                clearBytes(this.rescueIdentityUnlockKey);
             }
         } finally {
             this.identityLockKey = null;
             this.identityMasterKey = null;
-            this.rescueIdentityLockKey = null;
+            this.rescueIdentityUnlockKey = null;
         }
     }
 
@@ -480,7 +480,7 @@ public class SQRLStorage {
 
             this.updateIdentityPlaintext();
 
-            if(Build.DEVICE != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Key keySpec = new SecretKeySpec(key, "AES");
                 Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
                 GCMParameterSpec params = new GCMParameterSpec(128, initializationVector);
@@ -561,14 +561,14 @@ public class SQRLStorage {
 
         System.out.println(BLOCK_LENGTH_SIZE +
                 newPlaintext.length +
-                rescueIdentityLockKeyEncrypted.length +
+                rescueIdentityUnlockKeyEncrypted.length +
                 rescueVerificationTag.length);
 
         newPlaintext = EncryptionUtils.combine(
             this.getIntToTwoBytes(
                 BLOCK_LENGTH_SIZE +
                 newPlaintext.length +
-                rescueIdentityLockKeyEncrypted.length +
+                rescueIdentityUnlockKeyEncrypted.length +
                 rescueVerificationTag.length
             ), newPlaintext);
 
@@ -610,7 +610,7 @@ public class SQRLStorage {
 
         if(hasRescueBlock) {
             result = EncryptionUtils.combine(result, rescuePlaintext);
-            result = EncryptionUtils.combine(result, rescueIdentityLockKeyEncrypted);
+            result = EncryptionUtils.combine(result, rescueIdentityUnlockKeyEncrypted);
             result = EncryptionUtils.combine(result, rescueVerificationTag);
         }
 
@@ -632,11 +632,11 @@ public class SQRLStorage {
     }
 
     public void reInitializeMasterKeyIdentity() {
-        if(this.rescueIdentityLockKey != null) {
-            this.identityMasterKey = EncryptionUtils.enHash(this.rescueIdentityLockKey);
-            this.identityLockKey = this.rescueIdentityLockKey;
-            clearBytes(this.rescueIdentityLockKey);
-            this.rescueIdentityLockKey = null;
+        if(this.rescueIdentityUnlockKey != null) {
+            this.identityMasterKey = EncryptionUtils.enHash(this.rescueIdentityUnlockKey);
+            this.identityLockKey = this.rescueIdentityUnlockKey;
+            clearBytes(this.rescueIdentityUnlockKey);
+            this.rescueIdentityUnlockKey = null;
         }
     }
 
@@ -649,7 +649,7 @@ public class SQRLStorage {
         byte[] notImportant = new byte[32];
         byte[] unlockRequestSign = new byte[64];
 
-        Sodium.crypto_scalarmult(bytesToSign, serverUnlock, this.identityLockKey);
+        Sodium.crypto_scalarmult(bytesToSign, this.rescueIdentityUnlockKey, serverUnlock);
         Sodium.crypto_sign_seed_keypair(notImportant, unlockRequestSign, bytesToSign);
         return unlockRequestSign;
     }

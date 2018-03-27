@@ -84,6 +84,16 @@ public class CommunicationHandler {
         return sb.toString();
     }
 
+    private String createClientRemove() throws Exception {
+        SQRLStorage storage = SQRLStorage.getInstance();
+        StringBuilder sb = new StringBuilder();
+        sb.append("ver=1\r\n");
+        sb.append("cmd=remove\r\n");
+        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(domain)));
+        return sb.toString();
+    }
+
+
     public String createClientCreateAccount(EntropyHarvester entropyHarvester) throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
@@ -179,7 +189,7 @@ public class CommunicationHandler {
         }
         input.close();
 
-        Log.d(TAG, "Resp Code:" + con.getResponseCode());
+        //Log.d(TAG, "Resp Code:" + con.getResponseCode());
 
         setResponseData(result.toString());
     }
@@ -265,6 +275,56 @@ public class CommunicationHandler {
     }
 
     public static void main(String[] args) {
+
+        try {
+
+            byte[] bytesArray = EncryptionUtils.hex2Byte("7371726c646174617d0001002d00b51fd99559b887d106a8d877c70133bb20a12fa1a7c829b194db94f309c5000000f30104050f000d174cc6e7b70baa158aa4ce75e2f2b99a02a40e4beb2e5d16c2f03442bd3e932035419a63885a663125a600e5486c42b38f708c1094ced1ab0b0050137f6df449caf78581fec678408a804caf74f91c490002005528fc85e3e36866a85574146fe7776d09cf0000004a4e12277dd48366fc1f335dd37188bbcba02bc32a12aef0188f5e83593665518483d638b80051c2b4b013491eb06835");
+
+            SQRLStorage storage = SQRLStorage.getInstance();
+            storage.setProgressionUpdater(new ProgressionUpdater());
+            storage.read(bytesArray);
+            storage.decryptIdentityKey("Testing1234");
+            boolean didIt = storage.decryptUnlockKey("7276-0587-2230-1119-8559-3839");
+            System.out.println(didIt);
+
+            CommunicationHandler commHandler = CommunicationHandler.getInstance();
+            String sqrlLink = "sqrl://www.grc.com/sqrl?nut=Na2MOglf7NyyupQ8-dtj1g";
+            String domain = sqrlLink.split("/")[2];
+
+            int indexOfQuery = sqrlLink.indexOf("/", sqrlLink.indexOf("://")+3);
+            String queryLink = sqrlLink.substring(indexOfQuery);
+
+            commHandler.setDomain(domain);
+            String postData = commHandler.createPostParams(commHandler.createClientQuery(), sqrlLink);
+            commHandler.postRequest(queryLink, postData);
+
+            String serverData = commHandler.getResponse();
+            queryLink = commHandler.getQueryLink();
+
+            if(
+                (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
+                        commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
+                        !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
+                ) {
+                String postData2 = commHandler.createPostParams(commHandler.createClientDisable(), serverData);
+                commHandler.postRequest(queryLink, postData2);
+
+                serverData = commHandler.getResponse();
+                queryLink = commHandler.getQueryLink();
+
+                String postData3 = commHandler.createPostParams(commHandler.createClientRemove(), serverData, true);
+                commHandler.postRequest(queryLink, postData3);
+
+            } else {
+                String postData2 = commHandler.createPostParams(commHandler.createClientEnable(), serverData, true);
+                commHandler.postRequest(queryLink, postData2);
+            }
+            commHandler.printParams();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        /*
         try {
             File file = new File("Testing2.sqrl");
             byte[] bytesArray = new byte[(int) file.length()];
@@ -296,6 +356,7 @@ public class CommunicationHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        */
     }
 
     public String getQueryLink() {
