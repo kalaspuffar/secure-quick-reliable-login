@@ -1,0 +1,178 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:drawable/screen_background_dark_transparent">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:background="@android:color/background_light"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.498"
+        tools:layout_conversion_absoluteHeight="142dp"
+        tools:layout_conversion_absoluteWidth="359dp">
+
+        <Button
+            android:id="@+id/btnCloseResetPassword"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="X"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/inputRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:focusable="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnCloseResetPassword">
+
+            <EditText
+                android:id="@+id/txtRecoverCode1"
+                android:layout_width="60dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/reset_password_rescuecode_1"
+                android:ems="10"
+                android:inputType="phone"
+                android:maxLength="4"
+                android:nextFocusDown="@+id/txtRecoverCode2"
+                tools:layout_conversion_absoluteHeight="46dp"
+                tools:layout_conversion_absoluteWidth="327dp" />
+
+            <EditText
+                android:id="@+id/txtRecoverCode2"
+                android:layout_width="56dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:contentDescription="@string/reset_password_rescuecode_2"
+                android:ems="10"
+                android:inputType="phone"
+                android:maxLength="4"
+                android:nextFocusDown="@+id/txtRecoverCode3"
+                app:layout_constraintStart_toEndOf="@+id/txtRecoverCode1"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_conversion_absoluteHeight="46dp"
+                tools:layout_conversion_absoluteWidth="327dp" />
+
+            <EditText
+                android:id="@+id/txtRecoverCode3"
+                android:layout_width="56dp"
+                android:layout_height="48dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:contentDescription="@string/reset_password_rescuecode_3"
+                android:ems="10"
+                android:inputType="phone"
+                android:maxLength="4"
+                android:nextFocusDown="@+id/txtRecoverCode4"
+                app:layout_constraintStart_toEndOf="@+id/txtRecoverCode2"
+                tools:layout_conversion_absoluteHeight="46dp"
+                tools:layout_conversion_absoluteWidth="327dp" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/inputRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:focusable="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/inputRow1">
+
+            <EditText
+                android:id="@+id/txtRecoverCode4"
+                android:layout_width="56dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/reset_password_rescuecode_4"
+                android:ems="10"
+                android:inputType="phone"
+                android:maxLength="4"
+                android:nextFocusDown="@+id/txtRecoverCode5"
+                tools:layout_conversion_absoluteHeight="46dp"
+                tools:layout_conversion_absoluteWidth="327dp" />
+
+            <EditText
+                android:id="@+id/txtRecoverCode5"
+                android:layout_width="56dp"
+                android:layout_height="48dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:contentDescription="@string/reset_password_rescuecode_5"
+                android:ems="10"
+                android:inputType="phone"
+                android:maxLength="4"
+                android:nextFocusDown="@+id/txtRecoverCode6"
+                app:layout_constraintStart_toEndOf="@+id/txtRecoverCode4"
+                tools:layout_conversion_absoluteHeight="46dp"
+                tools:layout_conversion_absoluteWidth="327dp" />
+
+            <EditText
+                android:id="@+id/txtRecoverCode6"
+                android:layout_width="56dp"
+                android:layout_height="48dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:contentDescription="@string/reset_password_rescuecode_6"
+                android:ems="10"
+                android:inputType="phone"
+                android:maxLength="4"
+                android:nextFocusDown="@+id/txtResetPasswordNewPassword"
+                app:layout_constraintStart_toEndOf="@+id/txtRecoverCode5"
+                tools:layout_conversion_absoluteHeight="46dp"
+                tools:layout_conversion_absoluteWidth="327dp" />
+        </android.support.constraint.ConstraintLayout>
+
+        <Button
+            android:id="@+id/btnEnableAccountEnable"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/button_enable_account_enable"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/inputRow2"
+            tools:layout_conversion_absoluteHeight="48dp"
+            tools:layout_conversion_absoluteWidth="88dp" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/enable_account_title"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

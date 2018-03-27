@@ -84,7 +84,7 @@ public class CommunicationHandler {
         return sb.toString();
     }
 
-    private String createClientRemove() throws Exception {
+    public String createClientRemove() throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");

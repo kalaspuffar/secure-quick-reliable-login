@@ -63,6 +63,10 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     private PopupWindow changePasswordPopupWindow;
     private PopupWindow resetPasswordPopupWindow;
     private PopupWindow progressPopupWindow;
+    private PopupWindow loginOptionsPopupWindow;
+    private PopupWindow disableAccountPopupWindow;
+    private PopupWindow enableAccountPopupWindow;
+    private PopupWindow removeAccountPopupWindow;
 
     private FrameLayout progressBarHolder;
 
@@ -94,10 +98,14 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         setupRenamePopupWindow(getLayoutInflater());
         setupLoginPopupWindow(getLayoutInflater());
+        setupLoginOptionsPopupWindow(getLayoutInflater());
         setupImportPopupWindow(getLayoutInflater());
         setupChangePasswordPopupWindow(getLayoutInflater());
         setupResetPasswordPopupWindow(getLayoutInflater());
         setupProgressPopupWindow(getLayoutInflater());
+        setupEnableAccountPopupWindow(getLayoutInflater());
+        setupDisableAccountPopupWindow(getLayoutInflater());
+        setupRemoveAccountPopupWindow(getLayoutInflater());
 
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
@@ -139,30 +147,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         btnCreate.setOnClickListener(
                 v -> {
                     showNotImplementedDialog();
-/*
-                    Sodium sodium = NaCl.sodium();
-                    String Password = "hunter2";
-                    byte[] key = new byte[Sodium.crypto_box_seedbytes()];
-                    byte[] passwd = Password.getBytes();
-                    byte[] salt = new byte[]{ 88, (byte)240, (byte)185, 66, (byte)195, 101, (byte)160, (byte)138, (byte)137, 78, 1, 2, 3, 4, 5, 6};
-
-                    Sodium.crypto_pwhash(
-                            key,
-                            key.length,
-                            passwd,
-                            passwd.length,
-                            salt,
-                            Sodium.crypto_pwhash_opslimit_interactive(),
-                            Sodium.crypto_pwhash_memlimit_interactive(),
-                            Sodium.crypto_pwhash_alg_default()
-                    );
-
-                    byte[] dst_public_Key = new byte[32];
-                    byte[] dst_private_key = new byte[32];
-                    byte[] src_seed = new byte[32];
-                    entropyHarvester.fetchRandom(src_seed);
-                    Sodium.crypto_sign_seed_keypair(dst_public_Key, dst_private_key, src_seed);
-*/
                 }
         );
 
@@ -300,6 +284,33 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
     private void postLogin(CommunicationHandler commHandler) throws Exception {
         String postData = commHandler.createPostParams(commHandler.createClientLogin(), serverData);
+        commHandler.postRequest(queryLink, postData);
+        serverData = commHandler.getResponse();
+        queryLink = commHandler.getQueryLink();
+        handler.post(() -> txtErrorMessage.setText(commHandler.getErrorMessage(this)));
+        commHandler.printParams();
+    }
+
+    private void postDisableAccount(CommunicationHandler commHandler) throws Exception {
+        String postData = commHandler.createPostParams(commHandler.createClientDisable(), serverData);
+        commHandler.postRequest(queryLink, postData);
+        serverData = commHandler.getResponse();
+        queryLink = commHandler.getQueryLink();
+        handler.post(() -> txtErrorMessage.setText(commHandler.getErrorMessage(this)));
+        commHandler.printParams();
+    }
+
+    private void postEnableAccount(CommunicationHandler commHandler) throws Exception {
+        String postData = commHandler.createPostParams(commHandler.createClientEnable(), serverData);
+        commHandler.postRequest(queryLink, postData);
+        serverData = commHandler.getResponse();
+        queryLink = commHandler.getQueryLink();
+        handler.post(() -> txtErrorMessage.setText(commHandler.getErrorMessage(this)));
+        commHandler.printParams();
+    }
+
+    private void postRemoveAccount(CommunicationHandler commHandler) throws Exception {
+        String postData = commHandler.createPostParams(commHandler.createClientRemove(), serverData);
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
@@ -448,11 +459,16 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 true);
 
         loginPopupWindow.setTouchable(true);
-        final EditText txtLoginPassword = popupView.findViewById(R.id.txtLoginPassword);
+        final EditText txtLoginPassword = popupView.findViewById(R.id.txtDisablePassword);
         txtErrorMessage = popupView.findViewById(R.id.txtErrorMessage);
 
         popupView.findViewById(R.id.btnCloseLogin).setOnClickListener(v -> loginPopupWindow.dismiss());
-        popupView.findViewById(R.id.btnLogin).setOnClickListener(v -> {
+        popupView.findViewById(R.id.btnLoginOptions).setOnClickListener(v -> {
+            loginPopupWindow.dismiss();
+            loginOptionsPopupWindow.showAtLocation(loginOptionsPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+        });
+
+        popupView.findViewById(R.id.btnDisableAccount).setOnClickListener(v -> {
             SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
                     getString(R.string.preferences),
                     Context.MODE_PRIVATE
@@ -468,7 +484,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     if(decryptionOk) {
                         showClearNotification();
                     } else {
-                        txtErrorMessage.setText(getString(R.string.decrypt_identity_fail));
+                        Snackbar.make(mainView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                         return;
                     }
 
@@ -488,11 +504,11 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                         } else {
                             handler.post(() -> {
                                 txtLoginPassword.setText("");
-                                txtErrorMessage.setText(commHandler.getErrorMessage(this));
+                                Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show();
                             });
                         }
                     } catch (Exception e) {
-                        handler.post(() -> txtErrorMessage.setText(e.getMessage()));
+                        handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                         Log.e(TAG, e.getMessage(), e);
                         return;
                     } finally {
@@ -507,6 +523,262 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             }
         });
     }
+
+    public void setupLoginOptionsPopupWindow(LayoutInflater layoutInflater) {
+        View popupView = layoutInflater.inflate(R.layout.fragment_login_optional, null);
+
+        loginOptionsPopupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
+                true);
+        loginOptionsPopupWindow.setTouchable(true);
+
+        popupView.findViewById(R.id.btnCloseLogin).setOnClickListener(v -> {
+            loginOptionsPopupWindow.dismiss();
+            loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+        });
+
+        popupView.findViewById(R.id.btnRemoveAccount).setOnClickListener(v -> {
+            loginOptionsPopupWindow.dismiss();
+            loginPopupWindow.showAtLocation(removeAccountPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+        });
+
+        popupView.findViewById(R.id.btnLockAccount).setOnClickListener(v -> {
+            loginOptionsPopupWindow.dismiss();
+            loginPopupWindow.showAtLocation(disableAccountPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+        });
+
+        popupView.findViewById(R.id.btnUnlockAccount).setOnClickListener(v -> {
+            loginOptionsPopupWindow.dismiss();
+            loginPopupWindow.showAtLocation(enableAccountPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+        });
+    }
+
+    public void setupDisableAccountPopupWindow(LayoutInflater layoutInflater) {
+        View popupView = layoutInflater.inflate(R.layout.fragment_disable_account, null);
+
+        disableAccountPopupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
+                true);
+        disableAccountPopupWindow.setTouchable(true);
+
+        popupView.findViewById(R.id.btnCloseLogin).setOnClickListener(v -> {
+            disableAccountPopupWindow.dismiss();
+            loginOptionsPopupWindow.showAtLocation(loginOptionsPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+        });
+
+
+        final EditText txtDisablePassword = popupView.findViewById(R.id.txtDisablePassword);
+        popupView.findViewById(R.id.btnDisableAccount).setOnClickListener(v -> {
+            disableAccountPopupWindow.dismiss();
+            showProgressBar();
+
+            new Thread(() -> {
+                boolean decryptionOk = SQRLStorage.getInstance().decryptIdentityKey(txtDisablePassword.getText().toString());
+                if(decryptionOk) {
+                    showClearNotification();
+                } else {
+                    Snackbar.make(mainView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+
+                try {
+                    postQuery(commHandler);
+
+                    if(
+                        (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
+                                commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
+                                !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
+                        ) {
+                        postDisableAccount(commHandler);
+                    } else {
+                        handler.post(() -> {
+                            txtDisablePassword.setText("");
+                            Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show();
+                        });
+                    }
+                } catch (Exception e) {
+                    handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                    Log.e(TAG, e.getMessage(), e);
+                    return;
+                } finally {
+                    hideProgressBar();
+                }
+
+                handler.post(() -> {
+                    txtErrorMessage.setText("");
+                    txtDisablePassword.setText("");
+                });
+            }).start();
+        });
+    }
+
+    public void setupEnableAccountPopupWindow(LayoutInflater layoutInflater) {
+        View popupView = layoutInflater.inflate(R.layout.fragment_enable_account, null);
+
+        enableAccountPopupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
+                true);
+
+        enableAccountPopupWindow.setTouchable(true);
+
+        final EditText txtRecoverCode1 = popupView.findViewById(R.id.txtRecoverCode1);
+        final EditText txtRecoverCode2 = popupView.findViewById(R.id.txtRecoverCode2);
+        final EditText txtRecoverCode3 = popupView.findViewById(R.id.txtRecoverCode3);
+        final EditText txtRecoverCode4 = popupView.findViewById(R.id.txtRecoverCode4);
+        final EditText txtRecoverCode5 = popupView.findViewById(R.id.txtRecoverCode5);
+        final EditText txtRecoverCode6 = popupView.findViewById(R.id.txtRecoverCode6);
+
+        popupView.findViewById(R.id.btnCloseResetPassword).setOnClickListener(v -> enableAccountPopupWindow.dismiss());
+        popupView.findViewById(R.id.btnEnableAccountEnable).setOnClickListener(v -> {
+
+            SQRLStorage storage = SQRLStorage.getInstance();
+
+            if(!checkRescueCode(txtRecoverCode1)) return;
+            if(!checkRescueCode(txtRecoverCode2)) return;
+            if(!checkRescueCode(txtRecoverCode3)) return;
+            if(!checkRescueCode(txtRecoverCode4)) return;
+            if(!checkRescueCode(txtRecoverCode5)) return;
+            if(!checkRescueCode(txtRecoverCode6)) return;
+
+            enableAccountPopupWindow.dismiss();
+            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+
+            new Thread(() -> {
+                try {
+                    String rescueCode = txtRecoverCode1.getText().toString();
+                    rescueCode += txtRecoverCode2.getText().toString();
+                    rescueCode += txtRecoverCode3.getText().toString();
+                    rescueCode += txtRecoverCode4.getText().toString();
+                    rescueCode += txtRecoverCode5.getText().toString();
+                    rescueCode += txtRecoverCode6.getText().toString();
+
+                    boolean decryptionOk = storage.decryptUnlockKey(rescueCode);
+                    if (!decryptionOk) {
+                        handler.post(() ->
+                                Snackbar.make(mainView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show()
+                        );
+                        return;
+                    }
+                    storage.reInitializeMasterKeyIdentity();
+
+                    postQuery(commHandler);
+                    if(
+                            (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
+                                    commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
+                                    commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
+                            ) {
+                        postEnableAccount(commHandler);
+                    } else {
+                        handler.post(() ->
+                            Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show()
+                        );
+                    }
+                } catch (Exception e) {
+                    handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                    Log.e(TAG, e.getMessage(), e);
+                } finally {
+                    storage.clear();
+                    handler.post(() -> {
+                        progressPopupWindow.dismiss();
+                        txtRecoverCode1.setText("");
+                        txtRecoverCode2.setText("");
+                        txtRecoverCode3.setText("");
+                        txtRecoverCode4.setText("");
+                        txtRecoverCode5.setText("");
+                        txtRecoverCode6.setText("");
+                    });
+                }
+            }).start();
+        });
+    }
+
+    public void setupRemoveAccountPopupWindow(LayoutInflater layoutInflater) {
+        View popupView = layoutInflater.inflate(R.layout.fragment_remove_account, null);
+
+        removeAccountPopupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
+                true);
+
+        removeAccountPopupWindow.setTouchable(true);
+
+        final EditText txtRecoverCode1 = popupView.findViewById(R.id.txtRecoverCode1);
+        final EditText txtRecoverCode2 = popupView.findViewById(R.id.txtRecoverCode2);
+        final EditText txtRecoverCode3 = popupView.findViewById(R.id.txtRecoverCode3);
+        final EditText txtRecoverCode4 = popupView.findViewById(R.id.txtRecoverCode4);
+        final EditText txtRecoverCode5 = popupView.findViewById(R.id.txtRecoverCode5);
+        final EditText txtRecoverCode6 = popupView.findViewById(R.id.txtRecoverCode6);
+
+        popupView.findViewById(R.id.btnCloseResetPassword).setOnClickListener(v -> removeAccountPopupWindow.dismiss());
+        popupView.findViewById(R.id.btnRemoveAccountRemove).setOnClickListener(v -> {
+
+            SQRLStorage storage = SQRLStorage.getInstance();
+
+            if(!checkRescueCode(txtRecoverCode1)) return;
+            if(!checkRescueCode(txtRecoverCode2)) return;
+            if(!checkRescueCode(txtRecoverCode3)) return;
+            if(!checkRescueCode(txtRecoverCode4)) return;
+            if(!checkRescueCode(txtRecoverCode5)) return;
+            if(!checkRescueCode(txtRecoverCode6)) return;
+
+            removeAccountPopupWindow.dismiss();
+            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+
+            new Thread(() -> {
+                try {
+                    String rescueCode = txtRecoverCode1.getText().toString();
+                    rescueCode += txtRecoverCode2.getText().toString();
+                    rescueCode += txtRecoverCode3.getText().toString();
+                    rescueCode += txtRecoverCode4.getText().toString();
+                    rescueCode += txtRecoverCode5.getText().toString();
+                    rescueCode += txtRecoverCode6.getText().toString();
+
+                    boolean decryptionOk = storage.decryptUnlockKey(rescueCode);
+                    if (!decryptionOk) {
+                        handler.post(() ->
+                                Snackbar.make(mainView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show()
+                        );
+                        return;
+                    }
+                    storage.reInitializeMasterKeyIdentity();
+
+                    postQuery(commHandler);
+                    if(
+                        (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
+                        commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
+                        commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
+                        ) {
+                        postRemoveAccount(commHandler);
+                    } else if(
+                        (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
+                        commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
+                        !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
+                        ) {
+                        postDisableAccount(commHandler);
+                        postRemoveAccount(commHandler);
+                    } else {
+                        handler.post(() ->
+                                Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show()
+                        );
+                    }
+                } catch (Exception e) {
+                    handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                    Log.e(TAG, e.getMessage(), e);
+                } finally {
+                    storage.clear();
+                    handler.post(() -> {
+                        progressPopupWindow.dismiss();
+                        txtRecoverCode1.setText("");
+                        txtRecoverCode2.setText("");
+                        txtRecoverCode3.setText("");
+                        txtRecoverCode4.setText("");
+                        txtRecoverCode5.setText("");
+                        txtRecoverCode6.setText("");
+                    });
+                }
+            }).start();
+        });
+    }
+
 
     public void setupImportPopupWindow(LayoutInflater layoutInflater) {
         View popupView = layoutInflater.inflate(R.layout.fragment_decrypt, null);

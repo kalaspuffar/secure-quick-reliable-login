@@ -109,4 +109,10 @@
     <string name="button_remove_account">Remove account</string>
     <string name="login_optional_options">Other options</string>
     <string name="button_login_options">Options</string>
+    <string name="disable_account_title">Disable account</string>
+    <string name="button_disable_account">Disable account</string>
+    <string name="enable_account_title">Enable account</string>
+    <string name="button_enable_account_enable">Enable</string>
+    <string name="remove_account_title">Remove account</string>
+    <string name="button_remove_account_remove">remove</string>
 </resources>
