@@ -257,7 +257,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     }
 
     private final CommunicationHandler commHandler = CommunicationHandler.getInstance();
-    private TextView txtErrorMessage;
     private String serverData = null;
     private String queryLink = null;
 
@@ -266,7 +265,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
-        handler.post(() -> txtErrorMessage.setText(commHandler.getErrorMessage(this)));
+        handler.post(() -> Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show());
         commHandler.printParams();
     }
 
@@ -278,7 +277,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
-        handler.post(() -> txtErrorMessage.setText(commHandler.getErrorMessage(this)));
+        handler.post(() -> Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show());
         commHandler.printParams();
     }
 
@@ -287,7 +286,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
-        handler.post(() -> txtErrorMessage.setText(commHandler.getErrorMessage(this)));
+        handler.post(() -> Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show());
         commHandler.printParams();
     }
 
@@ -296,25 +295,25 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
-        handler.post(() -> txtErrorMessage.setText(commHandler.getErrorMessage(this)));
+        handler.post(() -> Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show());
         commHandler.printParams();
     }
 
     private void postEnableAccount(CommunicationHandler commHandler) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientEnable(), serverData);
+        String postData = commHandler.createPostParams(commHandler.createClientEnable(), serverData, true);
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
-        handler.post(() -> txtErrorMessage.setText(commHandler.getErrorMessage(this)));
+        handler.post(() -> Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show());
         commHandler.printParams();
     }
 
     private void postRemoveAccount(CommunicationHandler commHandler) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientRemove(), serverData);
+        String postData = commHandler.createPostParams(commHandler.createClientRemove(), serverData, true);
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
-        handler.post(() -> txtErrorMessage.setText(commHandler.getErrorMessage(this)));
+        handler.post(() -> Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show());
         commHandler.printParams();
     }
 
@@ -460,7 +459,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         loginPopupWindow.setTouchable(true);
         final EditText txtLoginPassword = popupView.findViewById(R.id.txtDisablePassword);
-        txtErrorMessage = popupView.findViewById(R.id.txtErrorMessage);
 
         popupView.findViewById(R.id.btnCloseLogin).setOnClickListener(v -> loginPopupWindow.dismiss());
         popupView.findViewById(R.id.btnLoginOptions).setOnClickListener(v -> {
@@ -516,7 +514,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     }
 
                     handler.post(() -> {
-                        txtErrorMessage.setText("");
                         txtLoginPassword.setText("");
                     });
                 }).start();
@@ -532,24 +529,24 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 true);
         loginOptionsPopupWindow.setTouchable(true);
 
-        popupView.findViewById(R.id.btnCloseLogin).setOnClickListener(v -> {
+        popupView.findViewById(R.id.btnCloseLoginOptional).setOnClickListener(v -> {
             loginOptionsPopupWindow.dismiss();
             loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
         });
 
         popupView.findViewById(R.id.btnRemoveAccount).setOnClickListener(v -> {
             loginOptionsPopupWindow.dismiss();
-            loginPopupWindow.showAtLocation(removeAccountPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+            removeAccountPopupWindow.showAtLocation(removeAccountPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
         });
 
         popupView.findViewById(R.id.btnLockAccount).setOnClickListener(v -> {
             loginOptionsPopupWindow.dismiss();
-            loginPopupWindow.showAtLocation(disableAccountPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+            disableAccountPopupWindow.showAtLocation(disableAccountPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
         });
 
         popupView.findViewById(R.id.btnUnlockAccount).setOnClickListener(v -> {
             loginOptionsPopupWindow.dismiss();
-            loginPopupWindow.showAtLocation(enableAccountPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+            enableAccountPopupWindow.showAtLocation(enableAccountPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
         });
     }
 
@@ -605,7 +602,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 }
 
                 handler.post(() -> {
-                    txtErrorMessage.setText("");
                     txtDisablePassword.setText("");
                 });
             }).start();
@@ -640,8 +636,10 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             if(!checkRescueCode(txtRecoverCode5)) return;
             if(!checkRescueCode(txtRecoverCode6)) return;
 
-            enableAccountPopupWindow.dismiss();
-            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+            handler.post(() -> {
+                enableAccountPopupWindow.dismiss();
+                progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+            });
 
             new Thread(() -> {
                 try {

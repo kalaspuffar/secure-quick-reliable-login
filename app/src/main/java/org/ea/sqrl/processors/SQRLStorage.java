@@ -434,6 +434,7 @@ public class SQRLStorage {
     }
 
     private void clearBytes(byte[] data) {
+        if(data == null) return;
         Random r = new SecureRandom();
         r.nextBytes(data);
         Arrays.fill(data, (byte)0);
@@ -634,9 +635,13 @@ public class SQRLStorage {
     public void reInitializeMasterKeyIdentity() {
         if(this.rescueIdentityUnlockKey != null) {
             this.identityMasterKey = EncryptionUtils.enHash(this.rescueIdentityUnlockKey);
+
+            // Well this is wrong. Unlock and lock is not the same thing! :/
+/*
             this.identityLockKey = this.rescueIdentityUnlockKey;
             clearBytes(this.rescueIdentityUnlockKey);
             this.rescueIdentityUnlockKey = null;
+*/
         }
     }
 
