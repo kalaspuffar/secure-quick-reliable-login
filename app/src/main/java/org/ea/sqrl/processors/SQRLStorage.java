@@ -45,7 +45,7 @@ public class SQRLStorage {
     private boolean hasPreviousBlock = false;
 
     private SQRLStorage() {
-//        Grc_aesgcm.gcm_initialize();
+        Grc_aesgcm.gcm_initialize();
         NaCl.sodium();
     }
 
@@ -635,13 +635,8 @@ public class SQRLStorage {
     public void reInitializeMasterKeyIdentity() {
         if(this.rescueIdentityUnlockKey != null) {
             this.identityMasterKey = EncryptionUtils.enHash(this.rescueIdentityUnlockKey);
-
-            // Well this is wrong. Unlock and lock is not the same thing! :/
-/*
-            this.identityLockKey = this.rescueIdentityUnlockKey;
-            clearBytes(this.rescueIdentityUnlockKey);
-            this.rescueIdentityUnlockKey = null;
-*/
+            this.identityLockKey = new byte[this.identityMasterKey.length];
+            Sodium.crypto_scalarmult_base(this.identityLockKey, this.rescueIdentityUnlockKey);
         }
     }
 
@@ -659,24 +654,11 @@ public class SQRLStorage {
         return unlockRequestSign;
     }
 
-
-    public String getUnlockRequestSigning(byte[] serverUnlock) {
-        try {
-            StringBuilder sb = new StringBuilder();
-            sb.append("&urs=");
-            sb.append(EncryptionUtils.encodeUrlSafe(getUnlockRequestSigningKey(serverUnlock)));
-            return sb.toString();
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
-        return "";
-    }
-
     public String getServerUnlockKey(EntropyHarvester entropyHarvester) {
         /*
         VerifyUnlock := 	SignPublic( DHKA( IdentityLock, RandomLock ))
         ServerUnlock := 	MakePublic( RandomLock )
-<
+
         libsodium crypto_scalarmult_base()
         in: secret key = RLK
         out: public key = SUK
@@ -689,7 +671,6 @@ public class SQRLStorage {
         libsodium crypto_sign_seed_keypair()
         in: seed = DHK
         out: public key = VUK
-
         */
         try {
             byte[] randomLock = new byte[32];
@@ -697,7 +678,7 @@ public class SQRLStorage {
 
             byte[] bytesToSign = new byte[32];
             byte[] serverUnlock = new byte[32];
-            byte[] notImportant = new byte[32];
+            byte[] notImportant = new byte[64];
             byte[] verifyUnlock = new byte[32];
 
             Sodium.crypto_scalarmult_base(serverUnlock, randomLock);
