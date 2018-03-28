@@ -533,12 +533,6 @@ public class SQRLStorage {
         newPlaintext = EncryptionUtils.combine(newPlaintext, timeInSecondsToRunPWEnScryptOnPassword);
         newPlaintext = EncryptionUtils.combine(newPlaintext, getIntToTwoBytes(idleTimoutInMinutes));
 
-        System.out.println(BLOCK_LENGTH_SIZE +
-                newPlaintext.length +
-                identityMasterKeyEncrypted.length +
-                identityLockKeyEncrypted.length +
-                identityVerificationTag.length);
-
         newPlaintext = EncryptionUtils.combine(
             this.getIntToTwoBytes(
                 BLOCK_LENGTH_SIZE +
@@ -549,7 +543,6 @@ public class SQRLStorage {
             ), newPlaintext);
         identityPlaintext = newPlaintext;
 
-        System.out.println(identityPlaintext.length);
     }
 
     private void updateRescuePlaintext() {
@@ -560,11 +553,6 @@ public class SQRLStorage {
         newPlaintext = EncryptionUtils.combine(newPlaintext, rescueLogNFactor);
         newPlaintext = EncryptionUtils.combine(newPlaintext, getIntToFourBytes(rescueIterationCount));
 
-        System.out.println(BLOCK_LENGTH_SIZE +
-                newPlaintext.length +
-                rescueIdentityUnlockKeyEncrypted.length +
-                rescueVerificationTag.length);
-
         newPlaintext = EncryptionUtils.combine(
             this.getIntToTwoBytes(
                 BLOCK_LENGTH_SIZE +
@@ -574,8 +562,6 @@ public class SQRLStorage {
             ), newPlaintext);
 
         rescuePlaintext = newPlaintext;
-
-        System.out.println(rescuePlaintext.length);
     }
 
     private void updatePreviousPlaintext() {

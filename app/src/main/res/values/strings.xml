@@ -115,4 +115,8 @@
     <string name="button_enable_account_enable">Enable</string>
     <string name="remove_account_title">Remove account</string>
     <string name="button_remove_account_remove">remove</string>
+    <string name="export_title">Export</string>
+    <string name="button_export_show_identity">Show identity</string>
+    <string name="button_export_save_identity">Save identity</string>
+    <string name="button_print_identity">Print identity</string>
 </resources>

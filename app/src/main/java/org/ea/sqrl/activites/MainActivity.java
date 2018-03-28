@@ -42,6 +42,8 @@ import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.EncryptionUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Map;
 
 /**
@@ -67,6 +69,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     private PopupWindow disableAccountPopupWindow;
     private PopupWindow enableAccountPopupWindow;
     private PopupWindow removeAccountPopupWindow;
+    private PopupWindow exportOptionsPopupWindow;
 
     private FrameLayout progressBarHolder;
 
@@ -106,6 +109,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         setupEnableAccountPopupWindow(getLayoutInflater());
         setupDisableAccountPopupWindow(getLayoutInflater());
         setupRemoveAccountPopupWindow(getLayoutInflater());
+        setupExportOptionsPopupWindow(getLayoutInflater());
 
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
@@ -188,19 +192,12 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         final Button btnExport = findViewById(R.id.btnExport);
         btnExport.setOnClickListener(
-                v -> new Thread(() -> {
-                    startActivity(new Intent(this, ShowIdentityActivity.class));
-                }).start()
+                v -> exportOptionsPopupWindow.showAtLocation(exportOptionsPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
         );
 
         final Button btnReset = findViewById(R.id.btnReset);
         btnReset.setOnClickListener(
                 v -> resetPasswordPopupWindow.showAtLocation(resetPasswordPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
-        );
-
-        final Button btnForgetQuickPass = findViewById(R.id.btnForgetQuickPass);
-        btnForgetQuickPass.setOnClickListener(
-                v -> showNotImplementedDialog()
         );
 
         final Button btnRekey = findViewById(R.id.btnRekey);
@@ -547,6 +544,53 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         popupView.findViewById(R.id.btnUnlockAccount).setOnClickListener(v -> {
             loginOptionsPopupWindow.dismiss();
             enableAccountPopupWindow.showAtLocation(enableAccountPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+        });
+    }
+
+
+    public void setupExportOptionsPopupWindow(LayoutInflater layoutInflater) {
+        View popupView = layoutInflater.inflate(R.layout.fragment_export_options, null);
+
+        exportOptionsPopupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
+                true);
+        exportOptionsPopupWindow.setTouchable(true);
+
+        popupView.findViewById(R.id.btnCloseExportOptions).setOnClickListener(v -> {
+            exportOptionsPopupWindow.dismiss();
+        });
+
+        popupView.findViewById(R.id.btnShowIdentity).setOnClickListener(v -> {
+            exportOptionsPopupWindow.dismiss();
+            startActivity(new Intent(this, ShowIdentityActivity.class));
+        });
+
+        popupView.findViewById(R.id.btnSaveIdentity).setOnClickListener(v -> {
+            exportOptionsPopupWindow.dismiss();
+            String uriString = "content://org.ea.sqrl.fileprovider/sqrltmp/";
+            File directory = new File(getCacheDir(), "sqrltmp");
+            directory.mkdir();
+
+            try {
+                File file = File.createTempFile("identity", ".sqrl", directory);
+
+                FileOutputStream FileOutputStream = new FileOutputStream(file);
+                FileOutputStream.write(SQRLStorage.getInstance().createSaveData());
+                FileOutputStream.close();
+
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(uriString + file.getName()));
+                shareIntent.setType("application/octet-stream");
+                startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.save_identity_to)));
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage(), e);
+            }
+        });
+
+        popupView.findViewById(R.id.btnPrintIdentity).setOnClickListener(v -> {
+            exportOptionsPopupWindow.dismiss();
+            showNotImplementedDialog();
         });
     }
 
