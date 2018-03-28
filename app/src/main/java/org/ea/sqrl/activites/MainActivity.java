@@ -166,6 +166,10 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                         mDbHelper.deleteIdentity(currentId);
                         updateSpinnerData(currentId);
                         Snackbar.make(mainView, getString(R.string.main_identity_removed), Snackbar.LENGTH_LONG).show();
+
+                        if(!mDbHelper.hasIdentities()) {
+                            startActivity(new Intent(this, StartActivity.class));
+                        }
                     }
                 }
         );
@@ -257,12 +261,20 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     private String serverData = null;
     private String queryLink = null;
 
+    private void toastErrorMessage() {
+        if(commHandler.hasErrorMessage()) {
+            handler.post(() ->
+                    Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show()
+            );
+        }
+    }
+
     private void postQuery(CommunicationHandler commHandler) throws Exception {
         String postData = commHandler.createPostParams(commHandler.createClientQuery(), serverData);
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
-        handler.post(() -> Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show());
+        toastErrorMessage();
         commHandler.printParams();
     }
 
@@ -274,7 +286,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
-        handler.post(() -> Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show());
+        toastErrorMessage();
         commHandler.printParams();
     }
 
@@ -283,7 +295,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
-        handler.post(() -> Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show());
+        toastErrorMessage();
         commHandler.printParams();
     }
 
@@ -292,7 +304,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
-        handler.post(() -> Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show());
+        toastErrorMessage();
         commHandler.printParams();
     }
 
@@ -301,7 +313,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
-        handler.post(() -> Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show());
+        toastErrorMessage();
         commHandler.printParams();
     }
 
@@ -310,7 +322,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
-        handler.post(() -> Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show());
+        toastErrorMessage();
         commHandler.printParams();
     }
 
@@ -480,6 +492,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                         showClearNotification();
                     } else {
                         Snackbar.make(mainView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                        hideProgressBar();
                         return;
                     }
 
@@ -499,13 +512,12 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                         } else {
                             handler.post(() -> {
                                 txtLoginPassword.setText("");
-                                Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show();
                             });
+                            toastErrorMessage();
                         }
                     } catch (Exception e) {
                         handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                         Log.e(TAG, e.getMessage(), e);
-                        return;
                     } finally {
                         hideProgressBar();
                     }
@@ -634,8 +646,8 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     } else {
                         handler.post(() -> {
                             txtDisablePassword.setText("");
-                            Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show();
                         });
+                        toastErrorMessage();
                     }
                 } catch (Exception e) {
                     handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
@@ -711,9 +723,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                             ) {
                         postEnableAccount(commHandler);
                     } else {
-                        handler.post(() ->
-                            Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show()
-                        );
+                        toastErrorMessage();
                     }
                 } catch (Exception e) {
                     handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
@@ -798,9 +808,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                         postDisableAccount(commHandler);
                         postRemoveAccount(commHandler);
                     } else {
-                        handler.post(() ->
-                                Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show()
-                        );
+                        toastErrorMessage();
                     }
                 } catch (Exception e) {
                     handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
@@ -967,76 +975,46 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
 
     public void showClearNotification() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        final String CHANNEL_ID = "sqrl_notify_01";
 
-            String CHANNEL_ID = "sqrl_notify_01";
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "SQRL Notification Channel", NotificationManager.IMPORTANCE_DEFAULT);
+            notificationChannel.enableVibration(false);
+            notificationChannel.enableLights(false);
+            notificationChannel.setSound(null, null);
 
-            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "SQRL Notification Channel", NotificationManager.IMPORTANCE_DEFAULT);
-                notificationChannel.enableVibration(false);
-                notificationChannel.enableLights(false);
-                notificationChannel.setSound(null, null);
-
-                notificationManager.createNotificationChannel(notificationChannel);
-            }
-
-            long[] v = {};
-            NotificationCompat.Builder mBuilder =
-                    new NotificationCompat.Builder(this, CHANNEL_ID)
-                            .setSmallIcon(R.drawable.ic_stat_sqrl_logo_vector_outline)
-                            .setContentTitle(getString(R.string.notification_identity_unlocked))
-                            .setContentText(getString(R.string.notification_identity_unlocked_title))
-                            .setAutoCancel(true)
-                            .setVibrate(v)
-                            .setSound(null)
-                            .setStyle(new NotificationCompat.BigTextStyle()
-                                    .bigText(getString(R.string.notification_identity_unlocked_desc)));
-
-
-
-            Intent resultIntent = new Intent(this, ClearIdentityActivity.class);
-
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-            stackBuilder.addParentStack(ClearIdentityActivity.class);
-            stackBuilder.addNextIntent(resultIntent);
-            PendingIntent resultPendingIntent =
-                    stackBuilder.getPendingIntent(
-                            0,
-                            PendingIntent.FLAG_UPDATE_CURRENT
-                    );
-            mBuilder.setContentIntent(resultPendingIntent);
-
-            NotificationManager mNotificationManager =
-                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-            mNotificationManager.notify(NOTIFICATION_IDENTITY_UNLOCKED, mBuilder.build());
-        } else {
-            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-                    this,
-                    NotificationChannel.DEFAULT_CHANNEL_ID
-            )
-                    .setDefaults(Notification.DEFAULT_LIGHTS)
-                    .setSmallIcon(R.drawable.ic_stat_sqrl_logo_vector_outline)
-                    .setContentTitle(getString(R.string.notification_identity_unlocked))
-                    .setContentText(getString(R.string.notification_identity_unlocked_desc));
-
-            Intent resultIntent = new Intent(this, ClearIdentityActivity.class);
-            PendingIntent resultPendingIntent =
-                    PendingIntent.getActivity(
-                            this,
-                            0,
-                            resultIntent,
-                            PendingIntent.FLAG_UPDATE_CURRENT
-                    );
-            mBuilder.setContentIntent(resultPendingIntent);
-            mBuilder.setAutoCancel(true);
-            mBuilder.setSound(Uri.parse("android.resource://"+getPackageName()+"/raw/silence"));
-
-            NotificationManager mNotifyMgr =
-                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            mNotifyMgr.notify(NOTIFICATION_IDENTITY_UNLOCKED, mBuilder.build());
+            notificationManager.createNotificationChannel(notificationChannel);
         }
+
+        long[] v = {};
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_stat_sqrl_logo_vector_outline)
+                        .setContentTitle(getString(R.string.notification_identity_unlocked))
+                        .setContentText(getString(R.string.notification_identity_unlocked_title))
+                        .setAutoCancel(true)
+                        .setVibrate(v)
+                        .setSound(null)
+                        .setStyle(new NotificationCompat.BigTextStyle()
+                                .bigText(getString(R.string.notification_identity_unlocked_desc)));
+
+        Intent resultIntent = new Intent(this, ClearIdentityActivity.class);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(ClearIdentityActivity.class);
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        mNotificationManager.notify(NOTIFICATION_IDENTITY_UNLOCKED, mBuilder.build());
     }
 
     public void showNotImplementedDialog() {

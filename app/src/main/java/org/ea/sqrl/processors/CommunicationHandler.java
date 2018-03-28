@@ -236,6 +236,16 @@ public class CommunicationHandler {
         return tif == 0;
     }
 
+    public boolean hasErrorMessage() {
+        return !lastResponse.containsKey("tif") ||
+            isTIFBitSet(CommunicationHandler.TIF_BAD_ID_ASSOCIATION) ||
+            isTIFBitSet(CommunicationHandler.TIF_CLIENT_FAILURE) ||
+            isTIFBitSet(CommunicationHandler.TIF_COMMAND_FAILED) ||
+            isTIFBitSet(CommunicationHandler.TIF_FUNCTION_NOT_SUPPORTED) ||
+            isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED) ||
+            isTIFBitSet(CommunicationHandler.TIF_TRANSIENT_ERROR);
+    }
+
     public String getErrorMessage(Activity a) {
         StringBuilder sb = new StringBuilder();
         if(!lastResponse.containsKey("tif")) {
