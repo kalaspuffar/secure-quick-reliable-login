@@ -147,13 +147,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 v -> startActivity(new Intent(this, SettingsActivity.class))
         );
 
-        final Button btnCreate = findViewById(R.id.btnCreate);
-        btnCreate.setOnClickListener(
-                v -> {
-                    showNotImplementedDialog();
-                }
-        );
-
         final Button btnRemove = findViewById(R.id.btnRemove);
         btnRemove.setOnClickListener(
                 v -> {
@@ -205,9 +198,9 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         );
 
         final Button btnRekey = findViewById(R.id.btnRekey);
-        btnRekey.setOnClickListener(
-                v -> showNotImplementedDialog()
-        );
+        btnRekey.setOnClickListener(v -> showNotImplementedDialog());
+        final Button btnCreate = findViewById(R.id.btnCreate);
+        btnCreate.setOnClickListener(v -> showNotImplementedDialog());
     }
 
     public void setupRenamePopupWindow(LayoutInflater layoutInflater) {
@@ -466,8 +459,58 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
                 true);
 
+        final SQRLStorage storage = SQRLStorage.getInstance();
+
         loginPopupWindow.setTouchable(true);
         final EditText txtLoginPassword = popupView.findViewById(R.id.txtDisablePassword);
+        txtLoginPassword.setOnKeyListener((view, keycode, event) -> {
+            if (!storage.hasQuickPass()) return false;
+            if (txtLoginPassword.length() >= storage.getHintLength()) {
+                loginPopupWindow.dismiss();
+                showProgressBar();
+
+                new Thread(() -> {
+                    boolean decryptionOk = storage.decryptIdentityKeyQuickPass(txtLoginPassword.getText().toString());
+                    if(!decryptionOk) {
+                        Snackbar.make(mainView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                        hideProgressBar();
+                        handler.post(() ->
+                            loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
+                        );
+                        storage.clear();
+                        return;
+                    }
+
+                    try {
+                        postQuery(commHandler);
+                        if(
+                            commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
+                            commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
+                        ) {
+                            postLogin(commHandler);
+                        } else {
+                            handler.post(() -> {
+                                txtLoginPassword.setText("");
+                                loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                            });
+                            toastErrorMessage();
+                            storage.clear();
+                        }
+                    } catch (Exception e) {
+                        handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                        Log.e(TAG, e.getMessage(), e);
+                        storage.clear();
+                        loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                    } finally {
+                        hideProgressBar();
+                        handler.post(() -> {
+                            txtLoginPassword.setText("");
+                        });
+                    }
+                }).start();
+            }
+            return false;
+        });
 
         popupView.findViewById(R.id.btnCloseLogin).setOnClickListener(v -> loginPopupWindow.dismiss());
         popupView.findViewById(R.id.btnLoginOptions).setOnClickListener(v -> {
@@ -489,7 +532,10 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 new Thread(() -> {
                     boolean decryptionOk = SQRLStorage.getInstance().decryptIdentityKey(txtLoginPassword.getText().toString());
                     if(decryptionOk) {
-                        showClearNotification();
+                        boolean quickPassEncryptOk = SQRLStorage.getInstance().encryptIdentityKeyQuickPass(txtLoginPassword.getText().toString(), entropyHarvester);
+                        if(quickPassEncryptOk) {
+                            showClearNotification();
+                        }
                     } else {
                         Snackbar.make(mainView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                         hideProgressBar();
@@ -514,17 +560,18 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                                 txtLoginPassword.setText("");
                             });
                             toastErrorMessage();
+                            loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                         }
                     } catch (Exception e) {
                         handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                         Log.e(TAG, e.getMessage(), e);
+                        loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                     } finally {
                         hideProgressBar();
+                        handler.post(() -> {
+                            txtLoginPassword.setText("");
+                        });
                     }
-
-                    handler.post(() -> {
-                        txtLoginPassword.setText("");
-                    });
                 }).start();
             }
         });

@@ -279,8 +279,49 @@ public class SQRLStorage {
     }
 
 
+    public boolean decryptIdentityKeyQuickPass(String password) {
+        this.progressionUpdater.setMax(quickPassIterationCount);
+
+        password = password.substring(0, this.getHintLength());
+        
+        try {
+            byte[] key = EncryptionUtils.enSCryptIterations(password, quickPassRandomSalt, logNFactor, 32, quickPassIterationCount, this.progressionUpdater);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Key keySpec = new SecretKeySpec(key, "AES");
+                Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
+                GCMParameterSpec params = new GCMParameterSpec(128, quickPassInitializationVector);
+                cipher.init(Cipher.DECRYPT_MODE, keySpec, params);
+                cipher.update(quickPassKeyEncrypted);
+                try {
+                    quickPassKey = cipher.doFinal(quickPassVerificationTag);
+                } catch (AEADBadTagException badTag) {
+                    return false;
+                }
+            } else {
+                byte[] emptyPlainText = new byte[0];
+                this.quickPassKey = new byte[32];
+
+                Grc_aesgcm.gcm_setkey(key, key.length);
+                int res = Grc_aesgcm.gcm_auth_decrypt(
+                        quickPassInitializationVector, quickPassInitializationVector.length,
+                        emptyPlainText, emptyPlainText.length,
+                        quickPassKeyEncrypted, quickPassKey, quickPassKeyEncrypted.length,
+                        quickPassVerificationTag, quickPassVerificationTag.length
+                );
+                Grc_aesgcm.gcm_zero_ctx();
+
+                if (res == 0x55555555) return false;
+            }
+        } catch (Exception e) {
+            Log.e(SQRLStorage.TAG, e.getMessage(), e);
+            return false;
+        }
+        return true;
+    }
+
     /**
-     * Decrypt the identity key, this has the master key used to login to sites and also the lock
+     * Decrypt the identity key using quickpass, this has the master key used to login to sites and also the lock
      * key that we supply to the sites in order to unlock at a later date if the master key ever
      * gets compromised.
      *
@@ -387,8 +428,12 @@ public class SQRLStorage {
     }
 
     public byte[] getKeySeed(String domain) throws Exception {
+        byte[] masterKey = this.identityMasterKey;
+        if (this.quickPassKey != null) {
+            masterKey = this.quickPassKey;
+        }
         final Mac HMacSha256 = Mac.getInstance("HmacSHA256");
-        final SecretKeySpec key = new SecretKeySpec(this.identityMasterKey, "HmacSHA256");
+        final SecretKeySpec key = new SecretKeySpec(masterKey, "HmacSHA256");
         HMacSha256.init(key);
         return HMacSha256.doFinal(domain.getBytes());
     }
@@ -485,6 +530,7 @@ public class SQRLStorage {
     public boolean encryptIdentityKeyQuickPass(String password, EntropyHarvester entropyHarvester) {
         if(!this.hasKeys() || !this.hasEncryptedKeys()) return false;
         this.progressionUpdater.clear();
+        password = password.substring(0, this.getHintLength());
 
         this.quickPassRandomSalt = new byte[16];
         this.quickPassInitializationVector = new byte[12];
@@ -515,8 +561,6 @@ public class SQRLStorage {
                 this.quickPassVerificationTag = Arrays.copyOfRange(encryptionResult, 32, 48);
             } else {
                 byte[] emptyPlainText = new byte[0];
-                byte[] resultVerificationTag = new byte[16];
-                byte[] encryptionResult = new byte[identityMasterKey.length];
 
                 Grc_aesgcm.gcm_setkey(key, key.length);
                 int res = Grc_aesgcm.gcm_encrypt_and_tag(
