@@ -17,7 +17,7 @@ public class ClearIdentityActivity extends AppCompatActivity {
         setContentView(R.layout.activity_clear_identity);
 
         SQRLStorage storage = SQRLStorage.getInstance();
-        storage.clear();
+        storage.clearQuickPass();
 
         final ImageView imgClearIdentity = findViewById(R.id.imgClearIdentity);
         final TextView txtClearIdentity = findViewById(R.id.txtClearIdentity);
@@ -27,7 +27,7 @@ public class ClearIdentityActivity extends AppCompatActivity {
 
         imgClearIdentity.setImageDrawable(failureImage);
         txtClearIdentity.setText(getString(R.string.clear_identity_fail));
-        if(!storage.hasKeys()) {
+        if(!storage.hasQuickPass()) {
             imgClearIdentity.setImageDrawable(successImage);
             txtClearIdentity.setText(getString(R.string.clear_identity_success));
         }

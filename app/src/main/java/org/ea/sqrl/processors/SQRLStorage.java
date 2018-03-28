@@ -40,6 +40,13 @@ public class SQRLStorage {
     private int passwordBlockLength = 0;
     private static SQRLStorage instance = null;
 
+    private byte[] quickPassKey;
+    private byte[] quickPassKeyEncrypted;
+    private byte[] quickPassRandomSalt;
+    private byte[] quickPassVerificationTag;
+    private int quickPassIterationCount;
+    private byte[] quickPassInitializationVector;
+
     private boolean hasIdentityBlock = false;
     private boolean hasRescueBlock = false;
     private boolean hasPreviousBlock = false;
@@ -418,18 +425,43 @@ public class SQRLStorage {
         return false;
     }
 
-    public void clear() {
-        if(!this.hasKeys()) return;
+    public boolean hasQuickPass() {
+        return this.quickPassKeyEncrypted != null || this.quickPassKey != null;
+    }
+
+    public void clearQuickPass() {
         try {
-            clearBytes(this.identityLockKey);
-            clearBytes(this.identityMasterKey);
+            if(this.quickPassKeyEncrypted != null) {
+                clearBytes(this.quickPassKeyEncrypted);
+            }
+            if(this.quickPassKey != null) {
+                clearBytes(this.quickPassKey);
+            }
+        } finally {
+            this.quickPassKeyEncrypted = null;
+            this.quickPassKey = null;
+        }
+    }
+
+    public void clear() {
+        try {
+            if(this.identityLockKey != null) {
+                clearBytes(this.identityLockKey);
+            }
+            if(this.identityMasterKey != null) {
+                clearBytes(this.identityMasterKey);
+            }
             if(this.rescueIdentityUnlockKey != null) {
                 clearBytes(this.rescueIdentityUnlockKey);
+            }
+            if(this.quickPassKey != null) {
+                clearBytes(this.quickPassKey);
             }
         } finally {
             this.identityLockKey = null;
             this.identityMasterKey = null;
             this.rescueIdentityUnlockKey = null;
+            this.quickPassKey = null;
         }
     }
 
@@ -443,11 +475,74 @@ public class SQRLStorage {
     }
 
     /**
-     * Decrypt the identity key, this has the master key used to login to sites and also the lock
-     * key that we supply to the sites in order to unlock at a later date if the master key ever
+     * Encrypt the identity key, this has the master key used to login to sites and also the lock
+     * key that we supply to the sites in order to lock at a later date if the master key ever
      * gets compromised.
      *
-     * @param password  Password used to unlock the master key.
+     * @param password          Password used to encrypt the master key.
+     * @param entropyHarvester  Class to give us new random bits for encryption
+     */
+    public boolean encryptIdentityKeyQuickPass(String password, EntropyHarvester entropyHarvester) {
+        if(!this.hasKeys() || !this.hasEncryptedKeys()) return false;
+        this.progressionUpdater.clear();
+
+        this.quickPassRandomSalt = new byte[16];
+        this.quickPassInitializationVector = new byte[12];
+        this.quickPassKeyEncrypted = new byte[32];
+        this.quickPassVerificationTag = new byte[16];
+        this.clearQuickPass();
+
+        try {
+            entropyHarvester.fetchRandom(this.quickPassRandomSalt);
+
+            byte[] encResult = EncryptionUtils.enSCryptTime(password, this.quickPassRandomSalt, logNFactor, 32, timeInSecondsToRunPWEnScryptOnPassword, this.progressionUpdater);
+            this.quickPassIterationCount = getIntFromFourBytes(encResult, 0);
+            byte[] key = Arrays.copyOfRange(encResult, 4, 36);
+
+            entropyHarvester.fetchRandom(this.quickPassInitializationVector);
+
+            this.updateIdentityPlaintext();
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Key keySpec = new SecretKeySpec(key, "AES");
+                Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
+                GCMParameterSpec params = new GCMParameterSpec(128, this.quickPassInitializationVector);
+                cipher.init(Cipher.ENCRYPT_MODE, keySpec, params);
+                cipher.update(identityMasterKey);
+                byte[] encryptionResult = cipher.doFinal();
+
+                this.quickPassKeyEncrypted = Arrays.copyOfRange(encryptionResult, 0, 32);
+                this.quickPassVerificationTag = Arrays.copyOfRange(encryptionResult, 32, 48);
+            } else {
+                byte[] emptyPlainText = new byte[0];
+                byte[] resultVerificationTag = new byte[16];
+                byte[] encryptionResult = new byte[identityMasterKey.length];
+
+                Grc_aesgcm.gcm_setkey(key, key.length);
+                int res = Grc_aesgcm.gcm_encrypt_and_tag(
+                        this.quickPassInitializationVector, this.quickPassInitializationVector.length,
+                        emptyPlainText, emptyPlainText.length,
+                        identityMasterKey, this.quickPassKeyEncrypted, identityMasterKey.length,
+                        this.quickPassVerificationTag, this.quickPassVerificationTag.length
+                );
+                Grc_aesgcm.gcm_zero_ctx();
+
+                if (res == 0x55555555) return false;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Encrypt the identity key, this has the master key used to login to sites and also the lock
+     * key that we supply to the sites in order to lock at a later date if the master key ever
+     * gets compromised.
+     *
+     * @param password          Password used to encrypt the master key.
+     * @param entropyHarvester  Class to give us new random bits for encryption
      */
     public boolean encryptIdentityKey(String password, EntropyHarvester entropyHarvester) {
         if(!this.hasKeys()) return false;
