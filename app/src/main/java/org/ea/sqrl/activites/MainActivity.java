@@ -16,6 +16,8 @@ import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
@@ -463,53 +465,64 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         loginPopupWindow.setTouchable(true);
         final EditText txtLoginPassword = popupView.findViewById(R.id.txtDisablePassword);
-        txtLoginPassword.setOnKeyListener((view, keycode, event) -> {
-            if (!storage.hasQuickPass()) return false;
-            if (txtLoginPassword.length() >= storage.getHintLength()) {
-                loginPopupWindow.dismiss();
-                showProgressBar();
 
-                new Thread(() -> {
-                    boolean decryptionOk = storage.decryptIdentityKeyQuickPass(txtLoginPassword.getText().toString());
-                    if(!decryptionOk) {
-                        Snackbar.make(mainView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
-                        hideProgressBar();
-                        handler.post(() ->
-                            loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
-                        );
-                        storage.clear();
-                        return;
-                    }
+        txtLoginPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence password, int start, int count, int after) {
+            }
 
-                    try {
-                        postQuery(commHandler);
-                        if(
-                            commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                            commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
-                        ) {
-                            postLogin(commHandler);
-                        } else {
+            @Override
+            public void onTextChanged(CharSequence password, int start, int before, int count) {
+                if (!storage.hasQuickPass()) return;
+                if ((start + count) >= storage.getHintLength()) {
+                    loginPopupWindow.dismiss();
+                    showProgressBar();
+
+                    new Thread(() -> {
+                        boolean decryptionOk = storage.decryptIdentityKeyQuickPass(password.toString());
+                        if(!decryptionOk) {
+                            Snackbar.make(mainView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                            hideProgressBar();
+                            handler.post(() ->
+                                    loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
+                            );
+                            storage.clear();
+                            return;
+                        }
+
+                        try {
+                            postQuery(commHandler);
+                            if(
+                                    commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
+                                            commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
+                                    ) {
+                                postLogin(commHandler);
+                            } else {
+                                handler.post(() -> {
+                                    txtLoginPassword.setText("");
+                                    loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                                });
+                                toastErrorMessage();
+                                storage.clear();
+                            }
+                        } catch (Exception e) {
+                            handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                            Log.e(TAG, e.getMessage(), e);
+                            storage.clear();
+                            loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                        } finally {
+                            hideProgressBar();
                             handler.post(() -> {
                                 txtLoginPassword.setText("");
-                                loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                             });
-                            toastErrorMessage();
-                            storage.clear();
                         }
-                    } catch (Exception e) {
-                        handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
-                        Log.e(TAG, e.getMessage(), e);
-                        storage.clear();
-                        loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                    } finally {
-                        hideProgressBar();
-                        handler.post(() -> {
-                            txtLoginPassword.setText("");
-                        });
-                    }
-                }).start();
+                    }).start();
+                }
             }
-            return false;
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         popupView.findViewById(R.id.btnCloseLogin).setOnClickListener(v -> loginPopupWindow.dismiss());
@@ -539,6 +552,9 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     } else {
                         Snackbar.make(mainView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                         hideProgressBar();
+                        handler.post(() -> {
+                            txtLoginPassword.setText("");
+                        });
                         return;
                     }
 

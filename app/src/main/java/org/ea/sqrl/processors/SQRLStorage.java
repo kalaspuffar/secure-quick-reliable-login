@@ -283,7 +283,7 @@ public class SQRLStorage {
         this.progressionUpdater.setMax(quickPassIterationCount);
 
         password = password.substring(0, this.getHintLength());
-        
+
         try {
             byte[] key = EncryptionUtils.enSCryptIterations(password, quickPassRandomSalt, logNFactor, 32, quickPassIterationCount, this.progressionUpdater);
 
