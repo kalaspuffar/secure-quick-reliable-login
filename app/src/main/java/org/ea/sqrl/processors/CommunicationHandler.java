@@ -8,10 +8,10 @@ import org.ea.sqrl.utils.EncryptionUtils;
 import org.libsodium.jni.Sodium;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
@@ -30,7 +30,8 @@ public class CommunicationHandler {
     private static final String TAG = "CommunicationHandler";
 
     private static CommunicationHandler instance = null;
-    private String domain;
+    private String communicationDomain;
+    private String cryptDomain;
     private Map<String, String> lastResponse = new HashMap<>();
     private String response;
 
@@ -53,8 +54,24 @@ public class CommunicationHandler {
         return instance;
     }
 
-    public void setDomain(String domain) {
-        this.domain = domain;
+    public void setDomain(String domain) throws Exception {
+        this.communicationDomain = domain;
+        int atSignIndex = domain.indexOf("@");
+        int portColon = domain.indexOf(":");
+        if (atSignIndex != -1) {
+            domain = domain.substring(atSignIndex + 1);
+        }
+        if (portColon != -1) {
+            domain = domain.substring(0, portColon);
+        }
+        Log.e(TAG, "Domain: " + domain);
+
+        atSignIndex = domain.indexOf("@");
+        portColon = domain.indexOf(":");
+        if (atSignIndex != -1 || portColon != -1) {
+            throw new Exception("Incorrect cryptDomain " + domain);
+        }
+        this.cryptDomain = domain;
     }
 
     public String createClientQuery() throws Exception {
@@ -62,7 +79,7 @@ public class CommunicationHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=query\r\n");
-        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(domain)));
+        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         return sb.toString();
     }
 
@@ -71,7 +88,7 @@ public class CommunicationHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=disable\r\n");
-        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(domain)));
+        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         return sb.toString();
     }
 
@@ -80,7 +97,7 @@ public class CommunicationHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=enable\r\n");
-        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(domain)));
+        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         return sb.toString();
     }
 
@@ -89,7 +106,7 @@ public class CommunicationHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=remove\r\n");
-        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(domain)));
+        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         return sb.toString();
     }
 
@@ -100,7 +117,7 @@ public class CommunicationHandler {
         sb.append("ver=1\r\n");
         sb.append("cmd=ident\r\n");
         sb.append(storage.getServerUnlockKey(entropyHarvester));
-        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(domain)));
+        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         return sb.toString();
     }
 
@@ -109,7 +126,7 @@ public class CommunicationHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=ident\r\n");
-        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(domain)));
+        sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         return sb.toString();
     }
 
@@ -151,7 +168,7 @@ public class CommunicationHandler {
                 signed_message_len,
                 message,
                 message.length,
-                storage.getPrivateKey(domain)
+                storage.getPrivateKey(cryptDomain)
         );
         sb.append("&ids=");
         sb.append(EncryptionUtils.encodeUrlSafe(Arrays.copyOfRange(signed_message, 0, Sodium.crypto_sign_bytes())));
@@ -162,36 +179,57 @@ public class CommunicationHandler {
     public void postRequest(String link, String data) throws Exception {
         StringBuilder result = new StringBuilder();
 
-        String httpsURL = "https://" + domain + link;
+        String httpsURL = "https://" + communicationDomain + link;
 
-        URL myurl = new URL(httpsURL);
-        HttpsURLConnection con = (HttpsURLConnection) myurl.openConnection();
-        con.setRequestMethod("POST");
+        HttpsURLConnection con = null;
+        DataOutputStream output = null;
+        DataInputStream input = null;
 
-        con.setRequestProperty("Content-Length", String.valueOf(data.length()));
-        con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        con.setDoOutput(true);
-        con.setDoInput(true);
 
-        DataOutputStream output = new DataOutputStream(con.getOutputStream());
-        output.writeBytes(data);
-        output.close();
+        try {
+            URL myurl = new URL(httpsURL);
+            con = (HttpsURLConnection) myurl.openConnection();
+            con.setRequestMethod("POST");
 
-        DataInputStream input = new DataInputStream(con.getInputStream());
+            con.setRequestProperty("Content-Length", String.valueOf(data.length()));
+            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            con.setDoOutput(true);
+            con.setDoInput(true);
 
-        String newLine = System.getProperty("line.separator");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-        String line;
-        boolean flag = false;
-        while ((line = reader.readLine()) != null) {
-            result.append(flag ? newLine : "").append(line);
-            flag = true;
+            output = new DataOutputStream(con.getOutputStream());
+            output.writeBytes(data);
+            output.close();
+
+            Log.d(TAG, "Resp Code:" + con.getResponseCode());
+
+            input = new DataInputStream(con.getInputStream());
+
+            String newLine = System.getProperty("line.separator");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+            String line;
+            boolean flag = false;
+            while ((line = reader.readLine()) != null) {
+                result.append(flag ? newLine : "").append(line);
+                flag = true;
+            }
+            input.close();
+
+            setResponseData(result.toString());
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            closeQuietly(output);
+            closeQuietly(input);
+            con.disconnect();
         }
-        input.close();
+    }
 
-        //Log.d(TAG, "Resp Code:" + con.getResponseCode());
-
-        setResponseData(result.toString());
+    private void closeQuietly(Closeable c) {
+        try {
+            if(c != null) {
+                c.close();
+            }
+        } catch (IOException ioe) {}
     }
 
     public static void debugPostData(String data) throws Exception{

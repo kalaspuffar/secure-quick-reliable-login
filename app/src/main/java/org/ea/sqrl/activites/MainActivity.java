@@ -1,7 +1,6 @@
 package org.ea.sqrl.activites;
 
 import android.app.AlertDialog;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -506,10 +505,12 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                                 storage.clear();
                             }
                         } catch (Exception e) {
-                            handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                             Log.e(TAG, e.getMessage(), e);
                             storage.clear();
-                            loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                            handler.post(() -> {
+                                Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                                loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                            });
                         } finally {
                             hideProgressBar();
                             handler.post(() -> {
@@ -579,9 +580,11 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                             loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                         }
                     } catch (Exception e) {
-                        handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                        handler.post(() -> {
+                            Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                            loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                        });
                         Log.e(TAG, e.getMessage(), e);
-                        loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                     } finally {
                         hideProgressBar();
                         handler.post(() -> {
@@ -659,6 +662,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 shareIntent.setType("application/octet-stream");
                 startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.save_identity_to)));
             } catch (Exception e) {
+                handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                 Log.e(TAG, e.getMessage(), e);
             }
         });
@@ -936,6 +940,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     }
                     storage.clear();
                 } catch (Exception e) {
+                    handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                     Log.e(TAG, e.getMessage(), e);
                 }
 
@@ -1109,12 +1114,14 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         editor.commit();
 
         SQRLStorage storage = SQRLStorage.getInstance();
+        storage.clearQuickPass();
         try {
             byte[] identityData = mDbHelper.getIdentityData(keyArray[pos]);
             storage.read(identityData);
             btnUseIdentity.setEnabled(storage.hasIdentityBlock());
 
         } catch (Exception e) {
+            handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
             Log.e(TAG, e.getMessage(), e);
         }
     }
@@ -1165,10 +1172,19 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             } else {
                 if(!importIdentity) {
                     serverData = EncryptionUtils.readSQRLQRCodeAsString(result.getRawBytes());
+
+                    Log.e(TAG, serverData);
+
                     int indexOfQuery = serverData.indexOf("/", serverData.indexOf("://") + 3);
                     queryLink = serverData.substring(indexOfQuery);
                     final String domain = serverData.split("/")[2];
-                    commHandler.setDomain(domain);
+                    try {
+                        commHandler.setDomain(domain);
+                    } catch (Exception e) {
+                        handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                        Log.e(TAG, e.getMessage(), e);
+                        return;
+                    }
 
                     handler.postDelayed(() -> {
                         final TextView txtSite = loginPopupWindow.getContentView().findViewById(R.id.txtSite);
@@ -1196,6 +1212,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                             decryptPopupWindow.showAtLocation(decryptPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                         }, 100);
                     } catch (Exception e) {
+                        handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                         Log.e(TAG, e.getMessage(), e);
                         return;
                     }
