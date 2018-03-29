@@ -13,6 +13,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ public class CommunicationHandler {
     private String cryptDomain;
     private Map<String, String> lastResponse = new HashMap<>();
     private String response;
+    private boolean useSSL;
 
     public static final int TIF_CURRENT_ID_MATCH = 0;
     public static final int TIF_PREVIOUS_ID_MATCH = 1;
@@ -52,6 +54,10 @@ public class CommunicationHandler {
             instance = new CommunicationHandler();
         }
         return instance;
+    }
+
+    public void setUseSSL(boolean useSSL) {
+        this.useSSL = useSSL;
     }
 
     public void setDomain(String domain) throws Exception {
@@ -179,16 +185,14 @@ public class CommunicationHandler {
     public void postRequest(String link, String data) throws Exception {
         StringBuilder result = new StringBuilder();
 
-        String httpsURL = "https://" + communicationDomain + link;
+        String loginURL = (useSSL ? "https://" : "http://") + communicationDomain + link;
 
-        HttpsURLConnection con = null;
+        HttpURLConnection con = null;
         DataOutputStream output = null;
         DataInputStream input = null;
-
-
         try {
-            URL myurl = new URL(httpsURL);
-            con = (HttpsURLConnection) myurl.openConnection();
+            URL myurl = new URL(loginURL);
+            con = (HttpURLConnection) myurl.openConnection();
             con.setRequestMethod("POST");
 
             con.setRequestProperty("Content-Length", String.valueOf(data.length()));

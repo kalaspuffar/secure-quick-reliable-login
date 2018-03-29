@@ -1172,8 +1172,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             } else {
                 if(!importIdentity) {
                     serverData = EncryptionUtils.readSQRLQRCodeAsString(result.getRawBytes());
-
-                    Log.e(TAG, serverData);
+                    commHandler.setUseSSL(serverData.startsWith("sqrl://"));
 
                     int indexOfQuery = serverData.indexOf("/", serverData.indexOf("://") + 3);
                     queryLink = serverData.substring(indexOfQuery);
