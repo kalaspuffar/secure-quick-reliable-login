@@ -1,8 +1,12 @@
 package org.ea.sqrl.processors;
 
+import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
+import org.ea.sqrl.activites.BaseActivity;
 import org.ea.sqrl.jni.Grc_aesgcm;
 import org.ea.sqrl.utils.EncryptionUtils;
 import org.libsodium.jni.NaCl;
@@ -474,7 +478,7 @@ public class SQRLStorage {
         return this.quickPassKeyEncrypted != null || this.quickPassKey != null;
     }
 
-    public void clearQuickPass() {
+    public void clearQuickPass(Activity activity) {
         try {
             if(this.quickPassKeyEncrypted != null) {
                 clearBytes(this.quickPassKeyEncrypted);
@@ -486,6 +490,10 @@ public class SQRLStorage {
             this.quickPassKeyEncrypted = null;
             this.quickPassKey = null;
         }
+
+        NotificationManager notificationManager =
+                (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(BaseActivity.NOTIFICATION_IDENTITY_UNLOCKED);
     }
 
     public void clear() {
@@ -536,7 +544,6 @@ public class SQRLStorage {
         this.quickPassInitializationVector = new byte[12];
         this.quickPassKeyEncrypted = new byte[32];
         this.quickPassVerificationTag = new byte[16];
-        this.clearQuickPass();
 
         try {
             entropyHarvester.fetchRandom(this.quickPassRandomSalt);
@@ -562,6 +569,8 @@ public class SQRLStorage {
             } else {
                 byte[] emptyPlainText = new byte[0];
 
+                System.out.println(EncryptionUtils.byte2hex(identityMasterKey));
+
                 Grc_aesgcm.gcm_setkey(key, key.length);
                 int res = Grc_aesgcm.gcm_encrypt_and_tag(
                         this.quickPassInitializationVector, this.quickPassInitializationVector.length,
@@ -570,6 +579,8 @@ public class SQRLStorage {
                         this.quickPassVerificationTag, this.quickPassVerificationTag.length
                 );
                 Grc_aesgcm.gcm_zero_ctx();
+
+                System.out.println(EncryptionUtils.byte2hex(identityMasterKey));
 
                 if (res == 0x55555555) return false;
             }

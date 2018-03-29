@@ -99,7 +99,7 @@ public class SettingsActivity extends BaseActivity {
         popupView.findViewById(R.id.btnCloseSaveSettings).setOnClickListener(v -> savePopupWindow.dismiss());
         final Button btnSaveSettings = popupView.findViewById(R.id.btnSaveSettings);
         btnSaveSettings.setOnClickListener(v -> new Thread(() -> {
-            storage.clearQuickPass();
+            storage.clearQuickPass(this);
             boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString());
             if(!decryptStatus) {
                 handler.post(() -> {

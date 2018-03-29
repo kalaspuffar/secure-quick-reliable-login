@@ -17,7 +17,7 @@ public class ClearIdentityActivity extends AppCompatActivity {
         setContentView(R.layout.activity_clear_identity);
 
         SQRLStorage storage = SQRLStorage.getInstance();
-        storage.clearQuickPass();
+        storage.clearQuickPass(this);
 
         final ImageView imgClearIdentity = findViewById(R.id.imgClearIdentity);
         final TextView txtClearIdentity = findViewById(R.id.txtClearIdentity);

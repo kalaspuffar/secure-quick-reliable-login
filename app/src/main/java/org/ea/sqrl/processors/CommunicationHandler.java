@@ -78,13 +78,18 @@ public class CommunicationHandler {
             throw new Exception("Incorrect cryptDomain " + domain);
         }
         this.cryptDomain = domain;
+
+        System.out.println(this.cryptDomain);
     }
 
-    public String createClientQuery() throws Exception {
+    public String createClientQuery(boolean noiptest) throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=query\r\n");
+        if(noiptest) {
+            sb.append("opt=noiptest\r\n");
+        }
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         return sb.toString();
     }
@@ -347,7 +352,7 @@ public class CommunicationHandler {
             String queryLink = sqrlLink.substring(indexOfQuery);
 
             commHandler.setDomain(domain);
-            String postData = commHandler.createPostParams(commHandler.createClientQuery(), sqrlLink);
+            String postData = commHandler.createPostParams(commHandler.createClientQuery(true), sqrlLink);
             commHandler.postRequest(queryLink, postData);
 
             String serverData = commHandler.getResponse();

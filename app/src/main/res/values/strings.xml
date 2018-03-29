@@ -52,11 +52,11 @@
     <string name="current_identity_title">Current identity</string>
     <string name="import_password_title">Please enter password to import</string>
     <string name="button_start_import">Scan a new identity</string>
-    <string name="title_activity_clear_identity">SQRL - Clear unlocked identity</string>
-    <string name="notification_identity_unlocked_desc">To be secure it should be removed after use.\n Click here to clear your identity from memory.</string>
-    <string name="notification_identity_unlocked">Identity unlocked</string>
-    <string name="clear_identity_fail">Identity was not cleared</string>
-    <string name="clear_identity_success">Identity is cleared</string>
+    <string name="title_activity_clear_identity">SQRL - Clear quick pass</string>
+    <string name="notification_identity_unlocked_desc">To be secure it quick pass should be removed after use.\n Click here to clear it from memory.</string>
+    <string name="notification_identity_unlocked">Quick pass active</string>
+    <string name="clear_identity_fail">Quick pass is still in memory, unable to be removed</string>
+    <string name="clear_identity_success">Quick pass removed</string>
     <string name="decrypt_identity_fail">Decrypting identity failed, please try with another password.</string>
     <string name="encrypt_identity_fail">Encryption of your newly imported identity failed, please try again</string>
     <string name="notification_identity_unlocked_title">Your identity is unlocked in your device memory.</string>

@@ -264,7 +264,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     }
 
     private void postQuery(CommunicationHandler commHandler) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientQuery(), serverData);
+        String postData = commHandler.createPostParams(commHandler.createClientQuery(true), serverData);
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
@@ -486,6 +486,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                                     loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
                             );
                             storage.clear();
+                            storage.clearQuickPass(MainActivity.this);
                             return;
                         }
 
@@ -544,9 +545,10 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 showProgressBar();
 
                 new Thread(() -> {
-                    boolean decryptionOk = SQRLStorage.getInstance().decryptIdentityKey(txtLoginPassword.getText().toString());
+                    boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString());
                     if(decryptionOk) {
-                        boolean quickPassEncryptOk = SQRLStorage.getInstance().encryptIdentityKeyQuickPass(txtLoginPassword.getText().toString(), entropyHarvester);
+                        storage.clearQuickPass(this);
+                        boolean quickPassEncryptOk = storage.encryptIdentityKeyQuickPass(txtLoginPassword.getText().toString(), entropyHarvester);
                         if(quickPassEncryptOk) {
                             showClearNotification();
                         }
@@ -1114,7 +1116,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         editor.commit();
 
         SQRLStorage storage = SQRLStorage.getInstance();
-        storage.clearQuickPass();
+        storage.clearQuickPass(this);
         try {
             byte[] identityData = mDbHelper.getIdentityData(keyArray[pos]);
             storage.read(identityData);

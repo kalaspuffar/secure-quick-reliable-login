@@ -10,23 +10,13 @@ android {
         versionCode 15
         versionName "0.3.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        multiDexEnabled true
-
-        externalNativeBuild {
-            cmake {
-                arguments '-DBUILD_TESTING=OFF', '-DANDROID_TOOLCHAIN=gcc'
-                cFlags "-DHAVE_CONFIG_H"
-                cppFlags "-std=c++14 -fexceptions -frtti"
-
-            }
-        }
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     externalNativeBuild {
         cmake {
             path 'CMakeLists.txt'
