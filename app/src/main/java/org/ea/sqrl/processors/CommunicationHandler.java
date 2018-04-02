@@ -85,9 +85,7 @@ public class CommunicationHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=query\r\n");
-        if(noiptest) {
-            sb.append("opt=noiptest\r\n");
-        }
+        sb.append(storage.getOptions(noiptest, false));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         return sb.toString();
     }
@@ -97,6 +95,7 @@ public class CommunicationHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=disable\r\n");
+        sb.append(storage.getOptions(false, false));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         return sb.toString();
     }
@@ -106,6 +105,7 @@ public class CommunicationHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=enable\r\n");
+        sb.append(storage.getOptions(false, false));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         return sb.toString();
     }
@@ -115,6 +115,7 @@ public class CommunicationHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=remove\r\n");
+        sb.append(storage.getOptions(false, false));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         return sb.toString();
     }
@@ -125,6 +126,7 @@ public class CommunicationHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=ident\r\n");
+        sb.append(storage.getOptions(false, false));
         sb.append(storage.getServerUnlockKey(entropyHarvester));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         return sb.toString();
@@ -135,6 +137,7 @@ public class CommunicationHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=ident\r\n");
+        sb.append(storage.getOptions(false, false));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         return sb.toString();
     }

@@ -16,7 +16,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.security.Key;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import javax.crypto.AEADBadTagException;
@@ -668,6 +670,37 @@ public class SQRLStorage {
             return false;
         }
         return true;
+    }
+
+    public String getOptions(boolean noiptest, boolean suk) {
+        List<String> options = new ArrayList<>();
+        if(isNoByPass()) {
+            options.add("hardlock");
+        }
+        if(isSQRLOnly()) {
+            options.add("sqrlonly");
+        }
+        if(noiptest) {
+            options.add("noiptest");
+        }
+        if(suk) {
+            options.add("suk");
+        }
+
+        StringBuilder sb = new StringBuilder();
+        if(options.size() > 0) {
+            sb.append("opt=");
+            boolean first = true;
+            for (String s : options) {
+                if (!first) {
+                    sb.append("~");
+                }
+                sb.append(s);
+                first = false;
+            }
+            sb.append("\r\n");
+        }
+        return sb.toString();
     }
 
     private void updateIdentityPlaintext() {

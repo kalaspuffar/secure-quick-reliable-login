@@ -42,9 +42,7 @@ public class SettingsActivity extends BaseActivity {
 
         root = findViewById(R.id.settingsActivityView);
 
-        LayoutInflater layoutInflater = (LayoutInflater)getBaseContext()
-                .getSystemService(LAYOUT_INFLATER_SERVICE);
-        setupSavePopupWindow(layoutInflater);
+        setupSavePopupWindow(getLayoutInflater());
 
         SQRLStorage storage = SQRLStorage.getInstance();
 
@@ -148,6 +146,7 @@ public class SettingsActivity extends BaseActivity {
             handler.post(() -> {
                 txtPassword.setText("");
                 savePopupWindow.dismiss();
+                SettingsActivity.this.finish();
             });
 
         }).start());
