@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.util.Log;
 
 import org.ea.sqrl.R;
-import org.ea.sqrl.activites.LoginBaseActivity;
 import org.ea.sqrl.utils.EncryptionUtils;
 import org.libsodium.jni.Sodium;
 
@@ -19,8 +18,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.net.ssl.HttpsURLConnection;
 
 /**
  * This handler creates different queries to servers and parses the response so we can talk over
@@ -87,6 +84,9 @@ public class CommunicationHandler {
         sb.append("cmd=query\r\n");
         sb.append(storage.getOptions(noiptest, false));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
+        if(storage.hasPreviousKeys()) {
+            sb.append("\r\npidk=" + EncryptionUtils.encodeUrlSafe(storage.getPreviousPublicKey(cryptDomain)));
+        }
         return sb.toString();
     }
 
@@ -129,6 +129,9 @@ public class CommunicationHandler {
         sb.append(storage.getOptions(false, false));
         sb.append(storage.getServerUnlockKey(entropyHarvester));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
+        if(storage.hasPreviousKeys()) {
+            sb.append("\r\npidk=" + EncryptionUtils.encodeUrlSafe(storage.getPreviousPublicKey(cryptDomain)));
+        }
         return sb.toString();
     }
 
@@ -139,6 +142,9 @@ public class CommunicationHandler {
         sb.append("cmd=ident\r\n");
         sb.append(storage.getOptions(false, false));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
+        if(storage.hasPreviousKeys()) {
+            sb.append("\r\npidk=" + EncryptionUtils.encodeUrlSafe(storage.getPreviousPublicKey(cryptDomain)));
+        }
         return sb.toString();
     }
 
@@ -163,6 +169,28 @@ public class CommunicationHandler {
         byte[] signed_message = new byte[Sodium.crypto_sign_bytes() + message.length];
         int[] signed_message_len = new int[1];
 
+        Sodium.crypto_sign(
+                signed_message,
+                signed_message_len,
+                message,
+                message.length,
+                storage.getPrivateKey(cryptDomain)
+        );
+        sb.append("&ids=");
+        sb.append(EncryptionUtils.encodeUrlSafe(Arrays.copyOfRange(signed_message, 0, Sodium.crypto_sign_bytes())));
+
+        if(storage.hasPreviousKeys()) {
+            Sodium.crypto_sign(
+                    signed_message,
+                    signed_message_len,
+                    message,
+                    message.length,
+                    storage.getPreviousPrivateKey(cryptDomain)
+            );
+            sb.append("&pids=");
+            sb.append(EncryptionUtils.encodeUrlSafe(Arrays.copyOfRange(signed_message, 0, Sodium.crypto_sign_bytes())));
+        }
+
         if(unlockServerKey) {
             Sodium.crypto_sign(
                     signed_message,
@@ -174,17 +202,6 @@ public class CommunicationHandler {
             sb.append("&urs=");
             sb.append(EncryptionUtils.encodeUrlSafe(Arrays.copyOfRange(signed_message, 0, Sodium.crypto_sign_bytes())));
         }
-
-        Sodium.crypto_sign(
-                signed_message,
-                signed_message_len,
-                message,
-                message.length,
-                storage.getPrivateKey(cryptDomain)
-        );
-        sb.append("&ids=");
-        sb.append(EncryptionUtils.encodeUrlSafe(Arrays.copyOfRange(signed_message, 0, Sodium.crypto_sign_bytes())));
-
         return sb.toString();
     }
 

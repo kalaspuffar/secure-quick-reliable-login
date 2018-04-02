@@ -12,6 +12,8 @@ import org.ea.sqrl.utils.EncryptionUtils;
 import org.libsodium.jni.NaCl;
 import org.libsodium.jni.Sodium;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.security.Key;
@@ -179,6 +181,10 @@ public class SQRLStorage {
 
     private byte[] previousPlaintext;
     private int previousCountOfKeys = 0;
+    private byte[] previousKey1Encrypted;
+    private byte[] previousKey2Encrypted;
+    private byte[] previousKey3Encrypted;
+    private byte[] previousKey4Encrypted;
     private byte[] previousKey1;
     private byte[] previousKey2;
     private byte[] previousKey3;
@@ -190,17 +196,17 @@ public class SQRLStorage {
         previousCountOfKeys = getIntFromTwoBytes(input, 4);
 
         int lastKeyEnd = 6 + 32;
-        previousKey1 = Arrays.copyOfRange(input, 6, lastKeyEnd);
+        previousKey1Encrypted = Arrays.copyOfRange(input, 6, lastKeyEnd);
         if(previousCountOfKeys > 1) {
-            previousKey2 = Arrays.copyOfRange(input, lastKeyEnd, lastKeyEnd + 32);
+            previousKey2Encrypted = Arrays.copyOfRange(input, lastKeyEnd, lastKeyEnd + 32);
             lastKeyEnd += 32;
         }
         if(previousCountOfKeys > 2) {
-            previousKey3 = Arrays.copyOfRange(input, lastKeyEnd, lastKeyEnd + 32);
+            previousKey3Encrypted = Arrays.copyOfRange(input, lastKeyEnd, lastKeyEnd + 32);
             lastKeyEnd += 32;
         }
         if(previousCountOfKeys > 3) {
-            previousKey4 = Arrays.copyOfRange(input, lastKeyEnd, lastKeyEnd + 32);
+            previousKey4Encrypted = Arrays.copyOfRange(input, lastKeyEnd, lastKeyEnd + 32);
             lastKeyEnd += 32;
         }
         previousVerificationTag = Arrays.copyOfRange(input, lastKeyEnd, lastKeyEnd + 16);
@@ -218,7 +224,7 @@ public class SQRLStorage {
                 handleRecoveryBlock(input);
                 break;
             case PREVIOUS_IDENTITY_KEYS:
-                //handlePreviousIdentityBlock(input);
+                handlePreviousIdentityBlock(input);
                 break;
             default:
                 throw new Exception("Unknown type "+type);
@@ -259,6 +265,20 @@ public class SQRLStorage {
 
         this.previousPlaintext = null;
         this.previousCountOfKeys = 0;
+        this.previousKey1Encrypted = null;
+        this.previousKey2Encrypted = null;
+        this.previousKey3Encrypted = null;
+        this.previousKey4Encrypted = null;
+
+        if(this.previousKey1 != null)
+            clearBytes(this.previousKey1);
+        if(this.previousKey2 != null)
+            clearBytes(this.previousKey2);
+        if(this.previousKey3 != null)
+            clearBytes(this.previousKey3);
+        if(this.previousKey4 != null)
+            clearBytes(this.previousKey4);
+
         this.previousKey1 = null;
         this.previousKey2 = null;
         this.previousKey3 = null;
@@ -367,8 +387,72 @@ public class SQRLStorage {
 
             identityMasterKey = Arrays.copyOfRange(decryptionResult, 0, 32);
             identityLockKey = Arrays.copyOfRange(decryptionResult, 32, 64);
+
+            if(hasPreviousBlock) {
+                return decryptPreviousBlock();
+            }
         } catch (Exception e) {
             Log.e(SQRLStorage.TAG, e.getMessage(), e);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean decryptPreviousBlock() {
+        try {
+            byte[] identityKeys = previousKey1Encrypted;
+            if(previousCountOfKeys > 1) {
+                identityKeys = EncryptionUtils.combine(identityKeys, previousKey2Encrypted);
+            }
+            if(previousCountOfKeys > 2) {
+                identityKeys = EncryptionUtils.combine(identityKeys, previousKey3Encrypted);
+            }
+            if(previousCountOfKeys > 3) {
+                identityKeys = EncryptionUtils.combine(identityKeys, previousKey4Encrypted);
+            }
+
+            byte[] decryptionResult = new byte[identityKeys.length];
+
+            byte[] nullBytes = new byte[12];
+            Arrays.fill(nullBytes, (byte)0);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Key keySpec = new SecretKeySpec(this.identityMasterKey, "AES");
+                Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
+                GCMParameterSpec params = new GCMParameterSpec(128, nullBytes);
+                cipher.init(Cipher.DECRYPT_MODE, keySpec, params);
+                cipher.updateAAD(previousPlaintext);
+                cipher.update(identityKeys);
+                try {
+                    decryptionResult = cipher.doFinal(previousVerificationTag);
+                } catch (AEADBadTagException badTag) {
+                    return false;
+                }
+            } else {
+                Grc_aesgcm.gcm_setkey(this.identityMasterKey, identityMasterKey.length);
+                int res = Grc_aesgcm.gcm_auth_decrypt(
+                        nullBytes, nullBytes.length,
+                        previousPlaintext, previousPlaintext.length,
+                        identityKeys, decryptionResult, identityKeys.length,
+                        previousVerificationTag, previousVerificationTag.length
+                );
+                Grc_aesgcm.gcm_zero_ctx();
+
+                if (res == 0x55555555) return false;
+            }
+
+            previousKey1 = Arrays.copyOfRange(decryptionResult, 0, 32);
+            if(previousCountOfKeys > 1) {
+                previousKey2 = Arrays.copyOfRange(decryptionResult, 32, 64);
+            }
+            if(previousCountOfKeys > 2) {
+                previousKey3 = Arrays.copyOfRange(decryptionResult, 64, 96);
+            }
+            if(previousCountOfKeys > 3) {
+                previousKey4 = Arrays.copyOfRange(decryptionResult, 96, 128);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
             return false;
         }
         return true;
@@ -458,6 +542,34 @@ public class SQRLStorage {
 
         Sodium.crypto_sign_seed_keypair(publicKey, privateKey, getKeySeed(domain));
         return publicKey;
+    }
+
+    public byte[] getPreviousKeySeed(String domain) throws Exception {
+        byte[] masterKey = this.previousKey1;
+        final Mac HMacSha256 = Mac.getInstance("HmacSHA256");
+        final SecretKeySpec key = new SecretKeySpec(masterKey, "HmacSHA256");
+        HMacSha256.init(key);
+        return HMacSha256.doFinal(domain.getBytes());
+    }
+
+    public byte[] getPreviousPublicKey(String domain) throws Exception {
+        byte[] publicKey = new byte[32];
+        byte[] privateKey = new byte[64];
+
+        Sodium.crypto_sign_seed_keypair(publicKey, privateKey, getPreviousKeySeed(domain));
+        return publicKey;
+    }
+
+    public boolean hasPreviousKeys() {
+        return hasPreviousBlock;
+    }
+
+    public byte[] getPreviousPrivateKey(String domain) throws Exception {
+        byte[] publicKey = new byte[32];
+        byte[] privateKey = new byte[64];
+
+        Sodium.crypto_sign_seed_keypair(publicKey, privateKey, getPreviousKeySeed(domain));
+        return privateKey;
     }
 
 
@@ -570,9 +682,6 @@ public class SQRLStorage {
                 this.quickPassVerificationTag = Arrays.copyOfRange(encryptionResult, 32, 48);
             } else {
                 byte[] emptyPlainText = new byte[0];
-
-                System.out.println(EncryptionUtils.byte2hex(identityMasterKey));
-
                 Grc_aesgcm.gcm_setkey(key, key.length);
                 int res = Grc_aesgcm.gcm_encrypt_and_tag(
                         this.quickPassInitializationVector, this.quickPassInitializationVector.length,
@@ -581,9 +690,6 @@ public class SQRLStorage {
                         this.quickPassVerificationTag, this.quickPassVerificationTag.length
                 );
                 Grc_aesgcm.gcm_zero_ctx();
-
-                System.out.println(EncryptionUtils.byte2hex(identityMasterKey));
-
                 if (res == 0x55555555) return false;
             }
         } catch (Exception e) {
@@ -750,8 +856,6 @@ public class SQRLStorage {
     private void updatePreviousPlaintext() {
         if(!hasPreviousBlock) return;
 
-        System.out.println("PREV?");
-
         if (previousCountOfKeys > 0) {
             byte[] newPlaintext = getIntToTwoBytes(PREVIOUS_IDENTITY_KEYS);
             newPlaintext = EncryptionUtils.combine(newPlaintext, getIntToTwoBytes(previousCountOfKeys));
@@ -759,9 +863,10 @@ public class SQRLStorage {
                 this.getIntToTwoBytes(
                     BLOCK_LENGTH_SIZE +
                     newPlaintext.length +
-                    previousKey1.length * previousCountOfKeys
+                    previousKey1Encrypted.length * previousCountOfKeys +
+                    previousVerificationTag.length
                 ), newPlaintext);
-            rescuePlaintext = newPlaintext;
+            previousPlaintext = newPlaintext;
         }
     }
 
@@ -786,15 +891,15 @@ public class SQRLStorage {
 
         if (hasPreviousBlock && previousCountOfKeys > 0) {
             result = EncryptionUtils.combine(result, previousPlaintext);
-            result = EncryptionUtils.combine(result, previousKey1);
+            result = EncryptionUtils.combine(result, previousKey1Encrypted);
             if (previousCountOfKeys > 1) {
-                result = EncryptionUtils.combine(result, previousKey2);
+                result = EncryptionUtils.combine(result, previousKey2Encrypted);
             }
             if (previousCountOfKeys > 2) {
-                result = EncryptionUtils.combine(result, previousKey3);
+                result = EncryptionUtils.combine(result, previousKey3Encrypted);
             }
             if (previousCountOfKeys > 3) {
-                result = EncryptionUtils.combine(result, previousKey4);
+                result = EncryptionUtils.combine(result, previousKey4Encrypted);
             }
             result = EncryptionUtils.combine(result, previousVerificationTag);
         }
@@ -923,6 +1028,7 @@ public class SQRLStorage {
 
     public static void main(String[] args) {
         try {
+/*
             //String rawQRCodeData = "71a48c7371726c3a2f2f7371";
             String rawQRCodeData = "4ce7371726c646174617d0001002d0031d32536a67c4661faef7631d4a7854da64297af4bda01438eca39a40921000000f10104010f0085de0eea7b76134eee4e0b2d638955ad5fd253d857c86177151d30a956182abc55b80316da5c22fcc9b92c4f5a4850f5a4ecb6b948f05b297de13b1a7698cbee461c5e7ef0f8759e659a7ad853555be64900020079d1d5da2d4b046212f43da2f7b0a39709ca000000d5dd50893d516c8175291f7d905b5bf5636d26fee5d3f8801375f7824b09a2a824de7fc41451ca13e610d5591d568db60ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11";
             byte[] bytesArray = EncryptionUtils.readSQRLQRCode(EncryptionUtils.hex2Byte(rawQRCodeData));
@@ -930,6 +1036,7 @@ public class SQRLStorage {
             SQRLStorage storage = SQRLStorage.getInstance();
             storage.setProgressionUpdater(new ProgressionUpdater());
             storage.read(bytesArray);
+*/
 /*
             boolean ok = storage.decryptIdentityKey("Testing1234");
             System.out.println(ok);
@@ -945,14 +1052,23 @@ public class SQRLStorage {
             System.out.println(Arrays.equals(bytesArray, saveData));
             */
 
-            /*
-            File file = new File("Testing.sqrl");
+
+            File file = new File("Testing3.sqrl");
             byte[] bytesArray = new byte[(int) file.length()];
 
             FileInputStream fis = new FileInputStream(file);
             fis.read(bytesArray);
             fis.close();
 
+            SQRLStorage storage = SQRLStorage.getInstance();
+            storage.setProgressionUpdater(new ProgressionUpdater());
+            storage.read(bytesArray);
+
+            byte[] saveData = storage.createSaveData();
+
+            storage.read(saveData);
+
+            /*
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update("tfJ8CRxisuQQGY3KRcv".getBytes("US-ASCII"));
             md.update((byte)0);

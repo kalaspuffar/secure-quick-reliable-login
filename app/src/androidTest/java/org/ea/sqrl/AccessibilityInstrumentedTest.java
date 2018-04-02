@@ -105,7 +105,7 @@ public class AccessibilityInstrumentedTest {
 
         mainActivityRule.getActivity()
                 .getSupportFragmentManager().beginTransaction();
-        
+
         onView(withId(R.id.btnSettings)).perform(click());
         onView(withId(R.id.btnSettingsSave)).perform(click());
     }
