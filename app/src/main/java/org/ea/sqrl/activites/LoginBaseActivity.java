@@ -62,7 +62,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     protected String serverData = null;
     protected String queryLink = null;
 
-    protected void setupBasePopups(LayoutInflater layoutInflater) {
+    protected void setupBasePopups(LayoutInflater layoutInflater, boolean noiptest) {
         identities = mDbHelper.getIdentitys();
 
         ArrayAdapter adapter = new ArrayAdapter(
@@ -76,17 +76,17 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
 
         setupProgressPopupWindow(layoutInflater);
-        setupEnableAccountPopupWindow(layoutInflater);
-        setupDisableAccountPopupWindow(layoutInflater);
-        setupRemoveAccountPopupWindow(layoutInflater);
+        setupEnableAccountPopupWindow(layoutInflater, noiptest);
+        setupDisableAccountPopupWindow(layoutInflater, noiptest);
+        setupRemoveAccountPopupWindow(layoutInflater, noiptest);
     }
 
-    protected void postQuery(CommunicationHandler commHandler) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientQuery(true), serverData);
+    protected void postQuery(CommunicationHandler commHandler, boolean noiptest) throws Exception {
+        String postData = commHandler.createPostParams(commHandler.createClientQuery(noiptest), serverData);
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
-        toastErrorMessage();
+        toastErrorMessage(false);
         commHandler.printParams();
     }
 
@@ -98,7 +98,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
-        toastErrorMessage();
+        toastErrorMessage(false);
         commHandler.printParams();
     }
 
@@ -107,7 +107,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
-        toastErrorMessage();
+        toastErrorMessage(false);
         commHandler.printParams();
     }
 
@@ -116,7 +116,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
-        toastErrorMessage();
+        toastErrorMessage(false);
         commHandler.printParams();
     }
 
@@ -125,7 +125,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
-        toastErrorMessage();
+        toastErrorMessage(false);
         commHandler.printParams();
     }
 
@@ -134,14 +134,20 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
-        toastErrorMessage();
+        toastErrorMessage(false);
         commHandler.printParams();
     }
 
-    protected void toastErrorMessage() {
+    protected void toastErrorMessage(boolean toastStateChange) {
         if(commHandler.hasErrorMessage()) {
             handler.post(() ->
                     Snackbar.make(rootView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show()
+            );
+        }
+        if(toastStateChange && commHandler.hasStateChangeMessage()) {
+            Log.e("WTF", new Exception("WHY!!!").getMessage(), new Exception("WHY!!!"));
+            handler.post(() ->
+                    Snackbar.make(rootView, commHandler.getStageChangeMessage(this), Snackbar.LENGTH_LONG).show()
             );
         }
     }
@@ -214,7 +220,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         });
     }
 
-    public void setupProgressPopupWindow(LayoutInflater layoutInflater) {
+    private void setupProgressPopupWindow(LayoutInflater layoutInflater) {
         View popupView = layoutInflater.inflate(R.layout.fragment_progress, null);
 
         progressPopupWindow = new PopupWindow(popupView,
@@ -228,7 +234,9 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         storage.setProgressionUpdater(new ProgressionUpdater(handler, progressBar, lblProgressText));
     }
 
-    public void setupDisableAccountPopupWindow(LayoutInflater layoutInflater) {
+    protected void closeActivity() {}
+
+    private void setupDisableAccountPopupWindow(LayoutInflater layoutInflater, boolean noiptest) {
         View popupView = layoutInflater.inflate(R.layout.fragment_disable_account, null);
 
         disableAccountPopupWindow = new PopupWindow(popupView,
@@ -257,19 +265,19 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 }
 
                 try {
-                    postQuery(commHandler);
+                    postQuery(commHandler, noiptest);
 
                     if(
-                            (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                                    commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
-                                    !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
-                            ) {
+                        (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
+                        commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
+                        !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
+                    ) {
                         postDisableAccount(commHandler);
                     } else {
                         handler.post(() -> {
                             txtDisablePassword.setText("");
                         });
-                        toastErrorMessage();
+                        toastErrorMessage(true);
                     }
                 } catch (Exception e) {
                     handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
@@ -277,6 +285,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     return;
                 } finally {
                     hideProgressBar();
+                    closeActivity();
                 }
 
                 handler.post(() -> {
@@ -286,7 +295,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         });
     }
 
-    public void setupEnableAccountPopupWindow(LayoutInflater layoutInflater) {
+    private void setupEnableAccountPopupWindow(LayoutInflater layoutInflater, boolean noiptest) {
         View popupView = layoutInflater.inflate(R.layout.fragment_enable_account, null);
 
         enableAccountPopupWindow = new PopupWindow(popupView,
@@ -303,7 +312,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         final EditText txtRecoverCode6 = popupView.findViewById(R.id.txtRecoverCode6);
 
         popupView.findViewById(R.id.btnCloseResetPassword).setOnClickListener(v -> enableAccountPopupWindow.dismiss());
-        popupView.findViewById(R.id.btnEnableAccountEnable).setOnClickListener(v -> {
+        popupView.findViewById(R.id.btnEnableAccountEnable).setOnClickListener((View v) -> {
 
             SQRLStorage storage = SQRLStorage.getInstance();
 
@@ -337,7 +346,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     }
                     storage.reInitializeMasterKeyIdentity();
 
-                    postQuery(commHandler);
+                    postQuery(commHandler, noiptest);
                     if(
                             (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
                                     commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
@@ -345,7 +354,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                             ) {
                         postEnableAccount(commHandler);
                     } else {
-                        toastErrorMessage();
+                        toastErrorMessage(true);
                     }
                 } catch (Exception e) {
                     handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
@@ -361,12 +370,13 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                         txtRecoverCode5.setText("");
                         txtRecoverCode6.setText("");
                     });
+                    closeActivity();
                 }
             }).start();
         });
     }
 
-    public void setupRemoveAccountPopupWindow(LayoutInflater layoutInflater) {
+    private void setupRemoveAccountPopupWindow(LayoutInflater layoutInflater, boolean noiptest) {
         View popupView = layoutInflater.inflate(R.layout.fragment_remove_account, null);
 
         removeAccountPopupWindow = new PopupWindow(popupView,
@@ -415,7 +425,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     }
                     storage.reInitializeMasterKeyIdentity();
 
-                    postQuery(commHandler);
+                    postQuery(commHandler, noiptest);
                     if(
                             (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
                                     commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
@@ -430,7 +440,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                         postDisableAccount(commHandler);
                         postRemoveAccount(commHandler);
                     } else {
-                        toastErrorMessage();
+                        toastErrorMessage(true);
                     }
                 } catch (Exception e) {
                     handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
@@ -446,6 +456,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                         txtRecoverCode5.setText("");
                         txtRecoverCode6.setText("");
                     });
+                    closeActivity();
                 }
             }).start();
         });
@@ -498,7 +509,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             JobInfo jobInfo = new JobInfo.Builder(ClearIdentityService.JOB_NUMBER, new ComponentName(this, ClearIdentityService.class))
                     .setMinimumLatency(delayMillis).build();
-            
+
             JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
             jobScheduler.schedule(jobInfo);
         } else {
@@ -535,7 +546,9 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         try {
             byte[] identityData = mDbHelper.getIdentityData(keyArray[pos]);
             storage.read(identityData);
-            btnUseIdentity.setEnabled(storage.hasIdentityBlock());
+            if(btnUseIdentity != null) {
+                btnUseIdentity.setEnabled(storage.hasIdentityBlock());
+            }
 
         } catch (Exception e) {
             handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());

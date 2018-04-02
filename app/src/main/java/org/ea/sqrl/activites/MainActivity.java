@@ -83,7 +83,7 @@ public class MainActivity extends LoginBaseActivity {
         setupExportOptionsPopupWindow(getLayoutInflater());
         setupLoginOptionsPopupWindow(getLayoutInflater(), true);
 
-        setupBasePopups(getLayoutInflater());
+        setupBasePopups(getLayoutInflater(), true);
 
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
@@ -345,7 +345,7 @@ public class MainActivity extends LoginBaseActivity {
                         }
 
                         try {
-                            postQuery(commHandler);
+                            postQuery(commHandler, true);
                             if(
                                 (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
                                 commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
@@ -357,7 +357,7 @@ public class MainActivity extends LoginBaseActivity {
                                     txtLoginPassword.setText("");
                                     loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                                 });
-                                toastErrorMessage();
+                                toastErrorMessage(true);
                                 storage.clear();
                             }
                         } catch (Exception e) {
@@ -417,7 +417,7 @@ public class MainActivity extends LoginBaseActivity {
                     }
 
                     try {
-                        postQuery(commHandler);
+                        postQuery(commHandler, true);
 
                         if(
                             (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
@@ -435,7 +435,7 @@ public class MainActivity extends LoginBaseActivity {
                                 txtLoginPassword.setText("");
                                 loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                             });
-                            toastErrorMessage();
+                            toastErrorMessage(true);
                         }
                     } catch (Exception e) {
                         handler.post(() -> {

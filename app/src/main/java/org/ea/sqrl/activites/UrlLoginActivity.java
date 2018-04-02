@@ -48,7 +48,6 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
         final TextView txtUrlLogin = findViewById(R.id.txtSite);
         Intent intent = getIntent();
-        String action = intent.getAction();
         Uri data = intent.getData();
         txtUrlLogin.setText(data.getHost());
 
@@ -67,7 +66,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
         }
 
         setupLoginOptionsPopupWindow(getLayoutInflater(), false);
-        setupBasePopups(getLayoutInflater());
+        setupBasePopups(getLayoutInflater(), false);
 
         SQRLStorage storage = SQRLStorage.getInstance();
 
@@ -94,7 +93,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                         }
 
                         try {
-                            postQuery(commHandler);
+                            postQuery(commHandler, false);
                             if(
                                     commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
                                             commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
@@ -104,7 +103,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                                 handler.post(() -> {
                                     txtLoginPassword.setText("");
                                 });
-                                toastErrorMessage();
+                                toastErrorMessage(true);
                                 storage.clear();
                             }
                         } catch (Exception e) {
@@ -118,7 +117,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                             handler.post(() -> {
                                 txtLoginPassword.setText("");
                             });
-                            UrlLoginActivity.this.finish();
+                            closeActivity();
                         }
                     }).start();
                 }
@@ -161,7 +160,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                     }
 
                     try {
-                        postQuery(commHandler);
+                        postQuery(commHandler, false);
 
                         if(
                             (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
@@ -178,7 +177,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                             handler.post(() -> {
                                 txtLoginPassword.setText("");
                             });
-                            toastErrorMessage();
+                            toastErrorMessage(true);
                         }
                     } catch (Exception e) {
                         handler.post(() -> {
@@ -190,10 +189,16 @@ public class UrlLoginActivity extends LoginBaseActivity {
                         handler.post(() -> {
                             txtLoginPassword.setText("");
                         });
-                        UrlLoginActivity.this.finish();
+                        closeActivity();
                     }
                 }).start();
             }
         });
+    }
+
+    @Override
+    protected void closeActivity() {
+        super.closeActivity();
+        handler.postDelayed(() -> UrlLoginActivity.this.finish(), 5000);
     }
 }

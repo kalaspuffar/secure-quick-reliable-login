@@ -120,4 +120,15 @@
     <string name="button_export_save_identity">Save identity</string>
     <string name="button_print_identity">Print identity</string>
     <string name="title_activity_url_login">SQRL - Login</string>
+    <string name="change_password_close">Close change password window</string>
+    <string name="decrypt_close">Close import identity window</string>
+    <string name="disable_account_close">Close disable account window</string>
+    <string name="enable_account_close">Close enable account window</string>
+    <string name="export_options_close">Close export options window</string>
+    <string name="login_close">Close login window</string>
+    <string name="login_optional_close">Close login options window</string>
+    <string name="remove_account_close">Close remove account window</string>
+    <string name="rename_close">Close rename window</string>
+    <string name="reset_password_close">Close reset password window</string>
+    <string name="save_settings_close">Close save settings window</string>
 </resources>

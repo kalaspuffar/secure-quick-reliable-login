@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.LoginBaseActivity;
 import org.ea.sqrl.utils.EncryptionUtils;
 import org.libsodium.jni.Sodium;
 
@@ -70,7 +71,6 @@ public class CommunicationHandler {
         if (portColon != -1) {
             domain = domain.substring(0, portColon);
         }
-        Log.e(TAG, "Domain: " + domain);
 
         atSignIndex = domain.indexOf("@");
         portColon = domain.indexOf(":");
@@ -78,8 +78,6 @@ public class CommunicationHandler {
             throw new Exception("Incorrect cryptDomain " + domain);
         }
         this.cryptDomain = domain;
-
-        System.out.println(this.cryptDomain);
     }
 
     public String createClientQuery(boolean noiptest) throws Exception {
@@ -289,7 +287,6 @@ public class CommunicationHandler {
             isTIFBitSet(CommunicationHandler.TIF_CLIENT_FAILURE) ||
             isTIFBitSet(CommunicationHandler.TIF_COMMAND_FAILED) ||
             isTIFBitSet(CommunicationHandler.TIF_FUNCTION_NOT_SUPPORTED) ||
-            isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED) ||
             isTIFBitSet(CommunicationHandler.TIF_TRANSIENT_ERROR);
     }
 
@@ -319,17 +316,32 @@ public class CommunicationHandler {
             sb.append("\n\n");
         }
 
-        if(isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)) {
-            sb.append(a.getString(R.string.communication_sqrl_disabled));
-            sb.append("\n\n");
-        }
-
         if(isTIFBitSet(CommunicationHandler.TIF_TRANSIENT_ERROR)) {
             sb.append(a.getString(R.string.communication_transient_error));
             sb.append("\n\n");
         }
         return sb.toString();
     }
+
+    public boolean hasStateChangeMessage() {
+        return lastResponse.containsKey("tif") &&
+            isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED);
+    }
+
+    public String getStageChangeMessage(Activity a) {
+        StringBuilder sb = new StringBuilder();
+        if(!lastResponse.containsKey("tif")) {
+            return a.getString(R.string.communication_incorrect_response);
+        }
+
+        if(isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)) {
+            sb.append(a.getString(R.string.communication_sqrl_disabled));
+            sb.append("\n\n");
+        }
+
+        return sb.toString();
+    }
+
 
     public static void main(String[] args) {
 
