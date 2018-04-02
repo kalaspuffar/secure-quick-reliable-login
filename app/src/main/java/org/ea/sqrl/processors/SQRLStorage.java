@@ -478,7 +478,7 @@ public class SQRLStorage {
         return this.quickPassKeyEncrypted != null || this.quickPassKey != null;
     }
 
-    public void clearQuickPass(Activity activity) {
+    public void clearQuickPass(Context context) {
         try {
             if(this.quickPassKeyEncrypted != null) {
                 clearBytes(this.quickPassKeyEncrypted);
@@ -492,7 +492,7 @@ public class SQRLStorage {
         }
 
         NotificationManager notificationManager =
-                (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
+                (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(BaseActivity.NOTIFICATION_IDENTITY_UNLOCKED);
     }
 

@@ -347,9 +347,10 @@ public class MainActivity extends LoginBaseActivity {
                         try {
                             postQuery(commHandler);
                             if(
-                                    commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                                            commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
-                                    ) {
+                                (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
+                                commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
+                                !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
+                            ) {
                                 postLogin(commHandler);
                             } else {
                                 handler.post(() -> {
@@ -419,8 +420,9 @@ public class MainActivity extends LoginBaseActivity {
                         postQuery(commHandler);
 
                         if(
-                            commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                            commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
+                            (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
+                            commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
+                            !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
                         ) {
                             postLogin(commHandler);
                         } else if(

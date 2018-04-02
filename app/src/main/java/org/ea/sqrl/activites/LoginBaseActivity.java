@@ -4,11 +4,13 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
@@ -33,6 +35,7 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.services.ClearIdentityService;
 
 import java.util.Map;
 
@@ -487,6 +490,15 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         mNotificationManager.notify(NOTIFICATION_IDENTITY_UNLOCKED, mBuilder.build());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            JobInfo jobInfo = new JobInfo.Builder(ClearIdentityService.JOB_NUMBER, new ComponentName(this, ClearIdentityService.class))
+                    .setMinimumLatency(SQRLStorage.getInstance().getIdleTimeout() * 60000).build();
+
+
+            JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+            jobScheduler.schedule(jobInfo);
+        }
     }
 
     @Override

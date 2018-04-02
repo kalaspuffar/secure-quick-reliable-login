@@ -164,14 +164,15 @@ public class UrlLoginActivity extends LoginBaseActivity {
                         postQuery(commHandler);
 
                         if(
-                                commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                                        commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
-                                ) {
+                            (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
+                            commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
+                            !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
+                        ) {
                             postLogin(commHandler);
                         } else if(
-                                !commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) &&
-                                        !commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
-                                ){
+                            !commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) &&
+                            !commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
+                        ){
                             postCreateAccount(commHandler);
                         } else {
                             handler.post(() -> {

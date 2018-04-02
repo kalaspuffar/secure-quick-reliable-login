@@ -84,6 +84,11 @@
                 <data android:scheme="qrl" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".services.ClearIdentityService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+        />
     </application>
 
 </manifest>
