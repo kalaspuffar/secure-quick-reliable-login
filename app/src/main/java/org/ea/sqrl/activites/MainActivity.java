@@ -54,29 +54,16 @@ import java.util.Map;
  *
  * @author Daniel Persson
  */
-public class MainActivity extends BaseActivity implements AdapterView.OnItemSelectedListener {
+public class MainActivity extends LoginBaseActivity {
     private static final String TAG = "MainActivity";
 
-    private Handler handler = new Handler();
-    private Spinner cboxIdentity;
-    private Map<Long, String> identities;
     private PopupWindow renamePopupWindow;
     private PopupWindow decryptPopupWindow;
-    private PopupWindow loginPopupWindow;
     private PopupWindow changePasswordPopupWindow;
     private PopupWindow resetPasswordPopupWindow;
-    private PopupWindow progressPopupWindow;
-    private PopupWindow loginOptionsPopupWindow;
-    private PopupWindow disableAccountPopupWindow;
-    private PopupWindow enableAccountPopupWindow;
-    private PopupWindow removeAccountPopupWindow;
     private PopupWindow exportOptionsPopupWindow;
 
-    private FrameLayout progressBarHolder;
-
-    private Button btnUseIdentity;
     private EditText txtIdentityName;
-    private ConstraintLayout mainView;
     private boolean importIdentity = false;
 
     @Override
@@ -85,32 +72,18 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         setContentView(R.layout.activity_main);
 
         progressBarHolder = findViewById(R.id.progressBarHolder);
-
         cboxIdentity = findViewById(R.id.cboxIdentity);
-        identities = mDbHelper.getIdentitys();
-
-        mainView = findViewById(R.id.mainActivityView);
-
-        ArrayAdapter adapter = new ArrayAdapter(
-            this,
-            R.layout.simple_spinner_item,
-            identities.values().toArray(new String[identities.size()])
-        );
-        adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-        cboxIdentity.setAdapter(adapter);
-        cboxIdentity.setOnItemSelectedListener(this);
+        rootView = findViewById(R.id.mainActivityView);
 
         setupRenamePopupWindow(getLayoutInflater());
         setupLoginPopupWindow(getLayoutInflater());
-        setupLoginOptionsPopupWindow(getLayoutInflater());
         setupImportPopupWindow(getLayoutInflater());
         setupChangePasswordPopupWindow(getLayoutInflater());
         setupResetPasswordPopupWindow(getLayoutInflater());
-        setupProgressPopupWindow(getLayoutInflater());
-        setupEnableAccountPopupWindow(getLayoutInflater());
-        setupDisableAccountPopupWindow(getLayoutInflater());
-        setupRemoveAccountPopupWindow(getLayoutInflater());
         setupExportOptionsPopupWindow(getLayoutInflater());
+        setupLoginOptionsPopupWindow(getLayoutInflater(), true);
+
+        setupBasePopups(getLayoutInflater());
 
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
@@ -159,7 +132,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     if(currentId != 0) {
                         mDbHelper.deleteIdentity(currentId);
                         updateSpinnerData(currentId);
-                        Snackbar.make(mainView, getString(R.string.main_identity_removed), Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(rootView, getString(R.string.main_identity_removed), Snackbar.LENGTH_LONG).show();
 
                         if(!mDbHelper.hasIdentities()) {
                             startActivity(new Intent(this, StartActivity.class));
@@ -231,125 +204,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 });
     }
 
-    private void showProgressBar() {
-        handler.post(() -> {
-            mainView.setEnabled(false);
-            AlphaAnimation inAnimation = new AlphaAnimation(0f, 1f);
-            inAnimation.setDuration(200);
-            progressBarHolder.setAnimation(inAnimation);
-            progressBarHolder.setVisibility(View.VISIBLE);
-        });
-    }
-
-    private void hideProgressBar() {
-        handler.post(() -> {
-            mainView.setEnabled(true);
-            AlphaAnimation outAnimation = new AlphaAnimation(1f, 0f);
-            outAnimation.setDuration(200);
-            progressBarHolder.setAnimation(outAnimation);
-            progressBarHolder.setVisibility(View.GONE);
-        });
-    }
-
-    private final CommunicationHandler commHandler = CommunicationHandler.getInstance();
-    private String serverData = null;
-    private String queryLink = null;
-
-    private void toastErrorMessage() {
-        if(commHandler.hasErrorMessage()) {
-            handler.post(() ->
-                    Snackbar.make(mainView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show()
-            );
-        }
-    }
-
-    private void postQuery(CommunicationHandler commHandler) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientQuery(true), serverData);
-        commHandler.postRequest(queryLink, postData);
-        serverData = commHandler.getResponse();
-        queryLink = commHandler.getQueryLink();
-        toastErrorMessage();
-        commHandler.printParams();
-    }
-
-    private void postCreateAccount(CommunicationHandler commHandler) throws Exception {
-        String postData = commHandler.createPostParams(
-                commHandler.createClientCreateAccount(entropyHarvester),
-                serverData
-        );
-        commHandler.postRequest(queryLink, postData);
-        serverData = commHandler.getResponse();
-        queryLink = commHandler.getQueryLink();
-        toastErrorMessage();
-        commHandler.printParams();
-    }
-
-    private void postLogin(CommunicationHandler commHandler) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientLogin(), serverData);
-        commHandler.postRequest(queryLink, postData);
-        serverData = commHandler.getResponse();
-        queryLink = commHandler.getQueryLink();
-        toastErrorMessage();
-        commHandler.printParams();
-    }
-
-    private void postDisableAccount(CommunicationHandler commHandler) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientDisable(), serverData);
-        commHandler.postRequest(queryLink, postData);
-        serverData = commHandler.getResponse();
-        queryLink = commHandler.getQueryLink();
-        toastErrorMessage();
-        commHandler.printParams();
-    }
-
-    private void postEnableAccount(CommunicationHandler commHandler) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientEnable(), serverData, true);
-        commHandler.postRequest(queryLink, postData);
-        serverData = commHandler.getResponse();
-        queryLink = commHandler.getQueryLink();
-        toastErrorMessage();
-        commHandler.printParams();
-    }
-
-    private void postRemoveAccount(CommunicationHandler commHandler) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientRemove(), serverData, true);
-        commHandler.postRequest(queryLink, postData);
-        serverData = commHandler.getResponse();
-        queryLink = commHandler.getQueryLink();
-        toastErrorMessage();
-        commHandler.printParams();
-    }
-
-    private boolean checkRescueCode(EditText code) {
-        if(code.length() != 4) {
-            Snackbar.make(mainView, getString(R.string.rescue_code_incorrect_input), Snackbar.LENGTH_LONG).show();
-            code.requestFocus();
-            return false;
-        }
-
-        try {
-            Integer.parseInt(code.getText().toString());
-        } catch (NumberFormatException nfe) {
-            Snackbar.make(mainView, getString(R.string.rescue_code_incorrect_input), Snackbar.LENGTH_LONG).show();
-            code.requestFocus();
-            return false;
-        }
-        return true;
-    }
-
-    public void setupProgressPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_progress, null);
-
-        progressPopupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                false);
-
-        final ProgressBar progressBar = popupView.findViewById(R.id.pbProgress);
-        final TextView lblProgressText = popupView.findViewById(R.id.lblProgressText);
-        SQRLStorage storage = SQRLStorage.getInstance();
-        storage.setProgressionUpdater(new ProgressionUpdater(handler, progressBar, lblProgressText));
-    }
-
     public void setupResetPasswordPopupWindow(LayoutInflater layoutInflater) {
         View popupView = layoutInflater.inflate(R.layout.fragment_reset_password, null);
 
@@ -394,7 +248,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     boolean decryptionOk = storage.decryptUnlockKey(rescueCode);
                     if (!decryptionOk) {
                         handler.post(() ->
-                            Snackbar.make(mainView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show()
+                            Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show()
                         );
                         return;
                     }
@@ -404,7 +258,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     boolean encryptStatus = storage.encryptIdentityKey(txtResetPasswordNewPassword.getText().toString(), entropyHarvester);
                     if (!encryptStatus) {
                         handler.post(() ->
-                            Snackbar.make(mainView, getString(R.string.encrypt_identity_fail), Snackbar.LENGTH_LONG).show()
+                            Snackbar.make(rootView, getString(R.string.encrypt_identity_fail), Snackbar.LENGTH_LONG).show()
                         );
                         return;
                     }
@@ -463,7 +317,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         final SQRLStorage storage = SQRLStorage.getInstance();
 
         loginPopupWindow.setTouchable(true);
-        final EditText txtLoginPassword = popupView.findViewById(R.id.txtDisablePassword);
+        final EditText txtLoginPassword = popupView.findViewById(R.id.txtLoginPassword);
 
         txtLoginPassword.addTextChangedListener(new TextWatcher() {
             @Override
@@ -480,7 +334,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     new Thread(() -> {
                         boolean decryptionOk = storage.decryptIdentityKeyQuickPass(password.toString());
                         if(!decryptionOk) {
-                            Snackbar.make(mainView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                             hideProgressBar();
                             handler.post(() ->
                                     loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
@@ -509,7 +363,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                             Log.e(TAG, e.getMessage(), e);
                             storage.clear();
                             handler.post(() -> {
-                                Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
                                 loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                             });
                         } finally {
@@ -533,7 +387,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             loginOptionsPopupWindow.showAtLocation(loginOptionsPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
         });
 
-        popupView.findViewById(R.id.btnDisableAccount).setOnClickListener(v -> {
+        popupView.findViewById(R.id.btnLogin).setOnClickListener(v -> {
             SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
                     getString(R.string.preferences),
                     Context.MODE_PRIVATE
@@ -553,7 +407,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                             showClearNotification();
                         }
                     } else {
-                        Snackbar.make(mainView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                         hideProgressBar();
                         handler.post(() -> {
                             txtLoginPassword.setText("");
@@ -583,7 +437,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                         }
                     } catch (Exception e) {
                         handler.post(() -> {
-                            Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
                             loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                         });
                         Log.e(TAG, e.getMessage(), e);
@@ -597,36 +451,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             }
         });
     }
-
-    public void setupLoginOptionsPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_login_optional, null);
-
-        loginOptionsPopupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                true);
-        loginOptionsPopupWindow.setTouchable(true);
-
-        popupView.findViewById(R.id.btnCloseLoginOptional).setOnClickListener(v -> {
-            loginOptionsPopupWindow.dismiss();
-            loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-        });
-
-        popupView.findViewById(R.id.btnRemoveAccount).setOnClickListener(v -> {
-            loginOptionsPopupWindow.dismiss();
-            removeAccountPopupWindow.showAtLocation(removeAccountPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-        });
-
-        popupView.findViewById(R.id.btnLockAccount).setOnClickListener(v -> {
-            loginOptionsPopupWindow.dismiss();
-            disableAccountPopupWindow.showAtLocation(disableAccountPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-        });
-
-        popupView.findViewById(R.id.btnUnlockAccount).setOnClickListener(v -> {
-            loginOptionsPopupWindow.dismiss();
-            enableAccountPopupWindow.showAtLocation(enableAccountPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-        });
-    }
-
 
     public void setupExportOptionsPopupWindow(LayoutInflater layoutInflater) {
         View popupView = layoutInflater.inflate(R.layout.fragment_export_options, null);
@@ -664,7 +488,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 shareIntent.setType("application/octet-stream");
                 startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.save_identity_to)));
             } catch (Exception e) {
-                handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                 Log.e(TAG, e.getMessage(), e);
             }
         });
@@ -674,230 +498,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             showNotImplementedDialog();
         });
     }
-
-    public void setupDisableAccountPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_disable_account, null);
-
-        disableAccountPopupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                true);
-        disableAccountPopupWindow.setTouchable(true);
-
-        popupView.findViewById(R.id.btnCloseLogin).setOnClickListener(v -> {
-            disableAccountPopupWindow.dismiss();
-            loginOptionsPopupWindow.showAtLocation(loginOptionsPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-        });
-
-
-        final EditText txtDisablePassword = popupView.findViewById(R.id.txtDisablePassword);
-        popupView.findViewById(R.id.btnDisableAccount).setOnClickListener(v -> {
-            disableAccountPopupWindow.dismiss();
-            showProgressBar();
-
-            new Thread(() -> {
-                boolean decryptionOk = SQRLStorage.getInstance().decryptIdentityKey(txtDisablePassword.getText().toString());
-                if(decryptionOk) {
-                    showClearNotification();
-                } else {
-                    Snackbar.make(mainView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-
-                try {
-                    postQuery(commHandler);
-
-                    if(
-                        (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                                commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
-                                !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
-                        ) {
-                        postDisableAccount(commHandler);
-                    } else {
-                        handler.post(() -> {
-                            txtDisablePassword.setText("");
-                        });
-                        toastErrorMessage();
-                    }
-                } catch (Exception e) {
-                    handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
-                    Log.e(TAG, e.getMessage(), e);
-                    return;
-                } finally {
-                    hideProgressBar();
-                }
-
-                handler.post(() -> {
-                    txtDisablePassword.setText("");
-                });
-            }).start();
-        });
-    }
-
-    public void setupEnableAccountPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_enable_account, null);
-
-        enableAccountPopupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                true);
-
-        enableAccountPopupWindow.setTouchable(true);
-
-        final EditText txtRecoverCode1 = popupView.findViewById(R.id.txtRecoverCode1);
-        final EditText txtRecoverCode2 = popupView.findViewById(R.id.txtRecoverCode2);
-        final EditText txtRecoverCode3 = popupView.findViewById(R.id.txtRecoverCode3);
-        final EditText txtRecoverCode4 = popupView.findViewById(R.id.txtRecoverCode4);
-        final EditText txtRecoverCode5 = popupView.findViewById(R.id.txtRecoverCode5);
-        final EditText txtRecoverCode6 = popupView.findViewById(R.id.txtRecoverCode6);
-
-        popupView.findViewById(R.id.btnCloseResetPassword).setOnClickListener(v -> enableAccountPopupWindow.dismiss());
-        popupView.findViewById(R.id.btnEnableAccountEnable).setOnClickListener(v -> {
-
-            SQRLStorage storage = SQRLStorage.getInstance();
-
-            if(!checkRescueCode(txtRecoverCode1)) return;
-            if(!checkRescueCode(txtRecoverCode2)) return;
-            if(!checkRescueCode(txtRecoverCode3)) return;
-            if(!checkRescueCode(txtRecoverCode4)) return;
-            if(!checkRescueCode(txtRecoverCode5)) return;
-            if(!checkRescueCode(txtRecoverCode6)) return;
-
-            handler.post(() -> {
-                enableAccountPopupWindow.dismiss();
-                progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-            });
-
-            new Thread(() -> {
-                try {
-                    String rescueCode = txtRecoverCode1.getText().toString();
-                    rescueCode += txtRecoverCode2.getText().toString();
-                    rescueCode += txtRecoverCode3.getText().toString();
-                    rescueCode += txtRecoverCode4.getText().toString();
-                    rescueCode += txtRecoverCode5.getText().toString();
-                    rescueCode += txtRecoverCode6.getText().toString();
-
-                    boolean decryptionOk = storage.decryptUnlockKey(rescueCode);
-                    if (!decryptionOk) {
-                        handler.post(() ->
-                                Snackbar.make(mainView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show()
-                        );
-                        return;
-                    }
-                    storage.reInitializeMasterKeyIdentity();
-
-                    postQuery(commHandler);
-                    if(
-                            (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                                    commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
-                                    commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
-                            ) {
-                        postEnableAccount(commHandler);
-                    } else {
-                        toastErrorMessage();
-                    }
-                } catch (Exception e) {
-                    handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
-                    Log.e(TAG, e.getMessage(), e);
-                } finally {
-                    storage.clear();
-                    handler.post(() -> {
-                        progressPopupWindow.dismiss();
-                        txtRecoverCode1.setText("");
-                        txtRecoverCode2.setText("");
-                        txtRecoverCode3.setText("");
-                        txtRecoverCode4.setText("");
-                        txtRecoverCode5.setText("");
-                        txtRecoverCode6.setText("");
-                    });
-                }
-            }).start();
-        });
-    }
-
-    public void setupRemoveAccountPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_remove_account, null);
-
-        removeAccountPopupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                true);
-
-        removeAccountPopupWindow.setTouchable(true);
-
-        final EditText txtRecoverCode1 = popupView.findViewById(R.id.txtRecoverCode1);
-        final EditText txtRecoverCode2 = popupView.findViewById(R.id.txtRecoverCode2);
-        final EditText txtRecoverCode3 = popupView.findViewById(R.id.txtRecoverCode3);
-        final EditText txtRecoverCode4 = popupView.findViewById(R.id.txtRecoverCode4);
-        final EditText txtRecoverCode5 = popupView.findViewById(R.id.txtRecoverCode5);
-        final EditText txtRecoverCode6 = popupView.findViewById(R.id.txtRecoverCode6);
-
-        popupView.findViewById(R.id.btnCloseResetPassword).setOnClickListener(v -> removeAccountPopupWindow.dismiss());
-        popupView.findViewById(R.id.btnRemoveAccountRemove).setOnClickListener(v -> {
-
-            SQRLStorage storage = SQRLStorage.getInstance();
-
-            if(!checkRescueCode(txtRecoverCode1)) return;
-            if(!checkRescueCode(txtRecoverCode2)) return;
-            if(!checkRescueCode(txtRecoverCode3)) return;
-            if(!checkRescueCode(txtRecoverCode4)) return;
-            if(!checkRescueCode(txtRecoverCode5)) return;
-            if(!checkRescueCode(txtRecoverCode6)) return;
-
-            removeAccountPopupWindow.dismiss();
-            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-
-            new Thread(() -> {
-                try {
-                    String rescueCode = txtRecoverCode1.getText().toString();
-                    rescueCode += txtRecoverCode2.getText().toString();
-                    rescueCode += txtRecoverCode3.getText().toString();
-                    rescueCode += txtRecoverCode4.getText().toString();
-                    rescueCode += txtRecoverCode5.getText().toString();
-                    rescueCode += txtRecoverCode6.getText().toString();
-
-                    boolean decryptionOk = storage.decryptUnlockKey(rescueCode);
-                    if (!decryptionOk) {
-                        handler.post(() ->
-                                Snackbar.make(mainView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show()
-                        );
-                        return;
-                    }
-                    storage.reInitializeMasterKeyIdentity();
-
-                    postQuery(commHandler);
-                    if(
-                        (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                        commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
-                        commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
-                        ) {
-                        postRemoveAccount(commHandler);
-                    } else if(
-                        (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                        commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
-                        !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
-                        ) {
-                        postDisableAccount(commHandler);
-                        postRemoveAccount(commHandler);
-                    } else {
-                        toastErrorMessage();
-                    }
-                } catch (Exception e) {
-                    handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
-                    Log.e(TAG, e.getMessage(), e);
-                } finally {
-                    storage.clear();
-                    handler.post(() -> {
-                        progressPopupWindow.dismiss();
-                        txtRecoverCode1.setText("");
-                        txtRecoverCode2.setText("");
-                        txtRecoverCode3.setText("");
-                        txtRecoverCode4.setText("");
-                        txtRecoverCode5.setText("");
-                        txtRecoverCode6.setText("");
-                    });
-                }
-            }).start();
-        });
-    }
-
 
     public void setupImportPopupWindow(LayoutInflater layoutInflater) {
         View popupView = layoutInflater.inflate(R.layout.fragment_decrypt, null);
@@ -926,7 +526,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString());
                     if(!decryptStatus) {
                         handler.post(() -> {
-                            Snackbar.make(mainView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                             txtPassword.setText("");
                         });
                         return;
@@ -935,14 +535,14 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
                     if (!encryptStatus) {
                         handler.post(() -> {
-                            Snackbar.make(mainView, getString(R.string.encrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(rootView, getString(R.string.encrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                             txtPassword.setText("");
                         });
                         return;
                     }
                     storage.clear();
                 } catch (Exception e) {
-                    handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                    handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                     Log.e(TAG, e.getMessage(), e);
                 }
 
@@ -989,7 +589,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         final Button btnChangePassword = popupView.findViewById(R.id.btnDoChangePassword);
         btnChangePassword.setOnClickListener(v -> {
             if(!txtNewPassword.getText().toString().equals(txtRetypePassword.getText().toString())) {
-                Snackbar.make(mainView, getString(R.string.change_password_retyped_password_do_not_match), Snackbar.LENGTH_LONG).show();
+                Snackbar.make(rootView, getString(R.string.change_password_retyped_password_do_not_match), Snackbar.LENGTH_LONG).show();
                 txtCurrentPassword.setText("");
                 txtNewPassword.setText("");
                 txtRetypePassword.setText("");
@@ -1004,7 +604,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     boolean decryptStatus = storage.decryptIdentityKey(txtCurrentPassword.getText().toString());
                     if (!decryptStatus) {
                         handler.post(() -> {
-                            Snackbar.make(mainView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                             txtCurrentPassword.setText("");
                             txtNewPassword.setText("");
                             txtRetypePassword.setText("");
@@ -1015,7 +615,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     boolean encryptStatus = storage.encryptIdentityKey(txtNewPassword.getText().toString(), entropyHarvester);
                     if (!encryptStatus) {
                         handler.post(() -> {
-                            Snackbar.make(mainView, getString(R.string.encrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(rootView, getString(R.string.encrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                             txtCurrentPassword.setText("");
                             txtNewPassword.setText("");
                             txtRetypePassword.setText("");
@@ -1044,48 +644,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     }
 
 
-    public void showClearNotification() {
-        final String CHANNEL_ID = "sqrl_notify_01";
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "SQRL Notification Channel", NotificationManager.IMPORTANCE_DEFAULT);
-            notificationChannel.enableVibration(false);
-            notificationChannel.enableLights(false);
-            notificationChannel.setSound(null, null);
-
-            notificationManager.createNotificationChannel(notificationChannel);
-        }
-
-        long[] v = {};
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_stat_sqrl_logo_vector_outline)
-                        .setContentTitle(getString(R.string.notification_identity_unlocked))
-                        .setContentText(getString(R.string.notification_identity_unlocked_title))
-                        .setAutoCancel(true)
-                        .setVibrate(v)
-                        .setSound(null)
-                        .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText(getString(R.string.notification_identity_unlocked_desc)));
-
-        Intent resultIntent = new Intent(this, ClearIdentityActivity.class);
-
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(ClearIdentityActivity.class);
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        mBuilder.setContentIntent(resultPendingIntent);
-
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        mNotificationManager.notify(NOTIFICATION_IDENTITY_UNLOCKED, mBuilder.build());
-    }
 
     public void showNotImplementedDialog() {
         AlertDialog.Builder builder;
@@ -1104,52 +662,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        Long[] keyArray = identities.keySet().toArray(new Long[identities.size()]);
-
-        SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                getString(R.string.preferences),
-                Context.MODE_PRIVATE
-        );
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putLong(getString(R.string.current_id), keyArray[pos]);
-        editor.commit();
-
-        SQRLStorage storage = SQRLStorage.getInstance();
-        storage.clearQuickPass(this);
-        try {
-            byte[] identityData = mDbHelper.getIdentityData(keyArray[pos]);
-            storage.read(identityData);
-            btnUseIdentity.setEnabled(storage.hasIdentityBlock());
-
-        } catch (Exception e) {
-            handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
-            Log.e(TAG, e.getMessage(), e);
-        }
-    }
-
-    private int getPosition(long currentId) {
-        int i = 0;
-        for(Long l : identities.keySet()) {
-            if (l == currentId) return i;
-            i++;
-        }
-        return 0;
-    }
-
-    private void updateSpinnerData(long currentId) {
-        identities = mDbHelper.getIdentitys();
-
-        ArrayAdapter adapter = new ArrayAdapter(
-                this,
-                R.layout.simple_spinner_item,
-                identities.values().toArray(new String[identities.size()])
-        );
-        cboxIdentity.setAdapter(adapter);
-        cboxIdentity.setSelection(getPosition(currentId));
-    }
-
-    @Override
     public void onBackPressed() {
         if (renamePopupWindow != null && renamePopupWindow.isShowing()) {
             renamePopupWindow.dismiss();
@@ -1160,7 +672,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         } else if (changePasswordPopupWindow != null && changePasswordPopupWindow.isShowing()) {
             changePasswordPopupWindow.dismiss();
         } else {
-            super.onBackPressed();
+            MainActivity.this.finish();
         }
     }
 
@@ -1170,7 +682,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         if(result != null) {
             if(result.getContents() == null) {
                 Log.d("MainActivity", "Cancelled scan");
-                Snackbar.make(mainView, "Cancelled", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(rootView, "Cancelled", Snackbar.LENGTH_LONG).show();
             } else {
                 if(!importIdentity) {
                     serverData = EncryptionUtils.readSQRLQRCodeAsString(result.getRawBytes());
@@ -1182,7 +694,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                     try {
                         commHandler.setDomain(domain);
                     } catch (Exception e) {
-                        handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                        handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                         Log.e(TAG, e.getMessage(), e);
                         return;
                     }
@@ -1213,7 +725,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                             decryptPopupWindow.showAtLocation(decryptPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                         }, 100);
                     } catch (Exception e) {
-                        handler.post(() -> Snackbar.make(mainView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                        handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                         Log.e(TAG, e.getMessage(), e);
                         return;
                     }
@@ -1222,6 +734,4 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         }
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {}
 }

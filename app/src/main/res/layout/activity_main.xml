@@ -69,7 +69,8 @@
         android:duplicateParentState="true"
         android:text="@string/button_import_identity"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnUseIdentity" />
+        app:layout_constraintTop_toBottomOf="@+id/btnUseIdentity"
+        android:layout_marginRight="16dp" />
 
     <Button
         android:id="@+id/btnCreate"
@@ -80,7 +81,8 @@
         android:duplicateParentState="true"
         android:text="@string/button_create_identity"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnRekey" />
+        app:layout_constraintTop_toBottomOf="@+id/btnRekey"
+        android:layout_marginRight="16dp" />
 
     <Button
         android:id="@+id/btnRemove"
@@ -91,7 +93,8 @@
         android:duplicateParentState="true"
         android:text="@string/button_remove_identity"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnImportIdentity" />
+        app:layout_constraintTop_toBottomOf="@+id/btnImportIdentity"
+        android:layout_marginRight="16dp" />
 
     <Button
         android:id="@+id/btnRename"
@@ -102,7 +105,8 @@
         android:duplicateParentState="true"
         android:text="@string/button_rename_identity"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnExport" />
+        app:layout_constraintTop_toBottomOf="@+id/btnExport"
+        android:layout_marginLeft="16dp" />
 
     <Button
         android:id="@+id/btnExport"
@@ -113,7 +117,8 @@
         android:duplicateParentState="true"
         android:text="@string/button_export_identity"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
+        app:layout_constraintTop_toBottomOf="@+id/btnSettings"
+        android:layout_marginLeft="16dp" />
 
     <Button
         android:id="@+id/btnReset"
@@ -124,7 +129,8 @@
         android:duplicateParentState="true"
         android:text="@string/button_reset_password"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnChangePassword" />
+        app:layout_constraintTop_toBottomOf="@+id/btnChangePassword"
+        android:layout_marginLeft="16dp" />
 
     <Button
         android:id="@+id/btnRekey"
@@ -135,7 +141,8 @@
         android:duplicateParentState="true"
         android:text="@string/button_rekey_identity"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnRemove" />
+        app:layout_constraintTop_toBottomOf="@+id/btnRemove"
+        android:layout_marginRight="16dp" />
 
     <Button
         android:id="@+id/btnChangePassword"
@@ -146,7 +153,8 @@
         android:duplicateParentState="true"
         android:text="@string/button_change_password"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnRename" />
+        app:layout_constraintTop_toBottomOf="@+id/btnRename"
+        android:layout_marginLeft="16dp" />
 
     <FrameLayout
         android:id="@+id/progressBarHolder"

@@ -32,6 +32,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -51,24 +52,38 @@
         <activity
             android:name=".activites.ClearIdentityActivity"
             android:label="@string/title_activity_clear_identity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+        </activity>
         <activity
             android:name=".activites.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:screenOrientation="portrait" />
-        <activity android:name=".activites.AdvancedActivity"
+        <activity
+            android:name=".activites.AdvancedActivity"
             android:label="@string/title_activity_advanced"
             android:screenOrientation="portrait" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="org.ea.sqrl.fileprovider"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
+
+        <activity android:name=".activites.UrlLoginActivity"
+            android:label="@string/title_activity_url_login"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="sqrl" />
+                <data android:scheme="qrl" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
