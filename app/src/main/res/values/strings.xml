@@ -131,4 +131,6 @@
     <string name="rename_close">Close rename window</string>
     <string name="reset_password_close">Close reset password window</string>
     <string name="save_settings_close">Close save settings window</string>
+    <string name="title_entropy_gather">SQRL - Gather entropy</string>
+    <string name="button_entropy_gather_next">Next</string>
 </resources>

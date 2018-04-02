@@ -52,8 +52,7 @@
         <activity
             android:name=".activites.ClearIdentityActivity"
             android:label="@string/title_activity_clear_identity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".activites.SettingsActivity"
             android:label="@string/title_activity_settings"
@@ -73,13 +72,16 @@
                 android:resource="@xml/filepaths" />
         </provider>
 
-        <activity android:name=".activites.UrlLoginActivity"
+        <activity
+            android:name=".activites.UrlLoginActivity"
             android:label="@string/title_activity_url_login"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="sqrl" />
                 <data android:scheme="qrl" />
             </intent-filter>
@@ -87,10 +89,14 @@
 
         <service
             android:name=".services.ClearIdentityService"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-        />
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <receiver android:name="org.ea.sqrl.services.ClearIdentityReceiver"/>
+        <receiver android:name=".services.ClearIdentityReceiver" />
+
+        <activity android:name=".activites.EntropyGatherActivity"
+            android:label="@string/title_entropy_gather"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>

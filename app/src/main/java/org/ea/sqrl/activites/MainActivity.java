@@ -37,6 +37,7 @@ import android.widget.TextView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import org.ea.sqrl.processors.EntropyHarvester;
 import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.CommunicationHandler;
@@ -171,10 +172,11 @@ public class MainActivity extends LoginBaseActivity {
                 v -> resetPasswordPopupWindow.showAtLocation(resetPasswordPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
         );
 
+        final Button btnCreate = findViewById(R.id.btnCreate);
+        btnCreate.setOnClickListener(v -> startActivity(new Intent(this, EntropyGatherActivity.class)));
+
         final Button btnRekey = findViewById(R.id.btnRekey);
         btnRekey.setOnClickListener(v -> showNotImplementedDialog());
-        final Button btnCreate = findViewById(R.id.btnCreate);
-        btnCreate.setOnClickListener(v -> showNotImplementedDialog());
     }
 
     public void setupRenamePopupWindow(LayoutInflater layoutInflater) {

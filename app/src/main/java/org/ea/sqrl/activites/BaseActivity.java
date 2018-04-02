@@ -34,7 +34,7 @@ public class BaseActivity extends AppCompatActivity {
     public BaseActivity() {
         mDbHelper = new IdentityDBHelper(this);
         try {
-            entropyHarvester = new EntropyHarvester();
+            entropyHarvester = EntropyHarvester.getInstance();
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
         }
