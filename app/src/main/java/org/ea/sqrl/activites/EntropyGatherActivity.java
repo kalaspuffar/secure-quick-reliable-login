@@ -1,6 +1,5 @@
 package org.ea.sqrl.activites;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;

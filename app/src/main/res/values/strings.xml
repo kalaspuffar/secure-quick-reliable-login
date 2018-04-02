@@ -133,4 +133,6 @@
     <string name="save_settings_close">Close save settings window</string>
     <string name="title_entropy_gather">SQRL - Gather entropy</string>
     <string name="button_entropy_gather_next">Next</string>
+    <string name="scan_site_code">Scan QRCode for site</string>
+    <string name="scan_identity">Scan QRCode for identity</string>
 </resources>

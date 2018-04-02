@@ -88,7 +88,6 @@ public class MainActivity extends LoginBaseActivity {
 
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
-        integrator.setPrompt(this.getString(R.string.button_scan_secret));
         integrator.setCameraId(0);
         integrator.setBeepEnabled(false);
         integrator.setOrientationLocked(true);
@@ -97,6 +96,7 @@ public class MainActivity extends LoginBaseActivity {
         Intent intent = getIntent();
         int startMode = intent.getIntExtra(START_USER_MODE, 0);
         if(startMode == START_USER_MODE_NEW_USER) {
+            integrator.setPrompt(this.getString(R.string.scan_identity));
             integrator.initiateScan();
             importIdentity = true;
         }
@@ -105,6 +105,7 @@ public class MainActivity extends LoginBaseActivity {
         btnUseIdentity.setOnClickListener(
                 v -> {
                     importIdentity = false;
+                    integrator.setPrompt(this.getString(R.string.scan_site_code));
                     integrator.initiateScan();
                 }
         );
@@ -113,6 +114,7 @@ public class MainActivity extends LoginBaseActivity {
         btnImportIdentity.setOnClickListener(
                 v -> {
                     importIdentity = true;
+                    integrator.setPrompt(this.getString(R.string.scan_identity));
                     integrator.initiateScan();
                 }
         );
