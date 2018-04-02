@@ -102,6 +102,15 @@ public class AccessibilityInstrumentedTest {
         mainActivityRule.launchActivity(intent);
 
         onView(withId(R.id.mainActivityView)).perform(click());
+
+        mainActivityRule.getActivity()
+                .getSupportFragmentManager().beginTransaction();
+
+        onView(withId(R.id.btnRename)).perform(click());
+        onView(withId(R.id.btnCloseRename)).perform(click());
+
+        onView(withId(R.id.btnSettings)).perform(click());
+        onView(withId(R.id.btnSettingsSave)).perform(click());
     }
 
     @Test

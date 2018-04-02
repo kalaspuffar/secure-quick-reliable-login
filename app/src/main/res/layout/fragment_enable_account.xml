@@ -31,7 +31,8 @@
             android:contentDescription="@string/enable_account_close"
             android:text="X"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginLeft="8dp" />
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/inputRow1"
@@ -70,7 +71,8 @@
                 app:layout_constraintStart_toEndOf="@+id/txtRecoverCode1"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:layout_conversion_absoluteHeight="46dp"
-                tools:layout_conversion_absoluteWidth="327dp" />
+                tools:layout_conversion_absoluteWidth="327dp"
+                android:layout_marginLeft="8dp" />
 
             <EditText
                 android:id="@+id/txtRecoverCode3"
