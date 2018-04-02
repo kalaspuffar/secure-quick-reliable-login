@@ -433,9 +433,9 @@ public class MainActivity extends LoginBaseActivity {
                         } else {
                             handler.post(() -> {
                                 txtLoginPassword.setText("");
+                                loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                             });
                             toastErrorMessage();
-                            loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                         }
                     } catch (Exception e) {
                         handler.post(() -> {

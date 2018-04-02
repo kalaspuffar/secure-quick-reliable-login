@@ -10,7 +10,7 @@ public class ClearIdentityService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters params) {
-        SQRLStorage.getInstance().clearQuickPass(getApplicationContext());
+        SQRLStorage.getInstance().clearQuickPass(this);
         return false;
     }
 

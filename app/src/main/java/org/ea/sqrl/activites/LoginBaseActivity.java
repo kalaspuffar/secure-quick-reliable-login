@@ -1,5 +1,6 @@
 package org.ea.sqrl.activites;
 
+import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -35,6 +36,7 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.services.ClearIdentityReceiver;
 import org.ea.sqrl.services.ClearIdentityService;
 
 import java.util.Map;
@@ -491,13 +493,28 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
         mNotificationManager.notify(NOTIFICATION_IDENTITY_UNLOCKED, mBuilder.build());
 
+        long delayMillis = SQRLStorage.getInstance().getIdleTimeout() * 60000;
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             JobInfo jobInfo = new JobInfo.Builder(ClearIdentityService.JOB_NUMBER, new ComponentName(this, ClearIdentityService.class))
-                    .setMinimumLatency(SQRLStorage.getInstance().getIdleTimeout() * 60000).build();
-
-
+                    .setMinimumLatency(delayMillis).build();
+            
             JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
             jobScheduler.schedule(jobInfo);
+        } else {
+            AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+
+            Intent intent = new Intent(getApplicationContext(), ClearIdentityReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+
+            int SDK_INT = Build.VERSION.SDK_INT;
+            long timeInMillis = System.currentTimeMillis() + delayMillis;
+
+            if (SDK_INT < Build.VERSION_CODES.KITKAT) {
+                alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
+            } else if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
+            }
         }
     }
 
