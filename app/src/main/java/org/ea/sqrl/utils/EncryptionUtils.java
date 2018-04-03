@@ -4,6 +4,7 @@ import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
 
+import org.ea.sqrl.processors.EntropyHarvester;
 import org.ea.sqrl.processors.ProgressionUpdater;
 import org.libsodium.jni.NaCl;
 import org.libsodium.jni.Sodium;
@@ -270,29 +271,18 @@ public class EncryptionUtils {
         return "";
     }
 
-    /*
     public static void main(String[] args) {
-        NaCl.sodium(); //To init
-        byte[] key = new byte[32];
-        byte[] passwd = "hunter3".getBytes();
-        byte[] salt = "somesaltsomesalt".getBytes();
+        try {
+            EntropyHarvester entropyHarvester = EntropyHarvester.getInstance();
+            byte[] rescueCodeBytes = new byte[12];
+            entropyHarvester.fetchRandom(rescueCodeBytes);
 
-        int t = 3;
-        int m = 32768; //2^15
+            BigInteger rescueCodeNum = new BigInteger(1, rescueCodeBytes);
+            String rescueCode = rescueCodeNum.toString(10).substring(rescueCodeNum.toString(10).length() - 24);
+            System.out.println(Arrays.toString(rescueCode.split("(?<=\\G.{4})")));
 
-        Sodium.crypto_secretbox_keygen();
-
-        Sodium.crypto_pwhash(
-                key, key.length,
-                passwd, passwd.length,
-                salt,
-                t, m * 1024,
-                Sodium.crypto_pwhash_alg_argon2i13());
-        System.out.println(EncryptionUtils.byte2hex(key));
-        //111e7608b567c63fb321ce691e4ef31bf71243c0b04e37ed149f55b5015482c2
-        //111e7608b567c63fb321ce691e4ef31bf71243c0b04e37ed149f55b5015482c2
-        //36cde3cea603b857987e5d087f7133e43aea4786970671cb17a8f9175c4236c2
-        //36cde3cea603b857987e5d087f7133e43aea4786970671cb17a8f9175c4236c2
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-    */
 }

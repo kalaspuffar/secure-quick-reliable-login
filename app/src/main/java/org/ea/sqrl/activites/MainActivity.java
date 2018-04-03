@@ -1,20 +1,13 @@
 package org.ea.sqrl.activites;
 
 import android.app.AlertDialog;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.NotificationCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
@@ -23,21 +16,15 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import org.ea.sqrl.processors.EntropyHarvester;
 import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.CommunicationHandler;
@@ -46,7 +33,6 @@ import org.ea.sqrl.utils.EncryptionUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Map;
 
 /**
  * This main activity is the hub of the application where the user lands for daily use. It should

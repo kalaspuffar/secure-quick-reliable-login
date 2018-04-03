@@ -32,9 +32,11 @@ public class EntropyGatherActivity extends AppCompatActivity {
         final Button btnEntropyGatherNext = findViewById(R.id.btnEntropyGatherNext);
         btnEntropyGatherNext.setOnClickListener(v -> {
             mCamera.stopPreview();
+            mCamera.setPreviewCallback(null);
+            mCamera.release();
             entropyHarvester.digestEntropy();
             this.finish();
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, RescueCodeShowActivity.class));
         });
 
         mCamera = getCameraInstance();
@@ -47,7 +49,7 @@ public class EntropyGatherActivity extends AppCompatActivity {
             Log.e(TAG, e.getMessage(), e);
         }
         mPreview = new CameraPreview(this, mCamera, entropyHarvester);
-        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+        FrameLayout preview = findViewById(R.id.camera_preview);
         preview.addView(mPreview);
     }
 
@@ -76,8 +78,10 @@ public class EntropyGatherActivity extends AppCompatActivity {
 
         public void surfaceCreated(SurfaceHolder holder) {
             try {
-                mCamera.setPreviewDisplay(holder);
-                mCamera.startPreview();
+                if(mCamera != null) {
+                    mCamera.setPreviewDisplay(holder);
+                    mCamera.startPreview();
+                }
             } catch (IOException e) {
                 Log.d(TAG, "Error setting camera preview: " + e.getMessage());
             }

@@ -14,6 +14,7 @@ import org.libsodium.jni.Sodium;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.security.Key;
@@ -55,6 +56,8 @@ public class SQRLStorage {
     private int quickPassIterationCount;
     private byte[] quickPassInitializationVector;
 
+    private byte[] tempRescueCode;
+
     private boolean hasIdentityBlock = false;
     private boolean hasRescueBlock = false;
     private boolean hasPreviousBlock = false;
@@ -69,6 +72,30 @@ public class SQRLStorage {
             instance = new SQRLStorage();
         }
         return instance;
+    }
+
+    public void newRescueCode(EntropyHarvester entropyHarvester) {
+        tempRescueCode = new byte[12];
+        entropyHarvester.fetchRandom(tempRescueCode);
+    }
+
+    public List<String> getTempShowableRescueCode() {
+        String rescueCodeStr = getTempRescueCode();
+        return splitEqually(rescueCodeStr, 4);
+    }
+
+    public static List<String> splitEqually(String text, int size) {
+        List<String> ret = new ArrayList<>((text.length() + size - 1) / size);
+        for (int start = 0; start < text.length(); start += size) {
+            ret.add(text.substring(start, Math.min(text.length(), start + size)));
+        }
+        return ret;
+    }
+
+    public String getTempRescueCode() {
+        BigInteger rescueCodeNum = new BigInteger(1, tempRescueCode);
+        String rescueCodeStr = rescueCodeNum.toString(10);
+        return rescueCodeStr.substring(rescueCodeStr.length() - 24);
     }
 
     public String fixString(String input) {

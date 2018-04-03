@@ -61,16 +61,21 @@
             android:name=".activites.AdvancedActivity"
             android:label="@string/title_activity_advanced"
             android:screenOrientation="portrait" />
+        <activity android:name=".activites.EntropyGatherActivity"
+            android:label="@string/title_entropy_gather"
+            android:screenOrientation="portrait"
+            />
 
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="org.ea.sqrl.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/filepaths" />
-        </provider>
+        <activity android:name=".activites.RescueCodeShowActivity"
+            android:label="@string/title_rescuecode_show"
+            android:screenOrientation="portrait"
+            />
+
+        <activity android:name=".activites.RescueCodeEnterActivity"
+            android:label="@string/title_rescuecode_enter"
+            android:screenOrientation="portrait"
+            />
+
 
         <activity
             android:name=".activites.UrlLoginActivity"
@@ -87,16 +92,23 @@
             </intent-filter>
         </activity>
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="org.ea.sqrl.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
+
+
         <service
             android:name=".services.ClearIdentityService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <receiver android:name=".services.ClearIdentityReceiver" />
 
-        <activity android:name=".activites.EntropyGatherActivity"
-            android:label="@string/title_entropy_gather"
-            android:screenOrientation="portrait"
-            />
     </application>
 
 </manifest>

@@ -135,4 +135,6 @@
     <string name="button_entropy_gather_next">Next</string>
     <string name="scan_site_code">Scan QRCode for site</string>
     <string name="scan_identity">Scan QRCode for identity</string>
+    <string name="title_rescuecode_show">SQRL - Rescue code show</string>
+    <string name="title_rescuecode_enter">SQRL - Rescue code enter</string>
 </resources>
