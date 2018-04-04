@@ -651,11 +651,15 @@ public class SQRLStorage {
             if(this.quickPassKey != null) {
                 clearBytes(this.quickPassKey);
             }
+            if(this.tempRescueCode != null) {
+                clearBytes(this.tempRescueCode);
+            }
         } finally {
             this.identityLockKey = null;
             this.identityMasterKey = null;
             this.rescueIdentityUnlockKey = null;
             this.quickPassKey = null;
+            this.tempRescueCode = null;
         }
     }
 
