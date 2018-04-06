@@ -161,10 +161,10 @@ public class MainActivity extends LoginBaseActivity {
         );
 
         final Button btnCreate = findViewById(R.id.btnCreate);
-        btnCreate.setOnClickListener(v -> startActivity(new Intent(this, EntropyGatherActivity.class)));
+        btnCreate.setOnClickListener(v -> startActivity(new Intent(this, CreateIdentityActivity.class)));
 
         final Button btnRekey = findViewById(R.id.btnRekey);
-        btnRekey.setOnClickListener(v -> showNotImplementedDialog());
+        btnRekey.setOnClickListener(v -> startActivity(new Intent(this, RekeyIdentityActivity.class)));
     }
 
     public void setupRenamePopupWindow(LayoutInflater layoutInflater) {

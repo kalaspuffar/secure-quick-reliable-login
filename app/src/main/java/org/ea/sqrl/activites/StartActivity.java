@@ -64,6 +64,9 @@ public class StartActivity extends BaseActivity {
                     startActivity(intent);
                 }
         );
+
+        final Button btnStartCreateIdentity = findViewById(R.id.btnStartCreateIdentity);
+        btnStartCreateIdentity.setOnClickListener(v -> startActivity(new Intent(this, CreateIdentityActivity.class)));
     }
 
     @Override

@@ -4,11 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/startActivityView"
-    tools:context="org.ea.sqrl.activites.StartActivity">
+    tools:context="org.ea.sqrl.activites.EntropyGatherActivity">
 
     <TextView
-        android:id="@+id/txtWelcomeMessage"
+        android:id="@+id/txtRekeyIdentityMessage"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
@@ -16,33 +15,21 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:autoLink="web"
-        android:text="@string/welcome_message"
+        android:text="@string/rekey_identity_message"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnStartCreateIdentity"
+        app:layout_constraintBottom_toTopOf="@+id/btnRekeyIdentityStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btnStartCreateIdentity"
+        android:id="@+id/btnRekeyIdentityStart"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="@string/button_start_create_identity"
-        app:layout_constraintBottom_toTopOf="@+id/btnScanSecret"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/btnScanSecret"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="@string/button_scan_secret"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/button_rekey_identity_start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

@@ -76,6 +76,16 @@
             android:screenOrientation="portrait"
             />
 
+        <activity android:name=".activites.CreateIdentityActivity"
+            android:label="@string/title_create_identity"
+            android:screenOrientation="portrait"
+            />
+
+        <activity android:name=".activites.RekeyIdentityActivity"
+            android:label="@string/title_rekey_identity"
+            android:screenOrientation="portrait"
+            />
+
 
         <activity
             android:name=".activites.UrlLoginActivity"
