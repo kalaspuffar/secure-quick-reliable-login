@@ -520,6 +520,7 @@ public class MainActivity extends LoginBaseActivity {
                         handler.post(() -> {
                             Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                             txtPassword.setText("");
+                            progressPopupWindow.dismiss();
                         });
                         return;
                     }
@@ -529,6 +530,7 @@ public class MainActivity extends LoginBaseActivity {
                         handler.post(() -> {
                             Snackbar.make(rootView, getString(R.string.encrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                             txtPassword.setText("");
+                            progressPopupWindow.dismiss();
                         });
                         return;
                     }
