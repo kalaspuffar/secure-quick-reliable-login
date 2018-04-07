@@ -46,6 +46,7 @@ public class ProgressionUpdater {
     }
 
     public void setTimeLeft(long timeLeftInMilliSeconds) {
+        if(dummy) return;
         handler.post(() -> {
             sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
             progressText.setTextColor(Color.GRAY);

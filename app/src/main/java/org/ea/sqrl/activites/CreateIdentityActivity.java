@@ -33,7 +33,7 @@ public class CreateIdentityActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_identity);
 
-        SQRLStorage.getInstance().clear();
+        SQRLStorage.getInstance().cleanIdentity();
 
         final TextView txtCreateIdentityMessage = findViewById(R.id.txtCreateIdentityMessage);
         txtCreateIdentityMessage.setMovementMethod(LinkMovementMethod.getInstance());

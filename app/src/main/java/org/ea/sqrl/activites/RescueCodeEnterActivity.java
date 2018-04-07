@@ -52,7 +52,7 @@ public class RescueCodeEnterActivity extends AppCompatActivity {
         btnRescueCodeEnterNext.setEnabled(false);
         btnRescueCodeEnterNext.setOnClickListener(v -> {
             this.finish();
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, SaveIdentityActivity.class));
         });
     }
 

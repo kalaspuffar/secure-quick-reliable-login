@@ -147,4 +147,8 @@
     <string name="title_rekey_identity">SQRL - Rekey identity</string>
     <string name="rescuecode_show_desc">This page shows your identitys rescue code. This code is important that you record somewhere safe. If you need in the future to restore, unlock or remove your accounts this code will be used to verify that you are the correct owner of this identity. Store it <b>safe and off this device</b>. The code is presented left to right starting in the upper left and ending in the lower right. You may add dashes or minuses in your recording to easily distinguish between the groups of 4 characters.</string>
     <string name="rescue_code_enter_desc">On this page we ask you to enter the rescue code that you recorded and saved in a secure place in order to show that you have recorded the correct value.</string>
+    <string name="save_identity_title">Save identity</string>
+    <string name="button_save_identity_save">Save</string>
+    <string name="txt_identity_name_hint">Identity name (Optional)</string>
+    <string name="title_save_identity">SQRL - Save identity</string>
 </resources>

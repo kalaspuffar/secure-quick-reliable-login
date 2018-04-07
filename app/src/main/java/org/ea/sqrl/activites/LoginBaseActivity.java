@@ -220,7 +220,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         });
     }
 
-    private void setupProgressPopupWindow(LayoutInflater layoutInflater) {
+    protected void setupProgressPopupWindow(LayoutInflater layoutInflater) {
         View popupView = layoutInflater.inflate(R.layout.fragment_progress, null);
 
         progressPopupWindow = new PopupWindow(popupView,

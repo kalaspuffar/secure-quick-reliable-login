@@ -207,7 +207,7 @@ public class EncryptionUtils {
         int iterationCount = 1;
         long time = System.currentTimeMillis() - startTime;
         byte[] xorKey = Arrays.copyOf(key, key.length);
-        while(time < (secondsToRun * 1000)) {
+        while(time < ((secondsToRun & 0xFF) * 1000)) {
             Sodium.crypto_pwhash_scryptsalsa208sha256_ll(pwdBytes, pwdBytes.length, key, key.length, 1 << logNFactor, 256, 1, key, key.length);
             xorKey = xor(key, xorKey);
             time = System.currentTimeMillis() - startTime;

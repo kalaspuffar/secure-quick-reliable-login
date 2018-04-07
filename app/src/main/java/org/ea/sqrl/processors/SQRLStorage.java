@@ -258,7 +258,7 @@ public class SQRLStorage {
         }
     }
 
-    private void cleanIdentity() {
+    public void cleanIdentity() {
         this.identityPlaintextLength = -1;
         this.identityPlaintext = null;
         this.initializationVector = null;
@@ -808,6 +808,81 @@ public class SQRLStorage {
         }
         return true;
     }
+
+    /**
+     * Encrypt the identity key, this has the master key used to login to sites and also the lock
+     * key that we supply to the sites in order to lock at a later date if the master key ever
+     * gets compromised.
+     *
+     * @param entropyHarvester  Class to give us new random bits for encryption
+     */
+    public boolean encryptRescueKey(EntropyHarvester entropyHarvester) throws Exception {
+        this.progressionUpdater.clear();
+
+        this.rescueRandomSalt = new byte[16];
+        this.rescueLogNFactor = 9;
+        this.rescueIdentityUnlockKey = new byte[32];
+        this.rescueIdentityUnlockKeyEncrypted = new byte[32];
+        this.rescueVerificationTag = new byte[16];
+        this.hasRescueBlock = true;
+
+        byte rescueCodeEncryptionTime = (byte)150; // 2 min 30 seconds.
+        try {
+            entropyHarvester.fetchRandom(this.rescueRandomSalt);
+            entropyHarvester.fetchRandom(this.rescueIdentityUnlockKey);
+
+            byte[] encResult = EncryptionUtils.enSCryptTime(getTempRescueCode(), rescueRandomSalt, rescueLogNFactor, 32, rescueCodeEncryptionTime, this.progressionUpdater);
+            this.rescueIterationCount = getIntFromFourBytes(encResult, 0);
+            byte[] key = Arrays.copyOfRange(encResult, 4, 36);
+
+            byte[] nullBytes = new byte[12];
+            Arrays.fill(nullBytes, (byte)0);
+
+            this.updateRescuePlaintext();
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Key keySpec = new SecretKeySpec(key, "AES");
+                Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
+                GCMParameterSpec params = new GCMParameterSpec(128, nullBytes);
+                cipher.init(Cipher.ENCRYPT_MODE, keySpec, params);
+                cipher.updateAAD(rescuePlaintext);
+                cipher.update(rescueIdentityUnlockKey);
+                byte[] encryptionResult = cipher.doFinal();
+
+                this.rescueIdentityUnlockKeyEncrypted = Arrays.copyOfRange(encryptionResult, 0, 32);
+                this.rescueVerificationTag = Arrays.copyOfRange(encryptionResult, 32, 48);
+            } else {
+                byte[] resultVerificationTag = new byte[16];
+                byte[] encryptionResult = new byte[rescueIdentityUnlockKey.length];
+
+                if(nullBytes == null) throw new Exception();
+                if(rescuePlaintext == null) throw new Exception();
+                if(rescueIdentityUnlockKey == null) throw new Exception();
+                if(encryptionResult == null) throw new Exception();
+                if(resultVerificationTag == null) throw new Exception();
+
+                Grc_aesgcm.gcm_setkey(key, key.length);
+                int res = Grc_aesgcm.gcm_encrypt_and_tag(
+                        nullBytes, nullBytes.length,
+                        rescuePlaintext, rescuePlaintext.length,
+                        rescueIdentityUnlockKey, encryptionResult, rescueIdentityUnlockKey.length,
+                        resultVerificationTag, resultVerificationTag.length
+                );
+                Grc_aesgcm.gcm_zero_ctx();
+
+                if (res == 0x55555555) return false;
+
+                this.rescueIdentityUnlockKeyEncrypted = encryptionResult;
+                this.rescueVerificationTag = resultVerificationTag;
+            }
+        } catch (Exception e) {
+            throw e;
+//            Log.e(TAG, e.getMessage(), e);
+//            return false;
+        }
+        return true;
+    }
+
 
     public String getOptions(boolean noiptest, boolean suk) {
         List<String> options = new ArrayList<>();
