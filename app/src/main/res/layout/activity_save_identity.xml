@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/saveIdentityActivityView"
-    tools:context="org.ea.sqrl.activites.MainActivity">
+    tools:context="org.ea.sqrl.activites.SaveIdentityActivity">
 
     <TextView
         android:id="@+id/textView15"
@@ -27,7 +27,6 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:contentDescription="@string/txt_identity_name_hint"
         android:ems="10"
         android:hint="@string/txt_identity_name_hint"
         android:inputType="textPersonName"
@@ -44,7 +43,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:hint="@string/change_password_new_password"
-        android:contentDescription="@string/change_password_new_password"
         android:ems="10"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
@@ -60,7 +58,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:hint="@string/change_password_retype"
-        android:contentDescription="@string/change_password_retype"
         android:ems="10"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
