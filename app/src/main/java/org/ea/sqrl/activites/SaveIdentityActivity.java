@@ -73,8 +73,6 @@ public class SaveIdentityActivity extends LoginBaseActivity {
                         });
                         return;
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 } finally {
                     storage.clear();
                     handler.post(() -> progressPopupWindow.dismiss());

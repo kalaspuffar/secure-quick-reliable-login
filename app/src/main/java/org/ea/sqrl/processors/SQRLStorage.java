@@ -816,7 +816,7 @@ public class SQRLStorage {
      *
      * @param entropyHarvester  Class to give us new random bits for encryption
      */
-    public boolean encryptRescueKey(EntropyHarvester entropyHarvester) throws Exception {
+    public boolean encryptRescueKey(EntropyHarvester entropyHarvester) {
         this.progressionUpdater.clear();
 
         this.rescueRandomSalt = new byte[16];
@@ -855,12 +855,6 @@ public class SQRLStorage {
                 byte[] resultVerificationTag = new byte[16];
                 byte[] encryptionResult = new byte[rescueIdentityUnlockKey.length];
 
-                if(nullBytes == null) throw new Exception();
-                if(rescuePlaintext == null) throw new Exception();
-                if(rescueIdentityUnlockKey == null) throw new Exception();
-                if(encryptionResult == null) throw new Exception();
-                if(resultVerificationTag == null) throw new Exception();
-
                 Grc_aesgcm.gcm_setkey(key, key.length);
                 int res = Grc_aesgcm.gcm_encrypt_and_tag(
                         nullBytes, nullBytes.length,
@@ -876,9 +870,8 @@ public class SQRLStorage {
                 this.rescueVerificationTag = resultVerificationTag;
             }
         } catch (Exception e) {
-            throw e;
-//            Log.e(TAG, e.getMessage(), e);
-//            return false;
+            Log.e(TAG, e.getMessage(), e);
+            return false;
         }
         return true;
     }
