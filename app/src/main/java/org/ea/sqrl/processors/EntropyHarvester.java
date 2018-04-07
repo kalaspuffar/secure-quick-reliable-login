@@ -1,22 +1,17 @@
 package org.ea.sqrl.processors;
 
 import android.os.Build;
-import android.util.Log;
 import android.widget.ProgressBar;
-
-import org.ea.sqrl.utils.EncryptionUtils;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.util.Arrays;
 
 /**
  * The point of this class is to be the one and only place to fetch your entropy from. It will
  * probably keep up a good amount of random sources and fetch data in order to give high entropy
  * random bits back when asked.
- *
- * TODO: Implement actual harvester, it will use secure random in order to get some data to start
- * with.
  *
  * @author Daniel Persson
  */

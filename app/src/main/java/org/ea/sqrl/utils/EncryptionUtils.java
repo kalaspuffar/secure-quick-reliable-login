@@ -196,8 +196,7 @@ public class EncryptionUtils {
 
     public static byte[] enSCryptTime(String password, byte[] randomSalt, int logNFactor, int dkLen, byte secondsToRun, ProgressionUpdater progressionUpdater) throws Exception {
         long startTime = System.currentTimeMillis();
-        progressionUpdater.setMax(1);
-        progressionUpdater.setTimeLeft(0);
+        progressionUpdater.setMax(secondsToRun & 0xFF);
 
         byte[] key = new byte[dkLen];
         byte[] pwdBytes = password.getBytes();
@@ -211,7 +210,7 @@ public class EncryptionUtils {
             Sodium.crypto_pwhash_scryptsalsa208sha256_ll(pwdBytes, pwdBytes.length, key, key.length, 1 << logNFactor, 256, 1, key, key.length);
             xorKey = xor(key, xorKey);
             time = System.currentTimeMillis() - startTime;
-            progressionUpdater.setTimeLeft(time);
+            progressionUpdater.setTimeDone(time);
             iterationCount++;
         }
         progressionUpdater.incrementProgress();

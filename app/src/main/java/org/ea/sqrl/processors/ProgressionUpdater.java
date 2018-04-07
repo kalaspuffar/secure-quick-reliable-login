@@ -45,12 +45,15 @@ public class ProgressionUpdater {
         return sdf.format(new Date(timeLeftInMilliSeconds));
     }
 
-    public void setTimeLeft(long timeLeftInMilliSeconds) {
+    public void setTimeDone(long timeInMilliSeconds) {
         if(dummy) return;
+
+        int timeInSeconds = Math.round(timeInMilliSeconds / 1000f);
         handler.post(() -> {
             sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
             progressText.setTextColor(Color.GRAY);
-            progressText.setText("Time left: " + sdf.format(new Date(timeLeftInMilliSeconds)));
+            progressText.setText("Time elapsed: " + sdf.format(new Date(timeInMilliSeconds)));
+            progressBar.setProgress(timeInSeconds);
         });
     }
 
