@@ -637,8 +637,6 @@ public class MainActivity extends LoginBaseActivity {
         });
     }
 
-
-
     public void showNotImplementedDialog() {
         AlertDialog.Builder builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

@@ -1,6 +1,8 @@
 package org.ea.sqrl.activites;
 
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -49,10 +51,29 @@ public class RescueCodeShowActivity extends AppCompatActivity {
             Log.e(TAG, e.getMessage(), e);
         }
 
-        final Button btnEntropyGatherNext = findViewById(R.id.btnRescueCodeShowNext);
-        btnEntropyGatherNext.setOnClickListener(v -> {
+        findViewById(R.id.btnRescueCodeShowNext).setOnClickListener(v -> {
             this.finish();
             startActivity(new Intent(this, RescueCodeEnterActivity.class));
         });
+
+        findViewById(R.id.btnPrintRescueCode).setOnClickListener(v -> {
+            showNotImplementedDialog();
+        });
+    }
+
+    public void showNotImplementedDialog() {
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(RescueCodeShowActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+        } else {
+            builder = new AlertDialog.Builder(RescueCodeShowActivity.this);
+        }
+        builder.setTitle(R.string.not_implemented_title)
+                .setMessage(getString(R.string.not_implemented_text))
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .show();
     }
 }

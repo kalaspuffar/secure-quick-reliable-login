@@ -21,7 +21,7 @@
         <TextView
             android:id="@+id/txtRecoverCode1"
             android:layout_width="60dp"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/reset_password_rescuecode_1"
             android:ems="10"
             android:inputType="phone"
@@ -35,8 +35,7 @@
         <TextView
             android:id="@+id/txtRecoverCode2"
             android:layout_width="56dp"
-            android:layout_height="48dp"
-            android:layout_marginLeft="8dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:contentDescription="@string/reset_password_rescuecode_2"
             android:ems="10"
@@ -52,8 +51,7 @@
         <TextView
             android:id="@+id/txtRecoverCode3"
             android:layout_width="56dp"
-            android:layout_height="48dp"
-            android:layout_marginLeft="8dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:contentDescription="@string/reset_password_rescuecode_3"
             android:ems="10"
@@ -82,7 +80,7 @@
         <TextView
             android:id="@+id/txtRecoverCode4"
             android:layout_width="56dp"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/reset_password_rescuecode_4"
             android:ems="10"
             android:inputType="phone"
@@ -96,8 +94,7 @@
         <TextView
             android:id="@+id/txtRecoverCode5"
             android:layout_width="56dp"
-            android:layout_height="48dp"
-            android:layout_marginLeft="8dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:contentDescription="@string/reset_password_rescuecode_5"
             android:ems="10"
@@ -113,8 +110,7 @@
         <TextView
             android:id="@+id/txtRecoverCode6"
             android:layout_width="56dp"
-            android:layout_height="48dp"
-            android:layout_marginLeft="8dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:contentDescription="@string/reset_password_rescuecode_6"
             android:ems="10"
@@ -129,16 +125,28 @@
     </android.support.constraint.ConstraintLayout>
 
     <Button
-        android:id="@+id/btnRescueCodeShowNext"
+        android:id="@+id/btnPrintRescueCode"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="@string/button_entropy_gather_next"
+        android:text="@string/button_print_rescue_code"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inputRow2" />
+
+    <Button
+        android:id="@+id/btnRescueCodeShowNext"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/button_entropy_gather_next"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnPrintRescueCode" />
 
     <TextView
         android:id="@+id/textView17"

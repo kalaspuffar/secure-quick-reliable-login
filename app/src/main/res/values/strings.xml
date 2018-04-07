@@ -151,4 +151,5 @@
     <string name="button_save_identity_save">Save</string>
     <string name="txt_identity_name_hint">Identity name (Optional)</string>
     <string name="title_save_identity">SQRL - Save identity</string>
+    <string name="button_print_rescue_code">Print</string>
 </resources>
