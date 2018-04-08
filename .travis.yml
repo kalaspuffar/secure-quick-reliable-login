@@ -2,11 +2,7 @@ language: android
 
 jdk:
   - oraclejdk8
-
-install:
-  - echo y | sdkmanager 'ndk-bundle'
-  - echo y | sdkmanager 'cmake;3.6.4111459'
-  - echo y | sdkmanager 'lldb;3.0'
+h
 
 android:
   components:
@@ -24,19 +20,32 @@ licenses:
   - android-sdk-license-.+
   - google-gdk-license-.+
 
+before_cache:
+  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -rf $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+  - "$HOME/.android/build-cache"
+
+before_install:
+  - wget https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip
+  - unzip android-ndk-r16b-linux-x86_64.zip -d $HOME
+  - export ANDROID_NDK_HOME=$HOME/android-ndk-r16b
+  - export PATH=$PATH:$ANDROID_NDK_HOME
+  - mkdir "$ANDROID_HOME/licenses" || true		
+  - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"		
+  - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"	
+
 
 before_script:
-  - wget https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip
-  - unzip -qq android-ndk-r16b-linux-x86_64.zip
-  - export ANDROID_NDK_HOME=`pwd`/android-ndk-r16b
-  - export LOCAL_ANDROID_NDK_HOME="$ANDROID_NDK_HOME"
-  - export LOCAL_ANDROID_NDK_HOST_PLATFORM="linux-x86_64"
-  - export PATH=$PATH:${ANDROID_NDK_HOME}
-  - env
   - echo no | android create avd --force -n test -t android-26 --abi armeabi-v7a
   - emulator -avd test -no-audio -no-window &
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
+  - ./gradlew clean
     
 script:
   - ./gradlew dependencyCheckAnalyze build connectedCheck
