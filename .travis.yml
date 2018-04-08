@@ -22,9 +22,9 @@ android:
     # Latest artifacts in local repository
     - extra-google-m2repository
     - extra-android-m2repository
-    - sys-img-armeabi-v7a-$ANDROID_API_LEVEL
+    - sys-img-armeabi-v7a-android-$ANDROID_API_LEVEL
 
-
+i
 licenses:
   - android-sdk-preview-license-.+
   - android-sdk-license-.+
