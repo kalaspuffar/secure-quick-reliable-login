@@ -63,4 +63,4 @@ before_script:
 script:
   - ./gradlew dependencyCheckAnalyze build connectedCheck
 
-after_failure: "cat $TRAVIS_BUILD_DIR/app/gen_build/outputs/lint-results-debug.xml"
+after_failure: "cat $TRAVIS_BUILD_DIR/app/gen_build/outputs/lint-results.xml"
