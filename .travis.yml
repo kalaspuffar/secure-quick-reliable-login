@@ -41,6 +41,7 @@ cache:
 
 before_install:
   - yes | sdkmanager "platforms;android-27"
+  - android update sdk -a -u -t sys-img-armeabi-v7a-android-27
   - wget https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip
   - unzip android-ndk-r16b-linux-x86_64.zip -d $HOME > /dev/null
   - export ANDROID_NDK_HOME=$HOME/android-ndk-r16b
