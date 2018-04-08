@@ -24,7 +24,6 @@ android:
     - extra-android-m2repository
     - sys-img-armeabi-v7a-android-$ANDROID_API_LEVEL
 
-i
 licenses:
   - android-sdk-preview-license-.+
   - android-sdk-license-.+
