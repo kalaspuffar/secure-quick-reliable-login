@@ -1,5 +1,7 @@
 # Secure Quick Reliable Login
 
+[![Build Status](https://travis-ci.org/kalaspuffar/secure-quick-reliable-login.svg?branch=master)](https://travis-ci.org/kalaspuffar/secure-quick-reliable-login)
+
 This repository is an implementation for SQRL (Secure Quick Reliable Login) on android.
 
 ***This repository is in active development***
@@ -40,4 +42,3 @@ But after the project is setup you may use the command below to build your relea
 ```
 ./gradlew assembleRelease
 ```
-
