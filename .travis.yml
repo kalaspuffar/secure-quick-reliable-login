@@ -1,10 +1,7 @@
 language: android
 
-
 jdk:
   - oraclejdk8
-  - oraclejdk9
-
 
 install:
   - echo y | sdkmanager 'ndk-bundle'
@@ -23,11 +20,8 @@ android:
     - sys-img-armeabi-v7a-android-17
     
 licenses:
-
   - android-sdk-preview-license-.+
-
   - android-sdk-license-.+
-
   - google-gdk-license-.+
 
 
@@ -39,7 +33,7 @@ before_script:
   - export LOCAL_ANDROID_NDK_HOST_PLATFORM="linux-x86_64"
   - export PATH=$PATH:${ANDROID_NDK_HOME}
   - env
-  - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
+  - echo no | android create avd --force -n test -t android-26 --abi armeabi-v7a
   - emulator -avd test -no-audio -no-window &
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
