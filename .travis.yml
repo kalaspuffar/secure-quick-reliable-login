@@ -1,7 +1,5 @@
 language: android
 jdk: oraclejdk8
-cache: false
-sudo: true
 
 env:
   global:
