@@ -42,3 +42,6 @@ But after the project is setup you may use the command below to build your relea
 ```
 ./gradlew assembleRelease
 ```
+
+##### Remember:
+[System images](https://dl.google.com/android/repository/sys-img/google_apis/sys-img.xml)
