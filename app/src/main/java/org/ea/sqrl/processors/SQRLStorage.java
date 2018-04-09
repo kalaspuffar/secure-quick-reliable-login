@@ -974,7 +974,7 @@ E/SQRLStorage: e2bd235e4bee2c382c8c7ea4047c10bb2de9ecdda9279c0a48f9a026f1e1377c
         if(this.hasRescueBlock && this.rescueIdentityUnlockKey != null) {
             addPreviousKey(this.rescueIdentityUnlockKey);
         }
-        
+
         this.rescueRandomSalt = new byte[16];
         this.rescueLogNFactor = 9;
         this.rescueIdentityUnlockKey = new byte[32];
@@ -1112,6 +1112,7 @@ E/SQRLStorage: e2bd235e4bee2c382c8c7ea4047c10bb2de9ecdda9279c0a48f9a026f1e1377c
         if(!hasPreviousBlock) return;
 
         final int PREVIOUS_KEY_LEN = 32;
+        final int PREVIOUS_VERIFY_LEN = 16;
 
         if (previousCountOfKeys > 0) {
             byte[] newPlaintext = getIntToTwoBytes(PREVIOUS_IDENTITY_KEYS);
@@ -1121,7 +1122,7 @@ E/SQRLStorage: e2bd235e4bee2c382c8c7ea4047c10bb2de9ecdda9279c0a48f9a026f1e1377c
                     BLOCK_LENGTH_SIZE +
                     newPlaintext.length +
                     PREVIOUS_KEY_LEN * previousCountOfKeys +
-                    previousVerificationTag.length
+                    PREVIOUS_VERIFY_LEN
                 ), newPlaintext);
             previousPlaintext = newPlaintext;
         }
