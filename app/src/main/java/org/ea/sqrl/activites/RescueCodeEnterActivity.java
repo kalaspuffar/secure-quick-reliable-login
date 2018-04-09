@@ -32,8 +32,6 @@ public class RescueCodeEnterActivity extends AppCompatActivity {
         SQRLStorage storage = SQRLStorage.getInstance();
         List<String> rescueList = storage.getTempShowableRescueCode();
 
-        System.out.println(Arrays.toString(rescueList.toArray()));
-
         txtRecoverCode1 = findViewById(R.id.txtRecoverCode1);
         txtRecoverCode2 = findViewById(R.id.txtRecoverCode2);
         txtRecoverCode3 = findViewById(R.id.txtRecoverCode3);

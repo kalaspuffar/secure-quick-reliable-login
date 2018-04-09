@@ -59,11 +59,7 @@ public class SaveIdentityActivity extends LoginBaseActivity {
                         return;
                     }
 
-                    if (storage.hasEncryptedKeys()) {
-                        Snackbar.make(rootView, "NOT IMPLEMENTED!", Snackbar.LENGTH_LONG).show();
-                    } else {
-                        storage.reInitializeMasterKeyIdentity();
-                    }
+                    storage.reInitializeMasterKeyIdentity();
 
                     boolean encryptStatus = storage.encryptIdentityKey(txtNewPassword.getText().toString(), entropyHarvester);
                     if (!encryptStatus) {

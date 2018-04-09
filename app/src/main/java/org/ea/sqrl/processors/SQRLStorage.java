@@ -650,12 +650,29 @@ public class SQRLStorage {
             if(this.tempRescueCode != null) {
                 clearBytes(this.tempRescueCode);
             }
+            if(this.previousKey1 != null) {
+                clearBytes(this.previousKey1);
+            }
+            if(this.previousKey2 != null) {
+                clearBytes(this.previousKey2);
+            }
+            if(this.previousKey3 != null) {
+                clearBytes(this.previousKey3);
+            }
+            if(this.previousKey4 != null) {
+                clearBytes(this.previousKey4);
+            }
         } finally {
             this.identityLockKey = null;
             this.identityMasterKey = null;
             this.rescueIdentityUnlockKey = null;
             this.quickPassKey = null;
             this.tempRescueCode = null;
+            this.previousKey1 = null;
+            this.previousKey2 = null;
+            this.previousKey3 = null;
+            this.previousKey4 = null;
+            this.previousKey4 = null;
         }
     }
 
@@ -798,12 +815,151 @@ public class SQRLStorage {
                 this.identityVerificationTag = resultVerificationTag;
             }
 
+            if(hasPreviousBlock) {
+                return encryptPreviousBlock();
+            }
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
             return false;
         }
         return true;
     }
+
+
+    private boolean encryptPreviousBlock() {
+        try {
+            byte[] identityKeys = previousKey1;
+            if(previousCountOfKeys > 1) {
+                identityKeys = EncryptionUtils.combine(identityKeys, previousKey2);
+            }
+            if(previousCountOfKeys > 2) {
+                identityKeys = EncryptionUtils.combine(identityKeys, previousKey3);
+            }
+            if(previousCountOfKeys > 3) {
+                identityKeys = EncryptionUtils.combine(identityKeys, previousKey4);
+            }
+
+            byte[] nullBytes = new byte[12];
+            Arrays.fill(nullBytes, (byte)0);
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Key keySpec = new SecretKeySpec(this.identityMasterKey, "AES");
+                Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
+                GCMParameterSpec params = new GCMParameterSpec(128, nullBytes);
+                cipher.init(Cipher.ENCRYPT_MODE, keySpec, params);
+                cipher.updateAAD(previousPlaintext);
+                cipher.update(identityKeys);
+                byte[] encryptionResult = cipher.doFinal();
+
+                int nextKeyStart = 0;
+                previousKey1Encrypted = Arrays.copyOfRange(encryptionResult, nextKeyStart, nextKeyStart + 32);
+                nextKeyStart += 32;
+                if(previousCountOfKeys > 1) {
+                    previousKey2Encrypted = Arrays.copyOfRange(encryptionResult, nextKeyStart, nextKeyStart + 32);
+                    nextKeyStart += 32;
+                }
+                if(previousCountOfKeys > 2) {
+                    previousKey3Encrypted = Arrays.copyOfRange(encryptionResult, nextKeyStart, nextKeyStart + 32);
+                    nextKeyStart += 32;
+                }
+                if(previousCountOfKeys > 3) {
+                    previousKey4Encrypted = Arrays.copyOfRange(encryptionResult, nextKeyStart, nextKeyStart + 32);
+                    nextKeyStart += 32;
+                }
+                this.previousVerificationTag = Arrays.copyOfRange(encryptionResult, nextKeyStart, nextKeyStart + 16);
+            } else {
+                byte[] resultVerificationTag = new byte[16];
+                byte[] encryptionResult = new byte[identityKeys.length];
+
+                Grc_aesgcm.gcm_setkey(this.identityMasterKey, this.identityMasterKey.length);
+                int res = Grc_aesgcm.gcm_encrypt_and_tag(
+                        nullBytes, nullBytes.length,
+                        previousPlaintext, previousPlaintext.length,
+                        identityKeys, encryptionResult, identityKeys.length,
+                        resultVerificationTag, resultVerificationTag.length
+                );
+                Grc_aesgcm.gcm_zero_ctx();
+
+                if (res == 0x55555555) return false;
+
+                int nextKeyStart = 0;
+                previousKey1Encrypted = Arrays.copyOfRange(encryptionResult, nextKeyStart, nextKeyStart + 32);
+                nextKeyStart += 32;
+                if(previousCountOfKeys > 1) {
+                    previousKey2Encrypted = Arrays.copyOfRange(encryptionResult, nextKeyStart, nextKeyStart + 32);
+                    nextKeyStart += 32;
+                }
+                if(previousCountOfKeys > 2) {
+                    previousKey3Encrypted = Arrays.copyOfRange(encryptionResult, nextKeyStart, nextKeyStart + 32);
+                    nextKeyStart += 32;
+                }
+                if(previousCountOfKeys > 3) {
+                    previousKey4Encrypted = Arrays.copyOfRange(encryptionResult, nextKeyStart, nextKeyStart + 32);
+                }
+                previousVerificationTag = resultVerificationTag;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+            return false;
+        }
+        return true;
+    }
+
+    private void addPreviousKey(byte[] identityUnlockKey) {
+        if(hasPreviousBlock) {
+            this.reInitializeMasterKeyIdentity();
+        }
+        if(!hasPreviousBlock || previousCountOfKeys == 0 || this.decryptPreviousBlock()) {
+            Log.e(TAG, "Before previous key");
+            Log.e(TAG, EncryptionUtils.byte2hex(identityUnlockKey));
+            if(this.previousKey1 != null)
+                Log.e(TAG, EncryptionUtils.byte2hex(this.previousKey1));
+            if(this.previousKey2 != null)
+                Log.e(TAG, EncryptionUtils.byte2hex(this.previousKey2));
+            if(this.previousKey3 != null)
+                Log.e(TAG, EncryptionUtils.byte2hex(this.previousKey3));
+            if(this.previousKey4 != null)
+                Log.e(TAG, EncryptionUtils.byte2hex(this.previousKey4));
+
+            if (this.previousCountOfKeys < 4) {
+                this.previousCountOfKeys++;
+            }
+            if (previousCountOfKeys > 3) {
+                this.previousKey4 = this.previousKey3;
+            }
+            if (previousCountOfKeys > 2) {
+                this.previousKey3 = this.previousKey2;
+            }
+            if (previousCountOfKeys > 1) {
+                this.previousKey2 = this.previousKey1;
+            }
+            this.previousKey1 = identityUnlockKey;
+            this.hasPreviousBlock = true;
+            this.updatePreviousPlaintext();
+        }
+        Log.e(TAG, "After previous key");
+        if(this.previousKey1 != null)
+            Log.e(TAG, EncryptionUtils.byte2hex(this.previousKey1));
+        if(this.previousKey2 != null)
+            Log.e(TAG, EncryptionUtils.byte2hex(this.previousKey2));
+        if(this.previousKey3 != null)
+            Log.e(TAG, EncryptionUtils.byte2hex(this.previousKey3));
+        if(this.previousKey4 != null)
+            Log.e(TAG, EncryptionUtils.byte2hex(this.previousKey4));
+    }
+
+    /*
+E/SQRLStorage: Before previous key
+E/SQRLStorage: a88b6952bcf73fd1192c42003d0e1efd4d1ef87ccc6f72a1a64ce722fa9f8c72
+E/SQRLStorage: After previous key
+E/SQRLStorage: a88b6952bcf73fd1192c42003d0e1efd4d1ef87ccc6f72a1a64ce722fa9f8c72
+
+E/SQRLStorage: Before previous key
+E/SQRLStorage: e2bd235e4bee2c382c8c7ea4047c10bb2de9ecdda9279c0a48f9a026f1e1377c
+E/SQRLStorage: After previous key
+E/SQRLStorage: e2bd235e4bee2c382c8c7ea4047c10bb2de9ecdda9279c0a48f9a026f1e1377c
+     */
+
 
     /**
      * Encrypt the identity key, this has the master key used to login to sites and also the lock
@@ -815,6 +971,10 @@ public class SQRLStorage {
     public boolean encryptRescueKey(EntropyHarvester entropyHarvester) {
         this.progressionUpdater.clear();
 
+        if(this.hasRescueBlock && this.rescueIdentityUnlockKey != null) {
+            addPreviousKey(this.rescueIdentityUnlockKey);
+        }
+        
         this.rescueRandomSalt = new byte[16];
         this.rescueLogNFactor = 9;
         this.rescueIdentityUnlockKey = new byte[32];
@@ -951,6 +1111,8 @@ public class SQRLStorage {
     private void updatePreviousPlaintext() {
         if(!hasPreviousBlock) return;
 
+        final int PREVIOUS_KEY_LEN = 32;
+
         if (previousCountOfKeys > 0) {
             byte[] newPlaintext = getIntToTwoBytes(PREVIOUS_IDENTITY_KEYS);
             newPlaintext = EncryptionUtils.combine(newPlaintext, getIntToTwoBytes(previousCountOfKeys));
@@ -958,7 +1120,7 @@ public class SQRLStorage {
                 this.getIntToTwoBytes(
                     BLOCK_LENGTH_SIZE +
                     newPlaintext.length +
-                    previousKey1Encrypted.length * previousCountOfKeys +
+                    PREVIOUS_KEY_LEN * previousCountOfKeys +
                     previousVerificationTag.length
                 ), newPlaintext);
             previousPlaintext = newPlaintext;
