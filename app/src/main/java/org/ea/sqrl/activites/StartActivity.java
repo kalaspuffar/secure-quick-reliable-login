@@ -93,7 +93,7 @@ public class StartActivity extends BaseActivity {
                 );
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putLong(getString(R.string.current_id), newIdentityId);
-                editor.commit();
+                editor.apply();
 
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);

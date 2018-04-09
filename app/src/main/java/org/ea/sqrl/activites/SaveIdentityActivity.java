@@ -87,7 +87,7 @@ public class SaveIdentityActivity extends LoginBaseActivity {
                 );
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putLong(getString(R.string.current_id), newIdentityId);
-                editor.commit();
+                editor.apply();
 
                 handler.post(() -> {
                     txtIdentityName.setText("");

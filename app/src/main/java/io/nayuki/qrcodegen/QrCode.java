@@ -27,6 +27,7 @@ import android.graphics.Bitmap;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -262,7 +263,7 @@ public final class QrCode {
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
         sb.append("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n");
-        sb.append(String.format(
+        sb.append(String.format(Locale.US,
                 "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" viewBox=\"0 0 %1$d %1$d\" stroke=\"none\">\n",
                 size + border * 2));
         sb.append("\t<rect width=\"100%\" height=\"100%\" fill=\"#FFFFFF\"/>\n");
@@ -275,7 +276,7 @@ public final class QrCode {
                         head = false;
                     else
                         sb.append(" ");
-                    sb.append(String.format("M%d,%dh1v1h-1z", x + border, y + border));
+                    sb.append(String.format(Locale.US, "M%d,%dh1v1h-1z", x + border, y + border));
                 }
             }
         }
@@ -718,7 +719,7 @@ public final class QrCode {
         final int formatBits;
 
         // Constructor.
-        private Ecc(int fb) {
+        Ecc(int fb) {
             formatBits = fb;
         }
     }

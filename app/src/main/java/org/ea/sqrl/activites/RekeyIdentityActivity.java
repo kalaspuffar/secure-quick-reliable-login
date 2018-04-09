@@ -31,7 +31,7 @@ public class RekeyIdentityActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start);
+        setContentView(R.layout.activity_rekey_identity);
 
         SQRLStorage.getInstance().clear();
 

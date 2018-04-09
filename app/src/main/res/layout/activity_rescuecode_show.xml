@@ -24,7 +24,6 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/reset_password_rescuecode_1"
             android:ems="10"
-            android:inputType="phone"
             android:maxLength="4"
             android:nextFocusDown="@+id/txtRecoverCode2"
             android:textAlignment="center"
@@ -39,14 +38,14 @@
             android:layout_marginStart="8dp"
             android:contentDescription="@string/reset_password_rescuecode_2"
             android:ems="10"
-            android:inputType="phone"
             android:maxLength="4"
             android:nextFocusDown="@+id/txtRecoverCode3"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintStart_toEndOf="@+id/txtRecoverCode1"
             tools:layout_conversion_absoluteHeight="46dp"
-            tools:layout_conversion_absoluteWidth="327dp" />
+            tools:layout_conversion_absoluteWidth="327dp"
+            android:layout_marginLeft="8dp" />
 
         <TextView
             android:id="@+id/txtRecoverCode3"
@@ -55,14 +54,14 @@
             android:layout_marginStart="8dp"
             android:contentDescription="@string/reset_password_rescuecode_3"
             android:ems="10"
-            android:inputType="phone"
             android:maxLength="4"
             android:nextFocusDown="@+id/txtRecoverCode4"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintStart_toEndOf="@+id/txtRecoverCode2"
             tools:layout_conversion_absoluteHeight="46dp"
-            tools:layout_conversion_absoluteWidth="327dp" />
+            tools:layout_conversion_absoluteWidth="327dp"
+            android:layout_marginLeft="8dp" />
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
@@ -83,7 +82,6 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/reset_password_rescuecode_4"
             android:ems="10"
-            android:inputType="phone"
             android:maxLength="4"
             android:nextFocusDown="@+id/txtRecoverCode5"
             android:textAlignment="center"
@@ -98,14 +96,14 @@
             android:layout_marginStart="8dp"
             android:contentDescription="@string/reset_password_rescuecode_5"
             android:ems="10"
-            android:inputType="phone"
             android:maxLength="4"
             android:nextFocusDown="@+id/txtRecoverCode6"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintStart_toEndOf="@+id/txtRecoverCode4"
             tools:layout_conversion_absoluteHeight="46dp"
-            tools:layout_conversion_absoluteWidth="327dp" />
+            tools:layout_conversion_absoluteWidth="327dp"
+            android:layout_marginLeft="8dp" />
 
         <TextView
             android:id="@+id/txtRecoverCode6"
@@ -114,14 +112,14 @@
             android:layout_marginStart="8dp"
             android:contentDescription="@string/reset_password_rescuecode_6"
             android:ems="10"
-            android:inputType="phone"
             android:maxLength="4"
             android:nextFocusDown="@+id/txtResetPasswordNewPassword"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintStart_toEndOf="@+id/txtRecoverCode5"
             tools:layout_conversion_absoluteHeight="46dp"
-            tools:layout_conversion_absoluteWidth="327dp" />
+            tools:layout_conversion_absoluteWidth="327dp"
+            android:layout_marginLeft="8dp" />
     </android.support.constraint.ConstraintLayout>
 
     <Button

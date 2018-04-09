@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -19,7 +20,7 @@ import java.util.TimeZone;
 public class ProgressionUpdater {
     private static final String TAG = "ProgressionUpdater";
 
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.US);
     private Handler handler;
     private ProgressBar progressBar;
     private TextView progressText;

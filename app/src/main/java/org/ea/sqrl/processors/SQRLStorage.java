@@ -601,18 +601,12 @@ public class SQRLStorage {
 
 
     public boolean hasEncryptedKeys() {
-        if(this.identityMasterKeyEncrypted != null) {
-            return true;
-        }
-        return false;
+        return this.identityMasterKeyEncrypted != null;
     }
 
 
     public boolean hasKeys() {
-        if(this.identityMasterKey != null) {
-            return true;
-        }
-        return false;
+        return this.identityMasterKey != null;
     }
 
     public boolean hasQuickPass() {
@@ -634,7 +628,9 @@ public class SQRLStorage {
 
         NotificationManager notificationManager =
                 (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(BaseActivity.NOTIFICATION_IDENTITY_UNLOCKED);
+        if(notificationManager != null) {
+            notificationManager.cancel(BaseActivity.NOTIFICATION_IDENTITY_UNLOCKED);
+        }
     }
 
     public void clear() {

@@ -247,7 +247,7 @@ public class CommunicationHandler {
         } finally {
             closeQuietly(output);
             closeQuietly(input);
-            con.disconnect();
+            if(con != null) con.disconnect();
         }
     }
 

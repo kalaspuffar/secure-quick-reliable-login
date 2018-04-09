@@ -1,10 +1,13 @@
 package org.ea.sqrl.database;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.LongSparseArray;
+
 import org.ea.sqrl.database.IdentityContract.IdentityEntry;
 
 import java.util.HashMap;
@@ -38,7 +41,7 @@ public class IdentityDBHelper extends SQLiteOpenHelper {
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        /**
+        /*
          * Might need to look into upgrade and downgrade strategies if we change
          * this but probably not.
          */
@@ -71,10 +74,12 @@ public class IdentityDBHelper extends SQLiteOpenHelper {
                 null
         );
 
+        byte[] returnVal = new byte[] {};
         if (cursor.moveToFirst()) {
-            return cursor.getBlob(0);
+            returnVal = cursor.getBlob(0);
         }
-        return new byte[] {};
+        cursor.close();
+        return returnVal;
     }
 
     public Map<Long, String> getIdentitys() {
@@ -91,12 +96,13 @@ public class IdentityDBHelper extends SQLiteOpenHelper {
                 null
         );
 
-        Map<Long, String> identities = new HashMap<>();
+        @SuppressLint("UseSparseArrays") Map<Long, String> identities = new HashMap<>();
         while(cursor.moveToNext()) {
             Long id = cursor.getLong(0);
             String name = cursor.getString(1);
             identities.put(id, name != null ? name : "ID " + id);
         }
+        cursor.close();
         return identities;
     }
 

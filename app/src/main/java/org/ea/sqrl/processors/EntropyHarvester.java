@@ -22,7 +22,6 @@ public class EntropyHarvester {
     private final MessageDigest md;
     private static EntropyHarvester instance;
     private BigInteger numberOfBytesGathered;
-    private ProgressBar progressBar;
 
     public static EntropyHarvester getInstance() throws Exception {
         if(instance == null) {
@@ -46,12 +45,11 @@ public class EntropyHarvester {
         sr.nextBytes(buffer);
     }
 
-    public void setProgressBar(ProgressBar progressBar) {
+    public void startGather() {
         this.numberOfBytesGathered = BigInteger.ZERO;
-        this.progressBar = progressBar;
     }
 
-    public void addEntropy(byte[] bytes) {
+    public void addEntropy(ProgressBar progressBar, byte[] bytes) {
         md.update(bytes);
         numberOfBytesGathered = numberOfBytesGathered.add(BigInteger.valueOf(bytes.length));
         if(progressBar != null) {

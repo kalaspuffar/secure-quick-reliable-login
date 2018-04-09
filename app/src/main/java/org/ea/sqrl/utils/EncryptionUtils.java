@@ -127,19 +127,11 @@ public class EncryptionUtils {
     }
 
     public static String encodeUrlSafe(byte[] data) throws Exception {
-        if(Build.DEVICE != null) {
-            return Base64.encodeToString(data, Base64.NO_PADDING + Base64.URL_SAFE + Base64.NO_WRAP);
-        } else {
-            return java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(data);
-        }
+        return Base64.encodeToString(data, Base64.NO_PADDING + Base64.URL_SAFE + Base64.NO_WRAP);
     }
 
     public static byte[] decodeUrlSafe(String data) throws Exception {
-        if(Build.DEVICE != null) {
-            return Base64.decode(data, Base64.NO_PADDING + Base64.URL_SAFE + Base64.NO_WRAP);
-        } else {
-            return java.util.Base64.getUrlDecoder().decode(data);
-        }
+        return Base64.decode(data, Base64.NO_PADDING + Base64.URL_SAFE + Base64.NO_WRAP);
     }
 
     public static byte[] xor(byte[] a, byte[] b) {
@@ -222,7 +214,7 @@ public class EncryptionUtils {
     public static String bitsToString(BitSet b) {
         StringBuilder s = new StringBuilder();
         for( int i = 0; i < b.length();  i++ ) {
-            s.append( b.get( i ) == true ? 1: 0 );
+            s.append( b.get(i) ? 1 : 0 );
         }
         return s.toString();
     }

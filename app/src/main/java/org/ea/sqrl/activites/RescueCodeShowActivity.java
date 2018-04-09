@@ -19,15 +19,13 @@ import java.util.List;
 public class RescueCodeShowActivity extends AppCompatActivity {
     private static final String TAG = "RescueCodeShowActivity";
 
-    private EntropyHarvester entropyHarvester;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rescuecode_show);
 
         try {
-            entropyHarvester = EntropyHarvester.getInstance();
+            final EntropyHarvester entropyHarvester = EntropyHarvester.getInstance();
             SQRLStorage storage = SQRLStorage.getInstance();
             storage.newRescueCode(entropyHarvester);
 

@@ -1,5 +1,6 @@
 package org.ea.sqrl.activites;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -17,6 +18,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.util.LongSparseArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +43,7 @@ import org.ea.sqrl.services.ClearIdentityService;
 
 import java.util.Map;
 
+@SuppressLint("Registered")
 public class LoginBaseActivity extends BaseActivity implements AdapterView.OnItemSelectedListener {
     private static final String TAG = "LoginBaseActivity";
     protected ConstraintLayout rootView;
@@ -190,7 +193,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     }
 
     public void setupLoginOptionsPopupWindow(LayoutInflater layoutInflater, boolean popup) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_login_optional, null);
+        View popupView = layoutInflater.inflate(R.layout.fragment_login_optional, rootView);
 
         loginOptionsPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -221,7 +224,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     }
 
     protected void setupProgressPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_progress, null);
+        View popupView = layoutInflater.inflate(R.layout.fragment_progress, rootView);
 
         progressPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -237,7 +240,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     protected void closeActivity() {}
 
     private void setupDisableAccountPopupWindow(LayoutInflater layoutInflater, boolean noiptest) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_disable_account, null);
+        View popupView = layoutInflater.inflate(R.layout.fragment_disable_account, rootView);
 
         disableAccountPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -296,7 +299,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     }
 
     private void setupEnableAccountPopupWindow(LayoutInflater layoutInflater, boolean noiptest) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_enable_account, null);
+        View popupView = layoutInflater.inflate(R.layout.fragment_enable_account, rootView);
 
         enableAccountPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -377,7 +380,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     }
 
     private void setupRemoveAccountPopupWindow(LayoutInflater layoutInflater, boolean noiptest) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_remove_account, null);
+        View popupView = layoutInflater.inflate(R.layout.fragment_remove_account, rootView);
 
         removeAccountPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -472,7 +475,9 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
             notificationChannel.enableLights(false);
             notificationChannel.setSound(null, null);
 
-            notificationManager.createNotificationChannel(notificationChannel);
+            if(notificationManager != null) {
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
         }
 
         long[] v = {};
@@ -502,7 +507,9 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        mNotificationManager.notify(NOTIFICATION_IDENTITY_UNLOCKED, mBuilder.build());
+        if(mNotificationManager != null) {
+            mNotificationManager.notify(NOTIFICATION_IDENTITY_UNLOCKED, mBuilder.build());
+        }
 
         long delayMillis = SQRLStorage.getInstance().getIdleTimeout() * 60000;
 
@@ -511,7 +518,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     .setMinimumLatency(delayMillis).build();
 
             JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-            jobScheduler.schedule(jobInfo);
+            if(jobScheduler != null) jobScheduler.schedule(jobInfo);
         } else {
             AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
 
@@ -520,6 +527,8 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
             int SDK_INT = Build.VERSION.SDK_INT;
             long timeInMillis = System.currentTimeMillis() + delayMillis;
+
+            if(alarmManager == null) return;
 
             if (SDK_INT < Build.VERSION_CODES.KITKAT) {
                 alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
@@ -539,7 +548,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         );
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putLong(getString(R.string.current_id), keyArray[pos]);
-        editor.commit();
+        editor.apply();
 
         SQRLStorage storage = SQRLStorage.getInstance();
         storage.clearQuickPass(this);

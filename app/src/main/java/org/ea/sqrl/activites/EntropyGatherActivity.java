@@ -21,8 +21,8 @@ public class EntropyGatherActivity extends AppCompatActivity {
     private static final String TAG = "EntropyGatherActivity";
 
     private Camera mCamera;
-    private CameraPreview mPreview;
     private EntropyHarvester entropyHarvester;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,15 +40,15 @@ public class EntropyGatherActivity extends AppCompatActivity {
         });
 
         mCamera = getCameraInstance();
-        final ProgressBar progressBar = findViewById(R.id.pbEntropy);
+        progressBar = findViewById(R.id.pbEntropy);
 
         try {
             entropyHarvester = EntropyHarvester.getInstance();
-            entropyHarvester.setProgressBar(progressBar);
+            entropyHarvester.startGather();
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
         }
-        mPreview = new CameraPreview(this, mCamera, entropyHarvester);
+        final CameraPreview mPreview = new CameraPreview(this, mCamera, entropyHarvester);
         FrameLayout preview = findViewById(R.id.camera_preview);
         preview.addView(mPreview);
     }
@@ -98,7 +98,7 @@ public class EntropyGatherActivity extends AppCompatActivity {
                 mCamera.stopPreview();
                 mCamera.setPreviewDisplay(mHolder);
                 mCamera.setPreviewCallback((data, camera) -> {
-                    mEntropyHarvester.addEntropy(data);
+                    mEntropyHarvester.addEntropy(progressBar, data);
                 });
                 mCamera.startPreview();
             } catch (Exception e){

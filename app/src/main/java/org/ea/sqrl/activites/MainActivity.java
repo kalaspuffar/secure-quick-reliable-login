@@ -168,7 +168,7 @@ public class MainActivity extends LoginBaseActivity {
     }
 
     public void setupRenamePopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_rename, null);
+        View popupView = layoutInflater.inflate(R.layout.fragment_rename, rootView);
 
         renamePopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -195,7 +195,7 @@ public class MainActivity extends LoginBaseActivity {
     }
 
     public void setupResetPasswordPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_reset_password, null);
+        View popupView = layoutInflater.inflate(R.layout.fragment_reset_password, rootView);
 
         resetPasswordPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -263,7 +263,7 @@ public class MainActivity extends LoginBaseActivity {
                         long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putLong(getString(R.string.current_id), newIdentityId);
-                        editor.commit();
+                        editor.apply();
 
                         handler.post(() -> {
                             updateSpinnerData(newIdentityId);
@@ -298,7 +298,7 @@ public class MainActivity extends LoginBaseActivity {
     }
 
     public void setupLoginPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_login, null);
+        View popupView = layoutInflater.inflate(R.layout.fragment_login, rootView);
 
         loginPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -445,7 +445,7 @@ public class MainActivity extends LoginBaseActivity {
     }
 
     public void setupExportOptionsPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_export_options, null);
+        View popupView = layoutInflater.inflate(R.layout.fragment_export_options, rootView);
 
         exportOptionsPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -465,7 +465,9 @@ public class MainActivity extends LoginBaseActivity {
             exportOptionsPopupWindow.dismiss();
             String uriString = "content://org.ea.sqrl.fileprovider/sqrltmp/";
             File directory = new File(getCacheDir(), "sqrltmp");
-            directory.mkdir();
+            if(!directory.mkdir()) {
+                handler.post(() -> Snackbar.make(rootView, getString(R.string.main_activity_could_not_create_dir), Snackbar.LENGTH_LONG).show());
+            }
 
             try {
                 File file = File.createTempFile("identity", ".sqrl", directory);
@@ -492,7 +494,7 @@ public class MainActivity extends LoginBaseActivity {
     }
 
     public void setupImportPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_decrypt, null);
+        View popupView = layoutInflater.inflate(R.layout.fragment_decrypt, rootView);
 
         decryptPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -548,7 +550,7 @@ public class MainActivity extends LoginBaseActivity {
                 );
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putLong(getString(R.string.current_id), newIdentityId);
-                editor.commit();
+                editor.apply();
 
                 handler.post(() -> {
                     updateSpinnerData(newIdentityId);
@@ -565,7 +567,7 @@ public class MainActivity extends LoginBaseActivity {
     }
 
     public void setupChangePasswordPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_change_password, null);
+        View popupView = layoutInflater.inflate(R.layout.fragment_change_password, rootView);
 
         changePasswordPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -719,7 +721,6 @@ public class MainActivity extends LoginBaseActivity {
                     } catch (Exception e) {
                         handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                         Log.e(TAG, e.getMessage(), e);
-                        return;
                     }
                 }
             }

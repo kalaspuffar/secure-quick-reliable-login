@@ -49,6 +49,10 @@ public class UrlLoginActivity extends LoginBaseActivity {
         final TextView txtUrlLogin = findViewById(R.id.txtSite);
         Intent intent = getIntent();
         Uri data = intent.getData();
+        if(data == null) {
+            handler.post(() -> Snackbar.make(rootView, getString(R.string.url_login_missing_url), Snackbar.LENGTH_LONG).show());
+            return;
+        }
         txtUrlLogin.setText(data.getHost());
 
         this.serverData = data.toString();

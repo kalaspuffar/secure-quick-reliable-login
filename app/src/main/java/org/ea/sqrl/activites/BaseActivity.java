@@ -1,5 +1,6 @@
 package org.ea.sqrl.activites;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -20,6 +21,7 @@ import org.ea.sqrl.processors.EntropyHarvester;
  *
  * @author Daniel Persson
  */
+@SuppressLint("Registered")
 public class BaseActivity extends AppCompatActivity {
     private static final String TAG = "BaseActivity";
 

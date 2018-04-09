@@ -109,7 +109,7 @@ public final class QrSegment {
     /** The length of this segment's unencoded data, measured in characters. Always zero or positive. */
     public final int numChars;
 
-    /** The data bits of this segment. Accessed through {@link getBits()}. Not {@code null}. */
+    /** The data bits of this segment. Accessed through getBits(). Not {@code null}. */
     final BitBuffer data;
 	
 	
@@ -167,7 +167,7 @@ public final class QrSegment {
     /** Can test whether a string is encodable in numeric mode (such as by using {@link #makeNumeric(String)}). */
     public static final Pattern NUMERIC_REGEX = Pattern.compile("[0-9]*");
 
-    /** Can test whether a string is encodable in alphanumeric mode (such as by using {@link #makeAlphanumeric(String)}). */
+    /** Can test whether a string is encodable in alphanumeric mode (such as by using makeAlphanumeric(String)). */
     public static final Pattern ALPHANUMERIC_REGEX = Pattern.compile("[A-Z0-9 $%*+./:-]*");
 
     /** The set of all legal characters in alphanumeric mode, where each character value maps to the index in the string. */
@@ -201,7 +201,7 @@ public final class QrSegment {
 		
 		/*-- Constructor --*/
 
-        private Mode(int mode, int... ccbits) {
+        Mode(int mode, int... ccbits) {
             this.modeBits = mode;
             numBitsCharCount = ccbits;
         }

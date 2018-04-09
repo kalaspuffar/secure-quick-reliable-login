@@ -1,8 +1,10 @@
 package org.ea.sqrl.activites;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,25 +35,25 @@ public class SettingsActivity extends BaseActivity {
     private EditText txtSettingsIdleTimeout;
     private CheckBox cbSettingsSQRLOnly;
     private CheckBox cbSettingsNoBypass;
-    private View root;
+    private ConstraintLayout rootView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        root = findViewById(R.id.settingsActivityView);
+        rootView = findViewById(R.id.settingsActivityView);
 
         setupSavePopupWindow(getLayoutInflater());
 
         SQRLStorage storage = SQRLStorage.getInstance();
 
         txtSettingsHintLength = findViewById(R.id.txtSettingsHintLength);
-        txtSettingsHintLength.setText("" + storage.getHintLength());
+        txtSettingsHintLength.setText(storage.getHintLength());
         txtSettingsPasswordVerify = findViewById(R.id.txtSettingsPasswordVerify);
-        txtSettingsPasswordVerify.setText("" + storage.getPasswordVerify());
+        txtSettingsPasswordVerify.setText(storage.getPasswordVerify());
         txtSettingsIdleTimeout = findViewById(R.id.txtSettingsIdleTimeout);
-        txtSettingsIdleTimeout.setText("" + storage.getIdleTimeout());
+        txtSettingsIdleTimeout.setText(storage.getIdleTimeout());
         cbSettingsSQRLOnly = findViewById(R.id.cbSettingsSQRLOnly);
         cbSettingsSQRLOnly.setChecked(storage.isSQRLOnly());
         cbSettingsNoBypass = findViewById(R.id.cbSettingsNoBypass);
@@ -71,14 +73,14 @@ public class SettingsActivity extends BaseActivity {
             return Integer.parseInt(txt.getText().toString());
         } catch (NumberFormatException nfe) {
             handler.post(() -> {
-                Snackbar.make(root, errorMessage, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(rootView, errorMessage, Snackbar.LENGTH_LONG).show();
             });
         }
         return -1;
     }
 
     public void setupSavePopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_save_settings, null);
+        View popupView = layoutInflater.inflate(R.layout.fragment_save_settings, rootView);
 
         savePopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -101,7 +103,7 @@ public class SettingsActivity extends BaseActivity {
             boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString());
             if(!decryptStatus) {
                 handler.post(() -> {
-                    Snackbar.make(root, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                     txtPassword.setText("");
                 });
                 return;
@@ -111,7 +113,7 @@ public class SettingsActivity extends BaseActivity {
             if(hintLength == -1) return;
             if(hintLength > 255) {
                 handler.post(() -> {
-                    Snackbar.make(root, getString(R.string.settings_hint_length_to_large), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(rootView, getString(R.string.settings_hint_length_to_large), Snackbar.LENGTH_LONG).show();
                 });
                 return;
             }
@@ -129,7 +131,7 @@ public class SettingsActivity extends BaseActivity {
             boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
             if (!encryptStatus) {
                 handler.post(() -> {
-                    Snackbar.make(root, getString(R.string.encrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(rootView, getString(R.string.encrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                     txtPassword.setText("");
                 });
                 return;
