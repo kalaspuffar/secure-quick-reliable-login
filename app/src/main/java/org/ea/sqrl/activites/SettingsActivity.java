@@ -49,11 +49,11 @@ public class SettingsActivity extends BaseActivity {
         SQRLStorage storage = SQRLStorage.getInstance();
 
         txtSettingsHintLength = findViewById(R.id.txtSettingsHintLength);
-        txtSettingsHintLength.setText(storage.getHintLength());
+        txtSettingsHintLength.setText(Integer.toString(storage.getHintLength()));
         txtSettingsPasswordVerify = findViewById(R.id.txtSettingsPasswordVerify);
-        txtSettingsPasswordVerify.setText(storage.getPasswordVerify());
+        txtSettingsPasswordVerify.setText(Integer.toString(storage.getPasswordVerify()));
         txtSettingsIdleTimeout = findViewById(R.id.txtSettingsIdleTimeout);
-        txtSettingsIdleTimeout.setText(storage.getIdleTimeout());
+        txtSettingsIdleTimeout.setText(Integer.toString(storage.getIdleTimeout()));
         cbSettingsSQRLOnly = findViewById(R.id.cbSettingsSQRLOnly);
         cbSettingsSQRLOnly.setChecked(storage.isSQRLOnly());
         cbSettingsNoBypass = findViewById(R.id.cbSettingsNoBypass);
@@ -80,7 +80,7 @@ public class SettingsActivity extends BaseActivity {
     }
 
     public void setupSavePopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_save_settings, rootView);
+        View popupView = layoutInflater.inflate(R.layout.fragment_save_settings, null);
 
         savePopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,

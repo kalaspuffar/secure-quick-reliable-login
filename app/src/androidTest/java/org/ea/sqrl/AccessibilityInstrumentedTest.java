@@ -117,7 +117,7 @@ public class AccessibilityInstrumentedTest {
         Intent intent = new Intent(targetContext, SettingsActivity.class);
         settingsActivityRule.launchActivity(intent);
 
-        onView(withId(R.id.txtSettingsHintLength)).perform(click());
+        onView(withId(R.id.settingsActivityView)).perform(click());
     }
 
     @Test

@@ -168,7 +168,7 @@ public class MainActivity extends LoginBaseActivity {
     }
 
     public void setupRenamePopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_rename, rootView);
+        View popupView = layoutInflater.inflate(R.layout.fragment_rename, null);
 
         renamePopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -195,7 +195,7 @@ public class MainActivity extends LoginBaseActivity {
     }
 
     public void setupResetPasswordPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_reset_password, rootView);
+        View popupView = layoutInflater.inflate(R.layout.fragment_reset_password, null);
 
         resetPasswordPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -298,7 +298,7 @@ public class MainActivity extends LoginBaseActivity {
     }
 
     public void setupLoginPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_login, rootView);
+        View popupView = layoutInflater.inflate(R.layout.fragment_login, null);
 
         loginPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -445,7 +445,7 @@ public class MainActivity extends LoginBaseActivity {
     }
 
     public void setupExportOptionsPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_export_options, rootView);
+        View popupView = layoutInflater.inflate(R.layout.fragment_export_options, null);
 
         exportOptionsPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -494,7 +494,7 @@ public class MainActivity extends LoginBaseActivity {
     }
 
     public void setupImportPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_decrypt, rootView);
+        View popupView = layoutInflater.inflate(R.layout.fragment_decrypt, null);
 
         decryptPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -567,7 +567,7 @@ public class MainActivity extends LoginBaseActivity {
     }
 
     public void setupChangePasswordPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_change_password, rootView);
+        View popupView = layoutInflater.inflate(R.layout.fragment_change_password, null);
 
         changePasswordPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,

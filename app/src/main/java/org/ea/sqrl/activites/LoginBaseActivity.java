@@ -193,7 +193,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     }
 
     public void setupLoginOptionsPopupWindow(LayoutInflater layoutInflater, boolean popup) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_login_optional, rootView);
+        View popupView = layoutInflater.inflate(R.layout.fragment_login_optional, null);
 
         loginOptionsPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -224,7 +224,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     }
 
     protected void setupProgressPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_progress, rootView);
+        View popupView = layoutInflater.inflate(R.layout.fragment_progress, null);
 
         progressPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -240,7 +240,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     protected void closeActivity() {}
 
     private void setupDisableAccountPopupWindow(LayoutInflater layoutInflater, boolean noiptest) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_disable_account, rootView);
+        View popupView = layoutInflater.inflate(R.layout.fragment_disable_account, null);
 
         disableAccountPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -299,7 +299,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     }
 
     private void setupEnableAccountPopupWindow(LayoutInflater layoutInflater, boolean noiptest) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_enable_account, rootView);
+        View popupView = layoutInflater.inflate(R.layout.fragment_enable_account, null);
 
         enableAccountPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -380,7 +380,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     }
 
     private void setupRemoveAccountPopupWindow(LayoutInflater layoutInflater, boolean noiptest) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_remove_account, rootView);
+        View popupView = layoutInflater.inflate(R.layout.fragment_remove_account, null);
 
         removeAccountPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
