@@ -1,5 +1,6 @@
 language: android
 jdk: oraclejdk8
+sudo: false
 
 env:
   global:
@@ -43,8 +44,8 @@ cache:
 
 before_install:
   - yes | sdkmanager "cmake;3.6.4111459"
-  - yes | sdkmanager "platforms;android-$ANDROID_API_LEVEL"
-  - android update sdk -a -u -t sys-img-armeabi-v7a-google_apis-$ANDROID_API_LEVEL
+#  - yes | sdkmanager "platforms;android-$ANDROID_API_LEVEL"
+#  - android update sdk -a -u -t sys-img-armeabi-v7a-google_apis-$ANDROID_API_LEVEL
   - wget https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip
   - unzip android-ndk-r16b-linux-x86_64.zip -d $HOME > /dev/null
   - export ANDROID_NDK_HOME=$HOME/android-ndk-r16b
