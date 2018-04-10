@@ -55,10 +55,11 @@ before_script:
   - echo no | android create avd --force -n test -t "android-"$ANDROID_EMULATOR_LEVEL --abi $ANDROID_ABI --tag $ANDROID_TAG
   - emulator -avd test -no-window &
   - android-wait-for-emulator
-  - adb shell input keyevent 82 &
   - ./gradlew clean
     
 script:
-  - ./gradlew dependencyCheckAnalyze build connectedCheck
+  - ./gradlew dependencyCheckAnalyze build
+  - adb shell input keyevent 82
+  - ./gradlew connectedCheck
 
 after_failure: "cat $TRAVIS_BUILD_DIR/app/gen_build/reports/lint-results.xml"
