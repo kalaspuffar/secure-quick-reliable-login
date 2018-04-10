@@ -2,11 +2,12 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="CommonTheme">
         <item name="buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
+        <item name="android:actionOverflowButtonStyle">@style/myActionButtonStyle</item>
     </style>
 
-    <style name="AppTheme.ActionBar" parent="Widget.AppCompat.Light.ActionBar">
+    <style name="myActionButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:width">48dp</item>
         <item name="android:height">48dp</item>
-        <item name="height">48dp</item>
     </style>
 
     <!-- Base application theme. -->
@@ -16,6 +17,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
 
     <style name="spinnerItemStyle" parent="android:Widget.TextView.SpinnerItem" />
     <style name="spinnerDropDownItemStyle" parent="android:TextAppearance.Widget.TextView.SpinnerItem" />
