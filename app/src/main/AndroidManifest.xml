@@ -87,6 +87,11 @@
             android:screenOrientation="portrait"
             />
 
+        <activity android:name=".activites.RekeyVerifyActivity"
+            android:label="@string/title_rekey_verify"
+            android:screenOrientation="portrait"
+            />
+
         <activity android:name=".activites.SaveIdentityActivity"
             android:label="@string/title_save_identity"
             android:screenOrientation="portrait"

@@ -155,4 +155,7 @@
     <string name="show_identity_image_desc">QRCode of identity</string>
     <string name="url_login_missing_url">Failure! The call to the program had no link attached, please try again.</string>
     <string name="main_activity_could_not_create_dir">Unable to create temporary directory for file to send, do you have to much data on disk?</string>
+    <string name="rekey_verify_message">Enter rescue code to verify that you have this secure in your possession, and start the process of rekeying the identity.</string>
+    <string name="button_rekey_verify_next">next</string>
+    <string name="title_rekey_verify">Verify rescue code</string>
 </resources>
