@@ -41,8 +41,8 @@ public class CreateIdentityActivity extends BaseActivity {
         final Button btnCreateIdentityCreate = findViewById(R.id.btnCreateIdentityCreate);
         btnCreateIdentityCreate.setOnClickListener(
                 v -> {
-                    Intent intent = new Intent(this, EntropyGatherActivity.class);
-                    startActivity(intent);
+                    this.finish();
+                    startActivity(new Intent(this, EntropyGatherActivity.class));
                 }
         );
     }

@@ -59,12 +59,12 @@ public class RekeyVerifyActivity extends LoginBaseActivity {
                             Log.e(TAG, "Incorrect decryptRescue");
                             handler.post(() -> {
                                 Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                                progressPopupWindow.dismiss();
                             });
-                            progressPopupWindow.dismiss();
                             return;
                         }
-                        Intent intent = new Intent(this, EntropyGatherActivity.class);
-                        startActivity(intent);
+                        this.finish();
+                        startActivity(new Intent(this, EntropyGatherActivity.class));
                     }).start();
                 }
         );

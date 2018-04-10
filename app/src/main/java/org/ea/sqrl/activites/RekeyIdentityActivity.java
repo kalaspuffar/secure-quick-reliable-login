@@ -24,7 +24,7 @@ import org.ea.sqrl.utils.EncryptionUtils;
  *
  * @author Daniel Persson
  */
-public class RekeyIdentityActivity extends LoginBaseActivity {
+public class RekeyIdentityActivity extends BaseActivity {
     private static final String TAG = "RekeyIdentityActivity";
 
     @Override
@@ -34,16 +34,15 @@ public class RekeyIdentityActivity extends LoginBaseActivity {
 
         SQRLStorage.getInstance().clear();
 
-        setupProgressPopupWindow(getLayoutInflater());
-
-        rootView = findViewById(R.id.rekeyIdentityActivityView);
-
         final TextView txtRekeyIdentityMessage = findViewById(R.id.txtRekeyIdentityMessage);
         txtRekeyIdentityMessage.setMovementMethod(LinkMovementMethod.getInstance());
 
         final Button btnRekeyIdentityStart = findViewById(R.id.btnRekeyIdentityStart);
         btnRekeyIdentityStart.setOnClickListener(
-                v -> startActivity(new Intent(this, RekeyVerifyActivity.class))
+                v -> {
+                    this.finish();
+                    startActivity(new Intent(this, RekeyVerifyActivity.class));
+                }
         );
     }
 }

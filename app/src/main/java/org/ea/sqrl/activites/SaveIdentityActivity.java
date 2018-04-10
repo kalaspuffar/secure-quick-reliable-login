@@ -94,6 +94,7 @@ public class SaveIdentityActivity extends LoginBaseActivity {
                     txtNewPassword.setText("");
                     txtRetypePassword.setText("");
 
+                    SaveIdentityActivity.this.finish();
                     startActivity(new Intent(this, NewIdentityDoneActivity.class));
                 });
             }).start();

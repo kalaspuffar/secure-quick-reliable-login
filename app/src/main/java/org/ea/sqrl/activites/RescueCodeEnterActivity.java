@@ -33,15 +33,25 @@ public class RescueCodeEnterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rescuecode_enter);
 
-        SQRLStorage storage = SQRLStorage.getInstance();
-        List<String> rescueList = storage.getTempShowableRescueCode();
-
         txtRecoverCode1 = findViewById(R.id.txtRecoverCode1);
         txtRecoverCode2 = findViewById(R.id.txtRecoverCode2);
         txtRecoverCode3 = findViewById(R.id.txtRecoverCode3);
         txtRecoverCode4 = findViewById(R.id.txtRecoverCode4);
         txtRecoverCode5 = findViewById(R.id.txtRecoverCode5);
         txtRecoverCode6 = findViewById(R.id.txtRecoverCode6);
+
+        btnRescueCodeEnterNext = findViewById(R.id.btnRescueCodeEnterNext);
+        btnRescueCodeEnterNext.setEnabled(false);
+        btnRescueCodeEnterNext.setOnClickListener(v -> {
+            this.finish();
+            startActivity(new Intent(this, SaveIdentityActivity.class));
+        });
+
+        boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
+        if(runningTest) return;
+
+        SQRLStorage storage = SQRLStorage.getInstance();
+        List<String> rescueList = storage.getTempShowableRescueCode();
 
         setListener(txtRecoverCode1, rescueList);
         setListener(txtRecoverCode2, rescueList);
@@ -50,12 +60,6 @@ public class RescueCodeEnterActivity extends AppCompatActivity {
         setListener(txtRecoverCode5, rescueList);
         setListener(txtRecoverCode6, rescueList);
 
-        btnRescueCodeEnterNext = findViewById(R.id.btnRescueCodeEnterNext);
-        btnRescueCodeEnterNext.setEnabled(false);
-        btnRescueCodeEnterNext.setOnClickListener(v -> {
-            this.finish();
-            startActivity(new Intent(this, SaveIdentityActivity.class));
-        });
     }
 
     private void setListener(EditText code, List<String> rescueList) {

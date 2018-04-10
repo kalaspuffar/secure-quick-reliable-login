@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.ea.sqrl.activites.EntropyGatherActivity">
+    android:id="@+id/createIdentityActivityView"
+    tools:context="org.ea.sqrl.activites.CreateIdentityActivity">
 
     <TextView
         android:id="@+id/txtCreateIdentityMessage"
@@ -16,7 +17,6 @@
         android:layout_marginTop="8dp"
         android:autoLink="web"
         android:text="@string/create_identity_message"
-        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/btnCreateIdentityCreate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -35,7 +35,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
         progressBarHolder = findViewById(R.id.progressBarHolder);
         cboxIdentity = findViewById(R.id.cboxIdentity);
 
-        rootView = findViewById(R.id.loginView);
+        rootView = findViewById(R.id.urlLoginActivityView);
 
         final TextView txtUrlLogin = findViewById(R.id.txtSite);
         Intent intent = getIntent();
