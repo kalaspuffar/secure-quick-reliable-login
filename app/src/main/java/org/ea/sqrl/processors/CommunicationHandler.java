@@ -54,6 +54,10 @@ public class CommunicationHandler {
         return instance;
     }
 
+    public void clearLastResponse() {
+        this.lastResponse = new HashMap<>();
+    }
+
     public void setUseSSL(boolean useSSL) {
         this.useSSL = useSSL;
     }

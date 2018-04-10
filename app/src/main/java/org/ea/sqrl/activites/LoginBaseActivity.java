@@ -166,7 +166,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
             );
         }
         if(toastStateChange && commHandler.hasStateChangeMessage()) {
-            Log.e("WTF", new Exception("WHY!!!").getMessage(), new Exception("WHY!!!"));
             handler.post(() ->
                     Snackbar.make(rootView, commHandler.getStageChangeMessage(this), Snackbar.LENGTH_LONG).show()
             );
@@ -307,6 +306,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     Log.e(TAG, e.getMessage(), e);
                     return;
                 } finally {
+                    commHandler.clearLastResponse();
                     storage.clear();
                     hideProgressBar();
                     closeActivity();
@@ -384,6 +384,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                     Log.e(TAG, e.getMessage(), e);
                 } finally {
+                    commHandler.clearLastResponse();
                     storage.clear();
                     handler.post(() -> {
                         progressPopupWindow.dismiss();
@@ -470,6 +471,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                     Log.e(TAG, e.getMessage(), e);
                 } finally {
+                    commHandler.clearLastResponse();
                     storage.clear();
                     handler.post(() -> {
                         progressPopupWindow.dismiss();

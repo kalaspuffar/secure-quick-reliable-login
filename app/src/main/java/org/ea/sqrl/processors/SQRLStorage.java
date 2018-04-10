@@ -378,6 +378,10 @@ public class SQRLStorage {
 
                 if (res == 0x55555555) return false;
             }
+
+            if(hasPreviousBlock) {
+                return decryptPreviousBlock();
+            }
         } catch (Exception e) {
             Log.e(SQRLStorage.TAG, e.getMessage(), e);
             return false;
@@ -438,6 +442,11 @@ public class SQRLStorage {
     }
 
     private boolean decryptPreviousBlock() {
+        byte[] masterKey = this.identityMasterKey;
+        if (this.quickPassKey != null) {
+            masterKey = this.quickPassKey;
+        }
+
         try {
             byte[] identityKeys = previousKey1Encrypted;
             if(previousCountOfKeys > 1) {
@@ -456,7 +465,7 @@ public class SQRLStorage {
             Arrays.fill(nullBytes, (byte)0);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Key keySpec = new SecretKeySpec(this.identityMasterKey, "AES");
+                Key keySpec = new SecretKeySpec(masterKey, "AES");
                 Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
                 GCMParameterSpec params = new GCMParameterSpec(128, nullBytes);
                 cipher.init(Cipher.DECRYPT_MODE, keySpec, params);
@@ -468,7 +477,7 @@ public class SQRLStorage {
                     return false;
                 }
             } else {
-                Grc_aesgcm.gcm_setkey(this.identityMasterKey, identityMasterKey.length);
+                Grc_aesgcm.gcm_setkey(masterKey, masterKey.length);
                 int res = Grc_aesgcm.gcm_auth_decrypt(
                         nullBytes, nullBytes.length,
                         previousPlaintext, previousPlaintext.length,
@@ -585,6 +594,7 @@ public class SQRLStorage {
 
     public byte[] getPreviousKeySeed(String domain) throws Exception {
         byte[] currentPreviousUnlockKey;
+
         switch (this.previousKeyIndex) {
             case 1:
                 currentPreviousUnlockKey = this.previousKey1;
@@ -603,7 +613,6 @@ public class SQRLStorage {
         }
 
         byte[] currentPreviousKey = EncryptionUtils.enHash(currentPreviousUnlockKey);
-        <
         final Mac HMacSha256 = Mac.getInstance("HmacSHA256");
         final SecretKeySpec key = new SecretKeySpec(currentPreviousKey, "HmacSHA256");
         HMacSha256.init(key);

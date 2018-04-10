@@ -117,6 +117,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                                 Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
                             });
                         } finally {
+                            commHandler.clearLastResponse();
                             hideProgressBar();
                             handler.post(() -> {
                                 txtLoginPassword.setText("");
@@ -189,6 +190,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                         });
                         Log.e(TAG, e.getMessage(), e);
                     } finally {
+                        commHandler.clearLastResponse();
                         hideProgressBar();
                         handler.post(() -> {
                             txtLoginPassword.setText("");

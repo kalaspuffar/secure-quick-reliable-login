@@ -357,6 +357,7 @@ public class MainActivity extends LoginBaseActivity {
                                 loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                             });
                         } finally {
+                            commHandler.clearLastResponse();
                             storage.clear();
                             hideProgressBar();
                             handler.post(() -> {
@@ -435,6 +436,7 @@ public class MainActivity extends LoginBaseActivity {
                         });
                         Log.e(TAG, e.getMessage(), e);
                     } finally {
+                        commHandler.clearLastResponse();
                         storage.clear();
                         hideProgressBar();
                         handler.post(() -> {
