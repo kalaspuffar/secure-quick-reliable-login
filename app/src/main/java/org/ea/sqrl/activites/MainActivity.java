@@ -352,12 +352,12 @@ public class MainActivity extends LoginBaseActivity {
                             }
                         } catch (Exception e) {
                             Log.e(TAG, e.getMessage(), e);
-                            storage.clear();
                             handler.post(() -> {
                                 Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
                                 loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                             });
                         } finally {
+                            storage.clear();
                             hideProgressBar();
                             handler.post(() -> {
                                 txtLoginPassword.setText("");
@@ -403,6 +403,7 @@ public class MainActivity extends LoginBaseActivity {
                         handler.post(() -> {
                             txtLoginPassword.setText("");
                         });
+                        storage.clear();
                         return;
                     }
 
@@ -434,6 +435,7 @@ public class MainActivity extends LoginBaseActivity {
                         });
                         Log.e(TAG, e.getMessage(), e);
                     } finally {
+                        storage.clear();
                         hideProgressBar();
                         handler.post(() -> {
                             txtLoginPassword.setText("");

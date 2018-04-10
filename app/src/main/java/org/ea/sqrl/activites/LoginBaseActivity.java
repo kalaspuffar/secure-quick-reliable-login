@@ -77,7 +77,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         cboxIdentity.setAdapter(adapter);
         cboxIdentity.setOnItemSelectedListener(this);
 
-
         setupProgressPopupWindow(layoutInflater);
         setupEnableAccountPopupWindow(layoutInflater, noiptest);
         setupDisableAccountPopupWindow(layoutInflater, noiptest);
@@ -85,6 +84,25 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     }
 
     protected void postQuery(CommunicationHandler commHandler, boolean noiptest) throws Exception {
+        SQRLStorage storage = SQRLStorage.getInstance();
+
+        if (!storage.hasMorePreviousKeys()) {
+            postQueryInternal(commHandler, noiptest);
+            return;
+        }
+
+        while (storage.hasMorePreviousKeys()) {
+            storage.increasePreviousKeyIndex();
+            if(commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH)) break;
+            if(commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) break;
+            if(commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)) break;
+            postQueryInternal(commHandler, noiptest);
+            noiptest = false;
+        }
+    }
+
+
+    private void postQueryInternal(CommunicationHandler commHandler, boolean noiptest) throws Exception {
         String postData = commHandler.createPostParams(commHandler.createClientQuery(noiptest), serverData);
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
@@ -252,6 +270,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
             loginOptionsPopupWindow.showAtLocation(loginOptionsPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
         });
 
+        SQRLStorage storage = SQRLStorage.getInstance();
 
         final EditText txtDisablePassword = popupView.findViewById(R.id.txtDisablePassword);
         popupView.findViewById(R.id.btnDisableAccount).setOnClickListener(v -> {
@@ -259,11 +278,12 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
             showProgressBar();
 
             new Thread(() -> {
-                boolean decryptionOk = SQRLStorage.getInstance().decryptIdentityKey(txtDisablePassword.getText().toString());
+                boolean decryptionOk = storage.decryptIdentityKey(txtDisablePassword.getText().toString());
                 if(decryptionOk) {
                     showClearNotification();
                 } else {
                     Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                    storage.clear();
                     return;
                 }
 
@@ -287,6 +307,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     Log.e(TAG, e.getMessage(), e);
                     return;
                 } finally {
+                    storage.clear();
                     hideProgressBar();
                     closeActivity();
                 }

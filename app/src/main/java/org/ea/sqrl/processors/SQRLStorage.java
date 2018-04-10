@@ -61,6 +61,7 @@ public class SQRLStorage {
     private boolean hasIdentityBlock = false;
     private boolean hasRescueBlock = false;
     private boolean hasPreviousBlock = false;
+    private int previousKeyIndex = 0;
 
     private SQRLStorage() {
         Grc_aesgcm.gcm_initialize();
@@ -72,6 +73,14 @@ public class SQRLStorage {
             instance = new SQRLStorage();
         }
         return instance;
+    }
+
+    public boolean hasMorePreviousKeys() {
+        return previousKeyIndex < previousCountOfKeys;
+    }
+
+    public void increasePreviousKeyIndex() {
+        previousKeyIndex++;
     }
 
     public void newRescueCode(EntropyHarvester entropyHarvester) {
@@ -222,21 +231,23 @@ public class SQRLStorage {
         previousPlaintext = Arrays.copyOfRange(input, 0, 6);
         previousCountOfKeys = getIntFromTwoBytes(input, 4);
 
-        int lastKeyEnd = 6 + 32;
-        previousKey1Encrypted = Arrays.copyOfRange(input, 6, lastKeyEnd);
+        int startValue = 6;
+        previousKey1Encrypted = Arrays.copyOfRange(input, startValue, startValue + 32);
+        startValue += 32;
         if(previousCountOfKeys > 1) {
-            previousKey2Encrypted = Arrays.copyOfRange(input, lastKeyEnd, lastKeyEnd + 32);
-            lastKeyEnd += 32;
+            previousKey2Encrypted = Arrays.copyOfRange(input, startValue, startValue + 32);
+            startValue += 32;
         }
         if(previousCountOfKeys > 2) {
-            previousKey3Encrypted = Arrays.copyOfRange(input, lastKeyEnd, lastKeyEnd + 32);
-            lastKeyEnd += 32;
+            previousKey3Encrypted = Arrays.copyOfRange(input, startValue, startValue + 32);
+            startValue += 32;
         }
         if(previousCountOfKeys > 3) {
-            previousKey4Encrypted = Arrays.copyOfRange(input, lastKeyEnd, lastKeyEnd + 32);
-            lastKeyEnd += 32;
+            previousKey4Encrypted = Arrays.copyOfRange(input, startValue, startValue + 32);
+            startValue += 32;
         }
-        previousVerificationTag = Arrays.copyOfRange(input, lastKeyEnd, lastKeyEnd + 16);
+        previousVerificationTag = Arrays.copyOfRange(input, startValue, startValue + 16);
+
         hasPreviousBlock = true;
     }
 
@@ -259,6 +270,7 @@ public class SQRLStorage {
     }
 
     public void cleanIdentity() {
+        this.previousKeyIndex = 0;
         this.identityPlaintextLength = -1;
         this.identityPlaintext = null;
         this.initializationVector = null;
@@ -572,9 +584,28 @@ public class SQRLStorage {
     }
 
     public byte[] getPreviousKeySeed(String domain) throws Exception {
-        byte[] masterKey = this.previousKey1;
+        byte[] currentPreviousUnlockKey;
+        switch (this.previousKeyIndex) {
+            case 1:
+                currentPreviousUnlockKey = this.previousKey1;
+                break;
+            case 2:
+                currentPreviousUnlockKey = this.previousKey2;
+                break;
+            case 3:
+                currentPreviousUnlockKey = this.previousKey3;
+                break;
+            case 4:
+                currentPreviousUnlockKey = this.previousKey4;
+                break;
+            default:
+                currentPreviousUnlockKey = this.previousKey1;
+        }
+
+        byte[] currentPreviousKey = EncryptionUtils.enHash(currentPreviousUnlockKey);
+        <
         final Mac HMacSha256 = Mac.getInstance("HmacSHA256");
-        final SecretKeySpec key = new SecretKeySpec(masterKey, "HmacSHA256");
+        final SecretKeySpec key = new SecretKeySpec(currentPreviousKey, "HmacSHA256");
         HMacSha256.init(key);
         return HMacSha256.doFinal(domain.getBytes());
     }
@@ -614,6 +645,7 @@ public class SQRLStorage {
     }
 
     public void clearQuickPass(Context context) {
+        this.previousKeyIndex = 0;
         try {
             if(this.quickPassKeyEncrypted != null) {
                 clearBytes(this.quickPassKeyEncrypted);
@@ -634,6 +666,7 @@ public class SQRLStorage {
     }
 
     public void clear() {
+        this.previousKeyIndex = 0;
         try {
             if(this.identityLockKey != null) {
                 clearBytes(this.identityLockKey);
@@ -671,7 +704,6 @@ public class SQRLStorage {
             this.previousKey1 = null;
             this.previousKey2 = null;
             this.previousKey3 = null;
-            this.previousKey4 = null;
             this.previousKey4 = null;
         }
     }
