@@ -41,6 +41,9 @@ public class RekeyIdentityActivity extends LoginBaseActivity {
 
         rootView = findViewById(R.id.saveIdentityActivityView);
 
+        final TextView txtRekeyIdentityMessage = findViewById(R.id.txtRekeyIdentityMessage);
+        txtRekeyIdentityMessage.setMovementMethod(LinkMovementMethod.getInstance());
+
         final EditText txtRecoverCode1 = findViewById(R.id.txtRecoverCode1);
         final EditText txtRecoverCode2 = findViewById(R.id.txtRecoverCode2);
         final EditText txtRecoverCode3 = findViewById(R.id.txtRecoverCode3);
