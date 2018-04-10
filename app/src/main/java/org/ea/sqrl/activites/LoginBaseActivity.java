@@ -43,6 +43,10 @@ import org.ea.sqrl.services.ClearIdentityService;
 
 import java.util.Map;
 
+/**
+ *
+ * @author Daniel Persson
+ */
 @SuppressLint("Registered")
 public class LoginBaseActivity extends BaseActivity implements AdapterView.OnItemSelectedListener {
     private static final String TAG = "LoginBaseActivity";

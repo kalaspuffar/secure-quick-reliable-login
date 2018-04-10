@@ -17,6 +17,10 @@ import android.widget.TextView;
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
 
+/**
+ *
+ * @author Daniel Persson
+ */
 public class SaveIdentityActivity extends LoginBaseActivity {
     private static final String TAG = "SaveIdentityActivity";
 
@@ -90,7 +94,7 @@ public class SaveIdentityActivity extends LoginBaseActivity {
                     txtNewPassword.setText("");
                     txtRetypePassword.setText("");
 
-                    startActivity(new Intent(this, MainActivity.class));
+                    startActivity(new Intent(this, NewIdentityDoneActivity.class));
                 });
             }).start();
         });

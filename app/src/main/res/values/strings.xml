@@ -157,5 +157,8 @@
     <string name="main_activity_could_not_create_dir">Unable to create temporary directory for file to send, do you have to much data on disk?</string>
     <string name="rekey_verify_message">Enter rescue code to verify that you have this secure in your possession, and start the process of rekeying the identity.</string>
     <string name="button_rekey_verify_next">next</string>
-    <string name="title_rekey_verify">Verify rescue code</string>
+    <string name="title_rekey_verify">SQRL - Verify rescue code</string>
+    <string name="title_new_identity_done">SQRL - Identity created</string>
+    <string name="new_identity_done_message">The identity have been successfully been created/rekeyed. In order to use this safely and be able to restore from loss of device we recommend that you export your identity either by scanning QRCode with another device, sending a file to storage or printing the new identity.</string>
+    <string name="button_new_identity_done_export">Export</string>
 </resources>

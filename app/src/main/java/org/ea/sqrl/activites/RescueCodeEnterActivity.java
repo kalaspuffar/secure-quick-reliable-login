@@ -14,6 +14,10 @@ import org.ea.sqrl.processors.SQRLStorage;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ *
+ * @author Daniel Persson
+ */
 public class RescueCodeEnterActivity extends AppCompatActivity {
     private static final String TAG = "RescueCodeEnterActivity";
     private EditText txtRecoverCode1;

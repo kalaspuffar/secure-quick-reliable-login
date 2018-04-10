@@ -16,6 +16,10 @@ import org.ea.sqrl.processors.SQRLStorage;
 
 import java.util.List;
 
+/**
+ *
+ * @author Daniel Persson
+ */
 public class RescueCodeShowActivity extends AppCompatActivity {
     private static final String TAG = "RescueCodeShowActivity";
 

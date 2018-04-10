@@ -9,6 +9,10 @@ import android.widget.TextView;
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
 
+/**
+ *
+ * @author Daniel Persson
+ */
 public class ClearIdentityActivity extends AppCompatActivity {
 
     @Override

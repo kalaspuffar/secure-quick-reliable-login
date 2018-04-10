@@ -92,6 +92,11 @@
             android:screenOrientation="portrait"
             />
 
+        <activity android:name=".activites.NewIdentityDoneActivity"
+            android:label="@string/title_new_identity_done"
+            android:screenOrientation="portrait"
+            />
+
         <activity android:name=".activites.SaveIdentityActivity"
             android:label="@string/title_save_identity"
             android:screenOrientation="portrait"

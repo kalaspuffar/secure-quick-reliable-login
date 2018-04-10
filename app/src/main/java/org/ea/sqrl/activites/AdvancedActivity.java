@@ -5,6 +5,10 @@ import android.os.Bundle;
 
 import org.ea.sqrl.R;
 
+/**
+ *
+ * @author Daniel Persson
+ */
 public class AdvancedActivity extends AppCompatActivity {
 
     @Override

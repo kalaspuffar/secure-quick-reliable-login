@@ -17,6 +17,10 @@ import org.ea.sqrl.processors.EntropyHarvester;
 
 import java.io.IOException;
 
+/**
+ *
+ * @author Daniel Persson
+ */
 public class EntropyGatherActivity extends AppCompatActivity {
     private static final String TAG = "EntropyGatherActivity";
 
