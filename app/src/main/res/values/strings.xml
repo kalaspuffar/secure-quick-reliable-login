@@ -161,4 +161,5 @@
     <string name="title_new_identity_done">SQRL - Identity created</string>
     <string name="new_identity_done_message">The identity have been successfully been created/rekeyed. In order to use this safely and be able to restore from loss of device we recommend that you export your identity either by scanning QRCode with another device, sending a file to storage or printing the new identity.</string>
     <string name="button_new_identity_done_export">Export</string>
+    <string name="button_new_identity_done">Done</string>
 </resources>
