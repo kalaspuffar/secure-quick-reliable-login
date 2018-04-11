@@ -1,8 +1,11 @@
 package org.ea.sqrl.activites;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,6 +35,11 @@ public class EntropyGatherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entropy_gather);
+
+        if (ContextCompat.checkSelfPermission(EntropyGatherActivity.this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            this.finish();
+        }
 
         final Button btnEntropyGatherNext = findViewById(R.id.btnEntropyGatherNext);
         btnEntropyGatherNext.setOnClickListener(v -> {
