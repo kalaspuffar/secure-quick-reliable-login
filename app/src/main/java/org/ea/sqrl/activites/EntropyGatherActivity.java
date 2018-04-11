@@ -35,9 +35,11 @@ public class EntropyGatherActivity extends AppCompatActivity {
 
         final Button btnEntropyGatherNext = findViewById(R.id.btnEntropyGatherNext);
         btnEntropyGatherNext.setOnClickListener(v -> {
-            mCamera.stopPreview();
-            mCamera.setPreviewCallback(null);
-            mCamera.release();
+            if(mCamera != null) {
+                mCamera.stopPreview();
+                mCamera.setPreviewCallback(null);
+                mCamera.release();
+            }
             entropyHarvester.digestEntropy();
             this.finish();
             startActivity(new Intent(this, RescueCodeShowActivity.class));
