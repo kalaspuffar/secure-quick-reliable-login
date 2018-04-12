@@ -1,10 +1,13 @@
 package org.ea.sqrl.activites;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +30,8 @@ import java.io.IOException;
 public class EntropyGatherActivity extends AppCompatActivity {
     private static final String TAG = "EntropyGatherActivity";
 
+    private final int REQUEST_PERMISSION_CAMERA=1;
+
     private Camera mCamera;
     private EntropyHarvester entropyHarvester;
     private ProgressBar progressBar;
@@ -36,10 +41,7 @@ public class EntropyGatherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entropy_gather);
 
-        if (ContextCompat.checkSelfPermission(EntropyGatherActivity.this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            this.finish();
-        }
+        showPhoneStatePermission();
 
         final Button btnEntropyGatherNext = findViewById(R.id.btnEntropyGatherNext);
         btnEntropyGatherNext.setOnClickListener(v -> {
@@ -53,7 +55,6 @@ public class EntropyGatherActivity extends AppCompatActivity {
             startActivity(new Intent(this, RescueCodeShowActivity.class));
         });
 
-        mCamera = getCameraInstance();
         progressBar = findViewById(R.id.pbEntropy);
 
         try {
@@ -62,10 +63,60 @@ public class EntropyGatherActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
         }
+    }
+
+    private void initCameraUsage() {
+        mCamera = getCameraInstance();
         final CameraPreview mPreview = new CameraPreview(this, mCamera, entropyHarvester);
         FrameLayout preview = findViewById(R.id.camera_preview);
         preview.addView(mPreview);
     }
+
+    private void showPhoneStatePermission() {
+        int permissionCheck = ContextCompat.checkSelfPermission(
+                this, Manifest.permission.CAMERA);
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+                showExplanation(
+                        getString(R.string.camera_permission_request_title),
+                        getString(R.string.camera_permission_request_desc)
+                );
+            } else {
+                requestPermission();
+            }
+        } else {
+            initCameraUsage();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_PERMISSION_CAMERA:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    initCameraUsage();
+                } else {
+                    this.finish();
+                }
+        }
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(
+                EntropyGatherActivity.this,
+                new String[] {Manifest.permission.CAMERA},
+                REQUEST_PERMISSION_CAMERA
+        );
+    }
+
+    private void showExplanation(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, (dialog, id) -> requestPermission());
+        builder.create().show();
+    }
+
 
     /** A safe way to get an instance of the Camera object. */
     public static Camera getCameraInstance(){
