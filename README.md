@@ -6,6 +6,20 @@ This repository is an implementation for SQRL (Secure Quick Reliable Login) on a
 
 ***This repository is in active development***
 
+## Help wanted / appreciated
+
+We are closely nearing a full implementation of the specification. But there is still a lot of things to do.
+
+* Design user interface
+* Document usage and code
+* Test and verify code
+* Security audit
+* Bug reporting
+
+Some of these areas are not my speciallity so all help / merge requests are welcome.
+
+Thank you for your time
+
 ## Usage
 
 ***TODO***
