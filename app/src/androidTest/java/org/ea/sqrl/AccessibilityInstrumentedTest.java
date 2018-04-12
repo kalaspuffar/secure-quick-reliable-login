@@ -122,7 +122,6 @@ public class AccessibilityInstrumentedTest {
         onView(withId(R.id.advancedActivityView)).perform(click());
     }
 
-    /*
     @Test
     public void testClearIdentityActivityAccessibility() throws Exception {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
@@ -133,7 +132,6 @@ public class AccessibilityInstrumentedTest {
 
         onView(withId(R.id.clearIdentityActivityView)).perform(click());
     }
-    */
 
     @Test
     public void testCreateIdentityActivityAccessibility() throws Exception {
