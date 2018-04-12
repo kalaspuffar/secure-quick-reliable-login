@@ -127,6 +127,7 @@ public class AccessibilityInstrumentedTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, ClearIdentityActivity.class);
+        intent.putExtra("RUNNING_TEST", true);
         clearIdentityActivityRule.launchActivity(intent);
 
         onView(withId(R.id.clearIdentityActivityView)).perform(click());
