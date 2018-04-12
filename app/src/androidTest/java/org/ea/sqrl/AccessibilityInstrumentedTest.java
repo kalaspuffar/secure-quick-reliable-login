@@ -130,7 +130,7 @@ public class AccessibilityInstrumentedTest {
         intent.putExtra("RUNNING_TEST", true);
         clearIdentityActivityRule.launchActivity(intent);
 
-        onView(withId(R.id.clearIdentityActivityView)).perform(click());
+//        onView(withId(R.id.clearIdentityActivityView)).perform(click());
     }
 
     @Test
