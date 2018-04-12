@@ -30,7 +30,7 @@ import java.io.IOException;
 public class EntropyGatherActivity extends AppCompatActivity {
     private static final String TAG = "EntropyGatherActivity";
 
-    private final int REQUEST_PERMISSION_CAMERA=1;
+    private final int REQUEST_PERMISSION_CAMERA = 1;
 
     private Camera mCamera;
     private EntropyHarvester entropyHarvester;
@@ -42,7 +42,9 @@ public class EntropyGatherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_entropy_gather);
 
         showPhoneStatePermission();
+    }
 
+    private void initCameraUsage() {
         final Button btnEntropyGatherNext = findViewById(R.id.btnEntropyGatherNext);
         btnEntropyGatherNext.setOnClickListener(v -> {
             if(mCamera != null) {
@@ -63,9 +65,7 @@ public class EntropyGatherActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
         }
-    }
 
-    private void initCameraUsage() {
         mCamera = getCameraInstance();
         final CameraPreview mPreview = new CameraPreview(this, mCamera, entropyHarvester);
         FrameLayout preview = findViewById(R.id.camera_preview);

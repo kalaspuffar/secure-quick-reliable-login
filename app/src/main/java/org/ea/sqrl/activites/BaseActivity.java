@@ -1,19 +1,35 @@
 package org.ea.sqrl.activites;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.PopupWindow;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import org.ea.sqrl.BuildConfig;
 import org.ea.sqrl.R;
 import org.ea.sqrl.database.IdentityDBHelper;
 import org.ea.sqrl.processors.EntropyHarvester;
+import org.ea.sqrl.processors.ProgressionUpdater;
+import org.ea.sqrl.processors.SQRLStorage;
+
+import java.util.function.Function;
 
 /**
  * This base activity is inherited by all other activities. We place logic used for menus,
@@ -24,6 +40,10 @@ import org.ea.sqrl.processors.EntropyHarvester;
 @SuppressLint("Registered")
 public class BaseActivity extends AppCompatActivity {
     private static final String TAG = "BaseActivity";
+
+    private final int REQUEST_PERMISSION_CAMERA = 1;
+
+    private PopupWindow cameraAccessPopupWindow;
 
     protected static final String START_USER_MODE = "org.ea.sqrl.START_MODE";
     protected static final int START_USER_MODE_NEW_USER = 1;
@@ -80,4 +100,56 @@ public class BaseActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    protected void setupProgressPopupWindow(LayoutInflater layoutInflater) {
+        View popupView = layoutInflater.inflate(R.layout.fragment_camera_permission, null);
+
+        cameraAccessPopupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
+                false);
+
+        final Button btnCameraPermissionOk = popupView.findViewById(R.id.btnCameraPermissionOk);
+        btnCameraPermissionOk.setOnClickListener(v -> {
+            requestPermission();
+            cameraAccessPopupWindow.dismiss();
+        });
+    }
+
+    protected void permissionOkCallback() {
+
+    }
+
+    protected void showPhoneStatePermission() {
+        int permissionCheck = ContextCompat.checkSelfPermission(
+                this, Manifest.permission.CAMERA);
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+                cameraAccessPopupWindow.showAtLocation(cameraAccessPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+            } else {
+                requestPermission();
+            }
+        } else {
+            permissionOkCallback();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_PERMISSION_CAMERA:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    permissionOkCallback();
+                }
+        }
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(
+                BaseActivity.this,
+                new String[] {Manifest.permission.CAMERA},
+                REQUEST_PERMISSION_CAMERA
+        );
+    }
+
+
 }

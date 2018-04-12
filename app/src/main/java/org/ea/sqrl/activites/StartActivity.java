@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ import org.ea.sqrl.utils.EncryptionUtils;
 public class StartActivity extends BaseActivity {
     private static final String TAG = "StartActivity";
     private View root;
+    private boolean createNewIdentity = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,17 +58,30 @@ public class StartActivity extends BaseActivity {
         integrator.setOrientationLocked(true);
         integrator.setBarcodeImageEnabled(false);
 
+        setupProgressPopupWindow(getLayoutInflater());
+
         final Button btnScanSecret = findViewById(R.id.btnScanSecret);
-        btnScanSecret.setOnClickListener(
-                v -> {
-                    Intent intent = new Intent(this, MainActivity.class);
-                    intent.putExtra(START_USER_MODE, START_USER_MODE_NEW_USER);
-                    startActivity(intent);
-                }
-        );
+        btnScanSecret.setOnClickListener(v -> {
+            createNewIdentity = false;
+            this.showPhoneStatePermission();
+        });
 
         final Button btnStartCreateIdentity = findViewById(R.id.btnStartCreateIdentity);
-        btnStartCreateIdentity.setOnClickListener(v -> startActivity(new Intent(this, CreateIdentityActivity.class)));
+        btnStartCreateIdentity.setOnClickListener(v -> {
+            createNewIdentity = true;
+            this.showPhoneStatePermission();
+        });
+    }
+
+    @Override
+    protected void permissionOkCallback() {
+        if(createNewIdentity) {
+            startActivity(new Intent(this, CreateIdentityActivity.class));
+        } else {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra(START_USER_MODE, START_USER_MODE_NEW_USER);
+            startActivity(intent);
+        }
     }
 
     @Override
