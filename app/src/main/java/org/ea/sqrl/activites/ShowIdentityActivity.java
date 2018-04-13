@@ -36,10 +36,10 @@ public class ShowIdentityActivity extends BaseActivity {
         setContentView(R.layout.activity_show_identity);
 
         SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                getString(R.string.preferences),
+                APPS_PREFERENCES,
                 Context.MODE_PRIVATE
         );
-        long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+        long currentId = sharedPref.getLong(CURRENT_ID, 0);
 
         if(currentId == 0) return;
 

@@ -140,10 +140,10 @@ public class SettingsActivity extends BaseActivity {
             storage.clear();
 
             SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                    getString(R.string.preferences),
+                    APPS_PREFERENCES,
                     Context.MODE_PRIVATE
             );
-            long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+            long currentId = sharedPref.getLong(CURRENT_ID, 0);
             mDbHelper.updateIdentityData(currentId, storage.createSaveData());
 
             handler.post(() -> {

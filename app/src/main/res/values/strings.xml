@@ -30,8 +30,6 @@
     <string name="communication_function_not_supported">Function(s) not supported: Requested one or more SQRL functions, that the server does not currently support.</string>
     <string name="communication_sqrl_disabled">SQRL authentication for this identity has previously been disabled. To use this identity it needs to be enabled using recover code.</string>
     <string name="communication_transient_error">Transient error: The server indicates that the signature(s) are correct, but something about the query prevented the command from completing.</string>
-    <string name="current_id">current_id</string>
-    <string name="preferences">org.ea.sqrl.preferences</string>
     <string name="title_activity_main">SQRL - Main</string>
     <string name="identity_unlock">Use identity</string>
     <string name="button_import_identity">Import</string>

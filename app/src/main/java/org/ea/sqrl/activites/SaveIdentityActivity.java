@@ -82,11 +82,11 @@ public class SaveIdentityActivity extends LoginBaseActivity {
                 mDbHelper.updateIdentityName(newIdentityId, txtIdentityName.getText().toString());
 
                 SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                        getString(R.string.preferences),
+                        APPS_PREFERENCES,
                         Context.MODE_PRIVATE
                 );
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putLong(getString(R.string.current_id), newIdentityId);
+                editor.putLong(CURRENT_ID, newIdentityId);
                 editor.apply();
 
                 handler.post(() -> {

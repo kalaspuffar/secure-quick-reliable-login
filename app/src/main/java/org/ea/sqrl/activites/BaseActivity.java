@@ -24,6 +24,8 @@ import org.ea.sqrl.processors.EntropyHarvester;
 @SuppressLint("Registered")
 public class BaseActivity extends AppCompatActivity {
     private static final String TAG = "BaseActivity";
+    protected static final String CURRENT_ID = "current_id";
+    protected static final String APPS_PREFERENCES = "org.ea.sqrl.preferences";
 
     protected static final String START_USER_MODE = "org.ea.sqrl.START_MODE";
     protected static final int START_USER_MODE_NEW_USER = 1;

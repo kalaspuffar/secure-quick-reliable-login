@@ -570,11 +570,11 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         Long[] keyArray = identities.keySet().toArray(new Long[identities.size()]);
 
         SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                getString(R.string.preferences),
+                APPS_PREFERENCES,
                 Context.MODE_PRIVATE
         );
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putLong(getString(R.string.current_id), keyArray[pos]);
+        editor.putLong(CURRENT_ID, keyArray[pos]);
         editor.apply();
 
         SQRLStorage storage = SQRLStorage.getInstance();

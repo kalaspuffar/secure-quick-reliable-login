@@ -114,10 +114,10 @@ public class MainActivity extends LoginBaseActivity {
         btnRemove.setOnClickListener(
                 v -> {
                     SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                            getString(R.string.preferences),
+                            APPS_PREFERENCES,
                             Context.MODE_PRIVATE
                     );
-                    long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+                    long currentId = sharedPref.getLong(CURRENT_ID, 0);
                     if(currentId != 0) {
                         mDbHelper.deleteIdentity(currentId);
                         updateSpinnerData(currentId);
@@ -134,10 +134,10 @@ public class MainActivity extends LoginBaseActivity {
         btnRename.setOnClickListener(
                 v -> {
                     SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                            getString(R.string.preferences),
+                            APPS_PREFERENCES,
                             Context.MODE_PRIVATE
                     );
-                    long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+                    long currentId = sharedPref.getLong(CURRENT_ID, 0);
                     if(currentId != 0) {
                         txtIdentityName.setText(mDbHelper.getIdentityName(currentId));
                     }
@@ -181,10 +181,10 @@ public class MainActivity extends LoginBaseActivity {
         popupView.findViewById(R.id.btnRename).setOnClickListener(v -> {
 
                     SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                            getString(R.string.preferences),
+                            APPS_PREFERENCES,
                             Context.MODE_PRIVATE
                     );
-                    long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+                    long currentId = sharedPref.getLong(CURRENT_ID, 0);
                     if(currentId != 0) {
                         mDbHelper.updateIdentityName(currentId, txtIdentityName.getText().toString());
                         updateSpinnerData(currentId);
@@ -255,14 +255,14 @@ public class MainActivity extends LoginBaseActivity {
                     storage.clear();
 
                     SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                            getString(R.string.preferences),
+                            APPS_PREFERENCES,
                             Context.MODE_PRIVATE
                     );
 
                     if(importIdentity) {
                         long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putLong(getString(R.string.current_id), newIdentityId);
+                        editor.putLong(CURRENT_ID, newIdentityId);
                         editor.apply();
 
                         handler.post(() -> {
@@ -275,7 +275,7 @@ public class MainActivity extends LoginBaseActivity {
                             }
                         });
                     } else {
-                        long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+                        long currentId = sharedPref.getLong(CURRENT_ID, 0);
                         if(currentId != 0) {
                             mDbHelper.updateIdentityData(currentId, storage.createSaveData());
                         }
@@ -381,10 +381,10 @@ public class MainActivity extends LoginBaseActivity {
 
         popupView.findViewById(R.id.btnLogin).setOnClickListener(v -> {
             SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                    getString(R.string.preferences),
+                    APPS_PREFERENCES,
                     Context.MODE_PRIVATE
             );
-            long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+            long currentId = sharedPref.getLong(CURRENT_ID, 0);
 
             if(currentId != 0) {
                 loginPopupWindow.dismiss();
@@ -549,11 +549,11 @@ public class MainActivity extends LoginBaseActivity {
                 long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
 
                 SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                        getString(R.string.preferences),
+                        APPS_PREFERENCES,
                         Context.MODE_PRIVATE
                 );
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putLong(getString(R.string.current_id), newIdentityId);
+                editor.putLong(CURRENT_ID, newIdentityId);
                 editor.apply();
 
                 handler.post(() -> {
@@ -628,10 +628,10 @@ public class MainActivity extends LoginBaseActivity {
                 }
 
                 SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                        getString(R.string.preferences),
+                        APPS_PREFERENCES,
                         Context.MODE_PRIVATE
                 );
-                long currentId = sharedPref.getLong(getString(R.string.current_id), 0);
+                long currentId = sharedPref.getLong(CURRENT_ID, 0);
                 mDbHelper.updateIdentityData(currentId, storage.createSaveData());
 
                 handler.post(() -> {
