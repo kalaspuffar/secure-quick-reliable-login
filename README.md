@@ -15,6 +15,7 @@ We are closely nearing a full implementation of the specification. But there is 
 * Test and verify code
 * Security audit
 * Bug reporting
+* Translation (https://poeditor.com/join/project/Jlsa1tqxlx)
 
 Some of these areas are not my speciallity so all help / merge requests are welcome.
 
