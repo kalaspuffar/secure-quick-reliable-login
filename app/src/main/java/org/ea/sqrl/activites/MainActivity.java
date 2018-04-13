@@ -681,6 +681,9 @@ public class MainActivity extends LoginBaseActivity {
             if(result.getContents() == null) {
                 Log.d("MainActivity", "Cancelled scan");
                 Snackbar.make(rootView, "Cancelled", Snackbar.LENGTH_LONG).show();
+                if(!mDbHelper.hasIdentities()) {
+                    MainActivity.this.finish();
+                }
             } else {
                 if(!importIdentity) {
                     serverData = EncryptionUtils.readSQRLQRCodeAsString(result.getRawBytes());

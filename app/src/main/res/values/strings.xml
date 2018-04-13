@@ -161,5 +161,6 @@
     <string name="button_new_identity_done_export">Export</string>
     <string name="button_new_identity_done">Done</string>
     <string name="camera_permission_request_title">Permission required</string>
-    <string name="camera_permission_request_desc">In order to create a new identity we need entropy. To create this we use your camera to gather data in aggregate in order to seed randomness.</string>
+    <string name="camera_permission_request_desc">In order to create and import identities and also to login we need to use the camera.\n\nWhen creating an identity we using to gather random data to improve the security of that identity.\n\nIn the case of import and login we give you the option to scan QR codes in order to input data required for that task.</string>
+    <string name="button_camera_permission_ok">OK</string>
 </resources>
