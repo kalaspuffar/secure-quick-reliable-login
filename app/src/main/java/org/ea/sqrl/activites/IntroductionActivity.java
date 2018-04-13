@@ -1,5 +1,6 @@
 package org.ea.sqrl.activites;
 
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 
 import android.support.v4.app.Fragment;
@@ -37,6 +38,8 @@ public class IntroductionActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         final ViewPager mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        TabLayout tabLayout = findViewById(R.id.tab_dots);
+        tabLayout.setupWithViewPager(mViewPager, true);
 
         Button btnClose = findViewById(R.id.btnCloseIntroduction);
         btnClose.setOnClickListener(v -> new Thread(() -> {
