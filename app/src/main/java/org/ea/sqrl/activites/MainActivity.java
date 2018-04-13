@@ -675,6 +675,31 @@ public class MainActivity extends LoginBaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        SQRLStorage storage = SQRLStorage.getInstance();
+        if(!mDbHelper.hasIdentities()) {
+            MainActivity.this.finish();
+        } else {
+            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
+                    APPS_PREFERENCES,
+                    Context.MODE_PRIVATE
+            );
+            long currentId = sharedPref.getLong(CURRENT_ID, 0);
+
+            if(currentId != 0) {
+                byte[] identityData = mDbHelper.getIdentityData(currentId);
+                try {
+                    storage.read(identityData);
+                } catch (Exception e) {
+                    Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                    Log.e(TAG, e.getMessage(), e);
+                }
+            }
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result != null) {

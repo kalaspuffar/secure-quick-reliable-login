@@ -194,6 +194,31 @@ public class UrlLoginActivity extends LoginBaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        SQRLStorage storage = SQRLStorage.getInstance();
+        if(!mDbHelper.hasIdentities()) {
+            UrlLoginActivity.this.finish();
+        } else {
+            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
+                    APPS_PREFERENCES,
+                    Context.MODE_PRIVATE
+            );
+            long currentId = sharedPref.getLong(CURRENT_ID, 0);
+
+            if(currentId != 0) {
+                byte[] identityData = mDbHelper.getIdentityData(currentId);
+                try {
+                    storage.read(identityData);
+                } catch (Exception e) {
+                    Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                    Log.e(TAG, e.getMessage(), e);
+                }
+            }
+        }
+    }
+
+    @Override
     protected void closeActivity() {
         super.closeActivity();
         handler.postDelayed(() -> UrlLoginActivity.this.finish(), 5000);
