@@ -8,6 +8,7 @@ import android.support.test.espresso.accessibility.AccessibilityChecks;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
+import android.view.WindowManager;
 
 import org.ea.sqrl.activites.AdvancedActivity;
 import org.ea.sqrl.activites.ClearIdentityActivity;
@@ -25,6 +26,7 @@ import org.ea.sqrl.activites.SettingsActivity;
 import org.ea.sqrl.activites.ShowIdentityActivity;
 import org.ea.sqrl.activites.StartActivity;
 import org.ea.sqrl.activites.UrlLoginActivity;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -116,16 +118,25 @@ public class AccessibilityInstrumentedTest {
         AccessibilityChecks.enable().setRunChecksFromRootView(true);
     }
 
+    /*
+    @Before
+    public void unlockScreen() {
+        final AdvancedActivity activity = advancedActivityRule.getActivity();
+        Runnable wakeUpDevice = () -> activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        activity.runOnUiThread(wakeUpDevice);
+    }
+    */
+
     @Test
     public void testAdvancedActivityAccessibility() throws Exception {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, AdvancedActivity.class);
-        Activity a = advancedActivityRule.launchActivity(intent);
+        advancedActivityRule.launchActivity(intent);
 
-        onView(withId(R.id.advancedActivityView))
-                .inRoot(withDecorView(not(is(a.getWindow().getDecorView()))))
-                .perform(click());
+        onView(withId(R.id.advancedActivityView)).perform(click());
     }
 
     @Test
@@ -134,11 +145,9 @@ public class AccessibilityInstrumentedTest {
                 .getTargetContext();
         Intent intent = new Intent(targetContext, ClearIdentityActivity.class);
         intent.putExtra("RUNNING_TEST", true);
-        Activity a = clearIdentityActivityRule.launchActivity(intent);
+        clearIdentityActivityRule.launchActivity(intent);
 
-        onView(withId(R.id.clearIdentityActivityView))
-                .inRoot(withDecorView(not(is(a.getWindow().getDecorView()))))
-                .perform(click());
+        onView(withId(R.id.clearIdentityActivityView)).perform(click());
     }
 
     @Test
