@@ -46,14 +46,12 @@ before_install:
   - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
   - echo -e 1"\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
 
-before_script:
-  - android list targets
-  - echo no | android create avd --force -n test -t "android-"$ANDROID_EMULATOR_LEVEL --abi $ANDROID_ABI --tag $ANDROID_TAG
-  - emulator -avd test -no-window
-  - android-wait-for-emulator
-
 script:
   - ./gradlew dependencyCheckAnalyze build
+  - android list targets
+  - echo no | android create avd --force -n test -t "android-"$ANDROID_EMULATOR_LEVEL --abi $ANDROID_ABI --tag $ANDROID_TAG
+  - emulator -avd test -no-window &
+  - android-wait-for-emulator
   - adb shell input keyevent 82
   - ./gradlew connectedCheck -PdisablePreDex --stacktrace
 
