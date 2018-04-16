@@ -28,18 +28,13 @@ import org.ea.sqrl.activites.StartActivity;
 import org.ea.sqrl.activites.UrlLoginActivity;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -118,23 +113,20 @@ public class AccessibilityInstrumentedTest {
         AccessibilityChecks.enable().setRunChecksFromRootView(true);
     }
 
-    /*
-    @Before
-    public void unlockScreen() {
-        final AdvancedActivity activity = advancedActivityRule.getActivity();
+    public void unlockScreen(Activity activity) {
         Runnable wakeUpDevice = () -> activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         activity.runOnUiThread(wakeUpDevice);
     }
-    */
 
     @Test
     public void testAdvancedActivityAccessibility() throws Exception {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, AdvancedActivity.class);
-        advancedActivityRule.launchActivity(intent);
+        AdvancedActivity a = advancedActivityRule.launchActivity(intent);
+        unlockScreen(a);
 
         onView(withId(R.id.advancedActivityView)).perform(click());
     }
@@ -145,7 +137,8 @@ public class AccessibilityInstrumentedTest {
                 .getTargetContext();
         Intent intent = new Intent(targetContext, ClearIdentityActivity.class);
         intent.putExtra("RUNNING_TEST", true);
-        clearIdentityActivityRule.launchActivity(intent);
+        ClearIdentityActivity a = clearIdentityActivityRule.launchActivity(intent);
+        unlockScreen(a);
 
         onView(withId(R.id.clearIdentityActivityView)).perform(click());
     }
@@ -155,7 +148,8 @@ public class AccessibilityInstrumentedTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, CreateIdentityActivity.class);
-        createIdentityActivityRule.launchActivity(intent);
+        CreateIdentityActivity a = createIdentityActivityRule.launchActivity(intent);
+        unlockScreen(a);
 
         onView(withId(R.id.createIdentityActivityView)).perform(click());
     }
@@ -165,7 +159,8 @@ public class AccessibilityInstrumentedTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, EntropyGatherActivity.class);
-        entropyGatherActivityRule.launchActivity(intent);
+        EntropyGatherActivity a = entropyGatherActivityRule.launchActivity(intent);
+        unlockScreen(a);
 
         onView(withId(R.id.entropyGatherActivityView)).perform(click());
     }
@@ -175,7 +170,8 @@ public class AccessibilityInstrumentedTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, IntroductionActivity.class);
-        introductionActivityRule.launchActivity(intent);
+        IntroductionActivity a = introductionActivityRule.launchActivity(intent);
+        unlockScreen(a);
 
         onView(withId(R.id.introductionActivityView)).perform(click());
     }
@@ -185,12 +181,12 @@ public class AccessibilityInstrumentedTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, MainActivity.class);
-        mainActivityRule.launchActivity(intent);
+        MainActivity a = mainActivityRule.launchActivity(intent);
+        unlockScreen(a);
 
         onView(withId(R.id.mainActivityView)).perform(click());
 
-        mainActivityRule.getActivity()
-                .getSupportFragmentManager().beginTransaction();
+        a.getSupportFragmentManager().beginTransaction();
 
         onView(withId(R.id.btnSettings)).perform(click());
         onView(withId(R.id.btnSettingsSave)).perform(click());
@@ -201,7 +197,8 @@ public class AccessibilityInstrumentedTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, NewIdentityDoneActivity.class);
-        newIdentityDoneActivityRule.launchActivity(intent);
+        NewIdentityDoneActivity a = newIdentityDoneActivityRule.launchActivity(intent);
+        unlockScreen(a);
 
         onView(withId(R.id.newIdentityDoneActivityView)).perform(click());
     }
@@ -211,7 +208,8 @@ public class AccessibilityInstrumentedTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, RekeyIdentityActivity.class);
-        rekeyIdentityActivityRule.launchActivity(intent);
+        RekeyIdentityActivity a = rekeyIdentityActivityRule.launchActivity(intent);
+        unlockScreen(a);
 
         onView(withId(R.id.rekeyIdentityActivityView)).perform(click());
     }
@@ -221,7 +219,8 @@ public class AccessibilityInstrumentedTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, RekeyVerifyActivity.class);
-        rekeyVerifyActivityRule.launchActivity(intent);
+        RekeyVerifyActivity a = rekeyVerifyActivityRule.launchActivity(intent);
+        unlockScreen(a);
 
         onView(withId(R.id.rekeyVerifyActivityView)).perform(click());
     }
@@ -232,7 +231,8 @@ public class AccessibilityInstrumentedTest {
                 .getTargetContext();
         Intent intent = new Intent(targetContext, RescueCodeEnterActivity.class);
         intent.putExtra("RUNNING_TEST", true);
-        rescueCodeEnterActivityRule.launchActivity(intent);
+        RescueCodeEnterActivity a = rescueCodeEnterActivityRule.launchActivity(intent);
+        unlockScreen(a);
 
         onView(withId(R.id.rescueCodeEntryActivityView)).perform(click());
     }
@@ -242,7 +242,8 @@ public class AccessibilityInstrumentedTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, RescueCodeShowActivity.class);
-        rescueCodeShowActivityRule.launchActivity(intent);
+        RescueCodeShowActivity a = rescueCodeShowActivityRule.launchActivity(intent);
+        unlockScreen(a);
 
         onView(withId(R.id.rescueCodeShowActivityView)).perform(click());
     }
@@ -252,7 +253,8 @@ public class AccessibilityInstrumentedTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, SaveIdentityActivity.class);
-        saveIdentityActivityRule.launchActivity(intent);
+        SaveIdentityActivity a = saveIdentityActivityRule.launchActivity(intent);
+        unlockScreen(a);
 
         onView(withId(R.id.saveIdentityActivityView)).perform(click());
     }
@@ -262,7 +264,8 @@ public class AccessibilityInstrumentedTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, SettingsActivity.class);
-        settingsActivityRule.launchActivity(intent);
+        SettingsActivity a = settingsActivityRule.launchActivity(intent);
+        unlockScreen(a);
 
         onView(withId(R.id.settingsActivityView)).perform(click());
     }
@@ -272,7 +275,8 @@ public class AccessibilityInstrumentedTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, ShowIdentityActivity.class);
-        showIdentityActivityRule.launchActivity(intent);
+        ShowIdentityActivity a = showIdentityActivityRule.launchActivity(intent);
+        unlockScreen(a);
 
         onView(withId(R.id.showIdentityActivityView)).perform(click());
     }
@@ -283,7 +287,8 @@ public class AccessibilityInstrumentedTest {
                 .getTargetContext();
         Intent intent = new Intent(targetContext, StartActivity.class);
         intent.putExtra("RUNNING_TEST", true);
-        startActivityRule.launchActivity(intent);
+        StartActivity a = startActivityRule.launchActivity(intent);
+        unlockScreen(a);
 
         onView(withId(R.id.startActivityView)).perform(click());
     }
@@ -293,7 +298,8 @@ public class AccessibilityInstrumentedTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, UrlLoginActivity.class);
-        urlLoginActivityRule.launchActivity(intent);
+        UrlLoginActivity a = urlLoginActivityRule.launchActivity(intent);
+        unlockScreen(a);
 
         onView(withId(R.id.urlLoginActivityView)).perform(click());
     }
