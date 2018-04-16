@@ -1,5 +1,6 @@
 package org.ea.sqrl;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
@@ -32,7 +33,10 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -117,9 +121,11 @@ public class AccessibilityInstrumentedTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, AdvancedActivity.class);
-        advancedActivityRule.launchActivity(intent);
+        Activity a = advancedActivityRule.launchActivity(intent);
 
-        onView(withId(R.id.advancedActivityView)).perform(click());
+        onView(withId(R.id.advancedActivityView))
+                .inRoot(withDecorView(not(is(a.getWindow().getDecorView()))))
+                .perform(click());
     }
 
     @Test
@@ -128,9 +134,11 @@ public class AccessibilityInstrumentedTest {
                 .getTargetContext();
         Intent intent = new Intent(targetContext, ClearIdentityActivity.class);
         intent.putExtra("RUNNING_TEST", true);
-        clearIdentityActivityRule.launchActivity(intent);
+        Activity a = clearIdentityActivityRule.launchActivity(intent);
 
-        onView(withId(R.id.clearIdentityActivityView)).perform(click());
+        onView(withId(R.id.clearIdentityActivityView))
+                .inRoot(withDecorView(not(is(a.getWindow().getDecorView()))))
+                .perform(click());
     }
 
     @Test
