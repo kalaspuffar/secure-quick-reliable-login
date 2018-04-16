@@ -196,6 +196,10 @@ public class UrlLoginActivity extends LoginBaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
+        if(runningTest) return;
+
         SQRLStorage storage = SQRLStorage.getInstance();
         if(!mDbHelper.hasIdentities()) {
             UrlLoginActivity.this.finish();
