@@ -47,12 +47,24 @@ before_install:
   - echo -e 1"\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
 
 script:
-  - ./gradlew dependencyCheckAnalyze build
   - android list targets
   - echo no | android create avd --force -n test -t "android-"$ANDROID_EMULATOR_LEVEL --abi $ANDROID_ABI --tag $ANDROID_TAG
   - emulator -avd test -no-window &
+  - ./gradlew dependencyCheckAnalyze check -PdisablePreDex --continue --stacktrace
   - android-wait-for-emulator
-#  - adb shell input keyevent 82 &
-  - ./gradlew connectedCheck -PdisablePreDex --stacktrace
+  - adb devices
+  - adb shell input keyevent 82 &
+  - ./gradlew connectedCheck -PdisablePreDex --continue --stacktrace
 
-after_failure: "cat $TRAVIS_BUILD_DIR/app/gen_build/reports/lint-results.xml"
+after_failure:
+  - wget http://imgur.com/tools/imgurbash.sh
+  - chmod a+x imgurbash.sh
+  - adb shell screencap -p | sed 's/\r$//' &gt; screen.png
+  - ./imgurbash.sh screen.png
+  - pandoc builder/build/reports/tests/index.html -t plain | sed -n '/^Failed tests/,/default-package/p'
+  - cat $TRAVIS_BUILD_DIR/app/gen_build/reports/lint-results.xml
+
+after_success:
+  - ./gradlew jacocoFullReport
+  - pip install --user codecov
+  - codecov
