@@ -69,6 +69,9 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     protected String queryLink = null;
 
     protected void setupBasePopups(LayoutInflater layoutInflater, boolean noiptest) {
+        boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
+        if(runningTest) return;
+
         identities = mDbHelper.getIdentitys();
 
         ArrayAdapter adapter = new ArrayAdapter(
