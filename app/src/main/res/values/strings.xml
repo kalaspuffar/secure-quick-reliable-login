@@ -163,4 +163,10 @@
     <string name="camera_permission_request_title">Permission required</string>
     <string name="camera_permission_request_desc">In order to create and import identities and also to login we need to use the camera.\n\nWhen creating an identity we using to gather random data to improve the security of that identity.\n\nIn the case of import and login we give you the option to scan QR codes in order to input data required for that task.</string>
     <string name="button_camera_permission_ok">OK</string>
+    <string name="print_not_available_title">Printing not available</string>
+    <string name="print_not_available_text">The printing function was not implemented before Android Kitcat</string>
+    <string name="print_identity_desc1">This printed identity was encrypted with the password it had at the time, and also with it\'s permanent Rescue Code. Since either the correct Password, or the identity\'s Rescue Code, will allow this identity to be used by anyone, neither of those should be stored with, or in any way available with, this printed identity:</string>
+    <string name="print_identity_desc2">As an additional recovery measure, a textual version of this identity is provided below. If a camera is not available to scan and import the QR code above, the text below may be entered for full identity recovery. However, this is a Rescue Code ONLY version, so this identity\'s Rescue Code will be required for its decryption:</string>
+    <string name="print_identity_desc3">Please retain and protect this printed version of your identity. With SQRL\'s \"two-party\" operation, no one can compromise your SQRL logon security. But this also means that there is no one to turn to if your identity is somehow lost or misplaced. Please treat this identity with the care it deserves. It is your secure and private key to the Internet.</string>
+    <string name="print_version_string">Page created by Android open-source SQRL client on the</string>
 </resources>

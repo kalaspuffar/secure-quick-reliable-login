@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.print.PrintAttributes;
+import android.print.PrintManager;
 import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -29,6 +31,7 @@ import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.services.MyPrintDocumentAdapter;
 import org.ea.sqrl.utils.EncryptionUtils;
 
 import java.io.File;
@@ -493,7 +496,26 @@ public class MainActivity extends LoginBaseActivity {
 
         popupView.findViewById(R.id.btnPrintIdentity).setOnClickListener(v -> {
             exportOptionsPopupWindow.dismiss();
-            showNotImplementedDialog();
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
+                String jobName = getString(R.string.app_name) + " Document";
+
+                PrintAttributes printAttributes = new PrintAttributes.Builder()
+                        .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
+                        .build();
+
+                SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
+                        APPS_PREFERENCES,
+                        Context.MODE_PRIVATE
+                );
+                long currentId = sharedPref.getLong(CURRENT_ID, 0);
+                String identityName = mDbHelper.getIdentityName(currentId);
+
+                printManager.print(jobName, new MyPrintDocumentAdapter(this, identityName), printAttributes);
+            } else {
+                showPrintingNotAvailableDialog();
+            }
         });
     }
 
@@ -643,15 +665,10 @@ public class MainActivity extends LoginBaseActivity {
         });
     }
 
-    public void showNotImplementedDialog() {
-        AlertDialog.Builder builder;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder = new AlertDialog.Builder(MainActivity.this, android.R.style.Theme_Material_Dialog_Alert);
-        } else {
-            builder = new AlertDialog.Builder(MainActivity.this);
-        }
-        builder.setTitle(R.string.not_implemented_title)
-                .setMessage(getString(R.string.not_implemented_text))
+    public void showPrintingNotAvailableDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle(R.string.print_not_available_title)
+                .setMessage(getString(R.string.print_not_available_text))
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                     dialog.dismiss();
                 })
@@ -683,7 +700,7 @@ public class MainActivity extends LoginBaseActivity {
 
         SQRLStorage storage = SQRLStorage.getInstance();
         if(!mDbHelper.hasIdentities()) {
-            MainActivity.this.finish();
+            if(!importIdentity) MainActivity.this.finish();
         } else {
             SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
                     APPS_PREFERENCES,
