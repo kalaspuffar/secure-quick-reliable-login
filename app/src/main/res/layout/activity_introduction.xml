@@ -14,39 +14,17 @@
         android:layout_alignParentBottom="true"
         app:layout_constraintTop_toTopOf="parent"
         app:tabGravity="center"
-        app:tabMode="scrollable">
-
-        <android.support.design.widget.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:text="@string/introduction_startpage_title" />
-
-        <android.support.design.widget.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:text="@string/introduction_nutshell_title" />
-
-        <android.support.design.widget.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:text="@string/introduction_password_title" />
-
-        <android.support.design.widget.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:text="@string/introduction_rescue_code_title" />
-
-        <android.support.design.widget.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:text="@string/introduction_backup_title" />
+        app:tabTextColor="@android:color/darker_gray"
+        app:tabIndicatorColor="@color/colorAccent"
+        app:tabMode="scrollable"
+        app:tabSelectedTextColor="@android:color/black">
     </android.support.design.widget.TabLayout>
 
 
     <android.support.v4.view.ViewPager
         android:id="@+id/container"
         android:layout_width="0dp"
-        android:layout_height="325dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toTopOf="@+id/btnCloseIntroduction"
