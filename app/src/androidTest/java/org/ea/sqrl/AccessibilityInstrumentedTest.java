@@ -181,6 +181,7 @@ public class AccessibilityInstrumentedTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, MainActivity.class);
+        intent.putExtra("RUNNING_TEST", true);
         MainActivity a = mainActivityRule.launchActivity(intent);
         unlockScreen(a);
 
@@ -298,6 +299,7 @@ public class AccessibilityInstrumentedTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, UrlLoginActivity.class);
+        intent.putExtra("RUNNING_TEST", true);
         UrlLoginActivity a = urlLoginActivityRule.launchActivity(intent);
         unlockScreen(a);
 
