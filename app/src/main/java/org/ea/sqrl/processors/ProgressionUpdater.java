@@ -1,6 +1,5 @@
 package org.ea.sqrl.processors;
 
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Handler;
 import android.widget.ProgressBar;
@@ -23,6 +22,7 @@ public class ProgressionUpdater {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.US);
     private Handler handler;
     private ProgressBar progressBar;
+    private TextView progressTitle;
     private TextView progressText;
     private int max;
     private long startTime;
@@ -34,8 +34,9 @@ public class ProgressionUpdater {
     }
 
 
-    public ProgressionUpdater(Handler handler, ProgressBar progressBar, TextView progressText) {
+    public ProgressionUpdater(Handler handler, TextView progressTitle, ProgressBar progressBar, TextView progressText) {
         this.handler = handler;
+        this.progressTitle = progressTitle;
         this.progressBar = progressBar;
         this.progressText = progressText;
     }
@@ -56,6 +57,10 @@ public class ProgressionUpdater {
             progressText.setText("Time elapsed: " + sdf.format(new Date(timeInMilliSeconds)));
             progressBar.setProgress(timeInSeconds);
         });
+    }
+
+    public void setState(String state) {
+        if(progressTitle != null) progressTitle.setText(state);
     }
 
     public void incrementProgress() {

@@ -528,13 +528,15 @@ public class MainActivity extends LoginBaseActivity {
 
         decryptPopupWindow.setTouchable(true);
 
-        final ProgressBar pbDecrypting = popupView.findViewById(R.id.pbDecrypting);
         final EditText txtPassword = popupView.findViewById(R.id.txtPassword);
         final Button btnDecryptKey = popupView.findViewById(R.id.btnDecryptKey);
+
+        final TextView lblProgressTitle = popupView.findViewById(R.id.lblProgressTitle);
+        final ProgressBar pbDecrypting = popupView.findViewById(R.id.pbDecrypting);
         final TextView progressText = popupView.findViewById(R.id.lblProgressText);
 
         SQRLStorage storage = SQRLStorage.getInstance();
-        storage.setProgressionUpdater(new ProgressionUpdater(handler, pbDecrypting, progressText));
+        storage.setProgressionUpdater(new ProgressionUpdater(handler, lblProgressTitle, pbDecrypting, progressText));
 
         popupView.findViewById(R.id.btnCloseImportIdentity).setOnClickListener(v -> decryptPopupWindow.dismiss());
         btnDecryptKey.setOnClickListener(v -> {

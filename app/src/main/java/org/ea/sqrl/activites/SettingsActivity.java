@@ -91,11 +91,12 @@ public class SettingsActivity extends BaseActivity {
         savePopupWindow.setFocusable(true);
 
         final ProgressBar pbDecrypting = popupView.findViewById(R.id.pbDecrypting);
+        final TextView lblProgressTitle = popupView.findViewById(R.id.lblProgressTitle);
         final EditText txtPassword = popupView.findViewById(R.id.txtPassword);
         final TextView progressText = popupView.findViewById(R.id.lblProgressText);
 
         SQRLStorage storage = SQRLStorage.getInstance();
-        storage.setProgressionUpdater(new ProgressionUpdater(handler, pbDecrypting, progressText));
+        storage.setProgressionUpdater(new ProgressionUpdater(handler, lblProgressTitle, pbDecrypting, progressText));
 
         popupView.findViewById(R.id.btnCloseSaveSettings).setOnClickListener(v -> savePopupWindow.dismiss());
         final Button btnSaveSettings = popupView.findViewById(R.id.btnSaveSettings);

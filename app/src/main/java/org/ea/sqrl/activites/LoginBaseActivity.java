@@ -253,11 +253,13 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
                 false);
 
+
         final ProgressBar progressBar = popupView.findViewById(R.id.pbEntropy);
+        final TextView lblProgressTitle = popupView.findViewById(R.id.lblProgressTitle);
         final TextView lblProgressText = popupView.findViewById(R.id.lblProgressText);
 
         SQRLStorage storage = SQRLStorage.getInstance();
-        storage.setProgressionUpdater(new ProgressionUpdater(handler, progressBar, lblProgressText));
+        storage.setProgressionUpdater(new ProgressionUpdater(handler, lblProgressTitle, progressBar, lblProgressText));
     }
 
     protected void closeActivity() {}
