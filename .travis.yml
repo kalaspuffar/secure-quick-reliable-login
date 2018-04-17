@@ -52,14 +52,8 @@ script:
   - emulator -avd test -no-window &
   - ./gradlew dependencyCheckAnalyze assembleDebugAndroidTest -PdisablePreDex --continue --stacktrace
   - android-wait-for-emulator
-#  - adb devices
 #  - adb shell input keyevent 82 &
   - ./gradlew connectedDebugAndroidTest -PdisablePreDex --continue --stacktrace
 
 after_failure:
-#  - cat $TRAVIS_BUILD_DIR/app/gen_build/reports/lint-results.xml
-
-after_success:
-  - ./gradlew jacocoFullReport
-  - pip install --user codecov
-  - codecov
+  - cat $TRAVIS_BUILD_DIR/app/gen_build/reports/lint-results.xml
