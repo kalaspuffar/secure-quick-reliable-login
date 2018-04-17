@@ -22,7 +22,7 @@ import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
-import org.ea.sqrl.services.MyPrintDocumentAdapter;
+import org.ea.sqrl.services.IdentityPrintDocumentAdapter;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -124,7 +124,13 @@ public class NewIdentityDoneActivity extends LoginBaseActivity {
                 long currentId = sharedPref.getLong(CURRENT_ID, 0);
                 String identityName = mDbHelper.getIdentityName(currentId);
 
-                printManager.print(jobName, new MyPrintDocumentAdapter(this, identityName), printAttributes);
+                try {
+                    SQRLStorage.getInstance().createVerifyRecoveryBlock();
+
+                    printManager.print(jobName, new IdentityPrintDocumentAdapter(this, identityName), printAttributes);
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage(), e);
+                }
             } else {
                 showPrintingNotAvailableDialog();
             }
