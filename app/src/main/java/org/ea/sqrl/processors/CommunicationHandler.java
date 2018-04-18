@@ -1,7 +1,11 @@
 package org.ea.sqrl.processors;
 
 import android.app.Activity;
+import android.os.Handler;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.utils.EncryptionUtils;
@@ -494,5 +498,8 @@ public class CommunicationHandler {
 
     public void setAskButton(String askButton) {
         this.askButton = askButton;
+    }
+
+    public void setAskWindow(Handler handler, PopupWindow askPopupWindow, TextView txtAskQuestion, Button btnAskFirstButton, Button btnAskSecondButton) {
     }
 }
