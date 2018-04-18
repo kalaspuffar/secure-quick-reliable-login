@@ -28,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -275,7 +276,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         final TextView txtAskQuestion = popupView.findViewById(R.id.txtAskQuestion);
         final Button btnAskFirstButton = popupView.findViewById(R.id.btnAskFirstButton);
         final Button btnAskSecondButton = popupView.findViewById(R.id.btnAskSecondButton);
-        final Button btnCloseAsk = popupView.findViewById(R.id.btnCloseAsk);
+        final ImageButton btnCloseAsk = popupView.findViewById(R.id.btnCloseAsk);
 
         btnAskFirstButton.setOnClickListener(v -> {
             askPopupWindow.dismiss();
