@@ -22,14 +22,15 @@
         tools:layout_conversion_absoluteHeight="142dp"
         tools:layout_conversion_absoluteWidth="359dp">
 
-        <Button
+        <ImageButton
             android:id="@+id/btnCloseResetPassword"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:contentDescription="@string/remove_account_close"
-            android:text="X"
+            android:background="@color/zxing_transparent"
+            android:src="@drawable/ic_close"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginLeft="8dp" />
