@@ -34,13 +34,13 @@ import java.util.Date;
 import io.nayuki.qrcodegen.QrCode;
 
 @RequiresApi(Build.VERSION_CODES.KITKAT)
-public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
-    private static final String TAG = "MyPrintDocumentAdapter";
+public class IdentityPrintDocumentAdapter extends PrintDocumentAdapter {
+    private static final String TAG = "IdentityPrintDocumentAdapter";
     private final Activity activity;
     private final String identityName;
     private PrintedPdfDocument mPdfDocument;
 
-    public MyPrintDocumentAdapter(Activity activity, String identityName) {
+    public IdentityPrintDocumentAdapter(Activity activity, String identityName) {
         this.activity = activity;
         this.identityName = identityName;
     }
@@ -60,7 +60,7 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
         }
 
         PrintDocumentInfo info = new PrintDocumentInfo
-                .Builder("print_output.pdf")
+                .Builder("identity.pdf")
                 .setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
                 .setPageCount(1)
                 .build();

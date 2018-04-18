@@ -87,6 +87,7 @@ public class CommunicationHandler {
         sb.append("ver=1\r\n");
         sb.append("cmd=query\r\n");
         sb.append(storage.getOptions(noiptest, false));
+        sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         if(storage.hasPreviousKeys()) {
             sb.append("\r\npidk=" + EncryptionUtils.encodeUrlSafe(storage.getPreviousPublicKey(cryptDomain)));
@@ -100,6 +101,7 @@ public class CommunicationHandler {
         sb.append("ver=1\r\n");
         sb.append("cmd=disable\r\n");
         sb.append(storage.getOptions(false, false));
+        sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         return sb.toString();
     }
@@ -110,6 +112,7 @@ public class CommunicationHandler {
         sb.append("ver=1\r\n");
         sb.append("cmd=enable\r\n");
         sb.append(storage.getOptions(false, false));
+        sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         return sb.toString();
     }
@@ -120,6 +123,7 @@ public class CommunicationHandler {
         sb.append("ver=1\r\n");
         sb.append("cmd=remove\r\n");
         sb.append(storage.getOptions(false, false));
+        sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         return sb.toString();
     }
@@ -131,6 +135,7 @@ public class CommunicationHandler {
         sb.append("ver=1\r\n");
         sb.append("cmd=ident\r\n");
         sb.append(storage.getOptions(false, false));
+        sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append(storage.getServerUnlockKey(entropyHarvester));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         if(storage.hasPreviousKeys()) {
@@ -145,6 +150,7 @@ public class CommunicationHandler {
         sb.append("ver=1\r\n");
         sb.append("cmd=ident\r\n");
         sb.append(storage.getOptions(false, false));
+        sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         if(storage.hasPreviousKeys()) {
             sb.append("\r\npidk=" + EncryptionUtils.encodeUrlSafe(storage.getPreviousPublicKey(cryptDomain)));

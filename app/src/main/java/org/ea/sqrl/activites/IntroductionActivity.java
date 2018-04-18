@@ -27,6 +27,7 @@ import org.ea.sqrl.processors.SQRLStorage;
  * @author Daniel Persson
  */
 public class IntroductionActivity extends AppCompatActivity {
+    private TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +39,14 @@ public class IntroductionActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         final ViewPager mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        TabLayout tabLayout = findViewById(R.id.tab_dots);
+        tabLayout = findViewById(R.id.tab_dots);
         tabLayout.setupWithViewPager(mViewPager, true);
+
+        tabLayout.getTabAt(0).setText(R.string.introduction_startpage_title);
+        tabLayout.getTabAt(1).setText(R.string.introduction_nutshell_title);
+        tabLayout.getTabAt(2).setText(R.string.introduction_password_title);
+        tabLayout.getTabAt(3).setText(R.string.introduction_rescue_code_title);
+        tabLayout.getTabAt(4).setText(R.string.introduction_backup_title);
 
         Button btnClose = findViewById(R.id.btnCloseIntroduction);
         btnClose.setOnClickListener(v -> new Thread(() -> {

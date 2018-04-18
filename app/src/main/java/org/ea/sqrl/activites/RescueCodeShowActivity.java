@@ -1,9 +1,13 @@
 package org.ea.sqrl.activites;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.print.PrintAttributes;
+import android.print.PrintManager;
 import android.support.v7.app.AppCompatActivity;
 
 import android.util.Log;
@@ -13,6 +17,8 @@ import android.widget.TextView;
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.EntropyHarvester;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.services.IdentityPrintDocumentAdapter;
+import org.ea.sqrl.services.RescueCodePrintDocumentAdapter;
 
 import java.util.List;
 
@@ -20,7 +26,7 @@ import java.util.List;
  *
  * @author Daniel Persson
  */
-public class RescueCodeShowActivity extends AppCompatActivity {
+public class RescueCodeShowActivity extends BaseActivity {
     private static final String TAG = "RescueCodeShowActivity";
 
     @Override
@@ -59,19 +65,25 @@ public class RescueCodeShowActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.btnPrintRescueCode).setOnClickListener(v -> {
-            showNotImplementedDialog();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
+                String jobName = getString(R.string.app_name) + " Document";
+
+                PrintAttributes printAttributes = new PrintAttributes.Builder()
+                        .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
+                        .build();
+
+                printManager.print(jobName, new RescueCodePrintDocumentAdapter(this), printAttributes);
+            } else {
+                showPrintingNotAvailableDialog();
+            }
         });
     }
 
-    public void showNotImplementedDialog() {
-        AlertDialog.Builder builder;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder = new AlertDialog.Builder(RescueCodeShowActivity.this, android.R.style.Theme_Material_Dialog_Alert);
-        } else {
-            builder = new AlertDialog.Builder(RescueCodeShowActivity.this);
-        }
-        builder.setTitle(R.string.not_implemented_title)
-                .setMessage(getString(R.string.not_implemented_text))
+    public void showPrintingNotAvailableDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(RescueCodeShowActivity.this);
+        builder.setTitle(R.string.print_not_available_title)
+                .setMessage(getString(R.string.print_not_available_text))
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                     dialog.dismiss();
                 })

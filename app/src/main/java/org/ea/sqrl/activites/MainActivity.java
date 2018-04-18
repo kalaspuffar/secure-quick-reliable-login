@@ -31,7 +31,7 @@ import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
-import org.ea.sqrl.services.MyPrintDocumentAdapter;
+import org.ea.sqrl.services.IdentityPrintDocumentAdapter;
 import org.ea.sqrl.utils.EncryptionUtils;
 
 import java.io.File;
@@ -512,7 +512,7 @@ public class MainActivity extends LoginBaseActivity {
                 long currentId = sharedPref.getLong(CURRENT_ID, 0);
                 String identityName = mDbHelper.getIdentityName(currentId);
 
-                printManager.print(jobName, new MyPrintDocumentAdapter(this, identityName), printAttributes);
+                printManager.print(jobName, new IdentityPrintDocumentAdapter(this, identityName), printAttributes);
             } else {
                 showPrintingNotAvailableDialog();
             }

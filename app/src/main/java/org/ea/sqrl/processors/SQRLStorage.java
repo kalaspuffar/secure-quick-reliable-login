@@ -323,6 +323,9 @@ public class SQRLStorage {
         this.previousKey3 = null;
         this.previousKey4 = null;
         this.previousVerificationTag = null;
+        this.hasIdentityBlock = false;
+        this.hasRescueBlock = false;
+        this.hasPreviousBlock = false;
     }
 
 
@@ -1023,7 +1026,7 @@ E/SQRLStorage: e2bd235e4bee2c382c8c7ea4047c10bb2de9ecdda9279c0a48f9a026f1e1377c
         this.rescueVerificationTag = new byte[16];
         this.hasRescueBlock = true;
 
-        byte rescueCodeEncryptionTime = (byte)150; // 2 min 30 seconds.
+        byte rescueCodeEncryptionTime = (byte)60; // 1 min
         try {
             entropyHarvester.fetchRandom(this.rescueRandomSalt);
             entropyHarvester.fetchRandom(this.rescueIdentityUnlockKey);
@@ -1202,7 +1205,14 @@ E/SQRLStorage: e2bd235e4bee2c382c8c7ea4047c10bb2de9ecdda9279c0a48f9a026f1e1377c
             }
             result = EncryptionUtils.combine(result, previousVerificationTag);
         }
+
         return result;
+    }
+
+    public void createVerifyRecoveryBlock() throws Exception {
+        byte[] result = createSaveData();
+        String inputString = EncryptionUtils.encodeBase56(Arrays.copyOfRange(result, HEADER_LENGTH + passwordBlockLength, result.length));
+        verifyingRecoveryBlock = fixString(inputString);
     }
 
     public void reInitializeMasterKeyIdentity() {
@@ -1271,6 +1281,35 @@ E/SQRLStorage: e2bd235e4bee2c382c8c7ea4047c10bb2de9ecdda9279c0a48f9a026f1e1377c
         }
         return "";
     }
+
+
+    public byte[] encodeSecretIndex(byte[] secretIndex, byte[] secIndexKey) throws Exception {
+        final Mac HMacSha256 = Mac.getInstance("HmacSHA256");
+        final SecretKeySpec key = new SecretKeySpec(secIndexKey, "HmacSHA256");
+        HMacSha256.init(key);
+        return HMacSha256.doFinal(secretIndex);
+    }
+
+    public String getSecretIndex(String domain, String secretIndex) throws Exception {
+        if(secretIndex == null) return "";
+        StringBuilder sb = new StringBuilder();
+        byte[] secIndexKey = EncryptionUtils.enHash(this.getKeySeed(domain));
+        sb.append("ins=");
+        sb.append(EncryptionUtils.encodeUrlSafe(
+                encodeSecretIndex(secretIndex.getBytes(), secIndexKey)
+        ));
+        sb.append("\r\n");
+        if(this.hasPreviousKeys()) {
+            byte[] previousSecIndexKey = EncryptionUtils.enHash(this.getPreviousKeySeed(domain));
+            sb.append("pins=");
+            sb.append(EncryptionUtils.encodeUrlSafe(
+                    encodeSecretIndex(secretIndex.getBytes(), previousSecIndexKey)
+            ));
+            sb.append("\r\n");
+        }
+        return sb.toString();
+    }
+
 
     public boolean hasIdentityBlock() {
         return hasIdentityBlock;
@@ -1379,6 +1418,7 @@ E/SQRLStorage: e2bd235e4bee2c382c8c7ea4047c10bb2de9ecdda9279c0a48f9a026f1e1377c
             e.printStackTrace();
         }
     }
+
 }
 
 
