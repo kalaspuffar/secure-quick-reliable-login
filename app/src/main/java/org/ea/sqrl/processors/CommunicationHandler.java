@@ -32,6 +32,7 @@ public class CommunicationHandler {
     private String communicationDomain;
     private String cryptDomain;
     private Map<String, String> lastResponse = new HashMap<>();
+    private String askButton;
     private String response;
     private boolean useSSL;
 
@@ -81,11 +82,19 @@ public class CommunicationHandler {
         this.cryptDomain = domain;
     }
 
+    private String getAskButtonAnswer() {
+        if(askButton == null) return "";
+        String askResponse = "btn=" + askButton + "\r\n";
+        askButton = null;
+        return askResponse;
+    }
+
     public String createClientQuery(boolean noiptest) throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=query\r\n");
+        sb.append(getAskButtonAnswer());
         sb.append(storage.getOptions(noiptest, false));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
@@ -100,6 +109,7 @@ public class CommunicationHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=disable\r\n");
+        sb.append(getAskButtonAnswer());
         sb.append(storage.getOptions(false, false));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
@@ -111,6 +121,7 @@ public class CommunicationHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=enable\r\n");
+        sb.append(getAskButtonAnswer());
         sb.append(storage.getOptions(false, false));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
@@ -122,6 +133,7 @@ public class CommunicationHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=remove\r\n");
+        sb.append(getAskButtonAnswer());
         sb.append(storage.getOptions(false, false));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
@@ -134,6 +146,7 @@ public class CommunicationHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=ident\r\n");
+        sb.append(getAskButtonAnswer());
         sb.append(storage.getOptions(false, false));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append(storage.getServerUnlockKey(entropyHarvester));
@@ -149,6 +162,7 @@ public class CommunicationHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=ident\r\n");
+        sb.append(getAskButtonAnswer());
         sb.append(storage.getOptions(false, false));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
@@ -476,5 +490,9 @@ public class CommunicationHandler {
             return new byte[32];
         }
         return EncryptionUtils.decodeUrlSafe(lastResponse.get("suk"));
+    }
+
+    public void setAskButton(String askButton) {
+        this.askButton = askButton;
     }
 }

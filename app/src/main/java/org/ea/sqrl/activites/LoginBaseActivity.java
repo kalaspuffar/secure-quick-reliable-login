@@ -63,6 +63,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     private PopupWindow removeAccountPopupWindow;
     protected PopupWindow progressPopupWindow;
     protected PopupWindow loginPopupWindow;
+    protected PopupWindow askPopupWindow;
 
     protected final CommunicationHandler commHandler = CommunicationHandler.getInstance();
     protected String serverData = null;
@@ -84,6 +85,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         cboxIdentity.setOnItemSelectedListener(this);
 
         setupProgressPopupWindow(layoutInflater);
+        setupAskPopupWindow(layoutInflater);
         setupEnableAccountPopupWindow(layoutInflater, noiptest);
         setupDisableAccountPopupWindow(layoutInflater, noiptest);
         setupRemoveAccountPopupWindow(layoutInflater, noiptest);
@@ -260,6 +262,41 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
         SQRLStorage storage = SQRLStorage.getInstance();
         storage.setProgressionUpdater(new ProgressionUpdater(handler, lblProgressTitle, progressBar, lblProgressText));
+    }
+
+    protected void setupAskPopupWindow(LayoutInflater layoutInflater) {
+        View popupView = layoutInflater.inflate(R.layout.fragment_ask_dialog, null);
+
+        askPopupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
+                false);
+
+
+        final TextView txtAskQuestion = popupView.findViewById(R.id.txtAskQuestion);
+        final Button btnAskFirstButton = popupView.findViewById(R.id.btnAskFirstButton);
+        final Button btnAskSecondButton = popupView.findViewById(R.id.btnAskSecondButton);
+        final Button btnCloseAsk = popupView.findViewById(R.id.btnCloseAsk);
+
+        btnAskFirstButton.setOnClickListener(v -> {
+            askPopupWindow.dismiss();
+            commHandler.setAskButton("1");
+        });
+        btnAskSecondButton.setOnClickListener(v -> {
+            askPopupWindow.dismiss();
+            commHandler.setAskButton("2");
+        });
+        btnCloseAsk.setOnClickListener(v -> {
+            askPopupWindow.dismiss();
+            commHandler.setAskButton("3");
+        });
+
+        commHandler.setAskWindow(
+                handler,
+                askPopupWindow,
+                txtAskQuestion,
+                btnAskFirstButton,
+                btnAskSecondButton
+        );
     }
 
     protected void closeActivity() {}

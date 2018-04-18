@@ -185,4 +185,6 @@
     <string name="progress_state_encrypting_identity">Encrypting identity</string>
     <string name="progress_state_encrypting_previous_identity">Encrypting previous identity</string>
     <string name="progress_state_encrypting_rescue_code_identity">Encrypting rescue code identity</string>
+    <string name="button_ask_first_button_default">ok</string>
+    <string name="ask_close">Close question window</string>
 </resources>
