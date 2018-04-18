@@ -174,4 +174,7 @@
     <string name="print_identity_desc2">As an additional recovery measure, a textual version of this identity is provided below. If a camera is not available to scan and import the QR code above, the text below may be entered for full identity recovery. However, this is a Rescue Code ONLY version, so this identity\'s Rescue Code will be required for its decryption:</string>
     <string name="print_identity_desc3">Please retain and protect this printed version of your identity. With SQRL\'s \"two-party\" operation, no one can compromise your SQRL logon security. But this also means that there is no one to turn to if your identity is somehow lost or misplaced. Please treat this identity with the care it deserves. It is your secure and private key to the Internet.</string>
     <string name="print_version_string">Page created by Android open-source SQRL client on the</string>
+    <string name="progress_state_working">Working</string>
+    <string name="progress_time_elapsed">Time elapsed: %s</string>
+    <string name="progress_time_left">Time left: %s</string>
 </resources>

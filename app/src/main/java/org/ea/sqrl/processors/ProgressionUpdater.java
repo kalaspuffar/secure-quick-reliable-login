@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.ea.sqrl.R;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -39,12 +41,17 @@ public class ProgressionUpdater {
         this.progressTitle = progressTitle;
         this.progressBar = progressBar;
         this.progressText = progressText;
+        this.progressTitle.setText(R.string.progress_state_working);
     }
 
     public String getTimeLeft() {
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         long timeLeftInMilliSeconds = (endTime - startTime) * (max - progressBar.getProgress());
         return sdf.format(new Date(timeLeftInMilliSeconds));
+    }
+
+    public String getString(int res, String s) {
+        return progressText.getContext().getString(res, s);
     }
 
     public void setTimeDone(long timeInMilliSeconds) {
@@ -54,12 +61,12 @@ public class ProgressionUpdater {
         handler.post(() -> {
             sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
             progressText.setTextColor(Color.GRAY);
-            progressText.setText("Time elapsed: " + sdf.format(new Date(timeInMilliSeconds)));
+            progressText.setText(getString(R.string.progress_time_elapsed, sdf.format(new Date(timeInMilliSeconds))));
             progressBar.setProgress(timeInSeconds);
         });
     }
 
-    public void setState(String state) {
+    public void setState(int state) {
         if(progressTitle != null) progressTitle.setText(state);
     }
 
@@ -68,7 +75,7 @@ public class ProgressionUpdater {
         handler.post(() -> {
             progressBar.incrementProgressBy(1);
             progressText.setTextColor(Color.GRAY);
-            progressText.setText("Time left: " + getTimeLeft());
+            progressText.setText(getString(R.string.progress_time_left, getTimeLeft()));
         });
     }
 
@@ -88,7 +95,7 @@ public class ProgressionUpdater {
             progressBar.setMax(max);
             progressBar.setProgress(0);
             progressText.setTextColor(Color.GRAY);
-            progressText.setText("Time left: " + getTimeLeft());
+            progressText.setText(getString(R.string.progress_time_left, getTimeLeft()));
         });
     }
 
