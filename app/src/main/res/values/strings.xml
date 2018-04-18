@@ -177,4 +177,12 @@
     <string name="progress_state_working">Working</string>
     <string name="progress_time_elapsed">Time elapsed: %s</string>
     <string name="progress_time_left">Time left: %s</string>
+    <string name="progress_state_prepare_query">Preparing query</string>
+    <string name="progresstate_contact_server">Contacting server</string>
+    <string name="progress_state_descrypting_identity">Decrypting identity</string>
+    <string name="progress_state_descrypting_previous_identity">Decrypting previous identity</string>
+    <string name="progress_state_descrypting_rescuecode_identity">Decrypting rescue code identity</string>
+    <string name="progress_state_encrypting_identity">Encrypting identity</string>
+    <string name="progress_state_encrypting_previous_identity">Encrypting previous identity</string>
+    <string name="progress_state_encrypting_rescue_code_identity">Encrypting rescue code identity</string>
 </resources>

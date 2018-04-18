@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
+import org.ea.sqrl.R;
 import org.ea.sqrl.activites.BaseActivity;
 import org.ea.sqrl.jni.Grc_aesgcm;
 import org.ea.sqrl.utils.EncryptionUtils;
@@ -348,6 +349,7 @@ public class SQRLStorage {
 
 
     public boolean decryptIdentityKeyQuickPass(String password) {
+        this.progressionUpdater.setState(R.string.progress_state_descrypting_identity);
         this.progressionUpdater.setMax(quickPassIterationCount);
 
         password = password.substring(0, this.getHintLength());
@@ -400,6 +402,7 @@ public class SQRLStorage {
      * @param password  Password used to unlock the master key.
      */
     public boolean decryptIdentityKey(String password) {
+        this.progressionUpdater.setState(R.string.progress_state_descrypting_identity);
         this.progressionUpdater.setMax(iterationCount);
         try {
             byte[] key = EncryptionUtils.enSCryptIterations(password, randomSalt, logNFactor, 32, iterationCount, this.progressionUpdater);
@@ -445,6 +448,7 @@ public class SQRLStorage {
     }
 
     private boolean decryptPreviousBlock() {
+        this.progressionUpdater.setState(R.string.progress_state_descrypting_previous_identity);
         byte[] masterKey = this.identityMasterKey;
         if (this.quickPassKey != null) {
             masterKey = this.quickPassKey;
@@ -516,6 +520,7 @@ public class SQRLStorage {
      * @param rescueCode    Special rescueCode printed on paper in the format of 0000-0000-0000-0000-0000-0000
      */
     public boolean decryptUnlockKey(String rescueCode) {
+        this.progressionUpdater.setState(R.string.progress_state_descrypting_rescuecode_identity);
         this.progressionUpdater.setMax(rescueIterationCount);
         rescueCode = rescueCode.replaceAll("-", "");
 
@@ -739,6 +744,7 @@ public class SQRLStorage {
      */
     public boolean encryptIdentityKeyQuickPass(String password, EntropyHarvester entropyHarvester) {
         if(!this.hasKeys() || !this.hasEncryptedKeys()) return false;
+        this.progressionUpdater.setState(R.string.progress_state_encrypting_identity);
         this.progressionUpdater.clear();
         password = password.substring(0, this.getHintLength());
 
@@ -798,6 +804,7 @@ public class SQRLStorage {
     public boolean encryptIdentityKey(String password, EntropyHarvester entropyHarvester) {
         if(!this.hasKeys()) return false;
         this.progressionUpdater.clear();
+        this.progressionUpdater.setState(R.string.progress_state_encrypting_identity);
 
         if(!this.hasEncryptedKeys()) {
             this.setHintLength(4);
@@ -885,6 +892,8 @@ public class SQRLStorage {
 
             byte[] nullBytes = new byte[12];
             Arrays.fill(nullBytes, (byte)0);
+
+            this.progressionUpdater.setState(R.string.progress_state_encrypting_previous_identity);
 
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Key keySpec = new SecretKeySpec(this.identityMasterKey, "AES");
@@ -1018,6 +1027,7 @@ E/SQRLStorage: e2bd235e4bee2c382c8c7ea4047c10bb2de9ecdda9279c0a48f9a026f1e1377c
         if(this.hasRescueBlock && this.rescueIdentityUnlockKey != null) {
             addPreviousKey(this.rescueIdentityUnlockKey);
         }
+        this.progressionUpdater.setState(R.string.progress_state_encrypting_rescue_code_identity);
 
         this.rescueRandomSalt = new byte[16];
         this.rescueLogNFactor = 9;
@@ -1419,6 +1429,11 @@ E/SQRLStorage: e2bd235e4bee2c382c8c7ea4047c10bb2de9ecdda9279c0a48f9a026f1e1377c
         }
     }
 
+    public void setProgressState(int progressState) {
+        if(this.progressionUpdater != null) {
+            this.progressionUpdater.setState(progressState);
+        }
+    }
 }
 
 

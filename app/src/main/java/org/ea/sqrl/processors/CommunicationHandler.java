@@ -163,6 +163,9 @@ public class CommunicationHandler {
     }
 
     public String createPostParams(String client, String server, boolean unlockServerKey) throws Exception {
+        SQRLStorage storage = SQRLStorage.getInstance();
+        storage.setProgressState(R.string.progress_state_prepare_query);
+
         StringBuilder sb = new StringBuilder();
         sb.append("client=");
         sb.append(EncryptionUtils.encodeUrlSafe(client.getBytes()));
@@ -170,7 +173,6 @@ public class CommunicationHandler {
         sb.append("&server=");
         sb.append(EncryptionUtils.encodeUrlSafe(server.getBytes()));
 
-        SQRLStorage storage = SQRLStorage.getInstance();
         byte[] message = EncryptionUtils.combine(
                 EncryptionUtils.encodeUrlSafe(client.getBytes()).getBytes(),
                 EncryptionUtils.encodeUrlSafe(server.getBytes()).getBytes()
@@ -217,6 +219,10 @@ public class CommunicationHandler {
 
     public void postRequest(String link, String data) throws Exception {
         StringBuilder result = new StringBuilder();
+
+        SQRLStorage storage = SQRLStorage.getInstance();
+        storage.setProgressState(R.string.progresstate_contact_server);
+
 
         String loginURL = (useSSL ? "https://" : "http://") + communicationDomain + link;
 

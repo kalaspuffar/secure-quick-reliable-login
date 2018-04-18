@@ -41,7 +41,6 @@ public class ProgressionUpdater {
         this.progressTitle = progressTitle;
         this.progressBar = progressBar;
         this.progressText = progressText;
-        this.progressTitle.setText(R.string.progress_state_working);
     }
 
     public String getTimeLeft() {
@@ -67,7 +66,9 @@ public class ProgressionUpdater {
     }
 
     public void setState(int state) {
-        if(progressTitle != null) progressTitle.setText(state);
+        if (progressTitle != null) {
+            handler.post(() -> progressTitle.setText(state));
+        }
     }
 
     public void incrementProgress() {
