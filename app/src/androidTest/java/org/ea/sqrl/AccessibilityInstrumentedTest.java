@@ -141,6 +141,7 @@ public class AccessibilityInstrumentedTest {
         unlockScreen(a);
 
         onView(withId(R.id.clearIdentityActivityView)).perform(click());
+        Thread.sleep(500);
     }
 
     @Test
