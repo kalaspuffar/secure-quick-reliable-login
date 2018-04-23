@@ -221,6 +221,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
             if(currentId != 0) {
                 byte[] identityData = mDbHelper.getIdentityData(currentId);
+                updateSpinnerData(currentId);
                 try {
                     storage.read(identityData);
                 } catch (Exception e) {
