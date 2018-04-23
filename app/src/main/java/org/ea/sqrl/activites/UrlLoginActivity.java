@@ -223,7 +223,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                 byte[] identityData = mDbHelper.getIdentityData(currentId);
                 updateSpinnerData(currentId);
                 try {
-                    storage.read(identityData);
+                    storage.refresh(identityData);
                 } catch (Exception e) {
                     Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
                     Log.e(TAG, e.getMessage(), e);

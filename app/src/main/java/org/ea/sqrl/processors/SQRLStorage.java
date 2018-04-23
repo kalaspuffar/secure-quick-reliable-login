@@ -124,6 +124,16 @@ public class SQRLStorage {
         return result;
     }
 
+    public void refresh(byte[] input) throws Exception {
+        if(!this.hasIdentityBlock && !this.hasPreviousBlock && !this.hasRescueBlock) {
+            read(input);
+        }
+        byte[] oldData = this.createSaveData();
+        if(!Arrays.equals(input, oldData)) {
+            read(input);
+        }
+    }
+
     public void read(byte[] input) throws Exception {
         this.cleanIdentity();
         String header = new String(Arrays.copyOfRange(input, 0, 8));

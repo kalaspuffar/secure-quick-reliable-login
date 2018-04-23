@@ -712,7 +712,7 @@ public class MainActivity extends LoginBaseActivity {
             if(currentId != 0) {
                 byte[] identityData = mDbHelper.getIdentityData(currentId);
                 try {
-                    storage.read(identityData);
+                    storage.refresh(identityData);
                     updateSpinnerData(currentId);
                 } catch (Exception e) {
                     Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
