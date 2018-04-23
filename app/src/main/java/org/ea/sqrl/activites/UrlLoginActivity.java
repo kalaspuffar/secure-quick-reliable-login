@@ -97,26 +97,31 @@ public class UrlLoginActivity extends LoginBaseActivity {
                                 commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
                             ) {
                                 postLogin(commHandler);
+                                if(!commHandler.hasErrorMessage()) {
+                                    handler.post(() -> closeThisActivity());
+                                }
                             } else {
                                 handler.post(() -> {
                                     txtLoginPassword.setText("");
                                 });
                                 toastErrorMessage(true);
                                 storage.clear();
+                                handler.postDelayed(() -> closeThisActivity(), 5000);
                             }
+
                         } catch (Exception e) {
                             Log.e(TAG, e.getMessage(), e);
                             storage.clear();
                             handler.post(() -> {
                                 Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
                             });
+                            handler.postDelayed(() -> closeThisActivity(), 5000);
                         } finally {
                             commHandler.clearLastResponse();
                             handler.post(() -> {
                                 txtLoginPassword.setText("");
                                 progressPopupWindow.dismiss();
                             });
-                            closeActivity();
                         }
                     }).start();
                 }
@@ -179,18 +184,18 @@ public class UrlLoginActivity extends LoginBaseActivity {
                             });
                             toastErrorMessage(true);
                             hasError = true;
-                            handler.postDelayed(() -> closeActivity(), 5000);
+                            handler.postDelayed(() -> closeThisActivity(), 5000);
                         }
 
                         if(!hasError && !commHandler.hasErrorMessage()) {
-                            handler.post(() -> closeActivity());
+                            handler.post(() -> closeThisActivity());
                         }
                     } catch (Exception e) {
                         handler.post(() -> {
                             Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
                         });
                         Log.e(TAG, e.getMessage(), e);
-                        handler.postDelayed(() -> closeActivity(), 5000);
+                        handler.postDelayed(() -> closeThisActivity(), 5000);
                     } finally {
                         commHandler.clearLastResponse();
                         handler.post(() -> {
@@ -203,9 +208,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
         });
     }
 
-    @Override
-    protected void closeActivity() {
-        super.closeActivity();
+    private void closeThisActivity() {
         UrlLoginActivity.this.finishAffinity();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             UrlLoginActivity.this.finishAndRemoveTask();
