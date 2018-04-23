@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.os.Bundle;
@@ -205,7 +206,10 @@ public class UrlLoginActivity extends LoginBaseActivity {
     @Override
     protected void closeActivity() {
         super.closeActivity();
-        UrlLoginActivity.this.finish();
+        UrlLoginActivity.this.finishAffinity();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            UrlLoginActivity.this.finishAndRemoveTask();
+        }
     }
 
     @Override
