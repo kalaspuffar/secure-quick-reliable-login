@@ -327,10 +327,10 @@ public class MainActivity extends LoginBaseActivity {
                         boolean decryptionOk = storage.decryptIdentityKeyQuickPass(password.toString());
                         if(!decryptionOk) {
                             Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
-                            progressPopupWindow.dismiss();
-                            handler.post(() ->
-                                    loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
-                            );
+                            handler.post(() -> {
+                                progressPopupWindow.dismiss();
+                                loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                            });
                             storage.clear();
                             storage.clearQuickPass(MainActivity.this);
                             return;
@@ -361,9 +361,9 @@ public class MainActivity extends LoginBaseActivity {
                         } finally {
                             commHandler.clearLastResponse();
                             storage.clear();
-                            progressPopupWindow.dismiss();
                             handler.post(() -> {
                                 txtLoginPassword.setText("");
+                                progressPopupWindow.dismiss();
                             });
                         }
                     }).start();
@@ -402,9 +402,9 @@ public class MainActivity extends LoginBaseActivity {
                         }
                     } else {
                         Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
-                        progressPopupWindow.dismiss();
                         handler.post(() -> {
                             txtLoginPassword.setText("");
+                            progressPopupWindow.dismiss();
                         });
                         storage.clear();
                         return;
@@ -440,9 +440,9 @@ public class MainActivity extends LoginBaseActivity {
                     } finally {
                         commHandler.clearLastResponse();
                         storage.clear();
-                        progressPopupWindow.dismiss();
                         handler.post(() -> {
                             txtLoginPassword.setText("");
+                            progressPopupWindow.dismiss();
                         });
                     }
                 }).start();

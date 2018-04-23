@@ -80,7 +80,10 @@ public class UrlLoginActivity extends LoginBaseActivity {
                         boolean decryptionOk = storage.decryptIdentityKeyQuickPass(password.toString());
                         if(!decryptionOk) {
                             Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
-                            progressPopupWindow.dismiss();
+                            handler.post(() -> {
+                                txtLoginPassword.setText("");
+                                progressPopupWindow.dismiss();
+                            });
                             storage.clear();
                             storage.clearQuickPass(UrlLoginActivity.this);
                             return;
@@ -89,9 +92,9 @@ public class UrlLoginActivity extends LoginBaseActivity {
                         try {
                             postQuery(commHandler, false);
                             if(
-                                    commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                                            commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
-                                    ) {
+                                commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
+                                commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
+                            ) {
                                 postLogin(commHandler);
                             } else {
                                 handler.post(() -> {
@@ -108,9 +111,9 @@ public class UrlLoginActivity extends LoginBaseActivity {
                             });
                         } finally {
                             commHandler.clearLastResponse();
-                            progressPopupWindow.dismiss();
                             handler.post(() -> {
                                 txtLoginPassword.setText("");
+                                progressPopupWindow.dismiss();
                             });
                             closeActivity();
                         }
@@ -147,9 +150,9 @@ public class UrlLoginActivity extends LoginBaseActivity {
                         }
                     } else {
                         Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
-                        progressPopupWindow.dismiss();
                         handler.post(() -> {
                             txtLoginPassword.setText("");
+                            progressPopupWindow.dismiss();
                         });
                         return;
                     }
@@ -189,9 +192,9 @@ public class UrlLoginActivity extends LoginBaseActivity {
                         handler.postDelayed(() -> UrlLoginActivity.this.finish(), 5000);
                     } finally {
                         commHandler.clearLastResponse();
-                        progressPopupWindow.dismiss();
                         handler.post(() -> {
                             txtLoginPassword.setText("");
+                            progressPopupWindow.dismiss();
                         });
                     }
                 }).start();

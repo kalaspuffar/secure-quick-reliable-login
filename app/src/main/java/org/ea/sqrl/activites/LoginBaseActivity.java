@@ -308,6 +308,10 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 } else {
                     Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                     storage.clear();
+                    handler.post(() -> {
+                        txtDisablePassword.setText("");
+                        progressPopupWindow.dismiss();
+                    });
                     return;
                 }
 
@@ -323,6 +327,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     } else {
                         handler.post(() -> {
                             txtDisablePassword.setText("");
+                            progressPopupWindow.dismiss();
                         });
                         toastErrorMessage(true);
                     }
@@ -333,13 +338,12 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 } finally {
                     commHandler.clearLastResponse();
                     storage.clear();
-                    progressPopupWindow.dismiss();
                     closeActivity();
+                    handler.post(() -> {
+                        txtDisablePassword.setText("");
+                        progressPopupWindow.dismiss();
+                    });
                 }
-
-                handler.post(() -> {
-                    txtDisablePassword.setText("");
-                });
             }).start();
         });
     }
