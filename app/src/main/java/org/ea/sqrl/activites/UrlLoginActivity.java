@@ -32,7 +32,6 @@ public class UrlLoginActivity extends LoginBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_url_login);
 
-        progressBarHolder = findViewById(R.id.progressBarHolder);
         cboxIdentity = findViewById(R.id.cboxIdentity);
 
         rootView = findViewById(R.id.urlLoginActivityView);
@@ -75,13 +74,13 @@ public class UrlLoginActivity extends LoginBaseActivity {
             public void onTextChanged(CharSequence password, int start, int before, int count) {
                 if (!storage.hasQuickPass()) return;
                 if ((start + count) >= storage.getHintLength()) {
-                    showProgressBar();
+                    progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
 
                     new Thread(() -> {
                         boolean decryptionOk = storage.decryptIdentityKeyQuickPass(password.toString());
                         if(!decryptionOk) {
                             Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
-                            hideProgressBar();
+                            progressPopupWindow.dismiss();
                             storage.clear();
                             storage.clearQuickPass(UrlLoginActivity.this);
                             return;
@@ -109,7 +108,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                             });
                         } finally {
                             commHandler.clearLastResponse();
-                            hideProgressBar();
+                            progressPopupWindow.dismiss();
                             handler.post(() -> {
                                 txtLoginPassword.setText("");
                             });
@@ -136,7 +135,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
             long currentId = sharedPref.getLong(CURRENT_ID, 0);
 
             if(currentId != 0) {
-                showProgressBar();
+                progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
 
                 new Thread(() -> {
                     boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString());
@@ -148,7 +147,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                         }
                     } else {
                         Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
-                        hideProgressBar();
+                        progressPopupWindow.dismiss();
                         handler.post(() -> {
                             txtLoginPassword.setText("");
                         });
@@ -158,6 +157,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                     try {
                         postQuery(commHandler, false);
 
+                        boolean hasError = false;
                         if(
                             (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
                             commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
@@ -174,19 +174,25 @@ public class UrlLoginActivity extends LoginBaseActivity {
                                 txtLoginPassword.setText("");
                             });
                             toastErrorMessage(true);
+                            hasError = true;
+                            handler.postDelayed(() -> UrlLoginActivity.this.finish(), 5000);
+                        }
+
+                        if(!hasError && !commHandler.hasErrorMessage()) {
+                            handler.post(() -> UrlLoginActivity.this.finish());
                         }
                     } catch (Exception e) {
                         handler.post(() -> {
                             Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
                         });
                         Log.e(TAG, e.getMessage(), e);
+                        handler.postDelayed(() -> UrlLoginActivity.this.finish(), 5000);
                     } finally {
                         commHandler.clearLastResponse();
-                        hideProgressBar();
+                        progressPopupWindow.dismiss();
                         handler.post(() -> {
                             txtLoginPassword.setText("");
                         });
-                        closeActivity();
                     }
                 }).start();
             }
@@ -220,11 +226,5 @@ public class UrlLoginActivity extends LoginBaseActivity {
                 }
             }
         }
-    }
-
-    @Override
-    protected void closeActivity() {
-        super.closeActivity();
-        handler.postDelayed(() -> UrlLoginActivity.this.finish(), 5000);
     }
 }

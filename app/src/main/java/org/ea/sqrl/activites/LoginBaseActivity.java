@@ -57,7 +57,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     protected Map<Long, String> identities;
     protected Button btnUseIdentity;
 
-    protected FrameLayout progressBarHolder;
     protected PopupWindow loginOptionsPopupWindow;
     private PopupWindow disableAccountPopupWindow;
     private PopupWindow enableAccountPopupWindow;
@@ -181,26 +180,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         }
     }
 
-    protected void showProgressBar() {
-        handler.post(() -> {
-            rootView.setEnabled(false);
-            AlphaAnimation inAnimation = new AlphaAnimation(0f, 1f);
-            inAnimation.setDuration(200);
-            progressBarHolder.setAnimation(inAnimation);
-            progressBarHolder.setVisibility(View.VISIBLE);
-        });
-    }
-
-    protected void hideProgressBar() {
-        handler.post(() -> {
-            rootView.setEnabled(true);
-            AlphaAnimation outAnimation = new AlphaAnimation(1f, 0f);
-            outAnimation.setDuration(200);
-            progressBarHolder.setAnimation(outAnimation);
-            progressBarHolder.setVisibility(View.GONE);
-        });
-    }
-
     protected boolean checkRescueCode(EditText code) {
         if(code.length() != 4) {
             Snackbar.make(rootView, getString(R.string.rescue_code_incorrect_input), Snackbar.LENGTH_LONG).show();
@@ -320,7 +299,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         final EditText txtDisablePassword = popupView.findViewById(R.id.txtDisablePassword);
         popupView.findViewById(R.id.btnDisableAccount).setOnClickListener(v -> {
             disableAccountPopupWindow.dismiss();
-            showProgressBar();
+            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
 
             new Thread(() -> {
                 boolean decryptionOk = storage.decryptIdentityKey(txtDisablePassword.getText().toString());
@@ -354,7 +333,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 } finally {
                     commHandler.clearLastResponse();
                     storage.clear();
-                    hideProgressBar();
+                    progressPopupWindow.dismiss();
                     closeActivity();
                 }
 

@@ -61,7 +61,6 @@ public class MainActivity extends LoginBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        progressBarHolder = findViewById(R.id.progressBarHolder);
         cboxIdentity = findViewById(R.id.cboxIdentity);
         rootView = findViewById(R.id.mainActivityView);
 
@@ -322,13 +321,13 @@ public class MainActivity extends LoginBaseActivity {
                 if (!storage.hasQuickPass()) return;
                 if ((start + count) >= storage.getHintLength()) {
                     loginPopupWindow.dismiss();
-                    showProgressBar();
+                    progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
 
                     new Thread(() -> {
                         boolean decryptionOk = storage.decryptIdentityKeyQuickPass(password.toString());
                         if(!decryptionOk) {
                             Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
-                            hideProgressBar();
+                            progressPopupWindow.dismiss();
                             handler.post(() ->
                                     loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
                             );
@@ -362,7 +361,7 @@ public class MainActivity extends LoginBaseActivity {
                         } finally {
                             commHandler.clearLastResponse();
                             storage.clear();
-                            hideProgressBar();
+                            progressPopupWindow.dismiss();
                             handler.post(() -> {
                                 txtLoginPassword.setText("");
                             });
@@ -391,7 +390,7 @@ public class MainActivity extends LoginBaseActivity {
 
             if(currentId != 0) {
                 loginPopupWindow.dismiss();
-                showProgressBar();
+                progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
 
                 new Thread(() -> {
                     boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString());
@@ -403,7 +402,7 @@ public class MainActivity extends LoginBaseActivity {
                         }
                     } else {
                         Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
-                        hideProgressBar();
+                        progressPopupWindow.dismiss();
                         handler.post(() -> {
                             txtLoginPassword.setText("");
                         });
@@ -441,7 +440,7 @@ public class MainActivity extends LoginBaseActivity {
                     } finally {
                         commHandler.clearLastResponse();
                         storage.clear();
-                        hideProgressBar();
+                        progressPopupWindow.dismiss();
                         handler.post(() -> {
                             txtLoginPassword.setText("");
                         });
