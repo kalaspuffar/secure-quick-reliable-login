@@ -6,6 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -25,11 +26,18 @@ public class RekeyVerifyActivity extends LoginBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rekey_verify);
 
-        SQRLStorage.getInstance().clear();
+        SQRLStorage storage = SQRLStorage.getInstance();
+        storage.clear();
 
         setupProgressPopupWindow(getLayoutInflater());
 
         rootView = findViewById(R.id.rekeyVerifyActivityView);
+
+        final TextView txtTooManyRekey = findViewById(R.id.txtTooManyRekey);
+        if(storage.hasAllPreviousKeys()) {
+            txtTooManyRekey.setVisibility(View.VISIBLE);
+        }
+
 
         final EditText txtRecoverCode1 = findViewById(R.id.txtRecoverCode1);
         final EditText txtRecoverCode2 = findViewById(R.id.txtRecoverCode2);
@@ -37,8 +45,6 @@ public class RekeyVerifyActivity extends LoginBaseActivity {
         final EditText txtRecoverCode4 = findViewById(R.id.txtRecoverCode4);
         final EditText txtRecoverCode5 = findViewById(R.id.txtRecoverCode5);
         final EditText txtRecoverCode6 = findViewById(R.id.txtRecoverCode6);
-
-        SQRLStorage storage = SQRLStorage.getInstance();
 
         final Button btnRekeyIdentityStart = findViewById(R.id.btnRekeyIdentityStart);
         btnRekeyIdentityStart.setOnClickListener(

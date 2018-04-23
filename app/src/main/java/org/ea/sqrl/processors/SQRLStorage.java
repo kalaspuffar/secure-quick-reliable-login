@@ -970,17 +970,6 @@ public class SQRLStorage {
             this.reInitializeMasterKeyIdentity();
         }
         if(!hasPreviousBlock || previousCountOfKeys == 0 || this.decryptPreviousBlock()) {
-            Log.e(TAG, "Before previous key");
-            Log.e(TAG, EncryptionUtils.byte2hex(identityUnlockKey));
-            if(this.previousKey1 != null)
-                Log.e(TAG, EncryptionUtils.byte2hex(this.previousKey1));
-            if(this.previousKey2 != null)
-                Log.e(TAG, EncryptionUtils.byte2hex(this.previousKey2));
-            if(this.previousKey3 != null)
-                Log.e(TAG, EncryptionUtils.byte2hex(this.previousKey3));
-            if(this.previousKey4 != null)
-                Log.e(TAG, EncryptionUtils.byte2hex(this.previousKey4));
-
             if (this.previousCountOfKeys < 4) {
                 this.previousCountOfKeys++;
             }
@@ -997,15 +986,6 @@ public class SQRLStorage {
             this.hasPreviousBlock = true;
             this.updatePreviousPlaintext();
         }
-        Log.e(TAG, "After previous key");
-        if(this.previousKey1 != null)
-            Log.e(TAG, EncryptionUtils.byte2hex(this.previousKey1));
-        if(this.previousKey2 != null)
-            Log.e(TAG, EncryptionUtils.byte2hex(this.previousKey2));
-        if(this.previousKey3 != null)
-            Log.e(TAG, EncryptionUtils.byte2hex(this.previousKey3));
-        if(this.previousKey4 != null)
-            Log.e(TAG, EncryptionUtils.byte2hex(this.previousKey4));
     }
 
     /*
@@ -1442,6 +1422,9 @@ E/SQRLStorage: e2bd235e4bee2c382c8c7ea4047c10bb2de9ecdda9279c0a48f9a026f1e1377c
         }
     }
 
+    public boolean hasAllPreviousKeys() {
+        return this.previousKey4Encrypted != null;
+    }
 }
 
 

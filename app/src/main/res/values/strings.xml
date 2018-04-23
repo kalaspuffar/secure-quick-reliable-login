@@ -187,4 +187,5 @@
     <string name="progress_state_encrypting_rescue_code_identity">Encrypting rescue code identity</string>
     <string name="button_ask_first_button_default">ok</string>
     <string name="ask_close">Close question window</string>
+    <string name="rekey_verify_to_many_rekey_attempts">This identity has been rekeyed so many times that we now need to retire one of the old keys. This means that sites using this, the oldest key, will not recognize this identity.</string>
 </resources>
