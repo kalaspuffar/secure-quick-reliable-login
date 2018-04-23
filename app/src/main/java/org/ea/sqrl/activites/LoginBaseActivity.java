@@ -599,21 +599,27 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 Context.MODE_PRIVATE
         );
         SharedPreferences.Editor editor = sharedPref.edit();
+
+
         editor.putLong(CURRENT_ID, keyArray[pos]);
         editor.apply();
 
         SQRLStorage storage = SQRLStorage.getInstance();
-        storage.clearQuickPass(this);
-        try {
-            byte[] identityData = mDbHelper.getIdentityData(keyArray[pos]);
-            storage.read(identityData);
-            if(btnUseIdentity != null) {
-                btnUseIdentity.setEnabled(storage.hasIdentityBlock());
-            }
 
-        } catch (Exception e) {
-            handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
-            Log.e(TAG, e.getMessage(), e);
+        byte[] identityData = mDbHelper.getIdentityData(keyArray[pos]);
+
+        if(storage.needsReload(identityData)) {
+            storage.clearQuickPass(this);
+            try {
+                storage.read(identityData);
+            } catch (Exception e) {
+                handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                Log.e(TAG, e.getMessage(), e);
+            }
+        }
+
+        if(btnUseIdentity != null) {
+            btnUseIdentity.setEnabled(storage.hasIdentityBlock());
         }
     }
 

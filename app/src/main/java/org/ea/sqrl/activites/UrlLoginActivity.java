@@ -178,18 +178,18 @@ public class UrlLoginActivity extends LoginBaseActivity {
                             });
                             toastErrorMessage(true);
                             hasError = true;
-                            handler.postDelayed(() -> UrlLoginActivity.this.finish(), 5000);
+                            handler.postDelayed(() -> closeActivity(), 5000);
                         }
 
                         if(!hasError && !commHandler.hasErrorMessage()) {
-                            handler.post(() -> UrlLoginActivity.this.finish());
+                            handler.post(() -> closeActivity());
                         }
                     } catch (Exception e) {
                         handler.post(() -> {
                             Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
                         });
                         Log.e(TAG, e.getMessage(), e);
-                        handler.postDelayed(() -> UrlLoginActivity.this.finish(), 5000);
+                        handler.postDelayed(() -> closeActivity(), 5000);
                     } finally {
                         commHandler.clearLastResponse();
                         handler.post(() -> {
@@ -203,13 +203,18 @@ public class UrlLoginActivity extends LoginBaseActivity {
     }
 
     @Override
+    protected void closeActivity() {
+        super.closeActivity();
+        UrlLoginActivity.this.finish();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
         boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
         if(runningTest) return;
 
-        SQRLStorage storage = SQRLStorage.getInstance();
         if(!mDbHelper.hasIdentities()) {
             UrlLoginActivity.this.finish();
         } else {
@@ -218,16 +223,8 @@ public class UrlLoginActivity extends LoginBaseActivity {
                     Context.MODE_PRIVATE
             );
             long currentId = sharedPref.getLong(CURRENT_ID, 0);
-
             if(currentId != 0) {
-                byte[] identityData = mDbHelper.getIdentityData(currentId);
                 updateSpinnerData(currentId);
-                try {
-                    storage.refresh(identityData);
-                } catch (Exception e) {
-                    Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                    Log.e(TAG, e.getMessage(), e);
-                }
             }
         }
     }

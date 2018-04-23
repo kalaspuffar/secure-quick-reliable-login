@@ -699,7 +699,6 @@ public class MainActivity extends LoginBaseActivity {
         boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
         if(runningTest) return;
 
-        SQRLStorage storage = SQRLStorage.getInstance();
         if(!mDbHelper.hasIdentities()) {
             if(!importIdentity) MainActivity.this.finish();
         } else {
@@ -708,16 +707,8 @@ public class MainActivity extends LoginBaseActivity {
                     Context.MODE_PRIVATE
             );
             long currentId = sharedPref.getLong(CURRENT_ID, 0);
-
             if(currentId != 0) {
-                byte[] identityData = mDbHelper.getIdentityData(currentId);
-                try {
-                    storage.refresh(identityData);
-                    updateSpinnerData(currentId);
-                } catch (Exception e) {
-                    Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                    Log.e(TAG, e.getMessage(), e);
-                }
+                updateSpinnerData(currentId);
             }
         }
     }

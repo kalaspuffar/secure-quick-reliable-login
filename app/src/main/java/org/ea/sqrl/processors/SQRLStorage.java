@@ -124,14 +124,12 @@ public class SQRLStorage {
         return result;
     }
 
-    public void refresh(byte[] input) throws Exception {
+    public boolean needsReload(byte[] identityData) {
         if(!this.hasIdentityBlock && !this.hasPreviousBlock && !this.hasRescueBlock) {
-            read(input);
+            return true;
         }
         byte[] oldData = this.createSaveData();
-        if(!Arrays.equals(input, oldData)) {
-            read(input);
-        }
+        return !Arrays.equals(identityData, oldData);
     }
 
     public void read(byte[] input) throws Exception {
@@ -338,7 +336,6 @@ public class SQRLStorage {
         this.hasRescueBlock = false;
         this.hasPreviousBlock = false;
     }
-
 
     private int getIntFromTwoBytes(byte[] input, int offset) {
         return (input[offset] & 0xff) | ((input[offset + 1] & 0xff) << 8);
@@ -1444,6 +1441,7 @@ E/SQRLStorage: e2bd235e4bee2c382c8c7ea4047c10bb2de9ecdda9279c0a48f9a026f1e1377c
             this.progressionUpdater.setState(progressState);
         }
     }
+
 }
 
 
