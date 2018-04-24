@@ -38,6 +38,7 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.services.AskDialogService;
 import org.ea.sqrl.services.ClearIdentityReceiver;
 import org.ea.sqrl.services.ClearIdentityService;
 
@@ -270,13 +271,13 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
             commHandler.setAskButton("3");
         });
 
-        commHandler.setAskWindow(
+        commHandler.setAskDialogService(new AskDialogService(
                 handler,
                 askPopupWindow,
                 txtAskQuestion,
                 btnAskFirstButton,
                 btnAskSecondButton
-        );
+        ));
     }
 
     protected void closeActivity() {}
@@ -318,10 +319,9 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 try {
                     postQuery(commHandler, noiptest);
 
-                    if(
-                        (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                        commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
-                        !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
+                    if((commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
+                            commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
+                            !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
                     ) {
                         postDisableAccount(commHandler);
                     } else {

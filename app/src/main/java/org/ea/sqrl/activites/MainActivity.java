@@ -338,34 +338,47 @@ public class MainActivity extends LoginBaseActivity {
 
                         try {
                             postQuery(commHandler, true);
-                            if(
-                                (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                                commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
-                                !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
-                            ) {
-                                postLogin(commHandler);
-                            } else {
-                                handler.post(() -> {
-                                    txtLoginPassword.setText("");
-                                    loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                                });
-                                toastErrorMessage(true);
-                                storage.clear();
-                            }
                         } catch (Exception e) {
-                            Log.e(TAG, e.getMessage(), e);
-                            handler.post(() -> {
-                                Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                                loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                            });
-                        } finally {
                             commHandler.clearLastResponse();
+                            Log.e(TAG, e.getMessage(), e);
+                            handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                             storage.clear();
+                            return;
+                        } finally {
                             handler.post(() -> {
                                 txtLoginPassword.setText("");
                                 progressPopupWindow.dismiss();
                             });
                         }
+
+                        commHandler.setAskAction(() -> {
+                            if (
+                                (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
+                                commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
+                                !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
+                            ) {
+                                try {
+                                    postLogin(commHandler);
+                                } catch (Exception e) {
+                                    Log.e(TAG, e.getMessage(), e);
+                                    handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                                } finally {
+                                    commHandler.clearLastResponse();
+                                    storage.clear();
+                                    handler.post(() -> {
+                                        txtLoginPassword.setText("");
+                                        progressPopupWindow.dismiss();
+                                    });
+                                }
+                            } else {
+                                handler.post(() -> txtLoginPassword.setText(""));
+                                toastErrorMessage(true);
+                                storage.clear();
+                            }
+                        });
+                        commHandler.showAskDialog();
+
+
                     }).start();
                 }
             }

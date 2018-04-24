@@ -3,11 +3,13 @@ package org.ea.sqrl.processors;
 import android.app.Activity;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.services.AskDialogService;
 import org.ea.sqrl.utils.EncryptionUtils;
 import org.libsodium.jni.Sodium;
 
@@ -37,6 +39,7 @@ public class CommunicationHandler {
     private String cryptDomain;
     private Map<String, String> lastResponse = new HashMap<>();
     private String askButton;
+    private AskDialogService askDialogService;
     private String response;
     private boolean useSSL;
 
@@ -498,8 +501,21 @@ public class CommunicationHandler {
 
     public void setAskButton(String askButton) {
         this.askButton = askButton;
+        this.askDialogService.activateAskButton();
     }
 
-    public void setAskWindow(Handler handler, PopupWindow askPopupWindow, TextView txtAskQuestion, Button btnAskFirstButton, Button btnAskSecondButton) {
+
+    public void setAskDialogService(AskDialogService askDialogService) {
+        this.askDialogService = askDialogService;
+    }
+
+    public void setAskAction(Runnable askAction) {
+        this.askDialogService.setAskAction(askAction);
+    }
+
+    public void showAskDialog() {
+        if(this.lastResponse.containsKey("ask")) {
+            this.askDialogService.showDialog(this.lastResponse.get("ask"));
+        }
     }
 }
