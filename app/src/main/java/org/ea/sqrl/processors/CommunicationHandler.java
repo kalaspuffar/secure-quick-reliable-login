@@ -516,6 +516,8 @@ public class CommunicationHandler {
     public void showAskDialog() {
         if(this.lastResponse.containsKey("ask")) {
             this.askDialogService.showDialog(this.lastResponse.get("ask"));
+        } else {
+            this.askDialogService.activateAskButton();
         }
     }
 }

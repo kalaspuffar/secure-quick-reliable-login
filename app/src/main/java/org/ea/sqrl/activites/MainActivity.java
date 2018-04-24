@@ -351,12 +351,15 @@ public class MainActivity extends LoginBaseActivity {
                             });
                         }
 
-                        commHandler.setAskAction(() -> {
-                            if (
-                                (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                                commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
-                                !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
-                            ) {
+                        if (
+                            (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
+                            commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
+                            !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
+                        ) {
+                            commHandler.setAskAction(() -> {
+                                handler.post(() -> {
+                                    progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                                });
                                 try {
                                     postLogin(commHandler);
                                 } catch (Exception e) {
@@ -370,15 +373,13 @@ public class MainActivity extends LoginBaseActivity {
                                         progressPopupWindow.dismiss();
                                     });
                                 }
-                            } else {
-                                handler.post(() -> txtLoginPassword.setText(""));
-                                toastErrorMessage(true);
-                                storage.clear();
-                            }
-                        });
-                        commHandler.showAskDialog();
-
-
+                            });
+                            commHandler.showAskDialog();
+                        } else {
+                            handler.post(() -> txtLoginPassword.setText(""));
+                            toastErrorMessage(true);
+                            storage.clear();
+                        }
                     }).start();
                 }
             }
@@ -425,39 +426,52 @@ public class MainActivity extends LoginBaseActivity {
 
                     try {
                         postQuery(commHandler, true);
-
-                        if(
-                            (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                            commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
-                            !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
-                        ) {
-                            postLogin(commHandler);
-                        } else if(
-                            !commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) &&
-                            !commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
-                        ){
-                            postCreateAccount(commHandler);
-                        } else {
-                            handler.post(() -> {
-                                txtLoginPassword.setText("");
-                                loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                            });
-                            toastErrorMessage(true);
-                        }
                     } catch (Exception e) {
                         handler.post(() -> {
                             Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                            loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                        });
-                        Log.e(TAG, e.getMessage(), e);
-                    } finally {
-                        commHandler.clearLastResponse();
-                        storage.clear();
-                        handler.post(() -> {
-                            txtLoginPassword.setText("");
                             progressPopupWindow.dismiss();
                         });
+                        Log.e(TAG, e.getMessage(), e);
+                        commHandler.clearLastResponse();
+                        storage.clear();
+                    } finally {
+                        handler.post(() -> txtLoginPassword.setText(""));
                     }
+
+                    commHandler.setAskAction(() -> {
+                        handler.post(() -> {
+                            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                        });
+                        try {
+                            if (
+                                (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
+                                commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
+                                !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
+                            ) {
+                                postLogin(commHandler);
+                            } else if (
+                                !commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) &&
+                                !commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
+                            ) {
+                                postCreateAccount(commHandler);
+                            } else {
+                                handler.post(() -> txtLoginPassword.setText(""));
+                                toastErrorMessage(true);
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, e.getMessage(), e);
+                            handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                        } finally {
+                            commHandler.clearLastResponse();
+                            storage.clear();
+                            handler.post(() -> {
+                                txtLoginPassword.setText("");
+                                progressPopupWindow.dismiss();
+                            });
+                        }
+                    });
+                    commHandler.showAskDialog();
+
                 }).start();
             }
         });

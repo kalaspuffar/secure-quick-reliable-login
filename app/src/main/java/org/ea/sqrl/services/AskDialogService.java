@@ -3,6 +3,7 @@ package org.ea.sqrl.services;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -32,28 +33,34 @@ public class AskDialogService {
 
     public void showDialog(String askString) {
         String[] askArray = askString.split("~");
-        try {
-            txtAskQuestion.setText(new String(EncryptionUtils.decodeUrlSafe(askArray[0])));
-            if(askArray.length > 1) {
-                String buttonString = new String(EncryptionUtils.decodeUrlSafe(askArray[1]));
-                String[] buttonStringArr = buttonString.split(";");
-                btnAskFirstButton.setText(buttonStringArr[0]);
-            }
-            if(askArray.length > 2) {
-                String buttonString = new String(EncryptionUtils.decodeUrlSafe(askArray[2]));
-                String[] buttonStringArr = buttonString.split(";");
-                btnAskSecondButton.setText(buttonStringArr[0]);
-            }
+        handler.post(() -> {
+            try {
+                btnAskSecondButton.setVisibility(View.GONE);
+                txtAskQuestion.setText(new String(EncryptionUtils.decodeUrlSafe(askArray[0]), "UTF-8"));
+                if(askArray.length > 1) {
+                    String buttonString = new String(EncryptionUtils.decodeUrlSafe(askArray[1]), "UTF-8");
+                    String[] buttonStringArr = buttonString.split(";");
+                    btnAskFirstButton.setText(buttonStringArr[0]);
+                }
+                if(askArray.length > 2) {
+                    String buttonString = new String(EncryptionUtils.decodeUrlSafe(askArray[2]), "UTF-8");
+                    String[] buttonStringArr = buttonString.split(";");
+                    btnAskSecondButton.setText(buttonStringArr[0]);
+                    btnAskSecondButton.setVisibility(View.VISIBLE);
+                }
 
-            askPopupWindow.showAtLocation(askPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
+                askPopupWindow.showAtLocation(askPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage(), e);
+            }
+        });
     }
 
     public void activateAskButton() {
-        askPopupWindow.dismiss();
-        askAction.run();
+        handler.post(() -> {
+            askPopupWindow.dismiss();
+        });
+        new Thread(askAction).start();
     }
 
     public void setAskAction(Runnable askAction) {
