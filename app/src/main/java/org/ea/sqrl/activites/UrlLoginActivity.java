@@ -98,7 +98,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                             handler.post(() -> {
                                 Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
                             });
-                            handler.postDelayed(() -> closeThisActivity(), 5000);
+                            handler.postDelayed(() -> closeActivity(), 5000);
                         } finally {
                             handler.post(() -> {
                                 txtLoginPassword.setText("");
@@ -116,7 +116,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                                 ) {
                                     postLogin(commHandler);
                                     if(!commHandler.hasErrorMessage()) {
-                                        handler.post(() -> closeThisActivity());
+                                        handler.post(() -> closeActivity());
                                     }
                                 } else {
                                     handler.post(() -> {
@@ -124,7 +124,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                                     });
                                     toastErrorMessage(true);
                                     storage.clear();
-                                    handler.postDelayed(() -> closeThisActivity(), 5000);
+                                    handler.postDelayed(() -> closeActivity(), 5000);
                                 }
                             } catch (Exception e) {
                                 Log.e(TAG, e.getMessage(), e);
@@ -187,7 +187,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                             Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
                         });
                         Log.e(TAG, e.getMessage(), e);
-                        handler.postDelayed(() -> closeThisActivity(), 5000);
+                        handler.postDelayed(() -> closeActivity(), 5000);
                     } finally {
                         handler.post(() -> {
                             txtLoginPassword.setText("");
@@ -201,16 +201,9 @@ public class UrlLoginActivity extends LoginBaseActivity {
                             });
 
                             boolean hasError = false;
-                            if (
-                                (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                                commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
-                                !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
-                            ) {
+                            if(commHandler.isIdentityKnown(false)) {
                                 postLogin(commHandler);
-                            } else if (
-                                !commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) &&
-                                !commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
-                            ) {
+                            } else if(!commHandler.isIdentityKnown(false)) {
                                 postCreateAccount(commHandler);
                             } else {
                                 handler.post(() -> {
@@ -218,11 +211,11 @@ public class UrlLoginActivity extends LoginBaseActivity {
                                 });
                                 toastErrorMessage(true);
                                 hasError = true;
-                                handler.postDelayed(() -> closeThisActivity(), 5000);
+                                handler.postDelayed(() -> closeActivity(), 5000);
                             }
 
                             if (!hasError && !commHandler.hasErrorMessage()) {
-                                handler.post(() -> closeThisActivity());
+                                handler.post(() -> closeActivity());
                             }
                         } catch (Exception e) {
                             Log.e(TAG, e.getMessage(), e);
@@ -242,7 +235,8 @@ public class UrlLoginActivity extends LoginBaseActivity {
         });
     }
 
-    private void closeThisActivity() {
+    @Override
+    protected void closeActivity() {
         UrlLoginActivity.this.finishAffinity();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             UrlLoginActivity.this.finishAndRemoveTask();

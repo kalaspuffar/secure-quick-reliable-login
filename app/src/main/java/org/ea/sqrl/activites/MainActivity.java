@@ -351,11 +351,7 @@ public class MainActivity extends LoginBaseActivity {
                             });
                         }
 
-                        if (
-                            (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                            commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
-                            !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
-                        ) {
+                        if(commHandler.isIdentityKnown(false)) {
                             commHandler.setAskAction(() -> {
                                 handler.post(() -> {
                                     progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
@@ -443,16 +439,9 @@ public class MainActivity extends LoginBaseActivity {
                             progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                         });
                         try {
-                            if (
-                                (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                                commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
-                                !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
-                            ) {
+                            if(commHandler.isIdentityKnown(false)) {
                                 postLogin(commHandler);
-                            } else if (
-                                !commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) &&
-                                !commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
-                            ) {
+                            } else if(!commHandler.isIdentityKnown(false)) {
                                 postCreateAccount(commHandler);
                             } else {
                                 handler.post(() -> txtLoginPassword.setText(""));

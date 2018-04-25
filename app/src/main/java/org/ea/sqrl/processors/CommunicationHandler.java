@@ -322,6 +322,12 @@ public class CommunicationHandler {
         }
     }
 
+    public boolean isIdentityKnown(boolean disabled) {
+        return (this.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
+                this.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
+                this.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED) == disabled;
+    }
+
     public String getResponse() {
         return response;
     }

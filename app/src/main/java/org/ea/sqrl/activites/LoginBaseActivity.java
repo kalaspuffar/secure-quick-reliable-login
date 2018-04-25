@@ -92,6 +92,8 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         setupRemoveAccountPopupWindow(layoutInflater, noiptest);
     }
 
+
+
     protected void postQuery(CommunicationHandler commHandler, boolean noiptest) throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
 
@@ -318,32 +320,45 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
                 try {
                     postQuery(commHandler, noiptest);
-
-                    if((commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                            commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
-                            !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
-                    ) {
-                        postDisableAccount(commHandler);
-                    } else {
-                        handler.post(() -> {
-                            txtDisablePassword.setText("");
-                            progressPopupWindow.dismiss();
-                        });
-                        toastErrorMessage(true);
-                    }
                 } catch (Exception e) {
                     handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                     Log.e(TAG, e.getMessage(), e);
-                    return;
-                } finally {
+                    this.closeActivity();
                     commHandler.clearLastResponse();
                     storage.clear();
-                    closeActivity();
+                    return;
+                } finally {
                     handler.post(() -> {
                         txtDisablePassword.setText("");
                         progressPopupWindow.dismiss();
                     });
                 }
+
+                commHandler.setAskAction(() -> {
+                    handler.post(() -> {
+                        progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                    });
+                    try {
+                        if(commHandler.isIdentityKnown(false)) {
+                            postDisableAccount(commHandler);
+                        } else {
+                            handler.post(() -> {
+                                txtDisablePassword.setText("");
+                                progressPopupWindow.dismiss();
+                            });
+                            toastErrorMessage(true);
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, e.getMessage(), e);
+                        handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                    } finally {
+                        commHandler.clearLastResponse();
+                        storage.clear();
+                        handler.post(() -> progressPopupWindow.dismiss());
+                        this.closeActivity();
+                    }
+                });
+                commHandler.showAskDialog();
             }).start();
         });
     }
@@ -400,21 +415,14 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     storage.reInitializeMasterKeyIdentity();
 
                     postQuery(commHandler, noiptest);
-                    if(
-                            (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                                    commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
-                                    commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
-                            ) {
-                        postEnableAccount(commHandler);
-                    } else {
-                        toastErrorMessage(true);
-                    }
                 } catch (Exception e) {
                     handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                     Log.e(TAG, e.getMessage(), e);
-                } finally {
                     commHandler.clearLastResponse();
                     storage.clear();
+                    this.closeActivity();
+                    return;
+                } finally {
                     handler.post(() -> {
                         progressPopupWindow.dismiss();
                         txtRecoverCode1.setText("");
@@ -424,8 +432,29 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                         txtRecoverCode5.setText("");
                         txtRecoverCode6.setText("");
                     });
-                    closeActivity();
                 }
+
+                commHandler.setAskAction(() -> {
+                    handler.post(() -> {
+                        progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                    });
+                    try {
+                        if(commHandler.isIdentityKnown(true)) {
+                            postEnableAccount(commHandler);
+                        } else {
+                            toastErrorMessage(true);
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, e.getMessage(), e);
+                        handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                    } finally {
+                        commHandler.clearLastResponse();
+                        storage.clear();
+                        handler.post(() -> progressPopupWindow.dismiss());
+                        this.closeActivity();
+                    }
+                });
+                commHandler.showAskDialog();
             }).start();
         });
     }
@@ -473,35 +502,21 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     boolean decryptionOk = storage.decryptUnlockKey(rescueCode);
                     if (!decryptionOk) {
                         handler.post(() ->
-                                Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show()
+                            Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show()
                         );
                         return;
                     }
                     storage.reInitializeMasterKeyIdentity();
 
                     postQuery(commHandler, noiptest);
-                    if(
-                            (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                                    commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
-                                    commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
-                            ) {
-                        postRemoveAccount(commHandler);
-                    } else if(
-                            (commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                                    commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
-                                    !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
-                            ) {
-                        postDisableAccount(commHandler);
-                        postRemoveAccount(commHandler);
-                    } else {
-                        toastErrorMessage(true);
-                    }
                 } catch (Exception e) {
                     handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                     Log.e(TAG, e.getMessage(), e);
-                } finally {
                     commHandler.clearLastResponse();
                     storage.clear();
+                    this.closeActivity();
+                    return;
+                } finally {
                     handler.post(() -> {
                         progressPopupWindow.dismiss();
                         txtRecoverCode1.setText("");
@@ -511,8 +526,33 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                         txtRecoverCode5.setText("");
                         txtRecoverCode6.setText("");
                     });
-                    closeActivity();
                 }
+
+                commHandler.setAskAction(() -> {
+                    handler.post(() -> {
+                        progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                    });
+                    try {
+                        if(commHandler.isIdentityKnown(true)) {
+                            postRemoveAccount(commHandler);
+                        } else if(commHandler.isIdentityKnown(false)) {
+                            postDisableAccount(commHandler);
+                            postRemoveAccount(commHandler);
+                        } else {
+                            toastErrorMessage(true);
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, e.getMessage(), e);
+                        handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                    } finally {
+                        commHandler.clearLastResponse();
+                        storage.clear();
+                        handler.post(() -> progressPopupWindow.dismiss());
+                        this.closeActivity();
+                    }
+                });
+                commHandler.showAskDialog();
+
             }).start();
         });
     }
