@@ -430,6 +430,7 @@ public class MainActivity extends LoginBaseActivity {
                         Log.e(TAG, e.getMessage(), e);
                         commHandler.clearLastResponse();
                         storage.clear();
+                        return;
                     } finally {
                         handler.post(() -> txtLoginPassword.setText(""));
                     }

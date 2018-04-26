@@ -126,9 +126,12 @@ public class UrlLoginActivity extends LoginBaseActivity {
                                     storage.clear();
                                     handler.postDelayed(() -> closeActivity(), 5000);
                                 }
+
+                                handler.post(() -> closeActivity());
                             } catch (Exception e) {
                                 Log.e(TAG, e.getMessage(), e);
                                 handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                                handler.postDelayed(() -> closeActivity(), 5000);
                             } finally {
                                 commHandler.clearLastResponse();
                                 storage.clear();
@@ -139,7 +142,6 @@ public class UrlLoginActivity extends LoginBaseActivity {
                             }
                         });
                         commHandler.showAskDialog();
-
                     }).start();
                 }
             }
@@ -220,6 +222,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                         } catch (Exception e) {
                             Log.e(TAG, e.getMessage(), e);
                             handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                            handler.postDelayed(() -> closeActivity(), 5000);
                         } finally {
                             commHandler.clearLastResponse();
                             storage.clear();

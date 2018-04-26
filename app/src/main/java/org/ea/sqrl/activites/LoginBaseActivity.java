@@ -341,21 +341,23 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     try {
                         if(commHandler.isIdentityKnown(false)) {
                             postDisableAccount(commHandler);
+                            handler.post(() -> closeActivity());
                         } else {
                             handler.post(() -> {
                                 txtDisablePassword.setText("");
                                 progressPopupWindow.dismiss();
                             });
                             toastErrorMessage(true);
+                            handler.postDelayed(() -> closeActivity(), 5000);
                         }
                     } catch (Exception e) {
                         Log.e(TAG, e.getMessage(), e);
                         handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                        handler.postDelayed(() -> closeActivity(), 5000);
                     } finally {
                         commHandler.clearLastResponse();
                         storage.clear();
                         handler.post(() -> progressPopupWindow.dismiss());
-                        this.closeActivity();
                     }
                 });
                 commHandler.showAskDialog();
@@ -441,12 +443,15 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     try {
                         if(commHandler.isIdentityKnown(true)) {
                             postEnableAccount(commHandler);
+                            handler.post(() -> closeActivity());
                         } else {
                             toastErrorMessage(true);
+                            handler.postDelayed(() -> closeActivity(), 5000);
                         }
                     } catch (Exception e) {
                         Log.e(TAG, e.getMessage(), e);
                         handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                        handler.postDelayed(() -> closeActivity(), 5000);
                     } finally {
                         commHandler.clearLastResponse();
                         storage.clear();
