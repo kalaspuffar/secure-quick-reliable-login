@@ -348,7 +348,7 @@ public class CommunicationHandler {
         return !lastResponse.containsKey("tif") ||
             isTIFBitSet(CommunicationHandler.TIF_BAD_ID_ASSOCIATION) ||
             isTIFBitSet(CommunicationHandler.TIF_CLIENT_FAILURE) ||
-            isTIFBitSet(CommunicationHandler.TIF_COMMAND_FAILED) ||
+            //isTIFBitSet(CommunicationHandler.TIF_COMMAND_FAILED) ||
             isTIFBitSet(CommunicationHandler.TIF_FUNCTION_NOT_SUPPORTED) ||
             isTIFBitSet(CommunicationHandler.TIF_TRANSIENT_ERROR);
     }
@@ -368,12 +368,12 @@ public class CommunicationHandler {
             sb.append(a.getString(R.string.communication_client_failure));
             sb.append("\n\n");
         }
-
+/*
         if(isTIFBitSet(CommunicationHandler.TIF_COMMAND_FAILED)) {
             sb.append(a.getString(R.string.communication_command_failed));
             sb.append("\n\n");
         }
-
+*/
         if(isTIFBitSet(CommunicationHandler.TIF_FUNCTION_NOT_SUPPORTED)) {
             sb.append(a.getString(R.string.communication_function_not_supported));
             sb.append("\n\n");
