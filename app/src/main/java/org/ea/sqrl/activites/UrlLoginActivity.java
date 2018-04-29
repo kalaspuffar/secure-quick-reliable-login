@@ -95,6 +95,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                         } catch (Exception e) {
                             Log.e(TAG, e.getMessage(), e);
                             storage.clear();
+                            storage.clearQuickPass(UrlLoginActivity.this);
                             handler.post(() -> {
                                 Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
                             });
@@ -110,11 +111,13 @@ public class UrlLoginActivity extends LoginBaseActivity {
                                 progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                             });
                             try {
-                                if(
-                                    commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
-                                    commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)
-                                ) {
+                                if(commHandler.isIdentityKnown(false)) {
                                     postLogin(commHandler);
+                                    if(!commHandler.hasErrorMessage()) {
+                                        handler.post(() -> closeActivity());
+                                    }
+                                } else if(!commHandler.isIdentityKnown(false)) {
+                                    postCreateAccount(commHandler);
                                     if(!commHandler.hasErrorMessage()) {
                                         handler.post(() -> closeActivity());
                                     }
@@ -126,8 +129,6 @@ public class UrlLoginActivity extends LoginBaseActivity {
                                     storage.clear();
                                     handler.postDelayed(() -> closeActivity(), 5000);
                                 }
-
-                                handler.post(() -> closeActivity());
                             } catch (Exception e) {
                                 Log.e(TAG, e.getMessage(), e);
                                 handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
@@ -179,6 +180,8 @@ public class UrlLoginActivity extends LoginBaseActivity {
                             txtLoginPassword.setText("");
                             progressPopupWindow.dismiss();
                         });
+                        storage.clear();
+                        storage.clearQuickPass(this);
                         return;
                     }
 
@@ -188,6 +191,8 @@ public class UrlLoginActivity extends LoginBaseActivity {
                         handler.post(() -> {
                             Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
                         });
+                        storage.clear();
+                        storage.clearQuickPass(this);
                         Log.e(TAG, e.getMessage(), e);
                         handler.postDelayed(() -> closeActivity(), 5000);
                     } finally {
@@ -202,27 +207,31 @@ public class UrlLoginActivity extends LoginBaseActivity {
                                 progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                             });
 
-                            boolean hasError = false;
                             if(commHandler.isIdentityKnown(false)) {
                                 postLogin(commHandler);
+                                if (!commHandler.hasErrorMessage()) {
+                                    handler.post(() -> closeActivity());
+                                }
                             } else if(!commHandler.isIdentityKnown(false)) {
                                 postCreateAccount(commHandler);
+                                if (!commHandler.hasErrorMessage()) {
+                                    handler.post(() -> closeActivity());
+                                }
                             } else {
                                 handler.post(() -> {
                                     txtLoginPassword.setText("");
                                 });
                                 toastErrorMessage(true);
-                                hasError = true;
+                                storage.clear();
+                                storage.clearQuickPass(this);
                                 handler.postDelayed(() -> closeActivity(), 5000);
-                            }
-
-                            if (!hasError && !commHandler.hasErrorMessage()) {
-                                handler.post(() -> closeActivity());
                             }
                         } catch (Exception e) {
                             Log.e(TAG, e.getMessage(), e);
                             handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                             handler.postDelayed(() -> closeActivity(), 5000);
+                            storage.clear();
+                            storage.clearQuickPass(this);
                         } finally {
                             commHandler.clearLastResponse();
                             storage.clear();

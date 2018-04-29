@@ -323,7 +323,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 } catch (Exception e) {
                     handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                     Log.e(TAG, e.getMessage(), e);
-                    this.closeActivity();
+                    handler.postDelayed(() -> closeActivity(), 5000);
                     commHandler.clearLastResponse();
                     storage.clear();
                     return;
@@ -421,8 +421,8 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                     Log.e(TAG, e.getMessage(), e);
                     commHandler.clearLastResponse();
-                    storage.clear();
                     this.closeActivity();
+                    storage.clear();
                     return;
                 } finally {
                     handler.post(() -> {
@@ -456,7 +456,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                         commHandler.clearLastResponse();
                         storage.clear();
                         handler.post(() -> progressPopupWindow.dismiss());
-                        this.closeActivity();
                     }
                 });
                 commHandler.showAskDialog();
@@ -519,7 +518,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     Log.e(TAG, e.getMessage(), e);
                     commHandler.clearLastResponse();
                     storage.clear();
-                    this.closeActivity();
+                    handler.postDelayed(() -> closeActivity(), 5000);
                     return;
                 } finally {
                     handler.post(() -> {
@@ -540,20 +539,23 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     try {
                         if(commHandler.isIdentityKnown(true)) {
                             postRemoveAccount(commHandler);
+                            handler.post(() -> closeActivity());
                         } else if(commHandler.isIdentityKnown(false)) {
                             postDisableAccount(commHandler);
                             postRemoveAccount(commHandler);
+                            handler.post(() -> closeActivity());
                         } else {
                             toastErrorMessage(true);
+                            handler.postDelayed(() -> closeActivity(), 5000);
                         }
                     } catch (Exception e) {
                         Log.e(TAG, e.getMessage(), e);
                         handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                        handler.postDelayed(() -> closeActivity(), 5000);
                     } finally {
                         commHandler.clearLastResponse();
                         storage.clear();
                         handler.post(() -> progressPopupWindow.dismiss());
-                        this.closeActivity();
                     }
                 });
                 commHandler.showAskDialog();
