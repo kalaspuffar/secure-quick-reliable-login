@@ -42,6 +42,7 @@ public class BaseActivity extends AppCompatActivity {
     private static final String TAG = "BaseActivity";
     protected static final String CURRENT_ID = "current_id";
     protected static final String APPS_PREFERENCES = "org.ea.sqrl.preferences";
+    protected static final String EXPORT_WITHOUT_PASSWORD = "export_without_password";
 
     private final int REQUEST_PERMISSION_CAMERA = 1;
 

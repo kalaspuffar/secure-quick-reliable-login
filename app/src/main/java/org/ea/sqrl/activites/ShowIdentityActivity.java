@@ -68,8 +68,17 @@ public class ShowIdentityActivity extends BaseActivity {
                 }
         );
 
+        final boolean exportWithoutPassword = getIntent().getBooleanExtra(EXPORT_WITHOUT_PASSWORD, false);
+
+        byte[] saveData;
+        if(exportWithoutPassword) {
+            saveData = SQRLStorage.getInstance().createSaveDataWithoutPassword();
+        } else {
+            saveData = SQRLStorage.getInstance().createSaveData();
+        }
+
         ImageView imageView = findViewById(R.id.imgQRCode);
-        Bitmap bitmap = QrCode.encodeBinary(storage.createSaveData(), QrCode.Ecc.MEDIUM).toImage(10, 0);
+        Bitmap bitmap = QrCode.encodeBinary(saveData, QrCode.Ecc.MEDIUM).toImage(10, 0);
         imageView.setImageBitmap(bitmap);
     }
 }

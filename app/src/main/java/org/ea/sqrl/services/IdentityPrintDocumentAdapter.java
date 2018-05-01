@@ -38,11 +38,13 @@ public class IdentityPrintDocumentAdapter extends PrintDocumentAdapter {
     private static final String TAG = "IdentityPrintDocumentAdapter";
     private final Activity activity;
     private final String identityName;
+    private final boolean withoutPassword;
     private PrintedPdfDocument mPdfDocument;
 
-    public IdentityPrintDocumentAdapter(Activity activity, String identityName) {
+    public IdentityPrintDocumentAdapter(Activity activity, String identityName, boolean withoutPassword) {
         this.activity = activity;
         this.identityName = identityName;
+        this.withoutPassword = withoutPassword;
     }
 
     @Override
@@ -163,8 +165,15 @@ public class IdentityPrintDocumentAdapter extends PrintDocumentAdapter {
 
         int lastBlockY = drawBlockOfText(canvas, paint, activity.getString(R.string.print_identity_desc1), titleBaseLine + 32, bodyText);
 
+        byte[] saveData;
+        if(this.withoutPassword) {
+            saveData = SQRLStorage.getInstance().createSaveDataWithoutPassword();
+        } else {
+            saveData = SQRLStorage.getInstance().createSaveData();
+        }
+
         int canvasMiddle = canvas.getWidth() / 2;
-        Bitmap bitmap = QrCode.encodeBinary(storage.createSaveData(), QrCode.Ecc.MEDIUM).toImage(2, 0);
+        Bitmap bitmap = QrCode.encodeBinary(saveData, QrCode.Ecc.MEDIUM).toImage(2, 0);
         int bitmapWidth = bitmap.getScaledWidth(canvas);
 
         canvas.drawBitmap(bitmap, canvasMiddle - (bitmapWidth / 2), lastBlockY + bodyText, paint);

@@ -1206,6 +1206,35 @@ E/SQRLStorage: e2bd235e4bee2c382c8c7ea4047c10bb2de9ecdda9279c0a48f9a026f1e1377c
         return result;
     }
 
+    public byte[] createSaveDataWithoutPassword() {
+        updateRescuePlaintext();
+        updatePreviousPlaintext();
+
+        byte[] result = "sqrldata".getBytes();
+         if(hasRescueBlock) {
+            result = EncryptionUtils.combine(result, rescuePlaintext);
+            result = EncryptionUtils.combine(result, rescueIdentityUnlockKeyEncrypted);
+            result = EncryptionUtils.combine(result, rescueVerificationTag);
+        }
+
+        if (hasPreviousBlock && previousCountOfKeys > 0) {
+            result = EncryptionUtils.combine(result, previousPlaintext);
+            result = EncryptionUtils.combine(result, previousKey1Encrypted);
+            if (previousCountOfKeys > 1) {
+                result = EncryptionUtils.combine(result, previousKey2Encrypted);
+            }
+            if (previousCountOfKeys > 2) {
+                result = EncryptionUtils.combine(result, previousKey3Encrypted);
+            }
+            if (previousCountOfKeys > 3) {
+                result = EncryptionUtils.combine(result, previousKey4Encrypted);
+            }
+            result = EncryptionUtils.combine(result, previousVerificationTag);
+        }
+
+        return result;
+    }
+
     public void createVerifyRecoveryBlock() throws Exception {
         byte[] result = createSaveData();
         String inputString = EncryptionUtils.encodeBase56(Arrays.copyOfRange(result, HEADER_LENGTH + passwordBlockLength, result.length));

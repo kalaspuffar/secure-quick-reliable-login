@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -72,13 +73,17 @@ public class NewIdentityDoneActivity extends LoginBaseActivity {
                 true);
         exportOptionsPopupWindow.setTouchable(true);
 
+        final CheckBox cbWithoutPassword = popupView.findViewById(R.id.cbWithoutPassword);
+
         popupView.findViewById(R.id.btnCloseExportOptions).setOnClickListener(v -> {
             exportOptionsPopupWindow.dismiss();
         });
 
         popupView.findViewById(R.id.btnShowIdentity).setOnClickListener(v -> {
             exportOptionsPopupWindow.dismiss();
-            startActivity(new Intent(this, ShowIdentityActivity.class));
+            Intent showIdentityIntent = new Intent(this, ShowIdentityActivity.class);
+            showIdentityIntent.putExtra(EXPORT_WITHOUT_PASSWORD, cbWithoutPassword.isChecked());
+            startActivity(showIdentityIntent);
         });
 
         popupView.findViewById(R.id.btnSaveIdentity).setOnClickListener(v -> {
@@ -92,8 +97,15 @@ public class NewIdentityDoneActivity extends LoginBaseActivity {
             try {
                 File file = File.createTempFile("identity", ".sqrl", directory);
 
+                byte[] saveData;
+                if(cbWithoutPassword.isChecked()) {
+                    saveData = SQRLStorage.getInstance().createSaveDataWithoutPassword();
+                } else {
+                    saveData = SQRLStorage.getInstance().createSaveData();
+                }
+
                 FileOutputStream FileOutputStream = new FileOutputStream(file);
-                FileOutputStream.write(SQRLStorage.getInstance().createSaveData());
+                FileOutputStream.write(saveData);
                 FileOutputStream.close();
 
                 Intent shareIntent = new Intent();
@@ -127,7 +139,7 @@ public class NewIdentityDoneActivity extends LoginBaseActivity {
                 try {
                     SQRLStorage.getInstance().createVerifyRecoveryBlock();
 
-                    printManager.print(jobName, new IdentityPrintDocumentAdapter(this, identityName), printAttributes);
+                    printManager.print(jobName, new IdentityPrintDocumentAdapter(this, identityName, cbWithoutPassword.isChecked()), printAttributes);
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage(), e);
                 }
