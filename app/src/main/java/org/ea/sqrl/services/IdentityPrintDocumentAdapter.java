@@ -134,6 +134,7 @@ public class IdentityPrintDocumentAdapter extends PrintDocumentAdapter {
 
     private int drawBlockOfText(Canvas canvas, Paint paint, String text, int y, int fontSize) {
         paint.setColor(Color.BLACK);
+        paint.setFakeBoldText(false);
         paint.setTextSize(fontSize);
 
         int margin = 52;
