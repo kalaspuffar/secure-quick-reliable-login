@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -29,7 +30,8 @@ import org.ea.sqrl.utils.EncryptionUtils;
  */
 public class StartActivity extends BaseActivity {
     private static final String TAG = "StartActivity";
-    private View root;
+    private Handler handler = new Handler();
+    private View rootView;
     private boolean createNewIdentity = false;
 
     @Override
@@ -37,7 +39,7 @@ public class StartActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        root = findViewById(R.id.startActivityView);
+        rootView = findViewById(R.id.startActivityView);
 
         boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
 
@@ -90,11 +92,15 @@ public class StartActivity extends BaseActivity {
         if(result != null) {
             if(result.getContents() == null) {
                 Log.d(TAG, "Cancelled scan");
-                Snackbar.make(root, "Cancelled", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(rootView, R.string.scan_cancel, Snackbar.LENGTH_LONG).show();
             } else {
                 SQRLStorage storage = SQRLStorage.getInstance();
                 try {
                     byte[] qrCodeData = EncryptionUtils.readSQRLQRCode(result.getRawBytes());
+                    if(qrCodeData.length == 0) {
+                        handler.post(() -> Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show());
+                        return;
+                    }
                     storage.read(qrCodeData);
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage(), e);
