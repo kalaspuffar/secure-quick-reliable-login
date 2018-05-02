@@ -1247,6 +1247,10 @@ E/SQRLStorage: e2bd235e4bee2c382c8c7ea4047c10bb2de9ecdda9279c0a48f9a026f1e1377c
             this.identityLockKey = new byte[this.identityMasterKey.length];
             Sodium.crypto_scalarmult_base(this.identityLockKey, this.rescueIdentityUnlockKey);
         }
+
+        if(hasPreviousBlock) {
+            decryptPreviousBlock();
+        }
     }
 
     public byte[] getUnlockRequestSigningKey(byte[] serverUnlock) {

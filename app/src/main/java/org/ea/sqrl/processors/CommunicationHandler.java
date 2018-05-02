@@ -120,6 +120,9 @@ public class CommunicationHandler {
         sb.append(storage.getOptions(false, false));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
+        if(storage.hasPreviousKeys()) {
+            sb.append("\r\npidk=" + EncryptionUtils.encodeUrlSafe(storage.getPreviousPublicKey(cryptDomain)));
+        }
         return sb.toString();
     }
 
@@ -132,6 +135,9 @@ public class CommunicationHandler {
         sb.append(storage.getOptions(false, false));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
+        if(storage.hasPreviousKeys()) {
+            sb.append("\r\npidk=" + EncryptionUtils.encodeUrlSafe(storage.getPreviousPublicKey(cryptDomain)));
+        }
         return sb.toString();
     }
 
@@ -144,6 +150,9 @@ public class CommunicationHandler {
         sb.append(storage.getOptions(false, false));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
+        if(storage.hasPreviousKeys()) {
+            sb.append("\r\npidk=" + EncryptionUtils.encodeUrlSafe(storage.getPreviousPublicKey(cryptDomain)));
+        }
         return sb.toString();
     }
 

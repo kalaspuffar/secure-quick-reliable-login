@@ -189,4 +189,6 @@
     <string name="ask_close">Close question window</string>
     <string name="rekey_verify_to_many_rekey_attempts">This identity has been rekeyed so many times that we now need to retire one of the old keys. This means that sites using this, the oldest key, will not recognize this identity.</string>
     <string name="export_without_password">Without password</string>
+    <string name="scan_cancel">Cancelled scan</string>
+    <string name="scan_incorrect">Incorrect QR code, try again</string>
 </resources>

@@ -751,7 +751,7 @@ public class MainActivity extends LoginBaseActivity {
         if(result != null) {
             if(result.getContents() == null) {
                 Log.d("MainActivity", "Cancelled scan");
-                Snackbar.make(rootView, "Cancelled", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(rootView, R.string.scan_cancel, Snackbar.LENGTH_LONG).show();
                 if(!mDbHelper.hasIdentities()) {
                     MainActivity.this.finish();
                 }
@@ -761,6 +761,11 @@ public class MainActivity extends LoginBaseActivity {
                     commHandler.setUseSSL(serverData.startsWith("sqrl://"));
 
                     int indexOfQuery = serverData.indexOf("/", serverData.indexOf("://") + 3);
+                    if(indexOfQuery == -1) {
+                        handler.post(() -> Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show());
+                        return;
+                    }
+
                     queryLink = serverData.substring(indexOfQuery);
                     final String domain = serverData.split("/")[2];
                     try {
@@ -779,6 +784,10 @@ public class MainActivity extends LoginBaseActivity {
                 } else {
                     SQRLStorage storage = SQRLStorage.getInstance();
                     byte[] qrCodeData = EncryptionUtils.readSQRLQRCode(result.getRawBytes());
+                    if(qrCodeData.length == 0) {
+                        handler.post(() -> Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show());
+                        return;
+                    }
                     try {
                         storage.read(qrCodeData);
 
