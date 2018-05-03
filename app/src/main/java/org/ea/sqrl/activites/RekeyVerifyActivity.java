@@ -49,7 +49,7 @@ public class RekeyVerifyActivity extends LoginBaseActivity {
         final Button btnRekeyIdentityStart = findViewById(R.id.btnRekeyIdentityStart);
         btnRekeyIdentityStart.setOnClickListener(
                 v -> {
-                    progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                    handler.post(() -> progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0));
 
                     new Thread(() -> {
                         String rescueCode = "";

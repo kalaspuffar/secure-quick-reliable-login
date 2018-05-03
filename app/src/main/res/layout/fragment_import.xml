@@ -23,13 +23,13 @@
             android:id="@+id/btnCloseImportIdentity"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
-            android:contentDescription="@string/decrypt_close"
             android:background="@color/zxing_transparent"
+            android:contentDescription="@string/decrypt_close"
             android:src="@drawable/ic_close"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginLeft="8dp" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textView15"
@@ -63,8 +63,8 @@
             android:layout_height="48dp"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
-            android:hint="@string/change_password_new_password"
             android:ems="10"
+            android:hint="@string/change_password_new_password"
             android:inputType="textPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.531"
@@ -87,19 +87,31 @@
 
 
         <Button
-            android:id="@+id/btnDecryptKey"
+            android:id="@+id/btnImportIdentityDo"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:text="@string/button_decrypt_key"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="@string/button_import_identity"
+            app:layout_constraintBottom_toTopOf="@+id/btnForgotPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtPassword" />
+
+        <Button
+            android:id="@+id/btnForgotPassword"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:text="@string/button_forgot_password"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 

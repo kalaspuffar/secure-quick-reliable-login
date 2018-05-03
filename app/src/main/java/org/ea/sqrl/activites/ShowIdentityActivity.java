@@ -50,16 +50,15 @@ public class ShowIdentityActivity extends BaseActivity {
         }
 
 
+        final TextView txtIdentityText = findViewById(R.id.txtIdentityText);
         SQRLStorage storage = SQRLStorage.getInstance();
         try {
             storage.read(qrCodeData);
+            txtIdentityText.setText(storage.getVerifyingRecoveryBlock());
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
             ShowIdentityActivity.this.finish();
         }
-
-        final TextView txtIdentityText = findViewById(R.id.txtIdentityText);
-        txtIdentityText.setText(storage.getVerifyingRecoveryBlock());
 
         final Button btnCloseIdentity = findViewById(R.id.btnCloseIdentity);
         btnCloseIdentity.setOnClickListener(

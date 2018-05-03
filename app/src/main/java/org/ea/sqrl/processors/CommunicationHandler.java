@@ -96,13 +96,13 @@ public class CommunicationHandler {
         return askResponse;
     }
 
-    public String createClientQuery(boolean noiptest) throws Exception {
+    public String createClientQuery(boolean noiptest, boolean requestServerUnlockKey) throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=query\r\n");
         sb.append(getAskButtonAnswer());
-        sb.append(storage.getOptions(noiptest, false));
+        sb.append(storage.getOptions(noiptest, requestServerUnlockKey));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         if(storage.hasPreviousKeys()) {
@@ -436,7 +436,7 @@ public class CommunicationHandler {
             String queryLink = sqrlLink.substring(indexOfQuery);
 
             commHandler.setDomain(domain);
-            String postData = commHandler.createPostParams(commHandler.createClientQuery(true), sqrlLink);
+            String postData = commHandler.createPostParams(commHandler.createClientQuery(true, true), sqrlLink);
             commHandler.postRequest(queryLink, postData);
 
             String serverData = commHandler.getResponse();

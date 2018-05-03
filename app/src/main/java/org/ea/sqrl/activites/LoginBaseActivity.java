@@ -94,11 +94,11 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
 
 
-    protected void postQuery(CommunicationHandler commHandler, boolean noiptest) throws Exception {
+    protected void postQuery(CommunicationHandler commHandler, boolean noiptest, boolean requestServerUnlockKey) throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
 
         if (!storage.hasMorePreviousKeys()) {
-            postQueryInternal(commHandler, noiptest);
+            postQueryInternal(commHandler, noiptest, requestServerUnlockKey);
             return;
         }
 
@@ -107,14 +107,14 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
             if(commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH)) break;
             if(commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) break;
             if(commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)) break;
-            postQueryInternal(commHandler, noiptest);
+            postQueryInternal(commHandler, noiptest, requestServerUnlockKey);
             noiptest = false;
         }
     }
 
 
-    private void postQueryInternal(CommunicationHandler commHandler, boolean noiptest) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientQuery(noiptest), serverData);
+    private void postQueryInternal(CommunicationHandler commHandler, boolean noiptest, boolean requestServerUnlockKey) throws Exception {
+        String postData = commHandler.createPostParams(commHandler.createClientQuery(noiptest, requestServerUnlockKey), serverData);
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
@@ -319,7 +319,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 }
 
                 try {
-                    postQuery(commHandler, noiptest);
+                    postQuery(commHandler, noiptest, false);
                 } catch (Exception e) {
                     handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                     Log.e(TAG, e.getMessage(), e);
@@ -416,7 +416,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     }
                     storage.reInitializeMasterKeyIdentity();
 
-                    postQuery(commHandler, noiptest);
+                    postQuery(commHandler, noiptest, true);
                 } catch (Exception e) {
                     handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                     Log.e(TAG, e.getMessage(), e);
@@ -512,7 +512,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     }
                     storage.reInitializeMasterKeyIdentity();
 
-                    postQuery(commHandler, noiptest);
+                    postQuery(commHandler, noiptest, true);
                 } catch (Exception e) {
                     handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                     Log.e(TAG, e.getMessage(), e);

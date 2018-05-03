@@ -85,40 +85,4 @@ public class StartActivity extends BaseActivity {
             startActivity(intent);
         }
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if(result != null) {
-            if(result.getContents() == null) {
-                Log.d(TAG, "Cancelled scan");
-                Snackbar.make(rootView, R.string.scan_cancel, Snackbar.LENGTH_LONG).show();
-            } else {
-                SQRLStorage storage = SQRLStorage.getInstance();
-                try {
-                    byte[] qrCodeData = EncryptionUtils.readSQRLQRCode(result.getRawBytes());
-                    if(qrCodeData.length == 0) {
-                        handler.post(() -> Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show());
-                        return;
-                    }
-                    storage.read(qrCodeData);
-                } catch (Exception e) {
-                    Log.e(TAG, e.getMessage(), e);
-                    return;
-                }
-                long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
-
-                SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                        APPS_PREFERENCES,
-                        Context.MODE_PRIVATE
-                );
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putLong(CURRENT_ID, newIdentityId);
-                editor.apply();
-
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
-            }
-        }
-    }
-}
+ }

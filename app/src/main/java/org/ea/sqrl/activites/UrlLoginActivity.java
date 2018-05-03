@@ -91,7 +91,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                         }
 
                         try {
-                            postQuery(commHandler, false);
+                            postQuery(commHandler, false, false);
                         } catch (Exception e) {
                             Log.e(TAG, e.getMessage(), e);
                             storage.clear();
@@ -186,7 +186,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                     }
 
                     try {
-                        postQuery(commHandler, false);
+                        postQuery(commHandler, false, false);
                     } catch (Exception e) {
                         handler.post(() -> {
                             Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();

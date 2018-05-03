@@ -30,7 +30,6 @@ import com.google.zxing.integration.android.IntentResult;
 
 import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.R;
-import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.services.IdentityPrintDocumentAdapter;
 import org.ea.sqrl.utils.EncryptionUtils;
@@ -49,7 +48,7 @@ public class MainActivity extends LoginBaseActivity {
     private static final String TAG = "MainActivity";
 
     private PopupWindow renamePopupWindow;
-    private PopupWindow decryptPopupWindow;
+    private PopupWindow importPopupWindow;
     private PopupWindow changePasswordPopupWindow;
     private PopupWindow resetPasswordPopupWindow;
     private PopupWindow exportOptionsPopupWindow;
@@ -270,7 +269,7 @@ public class MainActivity extends LoginBaseActivity {
 
                         handler.post(() -> {
                             updateSpinnerData(newIdentityId);
-                            decryptPopupWindow.dismiss();
+                            importPopupWindow.dismiss();
 
                             if(newIdentityId != 0) {
                                 txtIdentityName.setText(mDbHelper.getIdentityName(newIdentityId));
@@ -338,7 +337,7 @@ public class MainActivity extends LoginBaseActivity {
                         }
 
                         try {
-                            postQuery(commHandler, true);
+                            postQuery(commHandler, true, false);
                         } catch (Exception e) {
                             commHandler.clearLastResponse();
                             Log.e(TAG, e.getMessage(), e);
@@ -425,7 +424,7 @@ public class MainActivity extends LoginBaseActivity {
                     }
 
                     try {
-                        postQuery(commHandler, true);
+                        postQuery(commHandler, true, false);
                     } catch (Exception e) {
                         handler.post(() -> {
                             Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
@@ -551,30 +550,31 @@ public class MainActivity extends LoginBaseActivity {
     }
 
     public void setupImportPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_decrypt, null);
+        View popupView = layoutInflater.inflate(R.layout.fragment_import, null);
 
-        decryptPopupWindow = new PopupWindow(popupView,
+        importPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
                 true);
 
-        decryptPopupWindow.setTouchable(true);
+        importPopupWindow.setTouchable(true);
 
         final EditText txtPassword = popupView.findViewById(R.id.txtPassword);
-        final Button btnDecryptKey = popupView.findViewById(R.id.btnDecryptKey);
+        final Button btnImportIdentityDo = popupView.findViewById(R.id.btnImportIdentityDo);
 
-        final TextView lblProgressTitle = popupView.findViewById(R.id.lblProgressTitle);
-        final ProgressBar pbDecrypting = popupView.findViewById(R.id.pbDecrypting);
-        final TextView progressText = popupView.findViewById(R.id.lblProgressText);
+        popupView.findViewById(R.id.btnCloseImportIdentity).setOnClickListener(v -> importPopupWindow.dismiss());
+        popupView.findViewById(R.id.btnForgotPassword).setOnClickListener(
+                v -> {
+                    importPopupWindow.dismiss();
+                    resetPasswordPopupWindow.showAtLocation(resetPasswordPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                }
+        );
 
-        SQRLStorage storage = SQRLStorage.getInstance();
-        storage.setProgressionUpdater(new ProgressionUpdater(handler, lblProgressTitle, pbDecrypting, progressText));
-
-        popupView.findViewById(R.id.btnCloseImportIdentity).setOnClickListener(v -> decryptPopupWindow.dismiss());
-        btnDecryptKey.setOnClickListener(v -> {
-            decryptPopupWindow.dismiss();
+        btnImportIdentityDo.setOnClickListener(v -> {
+            importPopupWindow.dismiss();
             progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
 
             new Thread(() -> {
+                SQRLStorage storage = SQRLStorage.getInstance();
                 try {
                     boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString());
                     if(!decryptStatus) {
@@ -713,8 +713,8 @@ public class MainActivity extends LoginBaseActivity {
     public void onBackPressed() {
         if (renamePopupWindow != null && renamePopupWindow.isShowing()) {
             renamePopupWindow.dismiss();
-        } else if (decryptPopupWindow != null && decryptPopupWindow.isShowing()) {
-            decryptPopupWindow.dismiss();
+        } else if (importPopupWindow != null && importPopupWindow.isShowing()) {
+            importPopupWindow.dismiss();
         } else if (loginPopupWindow != null && loginPopupWindow.isShowing()) {
             loginPopupWindow.dismiss();
         } else if (changePasswordPopupWindow != null && changePasswordPopupWindow.isShowing()) {
@@ -798,12 +798,14 @@ public class MainActivity extends LoginBaseActivity {
                             return;
                         }
 
+                        String recoveryBlock = storage.getVerifyingRecoveryBlock();
+
                         handler.postDelayed(() -> {
-                            final TextView txtRecoveryKey = decryptPopupWindow.getContentView().findViewById(R.id.txtRecoveryKey);
-                            txtRecoveryKey.setText(storage.getVerifyingRecoveryBlock());
+                            final TextView txtRecoveryKey = importPopupWindow.getContentView().findViewById(R.id.txtRecoveryKey);
+                            txtRecoveryKey.setText(recoveryBlock);
                             txtRecoveryKey.setMovementMethod(LinkMovementMethod.getInstance());
 
-                            decryptPopupWindow.showAtLocation(decryptPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                            importPopupWindow.showAtLocation(importPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                         }, 100);
                     } catch (Exception e) {
                         handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());

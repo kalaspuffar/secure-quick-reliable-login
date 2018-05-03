@@ -209,7 +209,10 @@ public class SQRLStorage {
 
     private String verifyingRecoveryBlock;
 
-    public String getVerifyingRecoveryBlock() {
+    public String getVerifyingRecoveryBlock() throws Exception {
+        if(verifyingRecoveryBlock == null) {
+            createVerifyRecoveryBlock();
+        }
         return verifyingRecoveryBlock;
     }
 

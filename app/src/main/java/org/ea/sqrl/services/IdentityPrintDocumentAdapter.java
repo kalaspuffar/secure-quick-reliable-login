@@ -35,7 +35,7 @@ import io.nayuki.qrcodegen.QrCode;
 
 @RequiresApi(Build.VERSION_CODES.KITKAT)
 public class IdentityPrintDocumentAdapter extends PrintDocumentAdapter {
-    private static final String TAG = "IdentityPrintDocumentAdapter";
+    private static final String TAG = "IdentityPrint";
     private final Activity activity;
     private final String identityName;
     private final boolean withoutPassword;
@@ -185,11 +185,15 @@ public class IdentityPrintDocumentAdapter extends PrintDocumentAdapter {
 
         lastBlockY = drawBlockOfText(canvas, paint, activity.getString(R.string.print_identity_desc2), nextTextBlock + (bodyText * 2), bodyText);
 
-        paint.setTypeface(Typeface.MONOSPACE);
-        int i=0;
-        for(String s : storage.getVerifyingRecoveryBlock().split("\n")) {
-            drawCenteredText(canvas, paint, s, lastBlockY + bodyText + (i * bodyText), bodyText);
-            i++;
+        int i = 0;
+        try {
+            paint.setTypeface(Typeface.MONOSPACE);
+            for (String s : storage.getVerifyingRecoveryBlock().split("\n")) {
+                drawCenteredText(canvas, paint, s, lastBlockY + bodyText + (i * bodyText), bodyText);
+                i++;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
         }
 
         paint.setTypeface(Typeface.DEFAULT);
