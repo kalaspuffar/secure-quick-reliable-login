@@ -1253,7 +1253,7 @@ E/SQRLStorage: e2bd235e4bee2c382c8c7ea4047c10bb2de9ecdda9279c0a48f9a026f1e1377c
         }
     }
 
-    public byte[] getUnlockRequestSigningKey(byte[] serverUnlock) {
+    public byte[] getUnlockRequestSigningKey(byte[] serverUnlock, boolean usePreviousKey) {
         /*
         UnlockRequestSigning := SignPrivate( DHKA( ServerUnlock, IdentityUnlock ))
         */
@@ -1262,7 +1262,29 @@ E/SQRLStorage: e2bd235e4bee2c382c8c7ea4047c10bb2de9ecdda9279c0a48f9a026f1e1377c
         byte[] notImportant = new byte[32];
         byte[] unlockRequestSign = new byte[64];
 
-        Sodium.crypto_scalarmult(bytesToSign, this.rescueIdentityUnlockKey, serverUnlock);
+        if(usePreviousKey) {
+            byte[] currentPreviousUnlockKey;
+
+            switch (this.previousKeyIndex) {
+                case 1:
+                    currentPreviousUnlockKey = this.previousKey1;
+                    break;
+                case 2:
+                    currentPreviousUnlockKey = this.previousKey2;
+                    break;
+                case 3:
+                    currentPreviousUnlockKey = this.previousKey3;
+                    break;
+                case 4:
+                    currentPreviousUnlockKey = this.previousKey4;
+                    break;
+                default:
+                    currentPreviousUnlockKey = this.previousKey1;
+            }
+            Sodium.crypto_scalarmult(bytesToSign, currentPreviousUnlockKey, serverUnlock);
+        } else {
+            Sodium.crypto_scalarmult(bytesToSign, this.rescueIdentityUnlockKey, serverUnlock);
+        }
         Sodium.crypto_sign_seed_keypair(notImportant, unlockRequestSign, bytesToSign);
         return unlockRequestSign;
     }

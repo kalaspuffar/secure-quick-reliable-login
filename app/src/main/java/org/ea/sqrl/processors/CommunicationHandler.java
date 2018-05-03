@@ -239,7 +239,7 @@ public class CommunicationHandler {
                     signed_message_len,
                     message,
                     message.length,
-                    storage.getUnlockRequestSigningKey(getServerUnlockKey())
+                    storage.getUnlockRequestSigningKey(getServerUnlockKey(), this.isPreviousKeyValid())
             );
             sb.append("&urs=");
             sb.append(EncryptionUtils.encodeUrlSafe(Arrays.copyOfRange(signed_message, 0, Sodium.crypto_sign_bytes())));
@@ -464,40 +464,6 @@ public class CommunicationHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        /*
-        try {
-            File file = new File("Testing2.sqrl");
-            byte[] bytesArray = new byte[(int) file.length()];
-
-            FileInputStream fis = new FileInputStream(file);
-            fis.read(bytesArray);
-            fis.close();
-
-            System.out.println(EncryptionUtils.byte2hex(bytesArray));
-            if(true) System.exit(0);
-
-
-            SQRLStorage storage = SQRLStorage.getInstance();
-            storage.setProgressionUpdater(new ProgressionUpdater());
-            storage.read(bytesArray);
-            storage.decryptIdentityKey("Testing1234");
-
-            CommunicationHandler commHandler = CommunicationHandler.getInstance();
-            String sqrlLink = "sqrl://www.grc.com/sqrl?nut=WJ1LHhkhd-8O6oMiO1RuQw";
-            String domain = sqrlLink.split("/")[2];
-
-            int indexOfQuery = sqrlLink.indexOf("/", sqrlLink.indexOf("://")+3);
-            String queryLink = sqrlLink.substring(indexOfQuery);
-
-            commHandler.setDomain(domain);
-            String postData = commHandler.createPostParams(commHandler.createClientQuery(), sqrlLink);
-            commHandler.postRequest(queryLink, postData);
-            commHandler.printParams();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        */
     }
 
     public String getQueryLink() {
@@ -534,5 +500,9 @@ public class CommunicationHandler {
         } else {
             this.askDialogService.activateAskButton();
         }
+    }
+
+    public boolean isPreviousKeyValid() {
+        return isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH);
     }
 }
