@@ -16,6 +16,13 @@ We are closely nearing a full implementation of the specification. But there is 
 * Security audit
 * Bug reporting
 * Translation (https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Chinese (simplified) Status](http://uhash.com/poeditor/poeditor-badge.php?langCode=zh-CN)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Dutch Status](http://uhash.com/poeditor/poeditor-badge.php?langCode=nl)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation English Status](http://uhash.com/poeditor/poeditor-badge.php?langCode=en)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation French Status](http://uhash.com/poeditor/poeditor-badge.php?langCode=fr)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Russian Status](http://uhash.com/poeditor/poeditor-badge.php?langCode=ru)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Spanish Status](http://uhash.com/poeditor/poeditor-badge.php?langCode=es)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Swedish Status](http://uhash.com/poeditor/poeditor-badge.php?langCode=sv)](https://poeditor.com/join/project/Jlsa1tqxlx)
 
 Some of these areas are not my speciallity so all help / merge requests are welcome.
 
