@@ -16,13 +16,13 @@ We are closely nearing a full implementation of the specification. But there is 
 * Security audit
 * Bug reporting
 * Translation (https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation Chinese (simplified) Status](http://uhash.com/poeditor/poeditor-badge.php?langCode=zh-CN)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation Dutch Status](http://uhash.com/poeditor/poeditor-badge.php?langCode=nl)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation English Status](http://uhash.com/poeditor/poeditor-badge.php?langCode=en)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation French Status](http://uhash.com/poeditor/poeditor-badge.php?langCode=fr)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation Russian Status](http://uhash.com/poeditor/poeditor-badge.php?langCode=ru)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation Spanish Status](http://uhash.com/poeditor/poeditor-badge.php?langCode=es)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation Swedish Status](http://uhash.com/poeditor/poeditor-badge.php?langCode=sv)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Chinese (simplified) Status](https://img.shields.io/badge/dynamic/json.svg?label=Chinese%20(simplified)&url=http%3A%2F%2Fuhash.com%2Fpoeditor%2Fpoeditor-badge.php%3FlangCode%3Dzh-CN&query=%24.percentage)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Dutch Status](https://img.shields.io/badge/dynamic/json.svg?label=Dutch&url=http%3A%2F%2Fuhash.com%2Fpoeditor%2Fpoeditor-badge.php%3FlangCode%3Dnl&query=%24.percentage)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation English Status](https://img.shields.io/badge/dynamic/json.svg?label=English&url=http%3A%2F%2Fuhash.com%2Fpoeditor%2Fpoeditor-badge.php%3FlangCode%3Den&query=%24.percentage)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation French Status](https://img.shields.io/badge/dynamic/json.svg?label=French&url=http%3A%2F%2Fuhash.com%2Fpoeditor%2Fpoeditor-badge.php%3FlangCode%3Dfr&query=%24.percentage)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Russian Status](https://img.shields.io/badge/dynamic/json.svg?label=Russian&url=http%3A%2F%2Fuhash.com%2Fpoeditor%2Fpoeditor-badge.php%3FlangCode%3Dru&query=%24.percentage)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Spanish Status](https://img.shields.io/badge/dynamic/json.svg?label=Spanish&url=http%3A%2F%2Fuhash.com%2Fpoeditor%2Fpoeditor-badge.php%3FlangCode%3Des&query=%24.percentage)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Swedish Status](https://img.shields.io/badge/dynamic/json.svg?label=Swedish&url=http%3A%2F%2Fuhash.com%2Fpoeditor%2Fpoeditor-badge.php%3FlangCode%3Dsv&query=%24.percentage)](https://poeditor.com/join/project/Jlsa1tqxlx)
 
 Some of these areas are not my speciallity so all help / merge requests are welcome.
 
