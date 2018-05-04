@@ -1,14 +1,10 @@
 package org.ea.sqrl.services;
 
 import android.app.Activity;
-import android.content.pm.PackageInfo;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,19 +16,17 @@ import android.print.PrintDocumentAdapter;
 import android.print.PrintDocumentInfo;
 import android.print.pdf.PrintedPdfDocument;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 
-import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
-import io.nayuki.qrcodegen.QrCode;
-
+/**
+ *
+ * @author Daniel Persson
+ */
 @RequiresApi(Build.VERSION_CODES.KITKAT)
 public class RescueCodePrintDocumentAdapter extends PrintDocumentAdapter {
     private static final String TAG = "RescueCodePrintDocumentAdapter";

@@ -11,9 +11,9 @@ import android.widget.TextView;
 import org.ea.sqrl.utils.EncryptionUtils;
 
 /**
- * Created by danielp on 4/24/18.
+ *
+ * @author Daniel Persson
  */
-
 public class AskDialogService {
     private static final String TAG = "AskDialogService";
     private Handler handler;

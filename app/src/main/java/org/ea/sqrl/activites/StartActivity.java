@@ -1,25 +1,14 @@
 package org.ea.sqrl.activites;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.design.widget.Snackbar;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 
 import org.ea.sqrl.R;
-import org.ea.sqrl.processors.SQRLStorage;
-import org.ea.sqrl.utils.EncryptionUtils;
 
 /**
  * Start activity should be a base for the user so we bring them into the application and they know
@@ -30,16 +19,13 @@ import org.ea.sqrl.utils.EncryptionUtils;
  */
 public class StartActivity extends BaseActivity {
     private static final String TAG = "StartActivity";
-    private Handler handler = new Handler();
-    private View rootView;
+
     private boolean createNewIdentity = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-
-        rootView = findViewById(R.id.startActivityView);
 
         boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
 

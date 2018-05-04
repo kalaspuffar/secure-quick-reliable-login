@@ -6,7 +6,6 @@ import android.widget.ProgressBar;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
-import java.util.Arrays;
 
 /**
  * The point of this class is to be the one and only place to fetch your entropy from. It will

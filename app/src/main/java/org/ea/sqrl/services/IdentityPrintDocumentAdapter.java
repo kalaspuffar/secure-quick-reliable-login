@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.graphics.pdf.PdfDocument;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,6 +32,10 @@ import java.util.Date;
 
 import io.nayuki.qrcodegen.QrCode;
 
+/**
+ *
+ * @author Daniel Persson
+ */
 @RequiresApi(Build.VERSION_CODES.KITKAT)
 public class IdentityPrintDocumentAdapter extends PrintDocumentAdapter {
     private static final String TAG = "IdentityPrint";

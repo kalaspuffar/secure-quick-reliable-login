@@ -11,7 +11,6 @@ import android.widget.EditText;
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**

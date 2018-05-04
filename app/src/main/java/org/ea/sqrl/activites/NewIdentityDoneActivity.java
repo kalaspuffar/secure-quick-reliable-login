@@ -159,20 +159,4 @@ public class NewIdentityDoneActivity extends LoginBaseActivity {
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .show();
     }
-
-    public void showNotImplementedDialog() {
-        AlertDialog.Builder builder;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder = new AlertDialog.Builder(NewIdentityDoneActivity.this, android.R.style.Theme_Material_Dialog_Alert);
-        } else {
-            builder = new AlertDialog.Builder(NewIdentityDoneActivity.this);
-        }
-        builder.setTitle(R.string.not_implemented_title)
-                .setMessage(getString(R.string.not_implemented_text))
-                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                    dialog.dismiss();
-                })
-                .setIcon(android.R.drawable.ic_dialog_info)
-                .show();
-    }
 }

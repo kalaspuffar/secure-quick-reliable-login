@@ -1,12 +1,7 @@
 package org.ea.sqrl.processors;
 
 import android.app.Activity;
-import android.os.Handler;
 import android.util.Log;
-import android.view.Gravity;
-import android.widget.Button;
-import android.widget.PopupWindow;
-import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.services.AskDialogService;

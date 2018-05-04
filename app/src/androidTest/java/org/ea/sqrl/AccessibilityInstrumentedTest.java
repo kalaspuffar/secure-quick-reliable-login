@@ -26,7 +26,6 @@ import org.ea.sqrl.activites.SettingsActivity;
 import org.ea.sqrl.activites.ShowIdentityActivity;
 import org.ea.sqrl.activites.StartActivity;
 import org.ea.sqrl.activites.UrlLoginActivity;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Rule;

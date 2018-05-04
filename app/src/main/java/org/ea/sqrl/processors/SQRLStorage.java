@@ -1,6 +1,5 @@
 package org.ea.sqrl.processors;
 
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
@@ -990,19 +989,6 @@ public class SQRLStorage {
             this.updatePreviousPlaintext();
         }
     }
-
-    /*
-E/SQRLStorage: Before previous key
-E/SQRLStorage: a88b6952bcf73fd1192c42003d0e1efd4d1ef87ccc6f72a1a64ce722fa9f8c72
-E/SQRLStorage: After previous key
-E/SQRLStorage: a88b6952bcf73fd1192c42003d0e1efd4d1ef87ccc6f72a1a64ce722fa9f8c72
-
-E/SQRLStorage: Before previous key
-E/SQRLStorage: e2bd235e4bee2c382c8c7ea4047c10bb2de9ecdda9279c0a48f9a026f1e1377c
-E/SQRLStorage: After previous key
-E/SQRLStorage: e2bd235e4bee2c382c8c7ea4047c10bb2de9ecdda9279c0a48f9a026f1e1377c
-     */
-
 
     /**
      * Encrypt the identity key, this has the master key used to login to sites and also the lock

@@ -1,12 +1,10 @@
 package org.ea.sqrl.utils;
 
-import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
 
 import org.ea.sqrl.processors.EntropyHarvester;
 import org.ea.sqrl.processors.ProgressionUpdater;
-import org.libsodium.jni.NaCl;
 import org.libsodium.jni.Sodium;
 
 import java.math.BigInteger;

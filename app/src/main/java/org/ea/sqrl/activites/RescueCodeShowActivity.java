@@ -3,21 +3,17 @@ package org.ea.sqrl.activites;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.print.PrintAttributes;
 import android.print.PrintManager;
-import android.support.v7.app.AppCompatActivity;
 
 import android.util.Log;
-import android.widget.Button;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.EntropyHarvester;
 import org.ea.sqrl.processors.SQRLStorage;
-import org.ea.sqrl.services.IdentityPrintDocumentAdapter;
 import org.ea.sqrl.services.RescueCodePrintDocumentAdapter;
 
 import java.util.List;

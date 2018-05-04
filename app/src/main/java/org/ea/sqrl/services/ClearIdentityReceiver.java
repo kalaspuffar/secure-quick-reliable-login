@@ -7,6 +7,10 @@ import android.content.Intent;
 
 import org.ea.sqrl.processors.SQRLStorage;
 
+/**
+ *
+ * @author Daniel Persson
+ */
 public class ClearIdentityReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {

@@ -6,6 +6,10 @@ import android.app.job.JobService;
 
 import org.ea.sqrl.processors.SQRLStorage;
 
+/**
+ *
+ * @author Daniel Persson
+ */
 @TargetApi(21)
 public class ClearIdentityService extends JobService {
     public static final int JOB_NUMBER = 1;
