@@ -372,6 +372,12 @@ public class MainActivity extends LoginBaseActivity {
                                 }
                             });
                             commHandler.showAskDialog();
+                        } else if(!commHandler.isIdentityKnown(false)) {
+                            storage.clear();
+                            storage.clearQuickPass(MainActivity.this);
+                            handler.post(() -> {
+                                Snackbar.make(rootView, R.string.account_creation_require_full_password, Snackbar.LENGTH_LONG).show();
+                            });
                         } else {
                             handler.post(() -> txtLoginPassword.setText(""));
                             toastErrorMessage(true);

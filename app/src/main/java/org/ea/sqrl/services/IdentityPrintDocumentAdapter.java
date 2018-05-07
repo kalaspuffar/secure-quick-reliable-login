@@ -177,7 +177,7 @@ public class IdentityPrintDocumentAdapter extends PrintDocumentAdapter {
         }
 
         int canvasMiddle = canvas.getWidth() / 2;
-        Bitmap bitmap = QrCode.encodeBinary(saveData, QrCode.Ecc.MEDIUM).toImage(2, 0);
+        Bitmap bitmap = QrCode.encodeBinary(saveData, QrCode.Ecc.MEDIUM).toImage(3, 0);
         int bitmapWidth = bitmap.getScaledWidth(canvas);
 
         canvas.drawBitmap(bitmap, canvasMiddle - (bitmapWidth / 2), lastBlockY + bodyText, paint);

@@ -173,4 +173,5 @@
     <string name="scan_cancel">Cancelled scan</string>
     <string name="scan_incorrect">Incorrect QR code, try again</string>
     <string name="button_forgot_password">Forgot your password?</string>
+    <string name="account_creation_require_full_password">Creating accounts require more security, please try again and supply full lenght password.</string>
 </resources>

@@ -99,6 +99,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                                 Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
                             });
                             handler.postDelayed(() -> closeActivity(), 5000);
+                            return;
                         } finally {
                             handler.post(() -> {
                                 txtLoginPassword.setText("");
@@ -116,10 +117,11 @@ public class UrlLoginActivity extends LoginBaseActivity {
                                         handler.post(() -> closeActivity());
                                     }
                                 } else if(!commHandler.isIdentityKnown(false)) {
-                                    postCreateAccount(commHandler);
-                                    if(!commHandler.hasErrorMessage()) {
-                                        handler.post(() -> closeActivity());
-                                    }
+                                    storage.clear();
+                                    storage.clearQuickPass(UrlLoginActivity.this);
+                                    handler.post(() -> {
+                                        Snackbar.make(rootView, R.string.account_creation_require_full_password, Snackbar.LENGTH_LONG).show();
+                                    });
                                 } else {
                                     handler.post(() -> {
                                         txtLoginPassword.setText("");

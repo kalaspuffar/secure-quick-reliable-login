@@ -26,7 +26,7 @@ We are closely nearing a full implementation of the specification. But there is 
 
 Some of these areas are not my speciallity so all help / merge requests are welcome.
 
-Thank you for your time
+Thank you for your time.
 
 ## Usage
 
