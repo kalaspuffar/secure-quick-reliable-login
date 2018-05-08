@@ -83,7 +83,7 @@ Github repository:
 <string name="communication_sqrl_disabled">SQRL authentication for this identity has previously been locked. To use this identity it needs to be unlocked using recover code.</string>
 <string name="communication_transient_error">Transient error: The server indicates that the signature(s) are correct, but something about the query prevented the command from completing.</string>
 <string name="title_activity_main">SQRL - Main</string>
-<string name="identity_unlock">Use identity</string>
+<string name="button_use_identity">Use identity</string>
 <string name="button_import_identity">Import</string>
 <string name="button_settings">Settings</string>
 <string name="button_create_identity">Create new</string>
@@ -266,4 +266,5 @@ In the case of import and login we give you the option to scan QR codes in order
 <string name="scan_incorrect">Incorrect QR code, try again</string>
 <string name="button_forgot_password">Forgot your password?</string>
 <string name="account_creation_require_full_password">Creating accounts require more security, please try again and supply full lenght password.</string>
+    <string name="button_advanced_functions">Advanced functions</string>
 </resources>

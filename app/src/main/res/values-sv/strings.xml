@@ -83,7 +83,7 @@ Github repository:
 <string name="communication_sqrl_disabled">SQRL autentisering för denna identitet har tidigare låsts. För att använda denna identitet igen krävs att identiteten låses upp genom att ange återställningskoden.</string>
 <string name="communication_transient_error">Kortvarigt fel: Hemsidan gav indikation om att all information var korrekt, men något hindrade operationen att genomföras. Vargod försök igen.</string>
 <string name="title_activity_main">SQRL - Huvudsida</string>
-<string name="identity_unlock">Använd identitet</string>
+<string name="button_use_identity">Använd identitet</string>
 <string name="button_import_identity">Importera</string>
 <string name="button_settings">Inställningar</string>
 <string name="button_create_identity">Skapa ny</string>

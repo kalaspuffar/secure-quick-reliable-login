@@ -27,14 +27,6 @@ public class StartActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
-
-        if (!runningTest && mDbHelper.hasIdentities()) {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(START_USER_MODE, START_USER_MODE_RETURNING_USER);
-            startActivity(intent);
-        }
-
         final TextView txtWelcomeMessage = findViewById(R.id.txtWelcomeMessage);
         txtWelcomeMessage.setMovementMethod(LinkMovementMethod.getInstance());
 

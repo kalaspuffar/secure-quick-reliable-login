@@ -52,6 +52,7 @@ public class MainActivity extends LoginBaseActivity {
     private PopupWindow exportOptionsPopupWindow;
 
     private EditText txtIdentityName;
+    private int startMode = 0;
     private boolean importIdentity = false;
 
     @Override
@@ -80,7 +81,7 @@ public class MainActivity extends LoginBaseActivity {
         integrator.setBarcodeImageEnabled(false);
 
         Intent intent = getIntent();
-        int startMode = intent.getIntExtra(START_USER_MODE, 0);
+        startMode = intent.getIntExtra(START_USER_MODE, 0);
         if(startMode == START_USER_MODE_NEW_USER) {
             integrator.setPrompt(this.getString(R.string.scan_identity));
             integrator.initiateScan();
@@ -179,19 +180,22 @@ public class MainActivity extends LoginBaseActivity {
 
         popupView.findViewById(R.id.btnCloseRename).setOnClickListener(v -> renamePopupWindow.dismiss());
         popupView.findViewById(R.id.btnRename).setOnClickListener(v -> {
+            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
+                    APPS_PREFERENCES,
+                    Context.MODE_PRIVATE
+            );
+            long currentId = sharedPref.getLong(CURRENT_ID, 0);
+            if(currentId != 0) {
+                mDbHelper.updateIdentityName(currentId, txtIdentityName.getText().toString());
+                updateSpinnerData(currentId);
+            }
+            txtIdentityName.setText("");
+            renamePopupWindow.dismiss();
 
-                    SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                            APPS_PREFERENCES,
-                            Context.MODE_PRIVATE
-                    );
-                    long currentId = sharedPref.getLong(CURRENT_ID, 0);
-                    if(currentId != 0) {
-                        mDbHelper.updateIdentityName(currentId, txtIdentityName.getText().toString());
-                        updateSpinnerData(currentId);
-                    }
-                    txtIdentityName.setText("");
-                    renamePopupWindow.dismiss();
-                });
+            if (startMode == START_USER_MODE_NEW_USER) {
+                startActivity(new Intent(this, SimplifiedActivity.class));
+            }
+        });
     }
 
     public void setupResetPasswordPopupWindow(LayoutInflater layoutInflater) {

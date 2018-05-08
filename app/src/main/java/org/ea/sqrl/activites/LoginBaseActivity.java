@@ -72,16 +72,18 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
         if(runningTest) return;
 
-        identities = mDbHelper.getIdentitys();
+        if(cboxIdentity != null) {
+            identities = mDbHelper.getIdentitys();
 
-        ArrayAdapter adapter = new ArrayAdapter(
-                this,
-                R.layout.simple_spinner_item,
-                identities.values().toArray(new String[identities.size()])
-        );
-        adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-        cboxIdentity.setAdapter(adapter);
-        cboxIdentity.setOnItemSelectedListener(this);
+            ArrayAdapter adapter = new ArrayAdapter(
+                    this,
+                    R.layout.simple_spinner_item,
+                    identities.values().toArray(new String[identities.size()])
+            );
+            adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+            cboxIdentity.setAdapter(adapter);
+            cboxIdentity.setOnItemSelectedListener(this);
+        }
 
         setupProgressPopupWindow(layoutInflater);
         setupAskPopupWindow(layoutInflater);

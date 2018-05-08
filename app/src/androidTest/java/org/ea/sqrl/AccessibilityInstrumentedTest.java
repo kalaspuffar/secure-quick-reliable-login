@@ -10,7 +10,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.view.WindowManager;
 
-import org.ea.sqrl.activites.AdvancedActivity;
+import org.ea.sqrl.activites.SimplifiedActivity;
 import org.ea.sqrl.activites.ClearIdentityActivity;
 import org.ea.sqrl.activites.CreateIdentityActivity;
 import org.ea.sqrl.activites.EntropyGatherActivity;
@@ -44,8 +44,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 @LargeTest
 public class AccessibilityInstrumentedTest {
     @Rule
-    public ActivityTestRule<AdvancedActivity> advancedActivityRule =
-            new ActivityTestRule<>(AdvancedActivity.class, true, false);
+    public ActivityTestRule<SimplifiedActivity> advancedActivityRule =
+            new ActivityTestRule<>(SimplifiedActivity.class, true, false);
 
     @Rule
     public ActivityTestRule<ClearIdentityActivity> clearIdentityActivityRule =
@@ -124,8 +124,8 @@ public class AccessibilityInstrumentedTest {
     public void testAdvancedActivityAccessibility() throws Exception {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
-        Intent intent = new Intent(targetContext, AdvancedActivity.class);
-        AdvancedActivity a = advancedActivityRule.launchActivity(intent);
+        Intent intent = new Intent(targetContext, SimplifiedActivity.class);
+        SimplifiedActivity a = advancedActivityRule.launchActivity(intent);
         unlockScreen(a);
 
         onView(withId(R.id.advancedActivityView)).perform(click());
