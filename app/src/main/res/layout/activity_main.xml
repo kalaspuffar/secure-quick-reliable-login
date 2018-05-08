@@ -88,13 +88,12 @@
         android:id="@+id/btnRemove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:duplicateParentState="true"
         android:text="@string/button_remove_identity"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnImportIdentity"
-        android:layout_marginRight="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnRename" />
 
     <Button
         android:id="@+id/btnRename"
@@ -129,8 +128,7 @@
         android:duplicateParentState="true"
         android:text="@string/button_reset_password"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnChangePassword"
-        android:layout_marginLeft="16dp" />
+        app:layout_constraintTop_toBottomOf="@+id/btnRemove" />
 
     <Button
         android:id="@+id/btnRekey"
@@ -141,19 +139,17 @@
         android:duplicateParentState="true"
         android:text="@string/button_rekey_identity"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnRemove"
-        android:layout_marginRight="16dp" />
+        app:layout_constraintTop_toBottomOf="@+id/btnChangePassword" />
 
     <Button
         android:id="@+id/btnChangePassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
         android:duplicateParentState="true"
         android:text="@string/button_change_password"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnRename"
-        android:layout_marginLeft="16dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnImportIdentity" />
 
 </android.support.constraint.ConstraintLayout>
