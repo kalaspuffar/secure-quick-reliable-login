@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Secure Quick Reliable Login</string>
+    <string name="introduction_startpage"><b>Secure Quick Reliable Login</b>
+
+Welkom in de handleiding. Deze pagina\'s proberen de verschillende concepten van het protocol in groter detail uit te leggen. We gaan ook de verschillende toepassingen van deze applicatie uitleggen.
+
+Om deze pagina\'s te gebruiken kan u naar links of rechts vegen om te bladeren.
+
+Als u interesse heeft voor de sourcecode van deze open source applicatie kan u deze vinden op <a href="https://github.com/kalaspuffar/secure-quick-reliable-login">https://github.com/kalaspuffar/secure-quick-reliable-login</a></string>
+<string name="introduction_nutshell"><b>In het kort</b>
+
+Voordat u SQRL kan gebruiken om aan te melden bij websites moet u eerst een SQRL privé identiteit maken. U heeft er slechts één nodig, waarschijnlijk voor uw gehele leven. Dit komt omdat deze NIETS over u vrijgeeft en zeer veilig is. Het is alleen maar een zeer lang (78 cijfers) willekeurig nummer.
+
+Daarna wordt, elke keer als u SQRL gebruikt om aan te melden uw persoonlijke identiteit gebruikt om een nieuw 78-cijferig nummer te maken voor deze éne website. Elke website die u bezoekt ziet u als een ander nummer, maar elke keer als u terug komt bij de zelfde site is dit nummer hetzelfde, dat voor deze specifieke site is gemaakt.
+
+Hierdoor kan u uniek en permanent geïdentificeerd worden, en toch anoniem blijven.
+
+Om dat u hiervoor gen e-mailadres of wachtwoord hoeft te gebruiken geeft u de website nooit iets met uw werkelijke identiteit die deze moet beschermen. Als de SQRL identiteit die u heeft bij deze website ooit wordt gestolen, zijn deze allen geldig voor die specifieke website, maar door de onderliggende cryptografie kan deze niet gebruikt worden om deze informatie te gebruiken om als u aan te melden.
+
+Het is werkelijk zo mooi als het klinkt. Het is waar we op hebben gewacht.</string>
+<string name="introduction_password"><b>Uw SQRL wachtwoord</b>
+
+SQRL haalt de zorg voor het aanmelden in verschillende websites weg door het voor u te doen. Helaas betekend dit dat iedereen die de app op uw telefoon kan starten deze zich kan aanmelden als of u het bent.
+
+We lossen dit probleem op door een wachtwoord op SQRL te zetten, waarmee u SQRL activeert. U kan instellen hoe veel beveiliging en complexiteit u nodig heeft. U kan elk wachtwoord van elke lengte gebruiken. Om raden extra lastig te maken kan u ook instellen hoe lang het decoderen moet duren. Om lange en complexe wachtwoorden eenvoudig te kunnen toepassen, zijn de eerste vier tekens genoeg om het volledige wachtwoord te heractiveren.
+
+U kan uw wachtwoord op elk moment veranderen samen met de verschillende instellingen. Als u uw wachtwoord vergeet kan SQRL met de Herstelcode uw toegang opnieuw activeren.</string>
+<string name="introduction_rescue_code"><b>SQRL\'s Herstelcode</b>
+
+U en SQRL hebben waarschijnlijk geen herstel nodig, Maar SQRL\'s beveiliging is zo goed dat u misschien toch een keer moet herstellen. Hieronder zijn twee scenario\'s waar u de herstelcode nodig heeft:
+
+• U heeft uw wachtwoord veranderd maar het nieuwe wachtwoord heeft u vergeten. U kan het aan niemand vragen omdat in tegenstelling tot websites, waar u vaak \'Ik ben mijn wachtwoord vergeten\' kan klikken. De SQRL applicatie weet uw wachtwoord ook niet (anders kan het gehackt worden). Back-ups die u heeft gemaakt zijn mogelijk opgeslagen met het oude wachtwoord, maar als die er niet meer zijn is er de SQRL Herstelcode om uw geheugen te compenseren.
+• Als u SQRL heeft gebruikt om uzelf aan te melden bij een website, kan alleen de Herstelcode deze identiteit aanpassen. Als iemand uw telefoon heeft gestolen en u heeft per ongeluk een slecht wachtwoord gekozen, OF er was een virus op uw systeem. De criminelen kunnen dan tijdelijk nog wel aanmelden maar niet de identiteit omzetten naar zichzelf. Maar U kan uw account opeisen door een nieuwe identiteit te maken met behulp van de Herstelcode van de oude identiteit.
+
+De SQRL Herstelcode is een krachtig hulpmiddel, schrijf het op en raak het niet kwijt. U heeft het mogelijk nooit nodig, maar als dit wel zo is zal u blij zijn dat u het heeft bewaard.</string>
+<string name="introduction_backup"><b>Waarom back-uppen?</b>
+
+Uw SQRL identiteit is een willekeurig gekozen getal van 78-cijfers, welke gebruikt wordt om individuele identiteiten te maken voor elke website. NIEMAND weet wat het is. Als u SQRL gebruikt om uzelf te authenticeren bent u dit 78-cijferige nummer. Als u het kwijtraakt bent u ook uw identiteit kwijt.
+
+Een andere reen om uw privé identiteit te back-uppen is om deze naar een andere computer of mobiel apparaat te kopiëren. Als uw privé SQRL identiteit op al uw apparaten is geïnstalleerd kan u deze allemaal gebruiken om u te authenticeren op het internet.
+
+SQRL heeft een aantal simpele manieren om uw privé identiteit te backuppen, en alle backups zijn altijd beschermd met uw SQRL wachtwoord en Herstelcode
+
+Een backup afdrukken als een kleine QR-code en tekst (misschien zelfs een paar afdrukken) wordt aanbevolen, omdat papier een basis opslagmedium is. En om veel redenen is het nog steeds het beste. Sla het document op bij uw andere belangrijke papieren. U kan uw backup ook op een USB-stick zetten of op CD branden en deze op een veilige plek opslaan.
+
+Maar maak ALSTUBLIEFT een back-up. NIEMAND kent uw unieke 78-cijferige privé identiteit... zelfs u niet!</string>
+<string name="welcome_message"><b>Welkom in de Secure Quick Reliable Login app.</b>
+
+Deze app slaat uw gecodeerde sleutels op dit apparaat op. U kan uw kluis openen en één van de sleutels gebruiken om uzelf te authenticeren  voor een server.
+
+In deze gegevens is geen verbinding met enige persoonlijke informatie, het bevestigt alleen dat u met de zelfde telefoon als de (laatste succesvolle) keer de verbinding wilt hervatten. Dit maakt het mogelijk om unieke anonieme aanmelding te maken voor uw favoriete sites. U bepaalt zelf hoe veel informatie u met de site deelt.
+
+Voor de duidelijkheid: deze applicatie verbergt geen informatie die uw telefoon zelf al geeft, maar zal geen extra informatie lekken.
+
+U kan het proces starten door een geheime sleutel in te lezen die gemaakt is door een desktop applicatie zoals die van <a href="https://grc.com">https://grc.com</a> en deze te openen met uw wachtwoord. Als uw sleutel is ingelezen kan u zich authenticeren door de QR-code van een site te lezen, het adres te controleren en een aanmeldidentiteit te kiezen.
+
+    U moet hiervoor wel de app het recht geven om de camera te gebruiken, anders kan er geen QR-code gelezen worden van een geexporteerde sleutel of een site.
+
+    Om dit project te volgen kan u gaan naar <a href="https://github.com/kalaspuffar/secure-quick-reliable-login">https://github.com/kalaspuffar/secure-quick-reliable-login</a>
+    </string>
+<string name="button_scan_secret">Scan Identiteits-QR-code</string>
+<string name="button_login">Aanmelden</string>
+<string name="button_intro_close">Sluiten</string>
+<string name="action_help">Help</string>
+<string name="action_about">Over</string>
+<string name="about_message_title">Over</string>
+<string name="about_message_text">
+<b>Secure Quick Reliable Login</b>
+
+Versie: %s
+
+Github repository:
+<a href="https://github.com/kalaspuffar/secure-quick-reliable-login">https://github.com/kalaspuffar/secure-quick-reliable-login</a>
+
+    Auteur:
+    Daniel Persson
+    </string>
+<string name="decrypt_identity_message">U heeft uw privé identiteit met succes gescand. Controleer of de herstelcode er onder overeenkomt met de informatie die ook is afgedrukt op het document.</string>
+<string name="communication_incorrect_response">Ongeldig antwoord, de server gaf geen foutcode. Probeer het later opnieuw</string>
+<string name="communication_bad_id_association">Verkeerde ID koppeling: SQRL identiteit die is gekoppeld aan de aangevraagde \'nut\' komt niet overeen met de SQRL ID die gebruikt is om de vraag te stellen.</string>
+<string name="communication_client_failure">Fout in de app: Bepaalde informatie in de vraag wordt niet begrepen door de server, deze kan de aanvraag niet in behandeling nemen.</string>
+<string name="communication_command_failed">Fout in het commando: De server heeft een probleem ontdekt bij het verwerken van de vraag.</string>
+<string name="communication_function_not_supported">Niet ondersteunde functie: De app heeft één of meer SQRL functies aangevraagd die niet ondersteund worden door de server.</string>
+<string name="communication_sqrl_disabled">SQRL authenticatie is uitgeschakeld voor deze identiteit. Om deze identiteit opnieuw te gebruiken moet deze heractiveert worden met de Herstelcode.</string>
+<string name="communication_transient_error">Fout bij het verwerken: De server geeft aan dat de ondertekening correct is, maar iets in de aanvraag maakt het onmogelijk voor de server om door te gaan.</string>
+<string name="title_activity_main">SQRL - Hoofdmenu</string>
+<string name="identity_unlock">Gebruik identiteit</string>
+<string name="button_import_identity">Importeren</string>
+<string name="button_settings">Instellingen</string>
+<string name="button_create_identity">Maak nieuw</string>
+<string name="button_remove_identity">Verwijder</string>
+<string name="button_rename_identity">Hernoemen</string>
+<string name="button_export_identity">Exporteren</string>
+<string name="button_reset_password">Wachtwoord herstellen</string>
+<string name="button_rekey_identity">Nieuwe identiteit</string>
+<string name="button_change_password">Verander wachtwoord</string>
+<string name="identity_rename_title">Identiteit hernoemen</string>
+<string name="title_activity_show_identity">SQRL - Toon identiteit</string>
+<string name="button_rename_ok">Hernoemen</string>
+<string name="current_identity_title">Huidige identiteit</string>
+<string name="title_activity_clear_identity">SQRL - QuickPass wissen</string>
+<string name="notification_identity_unlocked_desc">Voor de zekerheid moet de QuickPass uit het geheugen gewist worden.
+Klik hier om deze uit het geheugen te wissen.</string>
+<string name="notification_identity_unlocked">QuickPass actief</string>
+<string name="clear_identity_fail">QuickPass is nog in het geheugen, niet mogelijk om het te wissen</string>
+<string name="clear_identity_success">QuickPass gewist</string>
+<string name="decrypt_identity_fail">Het decoderen van de identiteit is mislukt, probeer alstublieft een ander wachtwoord.</string>
+<string name="encrypt_identity_fail">Coderen van uw zojuist geimporteerde identiteit is mislukt, probeer het later nogmaals</string>
+<string name="notification_identity_unlocked_title">Uw identiteit is gedecodeerd naar het geheugen van uw apparaat.</string>
+<string name="login_verify_domain_text">Met dit protocol kan u zich aanmelden bij de gescande URL. Controleer alstublieft of het gescande domein overeenkomt met de plek waar u wilt aanmelden voordat u een wachtwoord invoert.</string>
+<string name="login_domain_title">Wilt u zich aanmelden bij:</string>
+<string name="change_password_retype">Typ uw wachtwoord opnieuw voor controle</string>
+<string name="change_password_current">Huidig wachtwoord</string>
+<string name="change_password_new_password">Kies alstublieft een nieuw wachtwoord</string>
+<string name="change_password_retyped_password_do_not_match">Het tweede wachtwoord komt niet overeen met het nieuwe wachtwoord.</string>
+<string name="title_activity_settings">SQRL- Instellingen</string>
+<string name="settings_hint_length">QuickPass lengte (aantal tekens)</string>
+<string name="settings_password_verify">controletijd (seconden)</string>
+<string name="settings_idle_timeout">tijd voor hergebruik (minuten)</string>
+<string name="settings_sqrl_only">Vraag om alleen met SQRL aan te melden</string>
+<string name="settings_no_sqrl_bypass">Vraag om SQRL verplicht te maken</string>
+<string name="settings_save">Opslaan</string>
+<string name="settings_cancel">Annuleren</string>
+<string name="settings_fragment_save">Opslaan</string>
+<string name="settings_hint_length_not_number">QuickPass lengte is geen getal</string>
+<string name="settings_idle_timeout_not_number">Tijd voor hergebruik is geen getal</string>
+<string name="settings_password_verify_not_number">Controletijd is geen getal</string>
+<string name="settings_hint_length_to_large">QuickPass lengte is te lang (0-255).</string>
+<string name="save_settings_password">Wachtwoord</string>
+<string name="save_identity_to">Identiteit opslaan als</string>
+<string name="title_activity_advanced">SQRL - Geavanceerde functies</string>
+<string name="main_selected_identity">Gekozen identiteit</string>
+<string name="identity_reset_password">Wachtwoord herstellen</string>
+<string name="button_reset_password_ok">Herstellen</string>
+<string name="reset_password_new">Nieuw wachtwoord</string>
+<string name="reset_password_desc">Om een nieuw wachtwoord in te stellen zonder het oude wachtwoord te weten is het noodzakelijk om de herstelcode in te voeren die u heeft gekregen bij het aanmaken van de identiteit. Daarna kan u een nieuw wachtwoord geven en wordt er een, met het wachtwoord beveiligde, identiteit gemaakt.</string>
+<string name="save_settings_title">Instellingen opslaan</string>
+<string name="login_title">Aanmelden</string>
+<string name="import_title">Importeer identiteit</string>
+<string name="rename_identity_desc">Nieuwe naam</string>
+<string name="reset_password_rescuecode_1">Deel 1</string>
+<string name="reset_password_rescuecode_2">Deel 2</string>
+<string name="reset_password_rescuecode_3">Deel 3</string>
+<string name="reset_password_rescuecode_4">Deel 4</string>
+<string name="reset_password_rescuecode_5">Deel 5</string>
+<string name="reset_password_rescuecode_6">Deel 6</string>
+<string name="change_password_title">Wijzig wachtwoord</string>
+<string name="rescue_code_incorrect_input">Herstelcode delen moeten 4 cijfers zijn</string>
+<string name="progress_title">Berekenen</string>
+<string name="login_identity_password">Wachtwoord</string>
+<string name="main_identity_removed">Identity removed</string>
+<string name="button_lock_account">Lock account</string>
+<string name="button_unlock_account">Unlock account</string>
+<string name="button_remove_account">Remove account</string>
+<string name="login_optional_options">Other options</string>
+<string name="button_login_options">Options</string>
+<string name="disable_account_title">Lock account</string>
+<string name="button_disable_account">Lock</string>
+<string name="enable_account_title">Unlock account</string>
+<string name="button_enable_account_enable">Unlock</string>
+<string name="remove_account_title">Remove account</string>
+<string name="button_remove_account_remove">remove</string>
+<string name="export_title">Export</string>
+<string name="button_export_show_identity">Show identity</string>
+<string name="button_export_save_identity">Save identity</string>
+<string name="button_print_identity">Print identity</string>
+<string name="title_activity_url_login">SQRL - Login</string>
+<string name="change_password_close">Close change password window</string>
+<string name="decrypt_close">Close import identity window</string>
+<string name="disable_account_close">Close lock account window</string>
+<string name="enable_account_close">Close unlock account window</string>
+<string name="export_options_close">Close export options window</string>
+<string name="login_close">Sluit aanmeldscherm</string>
+<string name="login_optional_close">Sluit aanmeldinstellingen scherm</string>
+<string name="remove_account_close">Sluit account verwijderen scherm</string>
+<string name="rename_close">Sluit hernoemen scherm</string>
+<string name="reset_password_close">Close reset password window</string>
+<string name="save_settings_close">Sluit het \'instellingen opslaan\' scherm</string>
+<string name="title_entropy_gather">SQRL - Gather entropy</string>
+<string name="button_entropy_gather_next">Next</string>
+<string name="scan_site_code">Scan QRCode for site</string>
+<string name="scan_identity">Scan QRCode for identity</string>
+<string name="title_rescuecode_show">SQRL - Rescue code show</string>
+<string name="title_rescuecode_enter">SQRL - Rescue code enter</string>
+<string name="button_rekey_identity_start">Start</string>
+<string name="button_create_identity_start">Start</string>
+<string name="create_identity_message">Creating a new identity is a process done in 5 steps.
+
+1. First we will activate the camera and you wave it around to create entropy to make a more secure key.
+
+2. Next up you will be presented with a rescue code that you need to record and keep safe.
+
+3. We ask you to reenter the rescue code in order to verify that it\'s been recorded correctly.
+
+4. You\'ll select a password for your new identity.
+
+4. The application creates and encrypts your identity.
+
+5. You\'ll be presented with the option to save your identity for store keeping in a safe place.</string>
+<string name="rekey_identity_message">Rekeying your identity is a process done in 7 steps.
+
+1. First you need to enter the old rescue code for this identity in order to verify that you have access to this secure code.
+
+2. Second we will activate the camera and you wave it around to create entropy to make a more secure key.
+
+3. Next up you will be presented with a new rescue code that you need to record and keep safe.
+
+4. We ask you to reenter the rescue code in order to verify that it\'s been recorded correctly.
+
+5. You\'ll select a password for your new identity.
+
+6. The application creates and encrypts your identity.
+
+7. You\'ll be presented with the option to save your identity for store keeping in a safe place.</string>
+<string name="button_start_create_identity">Create identity</string>
+<string name="title_create_identity">SQRL - Create identity</string>
+<string name="title_rekey_identity">SQRL - Rekey identity</string>
+<string name="rescuecode_show_desc">This page shows your identitys rescue code. This code is important that you record somewhere safe. If you need in the future to restore, unlock or remove your accounts this code will be used to verify that you are the correct owner of this identity. Store it <b>safe and off this device</b>. The code is presented left to right starting in the upper left and ending in the lower right. You may add dashes or minuses in your recording to easily distinguish between the groups of 4 characters.</string>
+<string name="rescue_code_enter_desc">On this page we ask you to enter the rescue code that you recorded and saved in a secure place in order to show that you have recorded the correct value.</string>
+<string name="button_save_identity_save">Save</string>
+<string name="txt_identity_name_hint">Identity name (Optional)</string>
+<string name="title_save_identity">SQRL - Save identity</string>
+<string name="button_print_rescue_code">Print</string>
+<string name="show_identity_image_desc">QRCode of identity</string>
+<string name="url_login_missing_url">Failure! The call to the program had no link attached, please try again.</string>
+<string name="main_activity_could_not_create_dir">Unable to create temporary directory for file to send, do you have to much data on disk?</string>
+<string name="rekey_verify_message">Enter rescue code to verify that you have this secure in your possession, and start the process of rekeying the identity.</string>
+<string name="button_rekey_verify_next">next</string>
+<string name="title_rekey_verify">SQRL - Verify rescue code</string>
+<string name="title_new_identity_done">SQRL - Identity created</string>
+<string name="new_identity_done_message">The identity have been successfully been created/rekeyed. In order to use this safely and be able to restore from loss of device we recommend that you export your identity either by scanning QRCode with another device, sending a file to storage or printing the new identity.</string>
+<string name="button_new_identity_done_export">Export</string>
+<string name="button_new_identity_done">Done</string>
+<string name="camera_permission_request_title">Permission required</string>
+<string name="camera_permission_request_desc">In order to create and import identities and also to login we need to use the camera.
+
+When creating an identity we using to gather random data to improve the security of that identity.
+
+In the case of import and login we give you the option to scan QR codes in order to input data required for that task.</string>
+<string name="introduction_startpage_title">Start</string>
+<string name="introduction_nutshell_title">Nutshell</string>
+<string name="introduction_password_title">Password</string>
+<string name="introduction_rescue_code_title">Rescue Code</string>
+<string name="introduction_backup_title">Backup</string>
+<string name="button_camera_permission_ok">OK</string>
+<string name="print_not_available_title">Printing not available</string>
+<string name="print_not_available_text">The printing function was not implemented before Android Kitcat</string>
+<string name="print_identity_desc1">This printed identity was encrypted with the password it had at the time, and also with it\'s permanent Rescue Code. Since either the correct Password, or the identity\'s Rescue Code, will allow this identity to be used by anyone, neither of those should be stored with, or in any way available with, this printed identity:</string>
+<string name="print_identity_desc2">As an additional recovery measure, a textual version of this identity is provided below. If a camera is not available to scan and import the QR code above, the text below may be entered for full identity recovery. However, this is a Rescue Code ONLY version, so this identity\'s Rescue Code will be required for its decryption:</string>
+<string name="print_identity_desc3">Please retain and protect this printed version of your identity. With SQRL\'s \"two-party\" operation, no one can compromise your SQRL logon security. But this also means that there is no one to turn to if your identity is somehow lost or misplaced. Please treat this identity with the care it deserves. It is your secure and private key to the Internet.</string>
+<string name="print_version_string">Page created by Android open-source SQRL client on the</string>
+<string name="progress_time_elapsed">Time elapsed: %s</string>
+<string name="progress_time_left">Time left: %s</string>
+<string name="progress_state_prepare_query">Preparing query</string>
+<string name="progresstate_contact_server">Contacting server</string>
+<string name="progress_state_descrypting_identity">Decrypting identity</string>
+<string name="progress_state_descrypting_previous_identity">Decrypting previous identity</string>
+<string name="progress_state_descrypting_rescuecode_identity">Decrypting rescue code identity</string>
+<string name="progress_state_encrypting_identity">Encrypting identity</string>
+<string name="progress_state_encrypting_previous_identity">Encrypting previous identity</string>
+<string name="progress_state_encrypting_rescue_code_identity">Encrypting rescue code identity</string>
+<string name="button_ask_first_button_default">ok</string>
+<string name="ask_close">Close question window</string>
+<string name="rekey_verify_to_many_rekey_attempts">This identity has been rekeyed so many times that we now need to retire one of the old keys. This means that sites using this, the oldest key, will not recognize this identity.</string>
+<string name="export_without_password">Without password</string>
+<string name="scan_cancel">Cancelled scan</string>
+<string name="scan_incorrect">Incorrect QR code, try again</string>
+<string name="button_forgot_password">Forgot your password?</string>
+<string name="account_creation_require_full_password">Creating accounts require more security, please try again and supply full lenght password.</string>
+    </resources>
