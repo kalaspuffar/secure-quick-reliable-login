@@ -100,10 +100,12 @@ public class EncryptionUtils {
     public static byte[] decodeBase56(String encodedString) throws Exception {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         int i = 0;
+        int n = 0;
         byte line = 0;
-        BigInteger largeNum = null;
+        BigInteger largeNum = BigInteger.ZERO;
+        int encodedStringLen = encodedString.length();
         for(String s : encodedString.split("")) {
-            if(i == 19) {
+            if(i == 19 || encodedStringLen - 1 == n + line) {
                 md.update(line);
                 byte[] checksum = reverse(md.digest());
                 BigInteger reminder = new BigInteger(1, checksum).mod(BASE);
@@ -114,14 +116,11 @@ public class EncryptionUtils {
                 line++;
                 i = 0;
             } else {
-                if(largeNum == null){
-                    largeNum = BigInteger.valueOf(BASE56_DECODE.indexOf(s));
-                } else {
-                    largeNum = largeNum.multiply(BASE);
-                    largeNum = largeNum.add(BigInteger.valueOf(BASE56_DECODE.indexOf(s)));
-                }
+                BigInteger newVal = BigInteger.valueOf(BASE56_DECODE.indexOf(s)).multiply(BASE.pow(n));
+                largeNum = largeNum.add(newVal);
                 md.update(s.getBytes());
                 i++;
+                n++;
             }
         }
         byte[] largeBytes = largeNum.toByteArray();
@@ -307,6 +306,11 @@ public class EncryptionUtils {
             byte[] decodedBytes = decodeBase56(encodedString);
 
             System.out.println(byte2hex(decodedBytes));
+
+            String decodedString = encodeBase56(decodedBytes);
+
+            System.out.println(encodedString);
+            System.out.println(decodedString);
 
             /*
             byte[] rescueCodeBytes = new byte[12];
