@@ -265,4 +265,5 @@ In the case of import and login we give you the option to scan QR codes in order
 <string name="scan_incorrect">Ogiltlig QR kod, försök igen</string>
 <string name="button_forgot_password">Glömt lösenord?</string>
 <string name="account_creation_require_full_password">För att skapa ett konto behövs mer säkerhet, vargod försök igen och skriv in det fullständiga lösenordet.</string>
+    <string name="button_advanced_functions">Advanced functions</string>
 </resources>
