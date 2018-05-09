@@ -126,8 +126,7 @@ public class EncryptionUtils {
         }
         byte[] largeBytes = largeNum.toByteArray();
 
-        return largeBytes;<
-//        return reverse(largeBytes);
+        return reverse(largeBytes);
     }
 
 
