@@ -21,6 +21,8 @@ import java.util.BitSet;
 public class EncryptionUtils {
     private static final String TAG = "EncryptionUtils";
     private static final byte[] BASE56_ENCODE = "23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz".getBytes();
+    private static final String BASE56_DECODE = "23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz";
+    private static final BigInteger BASE = BigInteger.valueOf(56);
 
     public static byte[] combine(byte[] a, byte b) {
         return combine(a, new byte[] {b});
@@ -67,7 +69,6 @@ public class EncryptionUtils {
     public static String encodeBase56(byte[] data) throws Exception {
         data = reverse(data);
         BigInteger largeNum = new BigInteger(1, data);
-        final BigInteger BASE = BigInteger.valueOf(56);
         String resultStr = "";
         int i = 0;
         byte line = 0;
@@ -94,6 +95,39 @@ public class EncryptionUtils {
         resultStr += (char)BASE56_ENCODE[reminder.intValue()];
 
         return resultStr;
+    }
+
+    public static byte[] decodeBase56(String encodedString) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        int i = 0;
+        byte line = 0;
+        BigInteger largeNum = null;
+        for(String s : encodedString.split("")) {
+            if(i == 19) {
+                md.update(line);
+                byte[] checksum = reverse(md.digest());
+                BigInteger reminder = new BigInteger(1, checksum).mod(BASE);
+                if(s.getBytes()[0] != BASE56_ENCODE[reminder.intValue()]) {
+                    throw new Exception("Incorrect checksum on line " + line);
+                }
+                md.reset();
+                line++;
+                i = 0;
+            } else {
+                if(largeNum == null){
+                    largeNum = BigInteger.valueOf(BASE56_DECODE.indexOf(s));
+                } else {
+                    largeNum = largeNum.multiply(BASE);
+                    largeNum = largeNum.add(BigInteger.valueOf(BASE56_DECODE.indexOf(s)));
+                }
+                md.update(s.getBytes());
+                i++;
+            }
+        }
+        byte[] largeBytes = largeNum.toByteArray();
+
+        return largeBytes;<
+//        return reverse(largeBytes);
     }
 
 
@@ -263,13 +297,26 @@ public class EncryptionUtils {
     public static void main(String[] args) {
         try {
             EntropyHarvester entropyHarvester = EntropyHarvester.getInstance();
+
+            byte[] storageBytes = new byte[223];
+            entropyHarvester.fetchRandom(storageBytes);
+
+            System.out.println(byte2hex(storageBytes));
+
+            String encodedString = encodeBase56(storageBytes);
+
+            byte[] decodedBytes = decodeBase56(encodedString);
+
+            System.out.println(byte2hex(decodedBytes));
+
+            /*
             byte[] rescueCodeBytes = new byte[12];
             entropyHarvester.fetchRandom(rescueCodeBytes);
 
             BigInteger rescueCodeNum = new BigInteger(1, rescueCodeBytes);
             String rescueCode = rescueCodeNum.toString(10).substring(rescueCodeNum.toString(10).length() - 24);
             System.out.println(Arrays.toString(rescueCode.split("(?<=\\G.{4})")));
-
+            */
         } catch (Exception e) {
             e.printStackTrace();
         }
