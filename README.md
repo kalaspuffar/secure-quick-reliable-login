@@ -16,13 +16,15 @@ We are closely nearing a full implementation of the specification. But there is 
 * Security audit
 * Bug reporting
 * Translation (https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation Chinese (simplified) Status](http://uhash.com/poeditor/zh-CN.svg?t=3)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation Dutch Status](http://uhash.com/poeditor/nl.svg?t=3)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation English Status](http://uhash.com/poeditor/en.svg?t=3)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation French Status](http://uhash.com/poeditor/fr.svg?t=3)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation Russian Status](http://uhash.com/poeditor/ru.svg?t=3)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation Spanish Status](http://uhash.com/poeditor/es.svg?t=3)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation Swedish Status](http://uhash.com/poeditor/sv.svg?t=3)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Chinese (simplified) Status](http://uhash.com/poeditor/zh-CN.svg?t=4)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Dutch Status](http://uhash.com/poeditor/nl.svg?t=4)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation English Status](http://uhash.com/poeditor/en.svg?t=4)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation French Status](http://uhash.com/poeditor/fr.svg?t=4)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Hebrew Status](http://uhash.com/poeditor/he.svg?t=4)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Norwegian Status](http://uhash.com/poeditor/no.svg?t=4)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Russian Status](http://uhash.com/poeditor/ru.svg?t=4)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Spanish Status](http://uhash.com/poeditor/es.svg?t=4)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Swedish Status](http://uhash.com/poeditor/sv.svg?t=4)](https://poeditor.com/join/project/Jlsa1tqxlx)
 
 Some of these areas are not my speciallity so all help / merge requests are welcome.
 
