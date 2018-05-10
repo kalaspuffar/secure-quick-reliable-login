@@ -23,7 +23,6 @@
     <string name="communication_sqrl_disabled">SQRL authenticatie is uitgeschakeld voor deze identiteit. Om deze identiteit opnieuw te gebruiken moet deze heractiveert worden met de Herstelcode.</string>
     <string name="communication_transient_error">Fout bij het verwerken: De server geeft aan dat de ondertekening correct is, maar iets in de aanvraag maakt het onmogelijk voor de server om door te gaan.</string>
     <string name="title_activity_main">SQRL - Hoofdmenu</string>
-    <string name="identity_unlock">Gebruik identiteit</string>
     <string name="button_import_identity">Importeren</string>
     <string name="button_settings">Instellingen</string>
     <string name="button_create_identity">Maak nieuw</string>
@@ -175,4 +174,6 @@
     <string name="scan_incorrect">Ongeldige QR-code, probeer het alstublieft opnieuw.</string>
     <string name="button_forgot_password">Wachtwoord vergeten?</string>
     <string name="account_creation_require_full_password">Het aanmaken van accounts vereist meer zekerheid, probeer het alstublieft opnieuw en geef het volledige wachtwoord.</string>
+    <string name="button_use_identity">Use identity</string>
+    <string name="button_advanced_functions">Advanced functions</string>
 </resources>
