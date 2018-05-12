@@ -44,7 +44,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 @LargeTest
 public class AccessibilityInstrumentedTest {
     @Rule
-    public ActivityTestRule<SimplifiedActivity> advancedActivityRule =
+    public ActivityTestRule<SimplifiedActivity> simplifiedActivityTestRule =
             new ActivityTestRule<>(SimplifiedActivity.class, true, false);
 
     @Rule
@@ -125,14 +125,15 @@ public class AccessibilityInstrumentedTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, SimplifiedActivity.class);
-        SimplifiedActivity a = advancedActivityRule.launchActivity(intent);
+        intent.putExtra("RUNNING_TEST", true);
+        SimplifiedActivity a = simplifiedActivityTestRule.launchActivity(intent);
         unlockScreen(a);
 
-        onView(withId(R.id.advancedActivityView)).perform(click());
+        onView(withId(R.id.simplifiedActivityView)).perform(click());
     }
 
     @Test
-    @Ignore // Still failing test, not important as it don't have that many elements.
+//    @Ignore // Still failing test, not important as it don't have that many elements.
     public void testClearIdentityActivityAccessibility() throws Exception {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
@@ -187,11 +188,6 @@ public class AccessibilityInstrumentedTest {
         unlockScreen(a);
 
         onView(withId(R.id.mainActivityView)).perform(click());
-
-        a.getSupportFragmentManager().beginTransaction();
-
-        onView(withId(R.id.btnSettings)).perform(click());
-        onView(withId(R.id.btnSettingsSave)).perform(click());
     }
 
     @Test

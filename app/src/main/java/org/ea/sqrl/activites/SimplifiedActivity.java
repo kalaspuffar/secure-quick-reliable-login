@@ -38,7 +38,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simplified);
 
-        rootView = findViewById(R.id.advancedActivityView);
+        rootView = findViewById(R.id.simplifiedActivityView);
 
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);

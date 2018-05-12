@@ -38,7 +38,7 @@ public class ShowIdentityActivity extends BaseActivity {
 
         final byte[] qrCodeData = mDbHelper.getIdentityData(currentId);
         if (qrCodeData.length == 0) {
-            ShowIdentityActivity.this.finish();
+            return;
         }
 
 
@@ -49,7 +49,7 @@ public class ShowIdentityActivity extends BaseActivity {
             txtIdentityText.setText(storage.getVerifyingRecoveryBlock());
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
-            ShowIdentityActivity.this.finish();
+            return;
         }
 
         final Button btnCloseIdentity = findViewById(R.id.btnCloseIdentity);
