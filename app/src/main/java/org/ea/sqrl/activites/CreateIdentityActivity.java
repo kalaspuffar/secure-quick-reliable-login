@@ -2,7 +2,9 @@ package org.ea.sqrl.activites;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.method.LinkMovementMethod;
+import android.view.Menu;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -16,7 +18,7 @@ import org.ea.sqrl.processors.SQRLStorage;
  *
  * @author Daniel Persson
  */
-public class CreateIdentityActivity extends BaseActivity {
+public class CreateIdentityActivity extends AppCompatActivity {
     private static final String TAG = "CreateIdentityActivity";
 
     @Override

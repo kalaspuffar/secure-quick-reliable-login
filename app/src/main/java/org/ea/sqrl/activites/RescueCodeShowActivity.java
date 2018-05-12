@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.print.PrintAttributes;
 import android.print.PrintManager;
 
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -22,7 +23,7 @@ import java.util.List;
  *
  * @author Daniel Persson
  */
-public class RescueCodeShowActivity extends BaseActivity {
+public class RescueCodeShowActivity extends AppCompatActivity {
     private static final String TAG = "RescueCodeShowActivity";
 
     @Override
