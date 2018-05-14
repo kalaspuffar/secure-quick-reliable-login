@@ -178,6 +178,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                         storage.clearQuickPass(this);
                         return;
                     }
+                    showClearNotification();
 
                     try {
                         postQuery(commHandler, false, false);

@@ -754,7 +754,7 @@ public class SQRLStorage {
         try {
             entropyHarvester.fetchRandom(this.quickPassRandomSalt);
 
-            byte[] encResult = EncryptionUtils.enSCryptTime(password, this.quickPassRandomSalt, logNFactor, 32, timeInSecondsToRunPWEnScryptOnPassword, this.progressionUpdater);
+            byte[] encResult = EncryptionUtils.enSCryptTime(password, this.quickPassRandomSalt, logNFactor, 32, (byte) 1, this.progressionUpdater);
             this.quickPassIterationCount = getIntFromFourBytes(encResult, 0);
             byte[] key = Arrays.copyOfRange(encResult, 4, 36);
 
