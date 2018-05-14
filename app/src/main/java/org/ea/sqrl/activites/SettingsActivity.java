@@ -102,7 +102,7 @@ public class SettingsActivity extends BaseActivity {
         final Button btnSaveSettings = popupView.findViewById(R.id.btnSaveSettings);
         btnSaveSettings.setOnClickListener(v -> new Thread(() -> {
             storage.clearQuickPass(this);
-            boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString());
+            boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString(), entropyHarvester, false);
             if(!decryptStatus) {
                 handler.post(() -> {
                     Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();

@@ -77,7 +77,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                     progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
 
                     new Thread(() -> {
-                        boolean decryptionOk = storage.decryptIdentityKeyQuickPass(password.toString());
+                        boolean decryptionOk = storage.decryptIdentityKey(password.toString(), entropyHarvester, true);
                         if(!decryptionOk) {
                             Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                             handler.post(() -> {
@@ -117,11 +117,10 @@ public class UrlLoginActivity extends LoginBaseActivity {
                                         handler.post(() -> closeActivity());
                                     }
                                 } else if(!commHandler.isIdentityKnown(false)) {
-                                    storage.clear();
-                                    storage.clearQuickPass(UrlLoginActivity.this);
-                                    handler.post(() -> {
-                                        Snackbar.make(rootView, R.string.account_creation_require_full_password, Snackbar.LENGTH_LONG).show();
-                                    });
+                                    postCreateAccount(commHandler);
+                                    if (!commHandler.hasErrorMessage()) {
+                                        handler.post(() -> closeActivity());
+                                    }
                                 } else {
                                     handler.post(() -> {
                                         txtLoginPassword.setText("");
@@ -168,14 +167,8 @@ public class UrlLoginActivity extends LoginBaseActivity {
                 progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
 
                 new Thread(() -> {
-                    boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString());
-                    if(decryptionOk) {
-                        storage.clearQuickPass(this);
-                        boolean quickPassEncryptOk = storage.encryptIdentityKeyQuickPass(txtLoginPassword.getText().toString(), entropyHarvester);
-                        if(quickPassEncryptOk) {
-                            showClearNotification();
-                        }
-                    } else {
+                    boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, false);
+                    if(!decryptionOk) {
                         Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                         handler.post(() -> {
                             txtLoginPassword.setText("");

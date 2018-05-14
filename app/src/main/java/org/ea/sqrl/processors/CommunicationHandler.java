@@ -419,7 +419,7 @@ public class CommunicationHandler {
             SQRLStorage storage = SQRLStorage.getInstance();
             storage.setProgressionUpdater(new ProgressionUpdater());
             storage.read(bytesArray);
-            storage.decryptIdentityKey("Testing1234");
+            storage.decryptIdentityKey("Testing1234", EntropyHarvester.getInstance(), false);
             boolean didIt = storage.decryptUnlockKey("7276-0587-2230-1119-8559-3839");
             System.out.println(didIt);
 

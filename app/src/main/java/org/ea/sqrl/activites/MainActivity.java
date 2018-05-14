@@ -326,7 +326,7 @@ public class MainActivity extends LoginBaseActivity {
                     progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
 
                     new Thread(() -> {
-                        boolean decryptionOk = storage.decryptIdentityKeyQuickPass(password.toString());
+                        boolean decryptionOk = storage.decryptIdentityKey(password.toString(), entropyHarvester, true);
                         if(!decryptionOk) {
                             Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                             handler.post(() -> {
@@ -354,39 +354,35 @@ public class MainActivity extends LoginBaseActivity {
                             });
                         }
 
-                        if(commHandler.isIdentityKnown(false)) {
-                            commHandler.setAskAction(() -> {
-                                handler.post(() -> {
-                                    progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                                });
-                                try {
-                                    postLogin(commHandler);
-                                } catch (Exception e) {
-                                    Log.e(TAG, e.getMessage(), e);
-                                    handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
-                                    storage.clear();
-                                    storage.clearQuickPass(MainActivity.this);
-                                } finally {
-                                    commHandler.clearLastResponse();
-                                    storage.clear();
-                                    handler.post(() -> {
-                                        txtLoginPassword.setText("");
-                                        progressPopupWindow.dismiss();
-                                    });
-                                }
-                            });
-                            commHandler.showAskDialog();
-                        } else if(!commHandler.isIdentityKnown(false)) {
-                            storage.clear();
-                            storage.clearQuickPass(MainActivity.this);
+                        commHandler.setAskAction(() -> {
                             handler.post(() -> {
-                                Snackbar.make(rootView, R.string.account_creation_require_full_password, Snackbar.LENGTH_LONG).show();
+                                progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                             });
-                        } else {
-                            handler.post(() -> txtLoginPassword.setText(""));
-                            toastErrorMessage(true);
-                            storage.clear();
-                        }
+                            try {
+                                if (commHandler.isIdentityKnown(false)) {
+                                    postLogin(commHandler);
+                                } else if (!commHandler.isIdentityKnown(false)) {
+                                    postCreateAccount(commHandler);
+                                } else {
+                                    handler.post(() -> txtLoginPassword.setText(""));
+                                    toastErrorMessage(true);
+                                    storage.clear();
+                                }
+                            } catch (Exception e) {
+                                Log.e(TAG, e.getMessage(), e);
+                                handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                                storage.clear();
+                                storage.clearQuickPass(MainActivity.this);
+                            } finally {
+                                commHandler.clearLastResponse();
+                                storage.clear();
+                                handler.post(() -> {
+                                    txtLoginPassword.setText("");
+                                    progressPopupWindow.dismiss();
+                                });
+                            }
+                        });
+                        commHandler.showAskDialog();
                     }).start();
                 }
             }
@@ -414,14 +410,8 @@ public class MainActivity extends LoginBaseActivity {
                 progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
 
                 new Thread(() -> {
-                    boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString());
-                    if(decryptionOk) {
-                        storage.clearQuickPass(this);
-                        boolean quickPassEncryptOk = storage.encryptIdentityKeyQuickPass(txtLoginPassword.getText().toString(), entropyHarvester);
-                        if(quickPassEncryptOk) {
-                            showClearNotification();
-                        }
-                    } else {
+                    boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, false);
+                    if(!decryptionOk) {
                         Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                         handler.post(() -> {
                             txtLoginPassword.setText("");
@@ -430,6 +420,7 @@ public class MainActivity extends LoginBaseActivity {
                         storage.clear();
                         return;
                     }
+                    showClearNotification();
 
                     try {
                         postQuery(commHandler, true, false);
@@ -584,7 +575,7 @@ public class MainActivity extends LoginBaseActivity {
             new Thread(() -> {
                 SQRLStorage storage = SQRLStorage.getInstance();
                 try {
-                    boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString());
+                    boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString(), entropyHarvester, false);
                     if(!decryptStatus) {
                         handler.post(() -> {
                             Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
@@ -593,6 +584,7 @@ public class MainActivity extends LoginBaseActivity {
                         });
                         return;
                     }
+                    showClearNotification();
 
                     boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
                     if (!encryptStatus) {
@@ -664,7 +656,7 @@ public class MainActivity extends LoginBaseActivity {
 
             new Thread(() -> {
                 try {
-                    boolean decryptStatus = storage.decryptIdentityKey(txtCurrentPassword.getText().toString());
+                    boolean decryptStatus = storage.decryptIdentityKey(txtCurrentPassword.getText().toString(), entropyHarvester, false);
                     if (!decryptStatus) {
                         handler.post(() -> {
                             Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
@@ -674,6 +666,7 @@ public class MainActivity extends LoginBaseActivity {
                         });
                         return;
                     }
+                    showClearNotification();
 
                     boolean encryptStatus = storage.encryptIdentityKey(txtNewPassword.getText().toString(), entropyHarvester);
                     if (!encryptStatus) {

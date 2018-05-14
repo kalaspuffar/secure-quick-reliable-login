@@ -1,6 +1,5 @@
 package org.ea.sqrl.activites;
 
-import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -46,7 +45,6 @@ import java.util.Map;
  *
  * @author Daniel Persson
  */
-@SuppressLint("Registered")
 public class LoginBaseActivity extends BaseActivity implements AdapterView.OnItemSelectedListener {
     private static final String TAG = "LoginBaseActivity";
     protected ConstraintLayout rootView;
@@ -305,7 +303,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
             progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
 
             new Thread(() -> {
-                boolean decryptionOk = storage.decryptIdentityKey(txtDisablePassword.getText().toString());
+                boolean decryptionOk = storage.decryptIdentityKey(txtDisablePassword.getText().toString(), entropyHarvester, false);
                 if(decryptionOk) {
                     showClearNotification();
                 } else {

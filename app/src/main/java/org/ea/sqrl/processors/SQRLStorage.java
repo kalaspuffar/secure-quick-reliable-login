@@ -49,7 +49,6 @@ public class SQRLStorage {
     private int passwordBlockLength = 0;
     private static SQRLStorage instance = null;
 
-    private byte[] quickPassKey;
     private byte[] quickPassKeyEncrypted;
     private byte[] quickPassRandomSalt;
     private byte[] quickPassVerificationTag;
@@ -357,11 +356,13 @@ public class SQRLStorage {
     }
 
 
-    public boolean decryptIdentityKeyQuickPass(String password) {
+    private byte[] decryptIdentityKeyQuickPass(String password) {
         this.progressionUpdater.setState(R.string.progress_state_descrypting_identity);
         this.progressionUpdater.setMax(quickPassIterationCount);
 
         password = password.substring(0, this.getHintLength());
+
+        byte[] quickPassKey = null;
 
         try {
             byte[] key = EncryptionUtils.enSCryptIterations(password, quickPassRandomSalt, logNFactor, 32, quickPassIterationCount, this.progressionUpdater);
@@ -375,11 +376,11 @@ public class SQRLStorage {
                 try {
                     quickPassKey = cipher.doFinal(quickPassVerificationTag);
                 } catch (AEADBadTagException badTag) {
-                    return false;
+                    return quickPassKey;
                 }
             } else {
                 byte[] emptyPlainText = new byte[0];
-                this.quickPassKey = new byte[32];
+                quickPassKey = new byte[32];
 
                 Grc_aesgcm.gcm_setkey(key, key.length);
                 int res = Grc_aesgcm.gcm_auth_decrypt(
@@ -390,17 +391,13 @@ public class SQRLStorage {
                 );
                 Grc_aesgcm.gcm_zero_ctx();
 
-                if (res == 0x55555555) return false;
-            }
-
-            if(hasPreviousBlock) {
-                return decryptPreviousBlock();
+                if (res == 0x55555555) return quickPassKey;
             }
         } catch (Exception e) {
             Log.e(SQRLStorage.TAG, e.getMessage(), e);
-            return false;
+            return quickPassKey;
         }
-        return true;
+        return quickPassKey;
     }
 
     /**
@@ -410,11 +407,18 @@ public class SQRLStorage {
      *
      * @param password  Password used to unlock the master key.
      */
-    public boolean decryptIdentityKey(String password) {
+    public boolean decryptIdentityKey(String password, EntropyHarvester entropyHarvester, boolean quickPass) {
         this.progressionUpdater.setState(R.string.progress_state_descrypting_identity);
         this.progressionUpdater.setMax(iterationCount);
         try {
-            byte[] key = EncryptionUtils.enSCryptIterations(password, randomSalt, logNFactor, 32, iterationCount, this.progressionUpdater);
+            byte[] key = null;
+            if(quickPass) {
+                key = this.decryptIdentityKeyQuickPass(password);
+            }
+            if(key == null) {
+                key = EncryptionUtils.enSCryptIterations(password, randomSalt, logNFactor, 32, iterationCount, this.progressionUpdater);
+                this.encryptIdentityKeyQuickPass(password, key, entropyHarvester);
+            }
             byte[] identityKeys = EncryptionUtils.combine(identityMasterKeyEncrypted, identityLockKeyEncrypted);
             byte[] decryptionResult = new byte[identityKeys.length];
 
@@ -459,9 +463,6 @@ public class SQRLStorage {
     private boolean decryptPreviousBlock() {
         this.progressionUpdater.setState(R.string.progress_state_descrypting_previous_identity);
         byte[] masterKey = this.identityMasterKey;
-        if (this.quickPassKey != null) {
-            masterKey = this.quickPassKey;
-        }
 
         try {
             byte[] identityKeys = previousKey1Encrypted;
@@ -584,9 +585,6 @@ public class SQRLStorage {
 
     public byte[] getKeySeed(String domain) throws Exception {
         byte[] masterKey = this.identityMasterKey;
-        if (this.quickPassKey != null) {
-            masterKey = this.quickPassKey;
-        }
         final Mac HMacSha256 = Mac.getInstance("HmacSHA256");
         final SecretKeySpec key = new SecretKeySpec(masterKey, "HmacSHA256");
         HMacSha256.init(key);
@@ -667,7 +665,7 @@ public class SQRLStorage {
     }
 
     public boolean hasQuickPass() {
-        return this.quickPassKeyEncrypted != null || this.quickPassKey != null;
+        return this.quickPassKeyEncrypted != null;
     }
 
     public void clearQuickPass(Context context) {
@@ -676,12 +674,8 @@ public class SQRLStorage {
             if(this.quickPassKeyEncrypted != null) {
                 clearBytes(this.quickPassKeyEncrypted);
             }
-            if(this.quickPassKey != null) {
-                clearBytes(this.quickPassKey);
-            }
         } finally {
             this.quickPassKeyEncrypted = null;
-            this.quickPassKey = null;
         }
 
         NotificationManager notificationManager =
@@ -703,9 +697,6 @@ public class SQRLStorage {
             if(this.rescueIdentityUnlockKey != null) {
                 clearBytes(this.rescueIdentityUnlockKey);
             }
-            if(this.quickPassKey != null) {
-                clearBytes(this.quickPassKey);
-            }
             if(this.tempRescueCode != null) {
                 clearBytes(this.tempRescueCode);
             }
@@ -725,7 +716,6 @@ public class SQRLStorage {
             this.identityLockKey = null;
             this.identityMasterKey = null;
             this.rescueIdentityUnlockKey = null;
-            this.quickPassKey = null;
             this.tempRescueCode = null;
             this.previousKey1 = null;
             this.previousKey2 = null;
@@ -751,8 +741,7 @@ public class SQRLStorage {
      * @param password          Password used to encrypt the master key.
      * @param entropyHarvester  Class to give us new random bits for encryption
      */
-    public boolean encryptIdentityKeyQuickPass(String password, EntropyHarvester entropyHarvester) {
-        if(!this.hasKeys() || !this.hasEncryptedKeys()) return false;
+    private boolean encryptIdentityKeyQuickPass(String password, byte[] encKey, EntropyHarvester entropyHarvester) {
         this.progressionUpdater.setState(R.string.progress_state_encrypting_identity);
         this.progressionUpdater.clear();
         password = password.substring(0, this.getHintLength());
@@ -778,7 +767,7 @@ public class SQRLStorage {
                 Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
                 GCMParameterSpec params = new GCMParameterSpec(128, this.quickPassInitializationVector);
                 cipher.init(Cipher.ENCRYPT_MODE, keySpec, params);
-                cipher.update(identityMasterKey);
+                cipher.update(encKey);
                 byte[] encryptionResult = cipher.doFinal();
 
                 this.quickPassKeyEncrypted = Arrays.copyOfRange(encryptionResult, 0, 32);
@@ -789,7 +778,7 @@ public class SQRLStorage {
                 int res = Grc_aesgcm.gcm_encrypt_and_tag(
                         this.quickPassInitializationVector, this.quickPassInitializationVector.length,
                         emptyPlainText, emptyPlainText.length,
-                        identityMasterKey, this.quickPassKeyEncrypted, identityMasterKey.length,
+                        encKey, this.quickPassKeyEncrypted, encKey.length,
                         this.quickPassVerificationTag, this.quickPassVerificationTag.length
                 );
                 Grc_aesgcm.gcm_zero_ctx();
