@@ -175,6 +175,7 @@ public class StartActivity extends BaseActivity {
                 handler.post(() -> {
                     txtPassword.setText("");
                     progressPopupWindow.dismiss();
+                    startActivity(new Intent(this, SimplifiedActivity.class));
                 });
             }).start();
         });
@@ -343,7 +344,7 @@ public class StartActivity extends BaseActivity {
                     editor.apply();
 
                     handler.post(() -> {
-                        importPopupWindow.dismiss();
+                        startActivity(new Intent(this, SimplifiedActivity.class));
                     });
                 } finally {
                     storage.clear();
