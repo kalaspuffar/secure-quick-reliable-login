@@ -41,8 +41,6 @@ public class BaseActivity extends AppCompatActivity {
 
     private PopupWindow cameraAccessPopupWindow;
 
-    protected static final String START_USER_MODE = "org.ea.sqrl.START_MODE";
-    protected static final int START_USER_MODE_NEW_USER = 1;
     public static final int NOTIFICATION_IDENTITY_UNLOCKED = 1;
 
     protected final IdentityDBHelper mDbHelper;

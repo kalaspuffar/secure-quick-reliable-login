@@ -47,8 +47,8 @@ public class MainActivity extends LoginBaseActivity {
 
     private PopupWindow renamePopupWindow;
     private PopupWindow importPopupWindow;
-    private PopupWindow changePasswordPopupWindow;
     private PopupWindow resetPasswordPopupWindow;
+    private PopupWindow changePasswordPopupWindow;
     private PopupWindow exportOptionsPopupWindow;
 
     private EditText txtIdentityName;
@@ -66,8 +66,8 @@ public class MainActivity extends LoginBaseActivity {
         setupRenamePopupWindow(getLayoutInflater());
         setupLoginPopupWindow(getLayoutInflater());
         setupImportPopupWindow(getLayoutInflater());
-        setupChangePasswordPopupWindow(getLayoutInflater());
         setupResetPasswordPopupWindow(getLayoutInflater());
+        setupChangePasswordPopupWindow(getLayoutInflater());
         setupExportOptionsPopupWindow(getLayoutInflater());
         setupLoginOptionsPopupWindow(getLayoutInflater(), true);
 
@@ -79,14 +79,6 @@ public class MainActivity extends LoginBaseActivity {
         integrator.setBeepEnabled(false);
         integrator.setOrientationLocked(true);
         integrator.setBarcodeImageEnabled(false);
-
-        Intent intent = getIntent();
-        startMode = intent.getIntExtra(START_USER_MODE, 0);
-        if(startMode == START_USER_MODE_NEW_USER) {
-            integrator.setPrompt(this.getString(R.string.scan_identity));
-            integrator.initiateScan();
-            importIdentity = true;
-        }
 
         btnUseIdentity = findViewById(R.id.btnUseIdentity);
         btnUseIdentity.setOnClickListener(
@@ -191,10 +183,6 @@ public class MainActivity extends LoginBaseActivity {
             }
             txtIdentityName.setText("");
             renamePopupWindow.dismiss();
-
-            if (startMode == START_USER_MODE_NEW_USER) {
-                startActivity(new Intent(this, SimplifiedActivity.class));
-            }
         });
     }
 
