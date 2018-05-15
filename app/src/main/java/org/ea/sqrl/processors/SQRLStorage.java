@@ -39,7 +39,7 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class SQRLStorage {
     private static final String TAG = "SQRLStorage";
-    private static final String STORAGE_HEADER = "sqrldata";
+    public static final String STORAGE_HEADER = "sqrldata";
     private static final int PASSWORD_PBKDF = 1;
     private static final int RESCUECODE_PBKDF = 2;
     private static final int PREVIOUS_IDENTITY_KEYS = 3;

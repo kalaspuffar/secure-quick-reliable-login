@@ -177,4 +177,5 @@
     <string name="button_use_identity">Use identity</string>
     <string name="button_advanced_functions">Advanced functions</string>
     <string name="import_text_message">Below you can enter the text supplied with your identity to import it. After that\'s done your prompted to enter a new password. Each row of the identity text will be verified separately.</string>
+    <string name="button_text_import">Import with text input</string>
 </resources>

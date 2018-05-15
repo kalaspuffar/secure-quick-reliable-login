@@ -73,7 +73,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtTextIdentityInput" />
 
-        <TextView
+        <EditText
             android:id="@+id/txtTextIdentityInput"
             android:layout_width="0dp"
             android:layout_height="150dp"
@@ -82,6 +82,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:fontFamily="monospace"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"

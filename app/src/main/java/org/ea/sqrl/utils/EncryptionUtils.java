@@ -105,6 +105,7 @@ public class EncryptionUtils {
         BigInteger largeNum = BigInteger.ZERO;
         int encodedStringLen = encodedString.length();
         for(String s : encodedString.split("")) {
+            if(s.isEmpty()) continue;
             if(i == 19 || encodedStringLen - 1 == n + line) {
                 md.update(line);
                 byte[] checksum = reverse(md.digest());
@@ -294,6 +295,16 @@ public class EncryptionUtils {
 
     public static void main(String[] args) {
         try {
+
+            String s = "KB3Z 8My9 CVUX C34K B8NM" +
+                       "bEXm jcUK RAq6 JT9p DaYW" +
+                       "UstG K9hH xX98 KxHU weVa" +
+                       "RvpV wJd5 JXbf eEDf 4cYy" +
+                       "hzNL j6dW Ehq3 KXCV YSBf" +
+                       "nRJd rAN";
+            String encodedString = s.replaceAll("[^2-9a-zA-Z]", "");
+            byte[] decodedBytes = decodeBase56(encodedString);
+/*
             EntropyHarvester entropyHarvester = EntropyHarvester.getInstance();
 
             byte[] storageBytes = new byte[223];
@@ -311,7 +322,7 @@ public class EncryptionUtils {
 
             System.out.println(encodedString);
             System.out.println(decodedString);
-
+*/
             /*
             byte[] rescueCodeBytes = new byte[12];
             entropyHarvester.fetchRandom(rescueCodeBytes);

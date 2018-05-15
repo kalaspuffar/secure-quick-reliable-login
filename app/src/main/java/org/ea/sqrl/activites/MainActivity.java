@@ -47,6 +47,7 @@ public class MainActivity extends LoginBaseActivity {
 
     private PopupWindow renamePopupWindow;
     private PopupWindow importPopupWindow;
+    private PopupWindow importTextPopupWindow;
     private PopupWindow resetPasswordPopupWindow;
     private PopupWindow changePasswordPopupWindow;
     private PopupWindow exportOptionsPopupWindow;
@@ -66,6 +67,7 @@ public class MainActivity extends LoginBaseActivity {
         setupRenamePopupWindow(getLayoutInflater());
         setupLoginPopupWindow(getLayoutInflater());
         setupImportPopupWindow(getLayoutInflater());
+        setupTextImportPopupWindow(getLayoutInflater());
         setupResetPasswordPopupWindow(getLayoutInflater());
         setupChangePasswordPopupWindow(getLayoutInflater());
         setupExportOptionsPopupWindow(getLayoutInflater());
@@ -152,6 +154,12 @@ public class MainActivity extends LoginBaseActivity {
         btnReset.setOnClickListener(
                 v -> resetPasswordPopupWindow.showAtLocation(resetPasswordPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
         );
+
+        final Button btnTextImport = findViewById(R.id.btnTextImport);
+        btnTextImport.setOnClickListener(
+                v -> importTextPopupWindow.showAtLocation(importTextPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
+        );
+
 
         final Button btnCreate = findViewById(R.id.btnCreate);
         btnCreate.setOnClickListener(v -> startActivity(new Intent(this, CreateIdentityActivity.class)));
@@ -609,6 +617,47 @@ public class MainActivity extends LoginBaseActivity {
                         renamePopupWindow.showAtLocation(renamePopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                     }
                 });
+            }).start();
+        });
+    }
+
+    public void setupTextImportPopupWindow(LayoutInflater layoutInflater) {
+        View popupView = layoutInflater.inflate(R.layout.fragment_text_import, null);
+
+        importTextPopupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
+                true);
+
+        importTextPopupWindow.setTouchable(true);
+
+        final EditText txtTextIdentityInput = popupView.findViewById(R.id.txtTextIdentityInput);
+        final Button btnImportIdentityDo = popupView.findViewById(R.id.btnImportIdentityDo);
+
+        popupView.findViewById(R.id.btnCloseImportIdentity).setOnClickListener(v -> importTextPopupWindow.dismiss());
+
+        btnImportIdentityDo.setOnClickListener(v -> {
+            importTextPopupWindow.dismiss();
+            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+
+            new Thread(() -> {
+                SQRLStorage storage = SQRLStorage.getInstance();
+                String textIdentity = txtTextIdentityInput.getText().toString();
+
+                textIdentity = textIdentity.replaceAll("[^2-9a-zA-Z]", "");
+
+                try {
+                    byte[] identityData = EncryptionUtils.decodeBase56(textIdentity);
+                    identityData = EncryptionUtils.combine(SQRLStorage.STORAGE_HEADER.getBytes(), identityData);
+                    storage.read(identityData);
+
+                    handler.post(() -> {
+                        importIdentity = true;
+                        resetPasswordPopupWindow.showAtLocation(resetPasswordPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                    });
+                } catch (Exception e) {
+                    handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                    Log.e(TAG, e.getMessage(), e);
+                }
             }).start();
         });
     }
