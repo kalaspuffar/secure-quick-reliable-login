@@ -7,6 +7,16 @@
     android:id="@+id/mainActivityView"
     tools:context="org.ea.sqrl.activites.MainActivity">
 
+    <ImageButton
+        android:id="@+id/btnCloseMain"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@color/zxing_transparent"
+        android:contentDescription="@string/change_password_close"
+        android:src="@drawable/ic_close"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
@@ -50,6 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
 
             <Button
                 android:id="@+id/btnUseIdentity"

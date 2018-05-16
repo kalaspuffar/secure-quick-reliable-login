@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -82,6 +83,9 @@ public class MainActivity extends LoginBaseActivity {
         integrator.setOrientationLocked(true);
         integrator.setBarcodeImageEnabled(false);
 
+        final ImageButton btnCloseMain = findViewById(R.id.btnCloseMain);
+        btnCloseMain.setOnClickListener(v -> MainActivity.this.finish());
+        
         btnUseIdentity = findViewById(R.id.btnUseIdentity);
         btnUseIdentity.setOnClickListener(
                 v -> {
