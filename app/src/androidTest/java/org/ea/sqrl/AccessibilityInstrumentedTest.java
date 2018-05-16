@@ -133,7 +133,7 @@ public class AccessibilityInstrumentedTest {
     }
 
     @Test
-//    @Ignore // Still failing test, not important as it don't have that many elements.
+    @Ignore // Still failing test, not important as it don't have that many elements.
     public void testClearIdentityActivityAccessibility() throws Exception {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
