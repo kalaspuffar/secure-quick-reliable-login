@@ -1,6 +1,14 @@
 package org.ea.sqrl.utils;
 
+import android.util.Log;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Arrays;
+import java.util.Base64;
 
 /**
  *
@@ -52,4 +60,50 @@ public class MyBitSet {
         }
         return sb.toString();
     }
+
+    private ServerSocket server;
+    public void startCPSServer() {
+        new Thread(() -> {
+            try {
+                server = new ServerSocket(25519);
+
+                System.out.println("Started CPS server");
+
+                while (true) {
+                    Socket socket = server.accept();
+                    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+                    String line = in.readLine();
+                    System.out.println(line);
+
+                    if(line.contains("gif HTTP/1.1")) {
+                        System.out.println("Respond");
+                        byte[] content = Base64.getDecoder().decode(
+                                "R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                        );
+                        OutputStream os = socket.getOutputStream();
+                        StringBuilder out = new StringBuilder();
+                        out.append("HTTP/1.0 200 OK\r\n");
+                        out.append("Content-Type: image/gif\r\n");
+                        out.append("Content-Length: " + content.length + "\r\n\r\n");
+                        System.out.println(out.toString());
+                        os.write(out.toString().getBytes("UTF-8"));
+                        os.write(content);
+                        os.close();
+                    }
+
+                    in.close();
+                    socket.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public static void main(String[] args) {
+        MyBitSet m = new MyBitSet(new byte[] {});
+        m.startCPSServer();
+    }
+
 }

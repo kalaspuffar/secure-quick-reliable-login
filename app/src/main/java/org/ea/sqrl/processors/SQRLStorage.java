@@ -1051,8 +1051,7 @@ public class SQRLStorage {
         return true;
     }
 
-
-    public String getOptions(boolean noiptest, boolean suk) {
+    public String getOptions(boolean noiptest, boolean suk, boolean clientProvidedSession) {
         List<String> options = new ArrayList<>();
         if(isNoByPass()) {
             options.add("hardlock");
@@ -1062,6 +1061,9 @@ public class SQRLStorage {
         }
         if(noiptest) {
             options.add("noiptest");
+        }
+        if(clientProvidedSession) {
+            options.add("cps");
         }
         if(suk) {
             options.add("suk");

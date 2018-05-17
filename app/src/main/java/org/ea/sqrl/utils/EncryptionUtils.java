@@ -165,6 +165,10 @@ public class EncryptionUtils {
         return Base64.decode(data, Base64.NO_PADDING + Base64.URL_SAFE + Base64.NO_WRAP);
     }
 
+    public static String decodeUrlSafeString(String data) throws Exception {
+        return new String(decodeUrlSafe(data), "UTF-8");
+    }
+
     public static byte[] xor(byte[] a, byte[] b) {
         byte[] result = new byte[a.length];
         for (int i = 0; i < a.length; i++) {

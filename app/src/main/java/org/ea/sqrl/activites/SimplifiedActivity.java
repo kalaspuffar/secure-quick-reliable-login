@@ -49,7 +49,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
         setupLoginPopupWindow(getLayoutInflater());
         setupLoginOptionsPopupWindow(getLayoutInflater(), true);
 
-        setupBasePopups(getLayoutInflater(), true);
+        setupBasePopups(getLayoutInflater(), false);
 
 
         final ImageButton btnUseIdentity = findViewById(R.id.btnUseIdentity);
@@ -128,9 +128,9 @@ public class SimplifiedActivity extends LoginBaseActivity {
                             });
                             try {
                                 if(commHandler.isIdentityKnown(false)) {
-                                    postLogin(commHandler);
+                                    postLogin(commHandler, false);
                                 } else if(!commHandler.isIdentityKnown(false)) {
-                                    postCreateAccount(commHandler);
+                                    postCreateAccount(commHandler, false);
                                 } else {
                                     handler.post(() -> txtLoginPassword.setText(""));
                                     toastErrorMessage(true);
@@ -212,9 +212,9 @@ public class SimplifiedActivity extends LoginBaseActivity {
                         });
                         try {
                             if(commHandler.isIdentityKnown(false)) {
-                                postLogin(commHandler);
+                                postLogin(commHandler, false);
                             } else if(!commHandler.isIdentityKnown(false)) {
-                                postCreateAccount(commHandler);
+                                postCreateAccount(commHandler, false);
                             } else {
                                 handler.post(() -> txtLoginPassword.setText(""));
                                 toastErrorMessage(true);

@@ -17,16 +17,6 @@ import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
-import org.ea.sqrl.utils.EncryptionUtils;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.Arrays;
 
 /**
  *
@@ -34,7 +24,6 @@ import java.util.Arrays;
  */
 public class UrlLoginActivity extends LoginBaseActivity {
     private static final String TAG = "UrlLoginActivity";
-    private ServerSocket server;
     private Handler handler = new Handler();
 
     @Override
@@ -70,7 +59,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
         }
 
         setupLoginOptionsPopupWindow(getLayoutInflater(), false);
-        setupBasePopups(getLayoutInflater(), false);
+        setupBasePopups(getLayoutInflater(), true);
 
         SQRLStorage storage = SQRLStorage.getInstance();
 
@@ -122,14 +111,27 @@ public class UrlLoginActivity extends LoginBaseActivity {
                             });
                             try {
                                 if(commHandler.isIdentityKnown(false)) {
-                                    postLogin(commHandler);
+                                    postLogin(commHandler, true);
                                     if(!commHandler.hasErrorMessage()) {
-                                        handler.post(() -> closeActivity());
+                                        if(commHandler.hasCPSUrl()) {
+                                            startCPSServer(commHandler.getCPSUrl(), false, () -> {
+                                                handler.post(() -> closeActivity());
+                                            });
+                                        } else {
+                                            handler.post(() -> closeActivity());
+                                        }
                                     }
                                 } else if(!commHandler.isIdentityKnown(false)) {
-                                    postCreateAccount(commHandler);
+                                    postCreateAccount(commHandler, true);
                                     if (!commHandler.hasErrorMessage()) {
-                                        handler.post(() -> closeActivity());
+                                        if(commHandler.hasCPSUrl()) {
+                                            startCPSServer(commHandler.getCPSUrl(), false, () -> {
+                                                handler.post(() -> closeActivity());
+                                            });
+                                        } else {
+                                            handler.post(() -> closeActivity());
+                                        }
+
                                     }
                                 } else {
                                     handler.post(() -> {
@@ -213,14 +215,26 @@ public class UrlLoginActivity extends LoginBaseActivity {
                             });
 
                             if(commHandler.isIdentityKnown(false)) {
-                                postLogin(commHandler);
+                                postLogin(commHandler, true);
                                 if (!commHandler.hasErrorMessage()) {
-                                    handler.post(() -> closeActivity());
+                                    if(commHandler.hasCPSUrl()) {
+                                        startCPSServer(commHandler.getCPSUrl(), false, () -> {
+                                            handler.post(() -> closeActivity());
+                                        });
+                                    } else {
+                                        handler.post(() -> closeActivity());
+                                    }
                                 }
                             } else if(!commHandler.isIdentityKnown(false)) {
-                                postCreateAccount(commHandler);
+                                postCreateAccount(commHandler, true);
                                 if (!commHandler.hasErrorMessage()) {
-                                    handler.post(() -> closeActivity());
+                                    if(commHandler.hasCPSUrl()) {
+                                        startCPSServer(commHandler.getCPSUrl(), false, () -> {
+                                            handler.post(() -> closeActivity());
+                                        });
+                                    } else {
+                                        handler.post(() -> closeActivity());
+                                    }
                                 }
                             } else {
                                 handler.post(() -> {
@@ -250,68 +264,6 @@ public class UrlLoginActivity extends LoginBaseActivity {
                 }).start();
             }
         });
-
-        startCPSServer();
-    }
-
-    public void startCPSServer() {
-        new Thread(() -> {
-            try {
-                server = new ServerSocket(25519);
-
-                Log.i(TAG, "Started CPS server");
-
-                while (!server.isClosed()) {
-                    Socket socket = server.accept();
-                    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    OutputStream os = socket.getOutputStream();
-
-                    StringBuilder sb = new StringBuilder();
-                    String line;
-                    while((line = in.readLine()) != null) {
-                        sb.append(line);
-                        sb.append("\n");
-                    }
-
-                    Log.i(TAG, sb.toString());
-
-                    byte[] content = EncryptionUtils.decodeUrlSafe(
-                        "R0lGODlhAQABAAAAACw="
-                    );
-                    if(sb.toString().contains("gif HTTP/1.1")) {
-                        Log.i(TAG, "Respond");
-
-
-                        StringBuilder out = new StringBuilder();
-                        out.append("HTTP/1.0 200 OK\r\n");
-                        out.append("Content-Type: image/gif\r\n");
-                        out.append("Content-Length: " + content.length + "\r\n\r\n");
-
-                        Log.i(TAG, out.toString());
-
-                        os.write(EncryptionUtils.combine(out.toString().getBytes("UTF-8"), content));
-                        os.flush();
-                    }
-
-                    in.close();
-                    socket.close();
-                }
-            } catch (Exception e) {
-                Log.e(TAG, e.getMessage(), e);
-            }
-        }).start();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (server != null) {
-            try {
-                server.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override

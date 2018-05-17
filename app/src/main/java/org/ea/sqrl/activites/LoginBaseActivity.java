@@ -38,7 +38,14 @@ import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.services.AskDialogService;
 import org.ea.sqrl.services.ClearIdentityReceiver;
 import org.ea.sqrl.services.ClearIdentityService;
+import org.ea.sqrl.utils.EncryptionUtils;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -53,6 +60,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     protected Spinner cboxIdentity;
     protected Map<Long, String> identities;
     protected Button btnUseIdentity;
+    private ServerSocket server;
 
     protected PopupWindow loginOptionsPopupWindow;
     private PopupWindow disableAccountPopupWindow;
@@ -66,7 +74,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     protected String serverData = null;
     protected String queryLink = null;
 
-    protected void setupBasePopups(LayoutInflater layoutInflater, boolean noiptest) {
+    protected void setupBasePopups(LayoutInflater layoutInflater, boolean urlBasedLogin) {
         boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
         if(runningTest) return;
 
@@ -85,9 +93,9 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
         setupProgressPopupWindow(layoutInflater);
         setupAskPopupWindow(layoutInflater);
-        setupEnableAccountPopupWindow(layoutInflater, noiptest);
-        setupDisableAccountPopupWindow(layoutInflater, noiptest);
-        setupRemoveAccountPopupWindow(layoutInflater, noiptest);
+        setupEnableAccountPopupWindow(layoutInflater, urlBasedLogin);
+        setupDisableAccountPopupWindow(layoutInflater, urlBasedLogin);
+        setupRemoveAccountPopupWindow(layoutInflater, urlBasedLogin);
     }
 
 
@@ -120,9 +128,9 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         commHandler.printParams();
     }
 
-    protected void postCreateAccount(CommunicationHandler commHandler) throws Exception {
+    protected void postCreateAccount(CommunicationHandler commHandler, boolean clientProvidedSession) throws Exception {
         String postData = commHandler.createPostParams(
-                commHandler.createClientCreateAccount(entropyHarvester),
+                commHandler.createClientCreateAccount(entropyHarvester, clientProvidedSession),
                 serverData
         );
         commHandler.postRequest(queryLink, postData);
@@ -132,8 +140,8 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         commHandler.printParams();
     }
 
-    protected void postLogin(CommunicationHandler commHandler) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientLogin(), serverData);
+    protected void postLogin(CommunicationHandler commHandler, boolean clientProvidedSession) throws Exception {
+        String postData = commHandler.createPostParams(commHandler.createClientLogin(clientProvidedSession), serverData);
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
@@ -141,8 +149,8 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         commHandler.printParams();
     }
 
-    protected void postDisableAccount(CommunicationHandler commHandler) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientDisable(), serverData);
+    protected void postDisableAccount(CommunicationHandler commHandler, boolean clientProvidedSession) throws Exception {
+        String postData = commHandler.createPostParams(commHandler.createClientDisable(clientProvidedSession), serverData);
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
@@ -150,8 +158,8 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         commHandler.printParams();
     }
 
-    protected void postEnableAccount(CommunicationHandler commHandler) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientEnable(), serverData, true);
+    protected void postEnableAccount(CommunicationHandler commHandler, boolean clientProvidedSession) throws Exception {
+        String postData = commHandler.createPostParams(commHandler.createClientEnable(clientProvidedSession), serverData, true);
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
@@ -159,8 +167,8 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         commHandler.printParams();
     }
 
-    protected void postRemoveAccount(CommunicationHandler commHandler) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientRemove(), serverData, true);
+    protected void postRemoveAccount(CommunicationHandler commHandler, boolean clientProvidedSession) throws Exception {
+        String postData = commHandler.createPostParams(commHandler.createClientRemove(clientProvidedSession), serverData, true);
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
@@ -282,7 +290,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
     protected void closeActivity() {}
 
-    private void setupDisableAccountPopupWindow(LayoutInflater layoutInflater, boolean noiptest) {
+    private void setupDisableAccountPopupWindow(LayoutInflater layoutInflater, boolean urlBasedLogin) {
         View popupView = layoutInflater.inflate(R.layout.fragment_disable_account, null);
 
         disableAccountPopupWindow = new PopupWindow(popupView,
@@ -317,7 +325,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 }
 
                 try {
-                    postQuery(commHandler, noiptest, false);
+                    postQuery(commHandler, !urlBasedLogin, false);
                 } catch (Exception e) {
                     handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                     Log.e(TAG, e.getMessage(), e);
@@ -338,8 +346,14 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     });
                     try {
                         if(commHandler.isIdentityKnown(false)) {
-                            postDisableAccount(commHandler);
-                            handler.post(() -> closeActivity());
+                            postDisableAccount(commHandler, urlBasedLogin);
+                            if(commHandler.hasCPSUrl()) {
+                                startCPSServer(commHandler.getCPSUrl(), false, () -> {
+                                    handler.post(() -> closeActivity());
+                                });
+                            } else {
+                                handler.post(() -> closeActivity());
+                            }
                         } else {
                             handler.post(() -> {
                                 txtDisablePassword.setText("");
@@ -363,7 +377,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         });
     }
 
-    private void setupEnableAccountPopupWindow(LayoutInflater layoutInflater, boolean noiptest) {
+    private void setupEnableAccountPopupWindow(LayoutInflater layoutInflater, boolean urlBasedLogin) {
         View popupView = layoutInflater.inflate(R.layout.fragment_enable_account, null);
 
         enableAccountPopupWindow = new PopupWindow(popupView,
@@ -414,7 +428,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     }
                     storage.reInitializeMasterKeyIdentity();
 
-                    postQuery(commHandler, noiptest, true);
+                    postQuery(commHandler, !urlBasedLogin, true);
                 } catch (Exception e) {
                     handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                     Log.e(TAG, e.getMessage(), e);
@@ -440,8 +454,14 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     });
                     try {
                         if(commHandler.isIdentityKnown(true)) {
-                            postEnableAccount(commHandler);
-                            handler.post(() -> closeActivity());
+                            postEnableAccount(commHandler, urlBasedLogin);
+                            if(commHandler.hasCPSUrl()) {
+                                startCPSServer(commHandler.getCPSUrl(), false, () -> {
+                                    handler.post(() -> closeActivity());
+                                });
+                            } else {
+                                handler.post(() -> closeActivity());
+                            }
                         } else {
                             toastErrorMessage(true);
                             handler.postDelayed(() -> closeActivity(), 5000);
@@ -461,7 +481,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         });
     }
 
-    private void setupRemoveAccountPopupWindow(LayoutInflater layoutInflater, boolean noiptest) {
+    private void setupRemoveAccountPopupWindow(LayoutInflater layoutInflater, boolean clientProvidedSession) {
         View popupView = layoutInflater.inflate(R.layout.fragment_remove_account, null);
 
         removeAccountPopupWindow = new PopupWindow(popupView,
@@ -510,7 +530,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     }
                     storage.reInitializeMasterKeyIdentity();
 
-                    postQuery(commHandler, noiptest, true);
+                    postQuery(commHandler, !clientProvidedSession, true);
                 } catch (Exception e) {
                     handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                     Log.e(TAG, e.getMessage(), e);
@@ -536,12 +556,24 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     });
                     try {
                         if(commHandler.isIdentityKnown(true)) {
-                            postRemoveAccount(commHandler);
-                            handler.post(() -> closeActivity());
+                            postRemoveAccount(commHandler, clientProvidedSession);
+                            if(commHandler.hasCPSUrl()) {
+                                startCPSServer(commHandler.getCPSUrl(), false, () -> {
+                                    handler.post(() -> closeActivity());
+                                });
+                            } else {
+                                handler.post(() -> closeActivity());
+                            }
                         } else if(commHandler.isIdentityKnown(false)) {
-                            postDisableAccount(commHandler);
-                            postRemoveAccount(commHandler);
-                            handler.post(() -> closeActivity());
+                            postDisableAccount(commHandler, clientProvidedSession);
+                            postRemoveAccount(commHandler, clientProvidedSession);
+                            if(commHandler.hasCPSUrl()) {
+                                startCPSServer(commHandler.getCPSUrl(), false, () -> {
+                                    handler.post(() -> closeActivity());
+                                });
+                            } else {
+                                handler.post(() -> closeActivity());
+                            }
                         } else {
                             toastErrorMessage(true);
                             handler.postDelayed(() -> closeActivity(), 5000);
@@ -665,6 +697,100 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
         if(btnUseIdentity != null) {
             btnUseIdentity.setEnabled(storage.hasIdentityBlock());
+        }
+    }
+
+
+    private Map<String, String> getQueryParams(String data) throws Exception {
+        Map<String, String> params = new HashMap<>();
+        String url = EncryptionUtils.decodeUrlSafeString(data);
+        String query = url.split("\\?")[1];
+        System.out.println(query);
+        String[] paramArr = query.split("&");
+        for(String s : paramArr) {
+            String[] param = s.split("=");
+            if(param[0].equals("can")) {
+                params.put(param[0], EncryptionUtils.decodeUrlSafeString(param[1]));
+            } else {
+                params.put(param[0], param[1]);
+            }
+        }
+        return params;
+    }
+
+    protected void startCPSServer(String successUrl, boolean cancel, Runnable closeScreen) {
+        new Thread(() -> {
+            try {
+                server = new ServerSocket(25519);
+
+                Log.i(TAG, "Started CPS server");
+
+                boolean done = false;
+
+                while (!server.isClosed() && !done) {
+                    Socket socket = server.accept();
+                    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+                    String line = in.readLine();
+                    Log.i(TAG, line);
+
+                    if(line.contains("gif HTTP/1.1")) {
+                        Log.i(TAG, "Respond");
+                        byte[] content = EncryptionUtils.decodeUrlSafe(
+                                "R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                        );
+                        OutputStream os = socket.getOutputStream();
+                        StringBuilder out = new StringBuilder();
+                        out.append("HTTP/1.0 200 OK\r\n");
+                        out.append("Content-Type: image/gif\r\n");
+                        out.append("Content-Length: " + content.length + "\r\n\r\n");
+                        Log.i(TAG, out.toString());
+                        os.write(out.toString().getBytes("UTF-8"));
+                        os.write(content);
+                        os.flush();
+                        os.close();
+                    } else {
+                        String[] linearg = line.split(" ");
+                        String data = linearg[1].substring(1);
+                        Map<String, String> params = getQueryParams(data);
+                        Log.i(TAG, params.get("can"));
+
+                        OutputStream os = socket.getOutputStream();
+                        StringBuilder out = new StringBuilder();
+                        out.append("HTTP/1.0 302 Found\r\n");
+                        if(cancel) {
+                            out.append("Location: " + params.get("can") + "\r\n\r\n");
+                        } else {
+                            out.append("Location: " + successUrl + "\r\n\r\n");
+                        }
+                        Log.i(TAG, out.toString());
+                        os.write(out.toString().getBytes("UTF-8"));
+                        os.flush();
+                        os.close();
+                        done = true;
+                    }
+
+                    in.close();
+                    socket.close();
+                }
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage(), e);
+            }
+
+            closeScreen.run();
+        }).start();
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (server != null) {
+            try {
+                server.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

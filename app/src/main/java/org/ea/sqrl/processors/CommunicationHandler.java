@@ -97,7 +97,7 @@ public class CommunicationHandler {
         sb.append("ver=1\r\n");
         sb.append("cmd=query\r\n");
         sb.append(getAskButtonAnswer());
-        sb.append(storage.getOptions(noiptest, requestServerUnlockKey));
+        sb.append(storage.getOptions(noiptest, requestServerUnlockKey, false));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         if(storage.hasPreviousKeys()) {
@@ -106,13 +106,13 @@ public class CommunicationHandler {
         return sb.toString();
     }
 
-    public String createClientDisable() throws Exception {
+    public String createClientDisable(boolean clientProvidedSession) throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=disable\r\n");
         sb.append(getAskButtonAnswer());
-        sb.append(storage.getOptions(false, false));
+        sb.append(storage.getOptions(false, false, clientProvidedSession));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         if(storage.hasPreviousKeys()) {
@@ -121,13 +121,13 @@ public class CommunicationHandler {
         return sb.toString();
     }
 
-    public String createClientEnable() throws Exception {
+    public String createClientEnable(boolean clientProvidedSession) throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=enable\r\n");
         sb.append(getAskButtonAnswer());
-        sb.append(storage.getOptions(false, false));
+        sb.append(storage.getOptions(false, false, clientProvidedSession));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         if(storage.hasPreviousKeys()) {
@@ -136,13 +136,13 @@ public class CommunicationHandler {
         return sb.toString();
     }
 
-    public String createClientRemove() throws Exception {
+    public String createClientRemove(boolean clientProvidedSession) throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=remove\r\n");
         sb.append(getAskButtonAnswer());
-        sb.append(storage.getOptions(false, false));
+        sb.append(storage.getOptions(false, false, clientProvidedSession));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         if(storage.hasPreviousKeys()) {
@@ -152,13 +152,13 @@ public class CommunicationHandler {
     }
 
 
-    public String createClientCreateAccount(EntropyHarvester entropyHarvester) throws Exception {
+    public String createClientCreateAccount(EntropyHarvester entropyHarvester, boolean clientProvidedSession) throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=ident\r\n");
         sb.append(getAskButtonAnswer());
-        sb.append(storage.getOptions(false, false));
+        sb.append(storage.getOptions(false, false, clientProvidedSession));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append(storage.getServerUnlockKey(entropyHarvester));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
@@ -168,13 +168,13 @@ public class CommunicationHandler {
         return sb.toString();
     }
 
-    public String createClientLogin() throws Exception {
+    public String createClientLogin(boolean clientProvidedSession) throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=ident\r\n");
         sb.append(getAskButtonAnswer());
-        sb.append(storage.getOptions(false, false));
+        sb.append(storage.getOptions(false, false, clientProvidedSession));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         if(storage.hasPreviousKeys()) {
@@ -442,17 +442,17 @@ public class CommunicationHandler {
                         commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
                         !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
                 ) {
-                String postData2 = commHandler.createPostParams(commHandler.createClientDisable(), serverData);
+                String postData2 = commHandler.createPostParams(commHandler.createClientDisable(false), serverData);
                 commHandler.postRequest(queryLink, postData2);
 
                 serverData = commHandler.getResponse();
                 queryLink = commHandler.getQueryLink();
 
-                String postData3 = commHandler.createPostParams(commHandler.createClientRemove(), serverData, true);
+                String postData3 = commHandler.createPostParams(commHandler.createClientRemove(false), serverData, true);
                 commHandler.postRequest(queryLink, postData3);
 
             } else {
-                String postData2 = commHandler.createPostParams(commHandler.createClientEnable(), serverData, true);
+                String postData2 = commHandler.createPostParams(commHandler.createClientEnable(false), serverData, true);
                 commHandler.postRequest(queryLink, postData2);
             }
             commHandler.printParams();
@@ -499,5 +499,13 @@ public class CommunicationHandler {
 
     public boolean isPreviousKeyValid() {
         return isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH);
+    }
+
+    public boolean hasCPSUrl() {
+        return this.lastResponse.containsKey("url");
+    }
+
+    public String getCPSUrl() {
+        return this.lastResponse.get("url");
     }
 }

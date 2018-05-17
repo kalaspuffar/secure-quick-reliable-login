@@ -74,7 +74,7 @@ public class MainActivity extends LoginBaseActivity {
         setupExportOptionsPopupWindow(getLayoutInflater());
         setupLoginOptionsPopupWindow(getLayoutInflater(), true);
 
-        setupBasePopups(getLayoutInflater(), true);
+        setupBasePopups(getLayoutInflater(), false);
 
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
@@ -360,9 +360,9 @@ public class MainActivity extends LoginBaseActivity {
                             });
                             try {
                                 if (commHandler.isIdentityKnown(false)) {
-                                    postLogin(commHandler);
+                                    postLogin(commHandler, false);
                                 } else if (!commHandler.isIdentityKnown(false)) {
-                                    postCreateAccount(commHandler);
+                                    postCreateAccount(commHandler, false);
                                 } else {
                                     handler.post(() -> txtLoginPassword.setText(""));
                                     toastErrorMessage(true);
@@ -443,9 +443,9 @@ public class MainActivity extends LoginBaseActivity {
                         });
                         try {
                             if(commHandler.isIdentityKnown(false)) {
-                                postLogin(commHandler);
+                                postLogin(commHandler, false);
                             } else if(!commHandler.isIdentityKnown(false)) {
-                                postCreateAccount(commHandler);
+                                postCreateAccount(commHandler, false);
                             } else {
                                 handler.post(() -> txtLoginPassword.setText(""));
                                 toastErrorMessage(true);
