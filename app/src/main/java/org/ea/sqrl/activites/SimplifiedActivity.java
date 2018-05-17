@@ -25,7 +25,6 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.EncryptionUtils;
 
-
 /**
  *
  * @author Daniel Persson
@@ -66,7 +65,6 @@ public class SimplifiedActivity extends LoginBaseActivity {
         btnAdvancedFunctions.setOnClickListener((v) ->
             startActivity(new Intent(this, MainActivity.class))
         );
-
     }
 
 
