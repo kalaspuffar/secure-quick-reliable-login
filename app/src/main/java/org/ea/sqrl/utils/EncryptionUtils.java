@@ -111,7 +111,7 @@ public class EncryptionUtils {
                 byte[] checksum = reverse(md.digest());
                 BigInteger reminder = new BigInteger(1, checksum).mod(BASE);
                 if(s.getBytes()[0] != BASE56_ENCODE[reminder.intValue()]) {
-                    throw new Exception("Incorrect checksum on line " + line);
+                    throw new Exception("" + line + 1);
                 }
                 md.reset();
                 line++;
@@ -129,6 +129,38 @@ public class EncryptionUtils {
         return reverse(largeBytes);
     }
 
+    public static boolean validateBase56(String cleanTextIdentity) {
+        MessageDigest md;
+        try {
+            md = MessageDigest.getInstance("SHA-256");
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+            return false;
+        }
+        int i = 0;
+        int n = 0;
+        byte line = 0;
+        int encodedStringLen = cleanTextIdentity.length();
+        for (String s : cleanTextIdentity.split("")) {
+            if (s.isEmpty()) continue;
+            if (i == 19 || encodedStringLen - 1 == n + line) {
+                md.update(line);
+                byte[] checksum = reverse(md.digest());
+                BigInteger reminder = new BigInteger(1, checksum).mod(BASE);
+                if (s.getBytes()[0] != BASE56_ENCODE[reminder.intValue()]) {
+                    return false;
+                }
+                md.reset();
+                line++;
+                i = 0;
+            } else {
+                md.update(s.getBytes());
+                i++;
+                n++;
+            }
+        }
+        return true;
+    }
 
     public static byte[] hex2Byte(String str) {
         byte[] bytes = new byte[str.length() / 2];
@@ -220,7 +252,6 @@ public class EncryptionUtils {
         return ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(input).array();
     }
 
-
     public static byte[] enSCryptTime(String password, byte[] randomSalt, int logNFactor, int dkLen, byte secondsToRun, ProgressionUpdater progressionUpdater) throws Exception {
         long startTime = System.currentTimeMillis();
         progressionUpdater.setMax(secondsToRun & 0xFF);
@@ -295,6 +326,14 @@ public class EncryptionUtils {
             Log.e(TAG, e.getMessage(), e);
         }
         return "";
+    }
+
+    public static int getInteger(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException nfe) {
+            return -1;
+        }
     }
 
     public static void main(String[] args) {
