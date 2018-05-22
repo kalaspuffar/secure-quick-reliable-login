@@ -90,12 +90,10 @@
             android:id="@+id/btnImportIdentityDo"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_marginBottom="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:text="@string/button_import_identity"
-            app:layout_constraintBottom_toTopOf="@+id/btnForgotPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
@@ -104,14 +102,16 @@
         <Button
             android:id="@+id/btnForgotPassword"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:text="@string/button_forgot_password"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnImportIdentityDo" />
 
     </android.support.constraint.ConstraintLayout>
 
