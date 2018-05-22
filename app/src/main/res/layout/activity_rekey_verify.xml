@@ -113,7 +113,7 @@
             android:hint="@string/reset_password_rescuecode_6"
             android:inputType="phone"
             android:maxLength="4"
-            android:nextFocusDown="@+id/txtResetPasswordNewPassword"
+            android:nextFocusDown="@+id/btnRekeyIdentityStart"
             app:layout_constraintStart_toEndOf="@+id/txtRecoverCode5"
             tools:layout_conversion_absoluteHeight="46dp"
             tools:layout_conversion_absoluteWidth="327dp" />

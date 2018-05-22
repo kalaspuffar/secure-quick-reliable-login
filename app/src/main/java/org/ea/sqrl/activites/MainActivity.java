@@ -324,6 +324,7 @@ public class MainActivity extends LoginBaseActivity {
                 if ((start + count) >= storage.getHintLength()) {
                     loginPopupWindow.dismiss();
                     progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                    closeKeyboard();
 
                     new Thread(() -> {
                         boolean decryptionOk = storage.decryptIdentityKey(password.toString(), entropyHarvester, true);
@@ -408,6 +409,7 @@ public class MainActivity extends LoginBaseActivity {
             if(currentId != 0) {
                 loginPopupWindow.dismiss();
                 progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                closeKeyboard();
 
                 new Thread(() -> {
                     boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, false);
