@@ -275,6 +275,12 @@ public class UrlLoginActivity extends LoginBaseActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.closeActivity();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
@@ -282,7 +288,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
         if(runningTest) return;
 
         if(!mDbHelper.hasIdentities()) {
-            UrlLoginActivity.this.finish();
+            startActivity(new Intent(this, StartActivity.class));
         } else {
             SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
                     APPS_PREFERENCES,
