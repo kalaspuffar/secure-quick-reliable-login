@@ -85,6 +85,7 @@
             android:layout_marginStart="30dp"
             android:layout_marginTop="8dp"
             android:ems="10"
+            android:nextFocusDown="@+id/btnSaveSettings"
             android:hint="@string/save_settings_password"
             android:inputType="textPassword"
             app:layout_constraintEnd_toEndOf="parent"

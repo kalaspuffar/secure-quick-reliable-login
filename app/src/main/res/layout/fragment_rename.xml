@@ -27,6 +27,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:ems="10"
+            android:nextFocusDown="@+id/btnRename"
             android:hint="@string/rename_identity_desc"
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="parent"

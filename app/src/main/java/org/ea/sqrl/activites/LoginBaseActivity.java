@@ -21,6 +21,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -705,7 +706,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         Map<String, String> params = new HashMap<>();
         String url = EncryptionUtils.decodeUrlSafeString(data);
         String query = url.split("\\?")[1];
-        System.out.println(query);
         String[] paramArr = query.split("&");
         for(String s : paramArr) {
             String[] param = s.split("=");
@@ -722,9 +722,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         new Thread(() -> {
             try {
                 server = new ServerSocket(25519);
-
-                Log.i(TAG, "Started CPS server");
-
                 boolean done = false;
 
                 while (!server.isClosed() && !done) {
@@ -735,7 +732,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     Log.i(TAG, line);
 
                     if(line.contains("gif HTTP/1.1")) {
-                        Log.i(TAG, "Respond");
                         byte[] content = EncryptionUtils.decodeUrlSafe(
                                 "R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
                         );
@@ -804,6 +800,14 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
             i++;
         }
         return 0;
+    }
+
+    protected void closeKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     @Override

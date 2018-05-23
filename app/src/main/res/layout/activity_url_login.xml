@@ -111,6 +111,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:ems="10"
+        android:nextFocusDown="@+id/btnLogin"
         android:hint="@string/login_identity_password"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"

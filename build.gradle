@@ -20,8 +20,6 @@ plugins {
     id "org.owasp.dependencycheck" version "3.2.0"
 }
 
-//apply plugin: 'org.owasp.dependencycheck'
-
 buildDir = 'gen_build'
 allprojects {
     buildDir = 'gen_build'
