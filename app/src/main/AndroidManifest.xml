@@ -81,6 +81,11 @@
             android:screenOrientation="portrait"
             />
 
+        <activity android:name=".activites.TextImportActivity"
+            android:label="@string/title_text_import"
+            android:screenOrientation="portrait"
+            />
+
         <activity android:name=".activites.RekeyIdentityActivity"
             android:label="@string/title_rekey_identity"
             android:screenOrientation="portrait"

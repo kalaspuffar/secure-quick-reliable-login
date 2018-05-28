@@ -181,4 +181,6 @@
     <string name="import_enter_password">Password</string>
     <string name="text_input_incorrect">The text entered does not validate to a correct identity string. Checksum error. Please check if the text entered might contain errors.</string>
     <string name="text_input_incorrect_on_line">Incorrect input on line:</string>
+    <string name="title_text_import">SQRL - Text import</string>
+    <string name="button_text_import_close">Close</string>
 </resources>

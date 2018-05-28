@@ -35,8 +35,6 @@ import org.ea.sqrl.utils.EncryptionUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.math.BigInteger;
-import java.security.MessageDigest;
 
 /**
  * This main activity is the hub of the application where the user lands for daily use. It should
@@ -50,7 +48,6 @@ public class MainActivity extends LoginBaseActivity {
 
     private PopupWindow renamePopupWindow;
     private PopupWindow importPopupWindow;
-    private PopupWindow importTextPopupWindow;
     private PopupWindow resetPasswordPopupWindow;
     private PopupWindow changePasswordPopupWindow;
     private PopupWindow exportOptionsPopupWindow;
@@ -70,7 +67,6 @@ public class MainActivity extends LoginBaseActivity {
         setupRenamePopupWindow(getLayoutInflater());
         setupLoginPopupWindow(getLayoutInflater());
         setupImportPopupWindow(getLayoutInflater());
-        setupTextImportPopupWindow(getLayoutInflater());
         setupResetPasswordPopupWindow(getLayoutInflater());
         setupChangePasswordPopupWindow(getLayoutInflater());
         setupExportOptionsPopupWindow(getLayoutInflater());
@@ -163,7 +159,7 @@ public class MainActivity extends LoginBaseActivity {
 
         final Button btnTextImport = findViewById(R.id.btnTextImport);
         btnTextImport.setOnClickListener(
-                v -> importTextPopupWindow.showAtLocation(importTextPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
+                v -> startActivity(new Intent(this, TextImportActivity.class))
         );
 
 
@@ -625,77 +621,6 @@ public class MainActivity extends LoginBaseActivity {
                         renamePopupWindow.showAtLocation(renamePopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                     }
                 });
-            }).start();
-        });
-    }
-
-    public void setupTextImportPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_text_import, null);
-
-        importTextPopupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                true);
-
-        importTextPopupWindow.setTouchable(true);
-
-        final EditText txtTextIdentityInput = popupView.findViewById(R.id.txtTextIdentityInput);
-        txtTextIdentityInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence textIdentity, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence textIdentity, int start, int before, int count) {
-                String cleanTextIdentity = textIdentity.toString().replaceAll("[^2-9a-zA-Z]+", "");
-                if(cleanTextIdentity.length() % 20 == 0) {
-                    if(EncryptionUtils.validateBase56(cleanTextIdentity)) {
-                        txtTextIdentityInput.setError(null);
-                    } else {
-                        txtTextIdentityInput.setError(getString(R.string.text_input_incorrect));
-                    }
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
-        final Button btnImportIdentityDo = popupView.findViewById(R.id.btnImportIdentityDo);
-
-        popupView.findViewById(R.id.btnCloseImportIdentity).setOnClickListener(v -> importTextPopupWindow.dismiss());
-
-        btnImportIdentityDo.setOnClickListener(v -> {
-            importTextPopupWindow.dismiss();
-            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-
-            new Thread(() -> {
-                SQRLStorage storage = SQRLStorage.getInstance();
-                String textIdentity = txtTextIdentityInput.getText().toString();
-
-                textIdentity = textIdentity.replaceAll("[^2-9a-zA-Z]", "");
-
-                try {
-                    byte[] identityData = EncryptionUtils.decodeBase56(textIdentity);
-                    identityData = EncryptionUtils.combine(SQRLStorage.STORAGE_HEADER.getBytes(), identityData);
-                    storage.read(identityData);
-
-                    handler.post(() -> {
-                        importIdentity = true;
-                        resetPasswordPopupWindow.showAtLocation(resetPasswordPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                    });
-                } catch (Exception e) {
-                    handler.post(() -> {
-                        int line = EncryptionUtils.getInteger(e.getMessage());
-                        if(line > 0) {
-                            txtTextIdentityInput.setError(getString(R.string.text_input_incorrect_on_line) + line);
-                        } else {
-                            Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                        }
-                        importTextPopupWindow.showAtLocation(importTextPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                    });
-                    Log.e(TAG, e.getMessage(), e);
-                }
             }).start();
         });
     }
