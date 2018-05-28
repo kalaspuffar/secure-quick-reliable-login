@@ -17,6 +17,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:fontFamily="monospace"
+        android:hint="@string/text_input_hint"
         app:layout_constraintBottom_toTopOf="@+id/btnImportIdentityDo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

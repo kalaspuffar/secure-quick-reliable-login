@@ -183,4 +183,5 @@
     <string name="text_input_incorrect_on_line">Incorrect input on line:</string>
     <string name="title_text_import">SQRL - Text import</string>
     <string name="button_text_import_close">Close</string>
+    <string name="text_input_hint">Input identity rescue text printed on your identity paper version</string>
 </resources>
