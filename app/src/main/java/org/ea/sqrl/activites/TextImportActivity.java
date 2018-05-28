@@ -70,9 +70,7 @@ public class TextImportActivity extends BaseActivity {
 
         final Button btnImportIdentityDo = findViewById(R.id.btnImportIdentityDo);
 
-        findViewById(R.id.btnTextImportClose).setOnClickListener(v ->
-                startActivity(new Intent(this, MainActivity.class))
-        );
+        findViewById(R.id.btnTextImportClose).setOnClickListener(v -> this.finish());
 
         btnImportIdentityDo.setOnClickListener(v -> {
             progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
@@ -178,7 +176,7 @@ public class TextImportActivity extends BaseActivity {
                     editor.apply();
 
                     handler.post(() -> {
-                        startActivity(new Intent(this, MainActivity.class));
+                        this.finish();
                     });
                 } finally {
                     storage.clear();
