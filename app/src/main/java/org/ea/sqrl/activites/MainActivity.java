@@ -32,6 +32,7 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.services.IdentityPrintDocumentAdapter;
 import org.ea.sqrl.utils.EncryptionUtils;
+import org.ea.sqrl.utils.Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -686,11 +687,11 @@ public class MainActivity extends LoginBaseActivity {
                     });
                 } catch (Exception e) {
                     handler.post(() -> {
-                        int line = EncryptionUtils.getInteger(e.getMessage());
+                        int line = Utils.getInteger(e.getMessage());
                         if(line > 0) {
                             txtTextIdentityInput.setError(getString(R.string.text_input_incorrect_on_line) + line);
                         } else {
-                            Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                            Utils.showToast(rootView, e.getMessage());
                         }
                         importTextPopupWindow.showAtLocation(importTextPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                     });
@@ -833,7 +834,7 @@ public class MainActivity extends LoginBaseActivity {
                 }
             } else {
                 if(!importIdentity) {
-                    serverData = EncryptionUtils.readSQRLQRCodeAsString(result.getRawBytes());
+                    serverData = Utils.readSQRLQRCodeAsString(result.getRawBytes());
                     commHandler.setUseSSL(serverData.startsWith("sqrl://"));
 
                     int indexOfQuery = serverData.indexOf("/", serverData.indexOf("://") + 3);
@@ -859,7 +860,7 @@ public class MainActivity extends LoginBaseActivity {
                     }, 100);
                 } else {
                     SQRLStorage storage = SQRLStorage.getInstance();
-                    byte[] qrCodeData = EncryptionUtils.readSQRLQRCode(result.getRawBytes());
+                    byte[] qrCodeData = Utils.readSQRLQRCode(result.getRawBytes());
                     if(qrCodeData.length == 0) {
                         handler.post(() -> Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show());
                         return;

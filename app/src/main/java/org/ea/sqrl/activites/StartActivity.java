@@ -38,6 +38,7 @@ import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.services.ClearIdentityReceiver;
 import org.ea.sqrl.services.ClearIdentityService;
 import org.ea.sqrl.utils.EncryptionUtils;
+import org.ea.sqrl.utils.Utils;
 
 /**
  * Start activity should be a base for the user so we bring them into the application and they know
@@ -390,7 +391,7 @@ public class StartActivity extends BaseActivity {
                 Snackbar.make(rootView, R.string.scan_cancel, Snackbar.LENGTH_LONG).show();
             } else {
                 SQRLStorage storage = SQRLStorage.getInstance();
-                byte[] qrCodeData = EncryptionUtils.readSQRLQRCode(result.getRawBytes());
+                byte[] qrCodeData = Utils.readSQRLQRCode(result.getRawBytes());
                 if(qrCodeData.length == 0) {
                     handler.post(() -> Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show());
                     return;
