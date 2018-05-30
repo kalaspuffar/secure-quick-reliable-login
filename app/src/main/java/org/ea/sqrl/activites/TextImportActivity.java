@@ -24,6 +24,7 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.EncryptionUtils;
+import org.ea.sqrl.utils.Utils;
 
 public class TextImportActivity extends BaseActivity {
     private static final String TAG = "TextImportActivity";
@@ -91,7 +92,7 @@ public class TextImportActivity extends BaseActivity {
                     });
                 } catch (Exception e) {
                     handler.post(() -> {
-                        int line = EncryptionUtils.getInteger(e.getMessage());
+                        int line = Utils.getInteger(e.getMessage());
                         if(line > 0) {
                             txtTextIdentityInput.setError(getString(R.string.text_input_incorrect_on_line) + line);
                         } else {
