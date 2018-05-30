@@ -36,8 +36,6 @@ import org.ea.sqrl.utils.Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.math.BigInteger;
-import java.security.MessageDigest;
 
 /**
  * This main activity is the hub of the application where the user lands for daily use. It should
@@ -51,10 +49,10 @@ public class MainActivity extends LoginBaseActivity {
 
     private PopupWindow renamePopupWindow;
     private PopupWindow importPopupWindow;
-    private PopupWindow importTextPopupWindow;
     private PopupWindow resetPasswordPopupWindow;
     private PopupWindow changePasswordPopupWindow;
     private PopupWindow exportOptionsPopupWindow;
+    private PopupWindow importTextPopupWindow;
 
     private EditText txtIdentityName;
     private int startMode = 0;
@@ -71,7 +69,6 @@ public class MainActivity extends LoginBaseActivity {
         setupRenamePopupWindow(getLayoutInflater());
         setupLoginPopupWindow(getLayoutInflater());
         setupImportPopupWindow(getLayoutInflater());
-        setupTextImportPopupWindow(getLayoutInflater());
         setupResetPasswordPopupWindow(getLayoutInflater());
         setupChangePasswordPopupWindow(getLayoutInflater());
         setupExportOptionsPopupWindow(getLayoutInflater());
@@ -164,7 +161,7 @@ public class MainActivity extends LoginBaseActivity {
 
         final Button btnTextImport = findViewById(R.id.btnTextImport);
         btnTextImport.setOnClickListener(
-                v -> importTextPopupWindow.showAtLocation(importTextPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
+                v -> startActivity(new Intent(this, TextImportActivity.class))
         );
 
 
@@ -629,6 +626,7 @@ public class MainActivity extends LoginBaseActivity {
             }).start();
         });
     }
+
 
     public void setupTextImportPopupWindow(LayoutInflater layoutInflater) {
         View popupView = layoutInflater.inflate(R.layout.fragment_text_import, null);

@@ -92,14 +92,17 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
             cboxIdentity.setOnItemSelectedListener(this);
         }
 
-        setupProgressPopupWindow(layoutInflater);
         setupAskPopupWindow(layoutInflater);
         setupEnableAccountPopupWindow(layoutInflater, urlBasedLogin);
         setupDisableAccountPopupWindow(layoutInflater, urlBasedLogin);
         setupRemoveAccountPopupWindow(layoutInflater, urlBasedLogin);
     }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setupProgressPopupWindow(getLayoutInflater());
+    }
 
     protected void postQuery(CommunicationHandler commHandler, boolean noiptest, boolean requestServerUnlockKey) throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
