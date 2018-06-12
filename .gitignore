@@ -52,7 +52,7 @@ freeline_project_description.json
 
 /WORKSPACE
 /bazel-*
-/gen_build
+/build
 /.classpath
 /.project
 /.settings
