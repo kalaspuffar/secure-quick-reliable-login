@@ -20,6 +20,7 @@ We are closely nearing a full implementation of the specification. But there is 
     * [![Translation Dutch Status](http://uhash.com/poeditor/nl.svg?t=4)](https://poeditor.com/join/project/Jlsa1tqxlx)
     * [![Translation English Status](http://uhash.com/poeditor/en.svg?t=4)](https://poeditor.com/join/project/Jlsa1tqxlx)
     * [![Translation French Status](http://uhash.com/poeditor/fr.svg?t=4)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation German Status](http://uhash.com/poeditor/de.svg?t=4)](https://poeditor.com/join/project/Jlsa1tqxlx)
     * [![Translation Hebrew Status](http://uhash.com/poeditor/he.svg?t=4)](https://poeditor.com/join/project/Jlsa1tqxlx)
     * [![Translation Norwegian Status](http://uhash.com/poeditor/no.svg?t=4)](https://poeditor.com/join/project/Jlsa1tqxlx)
     * [![Translation Russian Status](http://uhash.com/poeditor/ru.svg?t=4)](https://poeditor.com/join/project/Jlsa1tqxlx)
