@@ -19,9 +19,9 @@ plugins {
     id "org.owasp.dependencycheck" version "3.2.1"
 }
 
-buildDir = 'build'
+buildDir = 'gen_build'
 allprojects {
-    buildDir = 'build'
+    buildDir = 'gen_build'
     repositories {
         google()
         jcenter()

@@ -15,7 +15,7 @@ out/
 
 # Gradle files
 .gradle/
-build/
+gen_build/
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -52,7 +52,7 @@ freeline_project_description.json
 
 /WORKSPACE
 /bazel-*
-/build
+/gen_build
 /.classpath
 /.project
 /.settings
