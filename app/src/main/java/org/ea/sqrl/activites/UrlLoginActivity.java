@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.SQRLStorage;
 
 /**
@@ -44,14 +45,16 @@ public class UrlLoginActivity extends LoginBaseActivity {
         }
         txtUrlLogin.setText(data.getHost());
 
-        this.serverData = data.toString();
-        commHandler.setUseSSL(serverData.startsWith("sqrl://"));
+        final String serverData = data.toString();
+        communicationFlowHandler.setServerData(serverData);
+        communicationFlowHandler.setUseSSL(serverData.startsWith("sqrl://"));
 
         int indexOfQuery = serverData.indexOf("/", serverData.indexOf("://") + 3);
-        queryLink = serverData.substring(indexOfQuery);
+        final String queryLink = serverData.substring(indexOfQuery);
         final String domain = serverData.split("/")[2];
         try {
-            commHandler.setDomain(domain);
+            communicationFlowHandler.setQueryLink(queryLink);
+            communicationFlowHandler.setDomain(domain);
         } catch (Exception e) {
             handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
             Log.e(TAG, e.getMessage(), e);
@@ -89,73 +92,28 @@ public class UrlLoginActivity extends LoginBaseActivity {
                             return;
                         }
 
-                        try {
-                            postQuery(commHandler, false, false);
-                        } catch (Exception e) {
-                            Log.e(TAG, e.getMessage(), e);
+                        handler.post(() -> txtLoginPassword.setText(""));
+
+                        communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
+                        communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN_CPS);
+
+                        communicationFlowHandler.setDoneAction(() -> {
+                            storage.clear();
+                            handler.post(() -> {
+                                progressPopupWindow.dismiss();
+                                closeActivity();
+                            });
+                        });
+
+                        communicationFlowHandler.setErrorAction(() -> {
                             storage.clear();
                             storage.clearQuickPass(UrlLoginActivity.this);
-                            handler.post(() -> {
-                                Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                            });
+                            Snackbar.make(rootView, "Everything went wrong", Snackbar.LENGTH_INDEFINITE);
                             handler.postDelayed(() -> closeActivity(), 5000);
-                            return;
-                        } finally {
-                            handler.post(() -> {
-                                txtLoginPassword.setText("");
-                                progressPopupWindow.dismiss();
-                            });
-                        }
-                        commHandler.setAskAction(() -> {
-                            handler.post(() -> {
-                                progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                            });
-                            try {
-                                if(commHandler.isIdentityKnown(false)) {
-                                    postLogin(commHandler, true);
-                                    if(!commHandler.hasErrorMessage()) {
-                                        if(commHandler.hasCPSUrl()) {
-                                            startCPSServer(commHandler.getCPSUrl(), false, () -> {
-                                                handler.post(() -> closeActivity());
-                                            });
-                                        } else {
-                                            handler.post(() -> closeActivity());
-                                        }
-                                    }
-                                } else if(!commHandler.isIdentityKnown(false)) {
-                                    postCreateAccount(commHandler, true);
-                                    if (!commHandler.hasErrorMessage()) {
-                                        if(commHandler.hasCPSUrl()) {
-                                            startCPSServer(commHandler.getCPSUrl(), false, () -> {
-                                                handler.post(() -> closeActivity());
-                                            });
-                                        } else {
-                                            handler.post(() -> closeActivity());
-                                        }
-
-                                    }
-                                } else {
-                                    handler.post(() -> {
-                                        txtLoginPassword.setText("");
-                                    });
-                                    toastErrorMessage(true);
-                                    storage.clear();
-                                    handler.postDelayed(() -> closeActivity(), 5000);
-                                }
-                            } catch (Exception e) {
-                                Log.e(TAG, e.getMessage(), e);
-                                handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
-                                handler.postDelayed(() -> closeActivity(), 5000);
-                            } finally {
-                                commHandler.clearLastResponse();
-                                storage.clear();
-                                handler.post(() -> {
-                                    txtLoginPassword.setText("");
-                                    progressPopupWindow.dismiss();
-                                });
-                            }
                         });
-                        commHandler.showAskDialog();
+
+                        communicationFlowHandler.handleNextAction();
+
                     }).start();
                 }
             }
@@ -194,75 +152,28 @@ public class UrlLoginActivity extends LoginBaseActivity {
                     }
                     showClearNotification();
 
-                    try {
-                        postQuery(commHandler, false, false);
-                    } catch (Exception e) {
-                        handler.post(() -> {
-                            Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                        });
-                        storage.clear();
-                        storage.clearQuickPass(this);
-                        Log.e(TAG, e.getMessage(), e);
-                        handler.postDelayed(() -> closeActivity(), 5000);
-                    } finally {
-                        handler.post(() -> {
-                            txtLoginPassword.setText("");
-                            progressPopupWindow.dismiss();
-                        });
-                    }
-                    commHandler.setAskAction(() -> {
-                        try {
-                            handler.post(() -> {
-                                progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                            });
+                    handler.post(() -> txtLoginPassword.setText(""));
 
-                            if(commHandler.isIdentityKnown(false)) {
-                                postLogin(commHandler, true);
-                                if (!commHandler.hasErrorMessage()) {
-                                    if(commHandler.hasCPSUrl()) {
-                                        startCPSServer(commHandler.getCPSUrl(), false, () -> {
-                                            handler.post(() -> closeActivity());
-                                        });
-                                    } else {
-                                        handler.post(() -> closeActivity());
-                                    }
-                                }
-                            } else if(!commHandler.isIdentityKnown(false)) {
-                                postCreateAccount(commHandler, true);
-                                if (!commHandler.hasErrorMessage()) {
-                                    if(commHandler.hasCPSUrl()) {
-                                        startCPSServer(commHandler.getCPSUrl(), false, () -> {
-                                            handler.post(() -> closeActivity());
-                                        });
-                                    } else {
-                                        handler.post(() -> closeActivity());
-                                    }
-                                }
-                            } else {
-                                handler.post(() -> {
-                                    txtLoginPassword.setText("");
-                                });
-                                toastErrorMessage(true);
-                                storage.clear();
-                                storage.clearQuickPass(this);
-                                handler.postDelayed(() -> closeActivity(), 5000);
-                            }
-                        } catch (Exception e) {
-                            Log.e(TAG, e.getMessage(), e);
-                            handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
-                            handler.postDelayed(() -> closeActivity(), 5000);
-                            storage.clear();
-                            storage.clearQuickPass(this);
-                        } finally {
-                            commHandler.clearLastResponse();
-                            storage.clear();
-                            handler.post(() -> {
-                                txtLoginPassword.setText("");
-                                progressPopupWindow.dismiss();
-                            });
-                        }
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN_CPS);
+
+                    communicationFlowHandler.setDoneAction(() -> {
+                        storage.clear();
+                        handler.post(() -> {
+                            progressPopupWindow.dismiss();
+                            closeActivity();
+                        });
                     });
-                    commHandler.showAskDialog();
+
+                    communicationFlowHandler.setErrorAction(() -> {
+                        storage.clear();
+                        storage.clearQuickPass(UrlLoginActivity.this);
+                        Snackbar.make(rootView, "Everything went wrong", Snackbar.LENGTH_INDEFINITE);
+                        handler.postDelayed(() -> closeActivity(), 5000);
+                    });
+
+                    communicationFlowHandler.handleNextAction();
+
                 }).start();
             }
         });

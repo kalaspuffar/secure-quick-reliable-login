@@ -480,7 +480,6 @@ public class CommunicationHandler {
         this.askDialogService.activateAskButton();
     }
 
-
     public void setAskDialogService(AskDialogService askDialogService) {
         this.askDialogService = askDialogService;
     }

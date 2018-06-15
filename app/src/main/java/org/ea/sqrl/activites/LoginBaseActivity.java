@@ -33,6 +33,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.processors.SQRLStorage;
@@ -61,7 +62,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     protected Spinner cboxIdentity;
     protected Map<Long, String> identities;
     protected Button btnUseIdentity;
-    private ServerSocket server;
 
     protected PopupWindow loginOptionsPopupWindow;
     private PopupWindow disableAccountPopupWindow;
@@ -69,11 +69,8 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     private PopupWindow removeAccountPopupWindow;
     protected PopupWindow progressPopupWindow;
     protected PopupWindow loginPopupWindow;
-    protected PopupWindow askPopupWindow;
+    protected CommunicationFlowHandler communicationFlowHandler = new CommunicationFlowHandler();
 
-    protected final CommunicationHandler commHandler = CommunicationHandler.getInstance();
-    protected String serverData = null;
-    protected String queryLink = null;
 
     protected void setupBasePopups(LayoutInflater layoutInflater, boolean urlBasedLogin) {
         boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
@@ -92,7 +89,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
             cboxIdentity.setOnItemSelectedListener(this);
         }
 
-        setupAskPopupWindow(layoutInflater);
+        communicationFlowHandler.setupAskPopupWindow(layoutInflater, handler);
         setupEnableAccountPopupWindow(layoutInflater, urlBasedLogin);
         setupDisableAccountPopupWindow(layoutInflater, urlBasedLogin);
         setupRemoveAccountPopupWindow(layoutInflater, urlBasedLogin);
@@ -102,95 +99,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     protected void onResume() {
         super.onResume();
         setupProgressPopupWindow(getLayoutInflater());
-    }
-
-    protected void postQuery(CommunicationHandler commHandler, boolean noiptest, boolean requestServerUnlockKey) throws Exception {
-        SQRLStorage storage = SQRLStorage.getInstance();
-
-        if (!storage.hasMorePreviousKeys()) {
-            postQueryInternal(commHandler, noiptest, requestServerUnlockKey);
-            return;
-        }
-
-        while (storage.hasMorePreviousKeys()) {
-            storage.increasePreviousKeyIndex();
-            if(commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH)) break;
-            if(commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) break;
-            if(commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)) break;
-            postQueryInternal(commHandler, noiptest, requestServerUnlockKey);
-            noiptest = false;
-        }
-    }
-
-
-    private void postQueryInternal(CommunicationHandler commHandler, boolean noiptest, boolean requestServerUnlockKey) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientQuery(noiptest, requestServerUnlockKey), serverData);
-        commHandler.postRequest(queryLink, postData);
-        serverData = commHandler.getResponse();
-        queryLink = commHandler.getQueryLink();
-        toastErrorMessage(false);
-        commHandler.printParams();
-    }
-
-    protected void postCreateAccount(CommunicationHandler commHandler, boolean clientProvidedSession) throws Exception {
-        String postData = commHandler.createPostParams(
-                commHandler.createClientCreateAccount(entropyHarvester, clientProvidedSession),
-                serverData
-        );
-        commHandler.postRequest(queryLink, postData);
-        serverData = commHandler.getResponse();
-        queryLink = commHandler.getQueryLink();
-        toastErrorMessage(false);
-        commHandler.printParams();
-    }
-
-    protected void postLogin(CommunicationHandler commHandler, boolean clientProvidedSession) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientLogin(clientProvidedSession), serverData);
-        commHandler.postRequest(queryLink, postData);
-        serverData = commHandler.getResponse();
-        queryLink = commHandler.getQueryLink();
-        toastErrorMessage(false);
-        commHandler.printParams();
-    }
-
-    protected void postDisableAccount(CommunicationHandler commHandler, boolean clientProvidedSession) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientDisable(clientProvidedSession), serverData);
-        commHandler.postRequest(queryLink, postData);
-        serverData = commHandler.getResponse();
-        queryLink = commHandler.getQueryLink();
-        toastErrorMessage(false);
-        commHandler.printParams();
-    }
-
-    protected void postEnableAccount(CommunicationHandler commHandler, boolean clientProvidedSession) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientEnable(clientProvidedSession), serverData, true);
-        commHandler.postRequest(queryLink, postData);
-        serverData = commHandler.getResponse();
-        queryLink = commHandler.getQueryLink();
-        toastErrorMessage(false);
-        commHandler.printParams();
-    }
-
-    protected void postRemoveAccount(CommunicationHandler commHandler, boolean clientProvidedSession) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientRemove(clientProvidedSession), serverData, true);
-        commHandler.postRequest(queryLink, postData);
-        serverData = commHandler.getResponse();
-        queryLink = commHandler.getQueryLink();
-        toastErrorMessage(false);
-        commHandler.printParams();
-    }
-
-    protected void toastErrorMessage(boolean toastStateChange) {
-        if(commHandler.hasErrorMessage()) {
-            handler.post(() ->
-                    Snackbar.make(rootView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show()
-            );
-        }
-        if(toastStateChange && commHandler.hasStateChangeMessage()) {
-            handler.post(() ->
-                    Snackbar.make(rootView, commHandler.getStageChangeMessage(this), Snackbar.LENGTH_LONG).show()
-            );
-        }
     }
 
     protected boolean checkRescueCode(EditText code) {
@@ -257,41 +165,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         storage.setProgressionUpdater(new ProgressionUpdater(handler, lblProgressTitle, progressBar, lblProgressText));
     }
 
-    protected void setupAskPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_ask_dialog, null);
-
-        askPopupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                false);
-
-
-        final TextView txtAskQuestion = popupView.findViewById(R.id.txtAskQuestion);
-        final Button btnAskFirstButton = popupView.findViewById(R.id.btnAskFirstButton);
-        final Button btnAskSecondButton = popupView.findViewById(R.id.btnAskSecondButton);
-        final ImageButton btnCloseAsk = popupView.findViewById(R.id.btnCloseAsk);
-
-        btnAskFirstButton.setOnClickListener(v -> {
-            askPopupWindow.dismiss();
-            commHandler.setAskButton("1");
-        });
-        btnAskSecondButton.setOnClickListener(v -> {
-            askPopupWindow.dismiss();
-            commHandler.setAskButton("2");
-        });
-        btnCloseAsk.setOnClickListener(v -> {
-            askPopupWindow.dismiss();
-            commHandler.setAskButton("3");
-        });
-
-        commHandler.setAskDialogService(new AskDialogService(
-                handler,
-                askPopupWindow,
-                txtAskQuestion,
-                btnAskFirstButton,
-                btnAskSecondButton
-        ));
-    }
-
     protected void closeActivity() {}
 
     private void setupDisableAccountPopupWindow(LayoutInflater layoutInflater, boolean urlBasedLogin) {
@@ -327,56 +200,29 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     });
                     return;
                 }
+                txtDisablePassword.setText("");
 
-                try {
-                    postQuery(commHandler, !urlBasedLogin, false);
-                } catch (Exception e) {
-                    handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
-                    Log.e(TAG, e.getMessage(), e);
-                    handler.postDelayed(() -> closeActivity(), 5000);
-                    commHandler.clearLastResponse();
-                    storage.clear();
-                    return;
-                } finally {
-                    handler.post(() -> {
-                        txtDisablePassword.setText("");
-                        progressPopupWindow.dismiss();
-                    });
+                communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
+                if(urlBasedLogin) {
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOCK_ACCOUNT_CPS);
+                } else {
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOCK_ACCOUNT);
                 }
 
-                commHandler.setAskAction(() -> {
+                communicationFlowHandler.setDoneAction(() -> {
+                    storage.clear();
                     handler.post(() -> {
-                        progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                        progressPopupWindow.dismiss();
+                        closeActivity();
                     });
-                    try {
-                        if(commHandler.isIdentityKnown(false)) {
-                            postDisableAccount(commHandler, urlBasedLogin);
-                            if(commHandler.hasCPSUrl()) {
-                                startCPSServer(commHandler.getCPSUrl(), false, () -> {
-                                    handler.post(() -> closeActivity());
-                                });
-                            } else {
-                                handler.post(() -> closeActivity());
-                            }
-                        } else {
-                            handler.post(() -> {
-                                txtDisablePassword.setText("");
-                                progressPopupWindow.dismiss();
-                            });
-                            toastErrorMessage(true);
-                            handler.postDelayed(() -> closeActivity(), 5000);
-                        }
-                    } catch (Exception e) {
-                        Log.e(TAG, e.getMessage(), e);
-                        handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
-                        handler.postDelayed(() -> closeActivity(), 5000);
-                    } finally {
-                        commHandler.clearLastResponse();
-                        storage.clear();
-                        handler.post(() -> progressPopupWindow.dismiss());
-                    }
                 });
-                commHandler.showAskDialog();
+
+                communicationFlowHandler.setErrorAction(() -> {
+                    Snackbar.make(rootView, "Everything went wrong", Snackbar.LENGTH_INDEFINITE);
+                });
+
+                communicationFlowHandler.handleNextAction();
+
             }).start();
         });
     }
@@ -431,18 +277,14 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                         return;
                     }
                     storage.reInitializeMasterKeyIdentity();
-
-                    postQuery(commHandler, !urlBasedLogin, true);
                 } catch (Exception e) {
                     handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                     Log.e(TAG, e.getMessage(), e);
-                    commHandler.clearLastResponse();
                     this.closeActivity();
                     storage.clear();
                     return;
                 } finally {
                     handler.post(() -> {
-                        progressPopupWindow.dismiss();
                         txtRecoverCode1.setText("");
                         txtRecoverCode2.setText("");
                         txtRecoverCode3.setText("");
@@ -452,35 +294,26 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     });
                 }
 
-                commHandler.setAskAction(() -> {
+                communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITH_SUK);
+                if(urlBasedLogin) {
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.UNLOCK_ACCOUNT_CPS);
+                } else {
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.UNLOCK_ACCOUNT);
+                }
+
+                communicationFlowHandler.setDoneAction(() -> {
+                    storage.clear();
                     handler.post(() -> {
-                        progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                        progressPopupWindow.dismiss();
+                        closeActivity();
                     });
-                    try {
-                        if(commHandler.isIdentityKnown(true)) {
-                            postEnableAccount(commHandler, urlBasedLogin);
-                            if(commHandler.hasCPSUrl()) {
-                                startCPSServer(commHandler.getCPSUrl(), false, () -> {
-                                    handler.post(() -> closeActivity());
-                                });
-                            } else {
-                                handler.post(() -> closeActivity());
-                            }
-                        } else {
-                            toastErrorMessage(true);
-                            handler.postDelayed(() -> closeActivity(), 5000);
-                        }
-                    } catch (Exception e) {
-                        Log.e(TAG, e.getMessage(), e);
-                        handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
-                        handler.postDelayed(() -> closeActivity(), 5000);
-                    } finally {
-                        commHandler.clearLastResponse();
-                        storage.clear();
-                        handler.post(() -> progressPopupWindow.dismiss());
-                    }
                 });
-                commHandler.showAskDialog();
+
+                communicationFlowHandler.setErrorAction(() -> {
+                    Snackbar.make(rootView, "Everything went wrong", Snackbar.LENGTH_INDEFINITE);
+                });
+
+                communicationFlowHandler.handleNextAction();
             }).start();
         });
     }
@@ -534,17 +367,15 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     }
                     storage.reInitializeMasterKeyIdentity();
 
-                    postQuery(commHandler, !clientProvidedSession, true);
                 } catch (Exception e) {
                     handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                     Log.e(TAG, e.getMessage(), e);
-                    commHandler.clearLastResponse();
                     storage.clear();
+                    handler.post(() -> progressPopupWindow.dismiss());
                     handler.postDelayed(() -> closeActivity(), 5000);
                     return;
                 } finally {
                     handler.post(() -> {
-                        progressPopupWindow.dismiss();
                         txtRecoverCode1.setText("");
                         txtRecoverCode2.setText("");
                         txtRecoverCode3.setText("");
@@ -554,46 +385,28 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     });
                 }
 
-                commHandler.setAskAction(() -> {
-                    handler.post(() -> {
-                        progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                    });
-                    try {
-                        if(commHandler.isIdentityKnown(true)) {
-                            postRemoveAccount(commHandler, clientProvidedSession);
-                            if(commHandler.hasCPSUrl()) {
-                                startCPSServer(commHandler.getCPSUrl(), false, () -> {
-                                    handler.post(() -> closeActivity());
-                                });
-                            } else {
-                                handler.post(() -> closeActivity());
-                            }
-                        } else if(commHandler.isIdentityKnown(false)) {
-                            postDisableAccount(commHandler, clientProvidedSession);
-                            postRemoveAccount(commHandler, clientProvidedSession);
-                            if(commHandler.hasCPSUrl()) {
-                                startCPSServer(commHandler.getCPSUrl(), false, () -> {
-                                    handler.post(() -> closeActivity());
-                                });
-                            } else {
-                                handler.post(() -> closeActivity());
-                            }
-                        } else {
-                            toastErrorMessage(true);
-                            handler.postDelayed(() -> closeActivity(), 5000);
-                        }
-                    } catch (Exception e) {
-                        Log.e(TAG, e.getMessage(), e);
-                        handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
-                        handler.postDelayed(() -> closeActivity(), 5000);
-                    } finally {
-                        commHandler.clearLastResponse();
-                        storage.clear();
-                        handler.post(() -> progressPopupWindow.dismiss());
-                    }
-                });
-                commHandler.showAskDialog();
+                communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITH_SUK);
+                if(clientProvidedSession) {
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOCK_ACCOUNT_CPS);
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.REMOVE_ACCOUNT_CPS);
+                } else {
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOCK_ACCOUNT);
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.REMOVE_ACCOUNT);
+                }
 
+                communicationFlowHandler.setDoneAction(() -> {
+                    storage.clear();
+                    handler.post(() -> {
+                        progressPopupWindow.dismiss();
+                        closeActivity();
+                    });
+                });
+
+                communicationFlowHandler.setErrorAction(() -> {
+                    Snackbar.make(rootView, "Everything went wrong", Snackbar.LENGTH_INDEFINITE);
+                });
+
+                communicationFlowHandler.handleNextAction();
             }).start();
         });
     }
@@ -704,93 +517,26 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         }
     }
 
-
-    private Map<String, String> getQueryParams(String data) throws Exception {
-        Map<String, String> params = new HashMap<>();
-        String url = EncryptionUtils.decodeUrlSafeString(data);
-        String query = url.split("\\?")[1];
-        String[] paramArr = query.split("&");
-        for(String s : paramArr) {
-            String[] param = s.split("=");
-            if(param[0].equals("can")) {
-                params.put(param[0], EncryptionUtils.decodeUrlSafeString(param[1]));
-            } else {
-                params.put(param[0], param[1]);
-            }
+    /*
+    protected void toastErrorMessage(boolean toastStateChange) {
+        if(commHandler.hasErrorMessage()) {
+            handler.post(() ->
+                    Snackbar.make(rootView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show()
+            );
         }
-        return params;
+        if(toastStateChange && commHandler.hasStateChangeMessage()) {
+            handler.post(() ->
+                    Snackbar.make(rootView, commHandler.getStageChangeMessage(this), Snackbar.LENGTH_LONG).show()
+            );
+        }
     }
-
-    protected void startCPSServer(String successUrl, boolean cancel, Runnable closeScreen) {
-        new Thread(() -> {
-            try {
-                server = new ServerSocket(25519);
-                boolean done = false;
-
-                while (!server.isClosed() && !done) {
-                    Socket socket = server.accept();
-                    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-                    String line = in.readLine();
-                    Log.i(TAG, line);
-
-                    if(line.contains("gif HTTP/1.1")) {
-                        byte[] content = EncryptionUtils.decodeUrlSafe(
-                                "R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-                        );
-                        OutputStream os = socket.getOutputStream();
-                        StringBuilder out = new StringBuilder();
-                        out.append("HTTP/1.0 200 OK\r\n");
-                        out.append("Content-Type: image/gif\r\n");
-                        out.append("Content-Length: " + content.length + "\r\n\r\n");
-                        Log.i(TAG, out.toString());
-                        os.write(out.toString().getBytes("UTF-8"));
-                        os.write(content);
-                        os.flush();
-                        os.close();
-                    } else {
-                        String[] linearg = line.split(" ");
-                        String data = linearg[1].substring(1);
-                        Map<String, String> params = getQueryParams(data);
-                        Log.i(TAG, params.get("can"));
-
-                        OutputStream os = socket.getOutputStream();
-                        StringBuilder out = new StringBuilder();
-                        out.append("HTTP/1.0 302 Found\r\n");
-                        if(cancel) {
-                            out.append("Location: " + params.get("can") + "\r\n\r\n");
-                        } else {
-                            out.append("Location: " + successUrl + "\r\n\r\n");
-                        }
-                        Log.i(TAG, out.toString());
-                        os.write(out.toString().getBytes("UTF-8"));
-                        os.flush();
-                        os.close();
-                        done = true;
-                    }
-
-                    in.close();
-                    socket.close();
-                }
-            } catch (Exception e) {
-                Log.e(TAG, e.getMessage(), e);
-            }
-
-            closeScreen.run();
-        }).start();
-    }
+    */
 
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (server != null) {
-            try {
-                server.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        communicationFlowHandler.closeServer();
     }
 
     @Override

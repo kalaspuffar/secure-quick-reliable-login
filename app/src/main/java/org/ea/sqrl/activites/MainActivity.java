@@ -29,9 +29,9 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.services.IdentityPrintDocumentAdapter;
-import org.ea.sqrl.utils.EncryptionUtils;
 import org.ea.sqrl.utils.Utils;
 
 import java.io.File;
@@ -338,51 +338,27 @@ public class MainActivity extends LoginBaseActivity {
                             return;
                         }
 
-                        try {
-                            postQuery(commHandler, true, false);
-                        } catch (Exception e) {
-                            commHandler.clearLastResponse();
-                            Log.e(TAG, e.getMessage(), e);
-                            handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                        handler.post(() -> txtLoginPassword.setText(""));
+
+                        communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK_QRCODE);
+                        communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN);
+
+                        communicationFlowHandler.setDoneAction(() -> {
+                            storage.clear();
+                            handler.post(() -> {
+                                progressPopupWindow.dismiss();
+                                closeActivity();
+                            });
+                        });
+
+                        communicationFlowHandler.setErrorAction(() -> {
                             storage.clear();
                             storage.clearQuickPass(MainActivity.this);
-                            return;
-                        } finally {
-                            handler.post(() -> {
-                                txtLoginPassword.setText("");
-                                progressPopupWindow.dismiss();
-                            });
-                        }
-
-                        commHandler.setAskAction(() -> {
-                            handler.post(() -> {
-                                progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                            });
-                            try {
-                                if (commHandler.isIdentityKnown(false)) {
-                                    postLogin(commHandler, false);
-                                } else if (!commHandler.isIdentityKnown(false)) {
-                                    postCreateAccount(commHandler, false);
-                                } else {
-                                    handler.post(() -> txtLoginPassword.setText(""));
-                                    toastErrorMessage(true);
-                                    storage.clear();
-                                }
-                            } catch (Exception e) {
-                                Log.e(TAG, e.getMessage(), e);
-                                handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
-                                storage.clear();
-                                storage.clearQuickPass(MainActivity.this);
-                            } finally {
-                                commHandler.clearLastResponse();
-                                storage.clear();
-                                handler.post(() -> {
-                                    txtLoginPassword.setText("");
-                                    progressPopupWindow.dismiss();
-                                });
-                            }
+                            Snackbar.make(rootView, "Everything went wrong", Snackbar.LENGTH_INDEFINITE);
                         });
-                        commHandler.showAskDialog();
+
+                        communicationFlowHandler.handleNextAction();
+
                     }).start();
                 }
             }
@@ -423,47 +399,26 @@ public class MainActivity extends LoginBaseActivity {
                     }
                     showClearNotification();
 
-                    try {
-                        postQuery(commHandler, true, false);
-                    } catch (Exception e) {
-                        handler.post(() -> {
-                            Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                            progressPopupWindow.dismiss();
-                        });
-                        Log.e(TAG, e.getMessage(), e);
-                        commHandler.clearLastResponse();
-                        storage.clear();
-                        return;
-                    } finally {
-                        handler.post(() -> txtLoginPassword.setText(""));
-                    }
+                    handler.post(() -> txtLoginPassword.setText(""));
 
-                    commHandler.setAskAction(() -> {
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK_QRCODE);
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN);
+
+                    communicationFlowHandler.setDoneAction(() -> {
+                        storage.clear();
                         handler.post(() -> {
-                            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                            progressPopupWindow.dismiss();
+                            closeActivity();
                         });
-                        try {
-                            if(commHandler.isIdentityKnown(false)) {
-                                postLogin(commHandler, false);
-                            } else if(!commHandler.isIdentityKnown(false)) {
-                                postCreateAccount(commHandler, false);
-                            } else {
-                                handler.post(() -> txtLoginPassword.setText(""));
-                                toastErrorMessage(true);
-                            }
-                        } catch (Exception e) {
-                            Log.e(TAG, e.getMessage(), e);
-                            handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
-                        } finally {
-                            commHandler.clearLastResponse();
-                            storage.clear();
-                            handler.post(() -> {
-                                txtLoginPassword.setText("");
-                                progressPopupWindow.dismiss();
-                            });
-                        }
                     });
-                    commHandler.showAskDialog();
+
+                    communicationFlowHandler.setErrorAction(() -> {
+                        storage.clear();
+                        storage.clearQuickPass(MainActivity.this);
+                        Snackbar.make(rootView, "Everything went wrong", Snackbar.LENGTH_INDEFINITE);
+                    });
+
+                    communicationFlowHandler.handleNextAction();
 
                 }).start();
             }
@@ -760,8 +715,9 @@ public class MainActivity extends LoginBaseActivity {
                 }
             } else {
                 if(!importIdentity) {
-                    serverData = Utils.readSQRLQRCodeAsString(result.getRawBytes());
-                    commHandler.setUseSSL(serverData.startsWith("sqrl://"));
+                    String serverData = Utils.readSQRLQRCodeAsString(result.getRawBytes());
+                    communicationFlowHandler.setServerData(serverData);
+                    communicationFlowHandler.setUseSSL(serverData.startsWith("sqrl://"));
 
                     int indexOfQuery = serverData.indexOf("/", serverData.indexOf("://") + 3);
                     if(indexOfQuery == -1) {
@@ -769,10 +725,11 @@ public class MainActivity extends LoginBaseActivity {
                         return;
                     }
 
-                    queryLink = serverData.substring(indexOfQuery);
+                    String queryLink = serverData.substring(indexOfQuery);
                     final String domain = serverData.split("/")[2];
                     try {
-                        commHandler.setDomain(domain);
+                        communicationFlowHandler.setQueryLink(queryLink);
+                        communicationFlowHandler.setDomain(domain);
                     } catch (Exception e) {
                         handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                         Log.e(TAG, e.getMessage(), e);

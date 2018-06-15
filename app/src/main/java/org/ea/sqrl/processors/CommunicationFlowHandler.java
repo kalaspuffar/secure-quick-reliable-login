@@ -1,0 +1,393 @@
+package org.ea.sqrl.processors;
+
+import android.os.Handler;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.PopupWindow;
+import android.widget.TextView;
+
+import org.ea.sqrl.R;
+import org.ea.sqrl.services.AskDialogService;
+import org.ea.sqrl.utils.EncryptionUtils;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
+
+public class CommunicationFlowHandler {
+    private static final String TAG = "CommFlowHandler";
+
+    private PopupWindow askPopupWindow;
+    private Deque<Action> actionStack = new ArrayDeque<>();
+    private ServerSocket server;
+    private Runnable doneAction;
+    private Runnable errorAction;
+
+    public enum Action {
+        QUERY_WITH_SUK,
+        QUERY_WITHOUT_SUK,
+        QUERY_WITH_SUK_QRCODE,
+        QUERY_WITHOUT_SUK_QRCODE,
+        LOGIN,
+        LOGIN_CPS,
+        CREATE_ACCOUNT,
+        CREATE_ACCOUNT_CPS,
+        REMOVE_ACCOUNT,
+        REMOVE_ACCOUNT_CPS,
+        LOCK_ACCOUNT,
+        LOCK_ACCOUNT_CPS,
+        UNLOCK_ACCOUNT,
+        UNLOCK_ACCOUNT_CPS
+    }
+
+    private EntropyHarvester entropyHarvester;
+    private final CommunicationHandler commHandler = CommunicationHandler.getInstance();
+    private String serverData = null;
+    private String queryLink = null;
+    private boolean shouldRunServer = false;
+
+    public CommunicationFlowHandler() {
+        try {
+            entropyHarvester = EntropyHarvester.getInstance();
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+    }
+
+    public void setServerData(String serverData) {
+        this.serverData = serverData;
+    }
+
+    public void setUseSSL(boolean useSSL) {
+        this.commHandler.setUseSSL(useSSL);
+    }
+
+    public void setQueryLink(String queryLink) {
+        this.queryLink = queryLink;
+    }
+
+    public void setDomain(String domain) throws Exception {
+        this.commHandler.setDomain(domain);
+    }
+
+    public void handleNextAction() {
+        try {
+            if (!actionStack.isEmpty()) {
+                runAction(actionStack.pop());
+            } else {
+                if (shouldRunServer) {
+                    startCPSServer(commHandler.getCPSUrl(), false, () -> done());
+                } else {
+                    done();
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+            error();
+        }
+    }
+
+    private void runAction(Action a) throws Exception {
+        switch (a) {
+            case LOGIN:
+            case LOGIN_CPS:
+            case LOCK_ACCOUNT:
+            case LOCK_ACCOUNT_CPS:
+                if(!commHandler.isIdentityKnown(false))
+                    throw new Exception();
+                break;
+            case UNLOCK_ACCOUNT:
+            case UNLOCK_ACCOUNT_CPS:
+                if(!commHandler.isIdentityKnown(true))
+                    throw new Exception();
+                break;
+        }
+
+        switch (a) {
+            case QUERY_WITH_SUK:
+                postQuery(commHandler, false, true);
+                break;
+            case QUERY_WITHOUT_SUK:
+                postQuery(commHandler, false, true);
+                break;
+            case QUERY_WITH_SUK_QRCODE:
+                postQuery(commHandler, true, true);
+                break;
+            case QUERY_WITHOUT_SUK_QRCODE:
+                postQuery(commHandler, true, false);
+                break;
+            case LOGIN:
+                if (commHandler.isIdentityKnown(false)) {
+                    postLogin(commHandler, false);
+                } else if (!commHandler.isIdentityKnown(false)) {
+                    postCreateAccount(commHandler, false);
+                }
+                break;
+            case LOGIN_CPS:
+                if (commHandler.isIdentityKnown(false)) {
+                    postLogin(commHandler, true);
+                } else if (!commHandler.isIdentityKnown(false)) {
+                    postCreateAccount(commHandler, true);
+                }
+                break;
+            case REMOVE_ACCOUNT:
+                postRemoveAccount(commHandler, false);
+                break;
+            case REMOVE_ACCOUNT_CPS:
+                postRemoveAccount(commHandler, true);
+                break;
+            case LOCK_ACCOUNT:
+                if(commHandler.isIdentityKnown(false)) {
+                    postDisableAccount(commHandler, false);
+                }
+                break;
+            case LOCK_ACCOUNT_CPS:
+                if(commHandler.isIdentityKnown(false)) {
+                    postDisableAccount(commHandler, true);
+                }
+                break;
+            case UNLOCK_ACCOUNT:
+                postEnableAccount(commHandler, false);
+                break;
+            case UNLOCK_ACCOUNT_CPS:
+                postEnableAccount(commHandler, true);
+                break;
+        }
+
+        switch (a) {
+            case CREATE_ACCOUNT_CPS:
+            case LOGIN_CPS:
+            case LOCK_ACCOUNT_CPS:
+            case REMOVE_ACCOUNT_CPS:
+            case UNLOCK_ACCOUNT_CPS:
+                shouldRunServer = true;
+                break;
+        }
+
+        commHandler.setAskAction(this::handleNextAction);
+        commHandler.showAskDialog();
+    }
+
+    private void done() {
+        new Thread(doneAction).start();
+    }
+
+    private void error() {
+        commHandler.clearLastResponse();
+        new Thread(errorAction).start();
+    }
+
+    public void addAction(Action a) {
+        commHandler.clearLastResponse();
+        this.actionStack.add(a);
+    }
+
+    protected void postQuery(CommunicationHandler commHandler, boolean noiptest, boolean requestServerUnlockKey) throws Exception {
+        SQRLStorage storage = SQRLStorage.getInstance();
+
+        if (!storage.hasMorePreviousKeys()) {
+            postQueryInternal(commHandler, noiptest, requestServerUnlockKey);
+            return;
+        }
+
+        while (storage.hasMorePreviousKeys()) {
+            storage.increasePreviousKeyIndex();
+            if(commHandler.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH)) break;
+            if(commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) break;
+            if(commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)) break;
+            postQueryInternal(commHandler, noiptest, requestServerUnlockKey);
+            noiptest = false;
+        }
+    }
+
+
+    private void postQueryInternal(CommunicationHandler commHandler, boolean noiptest, boolean requestServerUnlockKey) throws Exception {
+        String postData = commHandler.createPostParams(commHandler.createClientQuery(noiptest, requestServerUnlockKey), serverData);
+        commHandler.postRequest(queryLink, postData);
+        serverData = commHandler.getResponse();
+        queryLink = commHandler.getQueryLink();
+        commHandler.printParams();
+    }
+
+    protected void postCreateAccount(CommunicationHandler commHandler, boolean clientProvidedSession) throws Exception {
+        String postData = commHandler.createPostParams(
+                commHandler.createClientCreateAccount(entropyHarvester, clientProvidedSession),
+                serverData
+        );
+        commHandler.postRequest(queryLink, postData);
+        serverData = commHandler.getResponse();
+        queryLink = commHandler.getQueryLink();
+        commHandler.printParams();
+    }
+
+    protected void postLogin(CommunicationHandler commHandler, boolean clientProvidedSession) throws Exception {
+        String postData = commHandler.createPostParams(commHandler.createClientLogin(clientProvidedSession), serverData);
+        commHandler.postRequest(queryLink, postData);
+        serverData = commHandler.getResponse();
+        queryLink = commHandler.getQueryLink();
+        commHandler.printParams();
+    }
+
+    protected void postDisableAccount(CommunicationHandler commHandler, boolean clientProvidedSession) throws Exception {
+        String postData = commHandler.createPostParams(commHandler.createClientDisable(clientProvidedSession), serverData);
+        commHandler.postRequest(queryLink, postData);
+        serverData = commHandler.getResponse();
+        queryLink = commHandler.getQueryLink();
+        commHandler.printParams();
+    }
+
+    protected void postEnableAccount(CommunicationHandler commHandler, boolean clientProvidedSession) throws Exception {
+        String postData = commHandler.createPostParams(commHandler.createClientEnable(clientProvidedSession), serverData, true);
+        commHandler.postRequest(queryLink, postData);
+        serverData = commHandler.getResponse();
+        queryLink = commHandler.getQueryLink();
+        commHandler.printParams();
+    }
+
+    protected void postRemoveAccount(CommunicationHandler commHandler, boolean clientProvidedSession) throws Exception {
+        String postData = commHandler.createPostParams(commHandler.createClientRemove(clientProvidedSession), serverData, true);
+        commHandler.postRequest(queryLink, postData);
+        serverData = commHandler.getResponse();
+        queryLink = commHandler.getQueryLink();
+        commHandler.printParams();
+    }
+
+    public void setDoneAction(Runnable doneAction) {
+        this.doneAction = doneAction;
+    }
+
+    public void setErrorAction(Runnable errorAction) {
+        this.errorAction = errorAction;
+    }
+
+    public void setupAskPopupWindow(LayoutInflater layoutInflater, Handler handler) {
+        View popupView = layoutInflater.inflate(R.layout.fragment_ask_dialog, null);
+
+        askPopupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
+                false);
+
+
+        final TextView txtAskQuestion = popupView.findViewById(R.id.txtAskQuestion);
+        final Button btnAskFirstButton = popupView.findViewById(R.id.btnAskFirstButton);
+        final Button btnAskSecondButton = popupView.findViewById(R.id.btnAskSecondButton);
+        final ImageButton btnCloseAsk = popupView.findViewById(R.id.btnCloseAsk);
+
+        btnAskFirstButton.setOnClickListener(v -> {
+            askPopupWindow.dismiss();
+            commHandler.setAskButton("1");
+        });
+        btnAskSecondButton.setOnClickListener(v -> {
+            askPopupWindow.dismiss();
+            commHandler.setAskButton("2");
+        });
+        btnCloseAsk.setOnClickListener(v -> {
+            askPopupWindow.dismiss();
+            commHandler.setAskButton("3");
+        });
+
+        commHandler.setAskDialogService(new AskDialogService(
+                handler,
+                askPopupWindow,
+                txtAskQuestion,
+                btnAskFirstButton,
+                btnAskSecondButton
+        ));
+    }
+
+    private Map<String, String> getQueryParams(String data) throws Exception {
+        Map<String, String> params = new HashMap<>();
+        String url = EncryptionUtils.decodeUrlSafeString(data);
+        String query = url.split("\\?")[1];
+        String[] paramArr = query.split("&");
+        for(String s : paramArr) {
+            String[] param = s.split("=");
+            if(param[0].equals("can")) {
+                params.put(param[0], EncryptionUtils.decodeUrlSafeString(param[1]));
+            } else {
+                params.put(param[0], param[1]);
+            }
+        }
+        return params;
+    }
+
+    public void closeServer() {
+        if (server != null) {
+            try {
+                server.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void startCPSServer(String successUrl, boolean cancel, Runnable closeScreen) {
+        new Thread(() -> {
+            try {
+                server = new ServerSocket(25519);
+                boolean done = false;
+
+                while (!server.isClosed() && !done) {
+                    Socket socket = server.accept();
+                    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+                    String line = in.readLine();
+                    Log.i(TAG, line);
+
+                    if(line.contains("gif HTTP/1.1")) {
+                        byte[] content = EncryptionUtils.decodeUrlSafe(
+                                "R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                        );
+                        OutputStream os = socket.getOutputStream();
+                        StringBuilder out = new StringBuilder();
+                        out.append("HTTP/1.0 200 OK\r\n");
+                        out.append("Content-Type: image/gif\r\n");
+                        out.append("Content-Length: ").append(content.length).append("\r\n\r\n");
+                        Log.i(TAG, out.toString());
+                        os.write(out.toString().getBytes("UTF-8"));
+                        os.write(content);
+                        os.flush();
+                        os.close();
+                    } else {
+                        String[] linearg = line.split(" ");
+                        String data = linearg[1].substring(1);
+                        Map<String, String> params = getQueryParams(data);
+                        Log.i(TAG, params.get("can"));
+
+                        OutputStream os = socket.getOutputStream();
+                        StringBuilder out = new StringBuilder();
+                        out.append("HTTP/1.0 302 Found\r\n");
+                        if(cancel) {
+                            out.append("Location: ").append(params.get("can")).append("\r\n\r\n");
+                        } else {
+                            out.append("Location: ").append(successUrl).append("\r\n\r\n");
+                        }
+                        Log.i(TAG, out.toString());
+                        os.write(out.toString().getBytes("UTF-8"));
+                        os.flush();
+                        os.close();
+                        done = true;
+                    }
+
+                    in.close();
+                    socket.close();
+                }
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage(), e);
+            }
+
+            closeScreen.run();
+        }).start();
+    }
+
+}
