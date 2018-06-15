@@ -174,6 +174,10 @@ public class CommunicationFlowHandler {
                 break;
         }
 
+        if(commHandler.hasAskQuestion() && this.actionStack.isEmpty()) {
+            this.actionStack.add(Action.QUERY_WITHOUT_SUK);
+        }
+
         commHandler.setAskAction(this::handleNextAction);
         commHandler.showAskDialog();
     }

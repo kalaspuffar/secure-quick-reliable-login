@@ -488,8 +488,12 @@ public class CommunicationHandler {
         this.askDialogService.setAskAction(askAction);
     }
 
+    public boolean hasAskQuestion() {
+        return this.lastResponse.containsKey("ask");
+    }
+
     public void showAskDialog() {
-        if(this.lastResponse.containsKey("ask")) {
+        if(hasAskQuestion()) {
             this.askDialogService.showDialog(this.lastResponse.get("ask"));
         } else {
             this.askDialogService.activateAskButton();
