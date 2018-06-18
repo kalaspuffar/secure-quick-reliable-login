@@ -122,12 +122,10 @@ public class StartActivity extends BaseActivity {
         final Button btnImportIdentityDo = popupView.findViewById(R.id.btnImportIdentityDo);
 
         popupView.findViewById(R.id.btnCloseImportIdentity).setOnClickListener(v -> importPopupWindow.dismiss());
-        popupView.findViewById(R.id.btnForgotPassword).setOnClickListener(
-                v -> {
-                    importPopupWindow.dismiss();
-                    resetPasswordPopupWindow.showAtLocation(resetPasswordPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                }
-        );
+        popupView.findViewById(R.id.btnForgotPassword).setOnClickListener(v -> {
+            importPopupWindow.dismiss();
+            resetPasswordPopupWindow.showAtLocation(resetPasswordPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+        });
 
         btnImportIdentityDo.setOnClickListener(v -> {
             importPopupWindow.dismiss();
@@ -145,7 +143,7 @@ public class StartActivity extends BaseActivity {
                         });
                         return;
                     }
-                    showClearNotification();
+                    storage.clearQuickPass(this);
 
                     boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
                     if (!encryptStatus) {
@@ -156,11 +154,12 @@ public class StartActivity extends BaseActivity {
                         });
                         return;
                     }
-                    storage.clear();
                 } catch (Exception e) {
                     handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
                     Log.e(TAG, e.getMessage(), e);
                 }
+
+                storage.clear();
 
                 long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
                 mDbHelper.updateIdentityName(newIdentityId, "Default");

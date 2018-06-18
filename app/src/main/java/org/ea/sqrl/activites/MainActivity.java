@@ -540,7 +540,7 @@ public class MainActivity extends LoginBaseActivity {
                         });
                         return;
                     }
-                    showClearNotification();
+                    storage.clearQuickPass(this);
 
                     boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
                     if (!encryptStatus) {
@@ -739,6 +739,15 @@ public class MainActivity extends LoginBaseActivity {
                     handler.postDelayed(() -> {
                         final TextView txtSite = loginPopupWindow.getContentView().findViewById(R.id.txtSite);
                         txtSite.setText(domain);
+
+                        SQRLStorage storage = SQRLStorage.getInstance();
+                        final TextView txtLoginPassword = loginPopupWindow.getContentView().findViewById(R.id.txtLoginPassword);
+                        if(storage.hasQuickPass()) {
+                            txtLoginPassword.setHint(getString(R.string.login_identity_quickpass, "" + storage.getHintLength()));
+                        } else {
+                            txtLoginPassword.setHint(R.string.login_identity_password);
+                        }
+
                         loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                     }, 100);
                 } else {

@@ -55,10 +55,10 @@ public class SimplifiedActivity extends LoginBaseActivity {
 
         final ImageButton btnUseIdentity = findViewById(R.id.btnUseIdentity);
         btnUseIdentity.setOnClickListener(
-                v -> {
-                    integrator.setPrompt(this.getString(R.string.scan_site_code));
-                    integrator.initiateScan();
-                }
+            v -> {
+                integrator.setPrompt(this.getString(R.string.scan_site_code));
+                integrator.initiateScan();
+            }
         );
 
 
@@ -260,6 +260,15 @@ public class SimplifiedActivity extends LoginBaseActivity {
                 handler.postDelayed(() -> {
                     final TextView txtSite = loginPopupWindow.getContentView().findViewById(R.id.txtSite);
                     txtSite.setText(domain);
+
+                    SQRLStorage storage = SQRLStorage.getInstance();
+                    final TextView txtLoginPassword = loginPopupWindow.getContentView().findViewById(R.id.txtLoginPassword);
+                    if(storage.hasQuickPass()) {
+                        txtLoginPassword.setHint(getString(R.string.login_identity_quickpass, "" + storage.getHintLength()));
+                    } else {
+                        txtLoginPassword.setHint(R.string.login_identity_password);
+                    }
+
                     loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                 }, 100);
             }

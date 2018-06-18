@@ -278,4 +278,5 @@ I fallet där vi importerar och loggar in ger applikationen möjlighet att scann
 <string name="title_text_import">SQRL - Text import</string>
 <string name="button_text_import_close">Stäng</string>
 <string name="text_input_hint">Skriv in identitetens text utskrift från pappers utskriften</string>
+    <string name="error_dialog_title">An error has occured</string>
 </resources>
