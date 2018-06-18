@@ -322,7 +322,7 @@ public class CommunicationHandler {
 
     public void printParams() {
         for(Map.Entry<String, String> entry : lastResponse.entrySet()) {
-            Log.d(TAG, entry.getKey() + "=" + entry.getValue());
+            Log.i(TAG, entry.getKey() + "=" + entry.getValue());
         }
     }
 
@@ -349,12 +349,14 @@ public class CommunicationHandler {
     }
 
     public boolean hasErrorMessage() {
-        return !lastResponse.containsKey("tif") ||
-            isTIFBitSet(CommunicationHandler.TIF_BAD_ID_ASSOCIATION) ||
-            isTIFBitSet(CommunicationHandler.TIF_CLIENT_FAILURE) ||
-            //isTIFBitSet(CommunicationHandler.TIF_COMMAND_FAILED) ||
-            isTIFBitSet(CommunicationHandler.TIF_FUNCTION_NOT_SUPPORTED) ||
-            isTIFBitSet(CommunicationHandler.TIF_TRANSIENT_ERROR);
+        return lastResponse.containsKey("tif") &&
+            (
+                isTIFBitSet(CommunicationHandler.TIF_BAD_ID_ASSOCIATION) ||
+                isTIFBitSet(CommunicationHandler.TIF_CLIENT_FAILURE) ||
+                //isTIFBitSet(CommunicationHandler.TIF_COMMAND_FAILED) ||
+                isTIFBitSet(CommunicationHandler.TIF_FUNCTION_NOT_SUPPORTED) ||
+                isTIFBitSet(CommunicationHandler.TIF_TRANSIENT_ERROR)
+            );
     }
 
     public String getErrorMessage(Activity a) {

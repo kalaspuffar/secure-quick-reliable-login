@@ -354,6 +354,7 @@ public class MainActivity extends LoginBaseActivity {
                         communicationFlowHandler.setErrorAction(() -> {
                             storage.clear();
                             storage.clearQuickPass(MainActivity.this);
+                            handler.post(() -> progressPopupWindow.dismiss());
                         });
 
                         communicationFlowHandler.handleNextAction();
@@ -414,6 +415,7 @@ public class MainActivity extends LoginBaseActivity {
                     communicationFlowHandler.setErrorAction(() -> {
                         storage.clear();
                         storage.clearQuickPass(MainActivity.this);
+                        handler.post(() -> progressPopupWindow.dismiss());
                     });
 
                     communicationFlowHandler.handleNextAction();

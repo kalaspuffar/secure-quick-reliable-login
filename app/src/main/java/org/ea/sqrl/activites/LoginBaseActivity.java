@@ -69,7 +69,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     private PopupWindow removeAccountPopupWindow;
     protected PopupWindow progressPopupWindow;
     protected PopupWindow loginPopupWindow;
-    protected CommunicationFlowHandler communicationFlowHandler = new CommunicationFlowHandler(this);
+    protected CommunicationFlowHandler communicationFlowHandler = new CommunicationFlowHandler(this, handler);
 
 
     protected void setupBasePopups(LayoutInflater layoutInflater, boolean urlBasedLogin) {
@@ -203,10 +203,11 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 }
                 txtDisablePassword.setText("");
 
-                communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
                 if(urlBasedLogin) {
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
                     communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOCK_ACCOUNT_CPS);
                 } else {
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK_QRCODE);
                     communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOCK_ACCOUNT);
                 }
 
@@ -220,9 +221,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
                 communicationFlowHandler.setErrorAction(() -> {
                     storage.clear();
-                    handler.post(() -> {
-                        progressPopupWindow.dismiss();
-                    });
+                    handler.post(() -> progressPopupWindow.dismiss());
                 });
 
                 communicationFlowHandler.handleNextAction();
@@ -298,10 +297,11 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     });
                 }
 
-                communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITH_SUK);
                 if(urlBasedLogin) {
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITH_SUK);
                     communicationFlowHandler.addAction(CommunicationFlowHandler.Action.UNLOCK_ACCOUNT_CPS);
                 } else {
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITH_SUK_QRCODE);
                     communicationFlowHandler.addAction(CommunicationFlowHandler.Action.UNLOCK_ACCOUNT);
                 }
 
@@ -315,9 +315,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
                 communicationFlowHandler.setErrorAction(() -> {
                     storage.clear();
-                    handler.post(() -> {
-                        progressPopupWindow.dismiss();
-                    });
+                    handler.post(() -> progressPopupWindow.dismiss());
                 });
 
                 communicationFlowHandler.handleNextAction();
@@ -392,11 +390,12 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     });
                 }
 
-                communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITH_SUK);
                 if(clientProvidedSession) {
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITH_SUK);
                     communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOCK_ACCOUNT_CPS);
                     communicationFlowHandler.addAction(CommunicationFlowHandler.Action.REMOVE_ACCOUNT_CPS);
                 } else {
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITH_SUK_QRCODE);
                     communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOCK_ACCOUNT);
                     communicationFlowHandler.addAction(CommunicationFlowHandler.Action.REMOVE_ACCOUNT);
                 }
@@ -411,9 +410,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
                 communicationFlowHandler.setErrorAction(() -> {
                     storage.clear();
-                    handler.post(() -> {
-                        progressPopupWindow.dismiss();
-                    });
+                    handler.post(() -> progressPopupWindow.dismiss());
                 });
 
                 communicationFlowHandler.handleNextAction();

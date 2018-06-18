@@ -108,6 +108,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                         communicationFlowHandler.setErrorAction(() -> {
                             storage.clear();
                             storage.clearQuickPass(UrlLoginActivity.this);
+                            handler.post(() -> progressPopupWindow.dismiss());
                         });
 
                         communicationFlowHandler.handleNextAction();
@@ -166,6 +167,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                     communicationFlowHandler.setErrorAction(() -> {
                         storage.clear();
                         storage.clearQuickPass(UrlLoginActivity.this);
+                        handler.post(() -> progressPopupWindow.dismiss());
                     });
 
                     communicationFlowHandler.handleNextAction();

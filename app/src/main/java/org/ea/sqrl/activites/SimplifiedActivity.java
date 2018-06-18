@@ -124,6 +124,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
                         communicationFlowHandler.setErrorAction(() -> {
                             storage.clear();
                             storage.clearQuickPass(SimplifiedActivity.this);
+                            handler.post(() -> progressPopupWindow.dismiss());
                         });
 
                         communicationFlowHandler.handleNextAction();
@@ -184,6 +185,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
                     communicationFlowHandler.setErrorAction(() -> {
                         storage.clear();
                         storage.clearQuickPass(SimplifiedActivity.this);
+                        handler.post(() -> progressPopupWindow.dismiss());
                     });
 
                     communicationFlowHandler.handleNextAction();

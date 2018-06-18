@@ -36,6 +36,8 @@ public class CommunicationFlowHandler {
     private Runnable doneAction;
     private Runnable errorAction;
     private TextView txtErrorMessage;
+    private Handler handler;
+    private boolean hasRetried = false;
 
     public enum Action {
         QUERY_WITH_SUK,
@@ -61,8 +63,9 @@ public class CommunicationFlowHandler {
     private boolean shouldRunServer = false;
     private Activity currentActivity;
 
-    public CommunicationFlowHandler(Activity currentActivity) {
+    public CommunicationFlowHandler(Activity currentActivity, Handler handler) {
         this.currentActivity = currentActivity;
+        this.handler = handler;
         try {
             entropyHarvester = EntropyHarvester.getInstance();
         } catch (Exception e) {
@@ -115,15 +118,16 @@ public class CommunicationFlowHandler {
         switch (a) {
             case LOGIN:
             case LOGIN_CPS:
+                if(commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED))
+                    throw new Exception(currentActivity.getString(R.string.communication_sqrl_disabled));
+                break;
             case LOCK_ACCOUNT:
             case LOCK_ACCOUNT_CPS:
-                if(!commHandler.isIdentityKnown(false))
-                    throw new Exception();
+                if(!commHandler.isIdentityKnown(false)) return;
                 break;
             case UNLOCK_ACCOUNT:
             case UNLOCK_ACCOUNT_CPS:
-                if(!commHandler.isIdentityKnown(true))
-                    throw new Exception();
+                if(!commHandler.isIdentityKnown(true)) return;
                 break;
         }
 
@@ -132,7 +136,7 @@ public class CommunicationFlowHandler {
                 postQuery(commHandler, false, true);
                 break;
             case QUERY_WITHOUT_SUK:
-                postQuery(commHandler, false, true);
+                postQuery(commHandler, false, false);
                 break;
             case QUERY_WITH_SUK_QRCODE:
                 postQuery(commHandler, true, true);
@@ -178,6 +182,24 @@ public class CommunicationFlowHandler {
                 break;
         }
 
+        /*
+         * Remove the option of the server returning transient error when the request is not accepted
+         * due to IP restriction or reusing of code. Retry to with a fresh nut and hope the error
+         * disappears.
+         */
+        switch (a) {
+            case QUERY_WITH_SUK:
+            case QUERY_WITHOUT_SUK:
+            case QUERY_WITH_SUK_QRCODE:
+            case QUERY_WITHOUT_SUK_QRCODE:
+                if(!hasRetried && commHandler.isTIFBitSet(CommunicationHandler.TIF_TRANSIENT_ERROR)) {
+                    actionStack.push(a);
+                    commHandler.clearLastResponse();
+                    hasRetried = true;
+                }
+                break;
+        }
+
         switch (a) {
             case CREATE_ACCOUNT_CPS:
             case LOGIN_CPS:
@@ -197,12 +219,16 @@ public class CommunicationFlowHandler {
     }
 
     private void done() {
+        hasRetried = false;
         new Thread(doneAction).start();
     }
 
     private void error() {
+        hasRetried = false;
         commHandler.clearLastResponse();
-        errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+        handler.post(() ->
+            errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
+        );
         new Thread(errorAction).start();
     }
 
