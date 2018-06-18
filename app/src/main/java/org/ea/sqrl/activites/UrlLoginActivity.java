@@ -108,8 +108,6 @@ public class UrlLoginActivity extends LoginBaseActivity {
                         communicationFlowHandler.setErrorAction(() -> {
                             storage.clear();
                             storage.clearQuickPass(UrlLoginActivity.this);
-                            Snackbar.make(rootView, "Everything went wrong", Snackbar.LENGTH_INDEFINITE);
-                            handler.postDelayed(() -> closeActivity(), 5000);
                         });
 
                         communicationFlowHandler.handleNextAction();
@@ -168,8 +166,6 @@ public class UrlLoginActivity extends LoginBaseActivity {
                     communicationFlowHandler.setErrorAction(() -> {
                         storage.clear();
                         storage.clearQuickPass(UrlLoginActivity.this);
-                        Snackbar.make(rootView, "Everything went wrong", Snackbar.LENGTH_INDEFINITE);
-                        handler.postDelayed(() -> closeActivity(), 5000);
                     });
 
                     communicationFlowHandler.handleNextAction();

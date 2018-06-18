@@ -69,7 +69,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     private PopupWindow removeAccountPopupWindow;
     protected PopupWindow progressPopupWindow;
     protected PopupWindow loginPopupWindow;
-    protected CommunicationFlowHandler communicationFlowHandler = new CommunicationFlowHandler();
+    protected CommunicationFlowHandler communicationFlowHandler = new CommunicationFlowHandler(this);
 
 
     protected void setupBasePopups(LayoutInflater layoutInflater, boolean urlBasedLogin) {
@@ -90,6 +90,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         }
 
         communicationFlowHandler.setupAskPopupWindow(layoutInflater, handler);
+        communicationFlowHandler.setupErrorPopupWindow(layoutInflater);
         setupEnableAccountPopupWindow(layoutInflater, urlBasedLogin);
         setupDisableAccountPopupWindow(layoutInflater, urlBasedLogin);
         setupRemoveAccountPopupWindow(layoutInflater, urlBasedLogin);
@@ -218,7 +219,10 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 });
 
                 communicationFlowHandler.setErrorAction(() -> {
-                    Snackbar.make(rootView, "Everything went wrong", Snackbar.LENGTH_INDEFINITE);
+                    storage.clear();
+                    handler.post(() -> {
+                        progressPopupWindow.dismiss();
+                    });
                 });
 
                 communicationFlowHandler.handleNextAction();
@@ -310,7 +314,10 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 });
 
                 communicationFlowHandler.setErrorAction(() -> {
-                    Snackbar.make(rootView, "Everything went wrong", Snackbar.LENGTH_INDEFINITE);
+                    storage.clear();
+                    handler.post(() -> {
+                        progressPopupWindow.dismiss();
+                    });
                 });
 
                 communicationFlowHandler.handleNextAction();
@@ -403,7 +410,10 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 });
 
                 communicationFlowHandler.setErrorAction(() -> {
-                    Snackbar.make(rootView, "Everything went wrong", Snackbar.LENGTH_INDEFINITE);
+                    storage.clear();
+                    handler.post(() -> {
+                        progressPopupWindow.dismiss();
+                    });
                 });
 
                 communicationFlowHandler.handleNextAction();

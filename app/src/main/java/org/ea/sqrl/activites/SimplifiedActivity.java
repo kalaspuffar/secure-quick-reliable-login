@@ -124,7 +124,6 @@ public class SimplifiedActivity extends LoginBaseActivity {
                         communicationFlowHandler.setErrorAction(() -> {
                             storage.clear();
                             storage.clearQuickPass(SimplifiedActivity.this);
-                            Snackbar.make(rootView, "Everything went wrong", Snackbar.LENGTH_INDEFINITE);
                         });
 
                         communicationFlowHandler.handleNextAction();
@@ -185,7 +184,6 @@ public class SimplifiedActivity extends LoginBaseActivity {
                     communicationFlowHandler.setErrorAction(() -> {
                         storage.clear();
                         storage.clearQuickPass(SimplifiedActivity.this);
-                        Snackbar.make(rootView, "Everything went wrong", Snackbar.LENGTH_INDEFINITE);
                     });
 
                     communicationFlowHandler.handleNextAction();

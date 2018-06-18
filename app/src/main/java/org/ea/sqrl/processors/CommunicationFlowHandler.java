@@ -1,7 +1,9 @@
 package org.ea.sqrl.processors;
 
+import android.app.Activity;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,10 +30,12 @@ public class CommunicationFlowHandler {
     private static final String TAG = "CommFlowHandler";
 
     private PopupWindow askPopupWindow;
+    private PopupWindow errorPopupWindow;
     private Deque<Action> actionStack = new ArrayDeque<>();
     private ServerSocket server;
     private Runnable doneAction;
     private Runnable errorAction;
+    private TextView txtErrorMessage;
 
     public enum Action {
         QUERY_WITH_SUK,
@@ -55,8 +59,10 @@ public class CommunicationFlowHandler {
     private String serverData = null;
     private String queryLink = null;
     private boolean shouldRunServer = false;
+    private Activity currentActivity;
 
-    public CommunicationFlowHandler() {
+    public CommunicationFlowHandler(Activity currentActivity) {
+        this.currentActivity = currentActivity;
         try {
             entropyHarvester = EntropyHarvester.getInstance();
         } catch (Exception e) {
@@ -81,6 +87,11 @@ public class CommunicationFlowHandler {
     }
 
     public void handleNextAction() {
+        if(commHandler.hasErrorMessage()) {
+            txtErrorMessage.setText(commHandler.getErrorMessage(this.currentActivity));
+            error();
+            return;
+        }
         try {
             if (!actionStack.isEmpty()) {
                 runAction(actionStack.pop());
@@ -93,6 +104,9 @@ public class CommunicationFlowHandler {
             }
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
+            if(e.getMessage() != null) {
+                txtErrorMessage.setText(e.getMessage());
+            }
             error();
         }
     }
@@ -188,6 +202,7 @@ public class CommunicationFlowHandler {
 
     private void error() {
         commHandler.clearLastResponse();
+        errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
         new Thread(errorAction).start();
     }
 
@@ -307,6 +322,27 @@ public class CommunicationFlowHandler {
                 btnAskFirstButton,
                 btnAskSecondButton
         ));
+    }
+
+
+    public void setupErrorPopupWindow(LayoutInflater layoutInflater) {
+        View popupView = layoutInflater.inflate(R.layout.fragment_error_dialog, null);
+
+        errorPopupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
+                false);
+
+
+        txtErrorMessage = popupView.findViewById(R.id.txtErrorMessage);
+        final Button btnErrorOk = popupView.findViewById(R.id.btnErrorOk);
+        final ImageButton btnCloseError = popupView.findViewById(R.id.btnCloseError);
+
+        btnErrorOk.setOnClickListener(v -> {
+            errorPopupWindow.dismiss();
+        });
+        btnCloseError.setOnClickListener(v -> {
+            errorPopupWindow.dismiss();
+        });
     }
 
     private Map<String, String> getQueryParams(String data) throws Exception {
