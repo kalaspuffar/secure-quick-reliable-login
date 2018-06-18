@@ -270,5 +270,6 @@ In the case of import and log in, the app gives you the option to scan QR codes 
 <string name="title_text_import">SQRL - Text import</string>
 <string name="button_text_import_close">Close</string>
 <string name="text_input_hint">Input identity rescue text printed on your identity paper version</string>
-    <string name="error_dialog_title">An error has occured</string>
+<string name="error_dialog_title">An error has occured</string>
+<string name="login_identity_quickpass">Password (First %s characters)</string>
 </resources>
