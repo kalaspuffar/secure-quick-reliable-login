@@ -770,8 +770,6 @@ public class SQRLStorage {
 
             entropyHarvester.fetchRandom(this.quickPassInitializationVector);
 
-            this.updateIdentityPlaintext();
-
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Key keySpec = new SecretKeySpec(key, "AES");
                 Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");

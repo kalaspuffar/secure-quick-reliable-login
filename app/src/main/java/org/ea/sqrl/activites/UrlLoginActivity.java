@@ -67,6 +67,12 @@ public class UrlLoginActivity extends LoginBaseActivity {
         SQRLStorage storage = SQRLStorage.getInstance();
 
         final EditText txtLoginPassword = findViewById(R.id.txtLoginPassword);
+        if(storage.hasQuickPass()) {
+            txtLoginPassword.setHint(getString(R.string.login_identity_quickpass, "" + storage.getHintLength()));
+        } else {
+            txtLoginPassword.setHint(R.string.login_identity_password);
+        }
+
         txtLoginPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence password, int start, int count, int after) {

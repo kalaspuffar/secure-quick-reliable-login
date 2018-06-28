@@ -276,4 +276,6 @@ Beim Importieren von Identitäten sowie beim Anmelden wird es durch Benutzung de
 <string name="title_text_import">SQRL - Text Import</string>
 <string name="button_text_import_close">Schließen</string>
 <string name="text_input_hint">Geben Sie den Rettungs-Text an, den Sie auf dem Ausdruck finden, den Sie beim Erzeugen Ihrer Identität erstellt haben.</string>
+<string name="error_dialog_title">An error has occured</string>
+<string name="login_identity_quickpass">Password (First %s characters)</string>
 </resources>
