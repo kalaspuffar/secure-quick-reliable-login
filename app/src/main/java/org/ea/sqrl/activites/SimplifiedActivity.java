@@ -24,6 +24,7 @@ import com.google.zxing.integration.android.IntentResult;
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.EncryptionUtils;
 import org.ea.sqrl.utils.Utils;
 
 /**
@@ -235,17 +236,16 @@ public class SimplifiedActivity extends LoginBaseActivity {
                     startActivity(new Intent(this, StartActivity.class));
                 }
             } else {
-
-                final String serverData = Utils.readSQRLQRCodeAsString(result.getRawBytes());
+                final String serverData = Utils.readSQRLQRCodeAsString(result.getRawBytes(), result.getErrorCorrectionLevel());
                 communicationFlowHandler.setServerData(serverData);
                 communicationFlowHandler.setUseSSL(serverData.startsWith("sqrl://"));
 
-                int indexOfQuery = serverData.indexOf("/", serverData.indexOf("://") + 3);
-                if(indexOfQuery == -1) {
+                if(serverData.indexOf("://") == -1) {
                     handler.post(() -> Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show());
                     return;
                 }
 
+                int indexOfQuery = serverData.indexOf("/", serverData.indexOf("://") + 3);
                 final String queryLink = serverData.substring(indexOfQuery);
                 final String domain = serverData.split("/")[2];
                 try {

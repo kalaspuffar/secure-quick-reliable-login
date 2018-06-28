@@ -391,12 +391,14 @@ public class StartActivity extends BaseActivity {
                 Snackbar.make(rootView, R.string.scan_cancel, Snackbar.LENGTH_LONG).show();
             } else {
                 SQRLStorage storage = SQRLStorage.getInstance();
-                byte[] qrCodeData = Utils.readSQRLQRCode(result.getRawBytes());
-                if(qrCodeData.length == 0) {
-                    handler.post(() -> Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show());
-                    return;
-                }
+
                 try {
+                    byte[] qrCodeData = Utils.readSQRLQRCode(result.getRawBytes(), result.getErrorCorrectionLevel());
+                    if(qrCodeData.length == 0) {
+                        handler.post(() -> Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show());
+                        return;
+                    }
+
                     storage.read(qrCodeData);
 
                     if(!storage.hasEncryptedKeys()) {
