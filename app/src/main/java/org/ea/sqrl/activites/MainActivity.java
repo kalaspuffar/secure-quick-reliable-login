@@ -715,7 +715,7 @@ public class MainActivity extends LoginBaseActivity {
                 }
             } else {
                 if(!importIdentity) {
-                    String serverData = Utils.readSQRLQRCodeAsString(result.getRawBytes(), result.getErrorCorrectionLevel());
+                    String serverData = Utils.readSQRLQRCodeAsString(data);
                     communicationFlowHandler.setServerData(serverData);
                     communicationFlowHandler.setUseSSL(serverData.startsWith("sqrl://"));
 
@@ -753,7 +753,7 @@ public class MainActivity extends LoginBaseActivity {
                 } else {
                     SQRLStorage storage = SQRLStorage.getInstance();
                     try {
-                        byte[] qrCodeData = Utils.readSQRLQRCode(result.getRawBytes(), result.getErrorCorrectionLevel());
+                        byte[] qrCodeData = Utils.readSQRLQRCode(data);
                         if(qrCodeData.length == 0) {
                             handler.post(() -> Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show());
                             return;

@@ -236,9 +236,14 @@ public class SimplifiedActivity extends LoginBaseActivity {
                     startActivity(new Intent(this, StartActivity.class));
                 }
             } else {
-                final String serverData = Utils.readSQRLQRCodeAsString(result.getRawBytes(), result.getErrorCorrectionLevel());
+                final String serverData = Utils.readSQRLQRCodeAsString(data);
                 communicationFlowHandler.setServerData(serverData);
                 communicationFlowHandler.setUseSSL(serverData.startsWith("sqrl://"));
+
+
+                for(String key : data.getExtras().keySet()) {
+                    System.out.println(key);
+                }
 
                 if(serverData.indexOf("://") == -1) {
                     handler.post(() -> Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show());
