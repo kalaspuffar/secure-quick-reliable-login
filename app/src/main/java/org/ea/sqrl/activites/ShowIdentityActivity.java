@@ -82,18 +82,7 @@ public class ShowIdentityActivity extends BaseActivity {
 
         ImageView imageView = findViewById(R.id.imgQRCode);
 
-        QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        try {
-            Map<EncodeHintType,Object> hints = new HashMap<>();
-            hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
-            hints.put(EncodeHintType.CHARACTER_SET, "ASCII");
-
-            BitMatrix bitMatrix = qrCodeWriter.encode(new String(saveData, "ASCII"), BarcodeFormat.QR_CODE,300,300, hints);
-            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-            Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
-            imageView.setImageBitmap(bitmap);
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
+        QrCode qrCode = QrCode.encodeBinary(saveData, QrCode.Ecc.MEDIUM);
+        imageView.setImageBitmap(qrCode.toImage(3, 0));
     }
 }

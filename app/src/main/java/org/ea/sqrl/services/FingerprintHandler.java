@@ -54,31 +54,37 @@ public class FingerprintHandler {
 
     public FingerprintHandler(Activity a) {
         activity = a;
+    }
+
+    public boolean init() {
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-            keyguardManager = (KeyguardManager) a.getSystemService(KEYGUARD_SERVICE);
-            fingerprintManager = (FingerprintManager) a.getSystemService(FINGERPRINT_SERVICE);
+            keyguardManager = (KeyguardManager) activity.getSystemService(KEYGUARD_SERVICE);
+            fingerprintManager = (FingerprintManager) activity.getSystemService(FINGERPRINT_SERVICE);
 
             if (!keyguardManager.isKeyguardSecure()) {
-
-                Toast.makeText(a, "Lock screen security not enabled in Settings", Toast.LENGTH_LONG).show();
-                return;
+                Toast.makeText(activity, "Lock screen security not enabled in Settings", Toast.LENGTH_LONG).show();
+                Log.e(TAG, "Lock screen security not enabled in Settings");
+                return false;
             }
 
-            if (ActivityCompat.checkSelfPermission(a,
+            if (ActivityCompat.checkSelfPermission(activity,
                     Manifest.permission.USE_FINGERPRINT) !=
                     PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(a, "Fingerprint authentication permission not enabled", Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, "Fingerprint authentication permission not enabled", Toast.LENGTH_LONG).show();
+                Log.e(TAG, "Fingerprint authentication permission not enabled");
 
-                return;
+                return false;
             }
 
             if (!fingerprintManager.hasEnrolledFingerprints()) {
 
                 // This happens when no fingerprints are registered.
-                Toast.makeText(a, "Register at least one fingerprint in Settings", Toast.LENGTH_LONG).show();
-                return;
+                Toast.makeText(activity, "Register at least one fingerprint in Settings", Toast.LENGTH_LONG).show();
+                Log.e(TAG, "Register at least one fingerprint in Settings");
+                return false;
             }
         }
+        return true;
     }
 
     public boolean hasKey() {
@@ -88,31 +94,45 @@ public class FingerprintHandler {
     public void encryptKey(byte[] pass) {
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             try {
+                CancellationSignal mCancellationSignal = new CancellationSignal();
+
                 SecretKey secretKey = createKey();
                 cipher = Cipher.getInstance(TRANSFORMATION);
                 cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
-                CancellationSignal mCancellationSignal = new CancellationSignal();
-
                 fingerprintManager.authenticate(
-                        new FingerprintManager.CryptoObject(cipher), mCancellationSignal,
-                        0 /* flags */,
-                        new FingerprintManager.AuthenticationCallback() {
-                            public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
-                                System.out.println("FIXED!");
-                                System.out.println(EncryptionUtils.byte2hex(pass));
-                                try {
-                                    encryptionIv = cipher.getIV();
-                                    encryptedPasswordBytes = cipher.doFinal(pass);
-                                } catch (Exception e) {
-                                    Log.e(TAG, e.getMessage(), e);
-                                }
+                    new FingerprintManager.CryptoObject(cipher), mCancellationSignal,
+                    0 /* flags */,
+                    new FingerprintManager.AuthenticationCallback() {
+                        @Override
+                        public void onAuthenticationError(int errorCode, CharSequence errString) {
+                            System.out.println("Error "+errorCode+" = "+errString);
+                            super.onAuthenticationError(errorCode, errString);
+                        }
+
+                        @Override
+                        public void onAuthenticationHelp(int helpCode, CharSequence helpString) {
+                            System.out.println("Help "+helpCode+" = "+helpString);
+                            super.onAuthenticationHelp(helpCode, helpString);
+                        }
+
+                        @Override
+                        public void onAuthenticationFailed() {
+                            System.out.println("FAIL!");
+                            super.onAuthenticationFailed();
+                        }
+
+                        public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
+                            System.out.println("FIXED!");
+                            System.out.println(EncryptionUtils.byte2hex(pass));
+                            try {
+                                encryptionIv = cipher.getIV();
+                                encryptedPasswordBytes = cipher.doFinal(pass);
+                            } catch (Exception e) {
+                                Log.e(TAG, e.getMessage(), e);
                             }
-                        }, null);
-
-
-            } catch (UserNotAuthenticatedException e) {
-                e.printStackTrace();
+                        }
+                    }, null);
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage(), e);
             }
@@ -130,8 +150,6 @@ public class FingerprintHandler {
                 keyGenerator.init(new KeyGenParameterSpec.Builder(KEY_NAME,
                         KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
                         .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-                        .setUserAuthenticationRequired(true)
-                        .setUserAuthenticationValidityDurationSeconds(AUTHENTICATION_DURATION_SECONDS)
                         .setKeyValidityEnd(c.getTime())
                         .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
                         .build());
@@ -148,16 +166,7 @@ public class FingerprintHandler {
             try {
                 CancellationSignal mCancellationSignal = new CancellationSignal();
 
-                KeyStore keyStore = KeyStore.getInstance(ANDROID_KEY_STORE);
-                keyStore.load(null);
-                SecretKey secretKey = (SecretKey) keyStore.getKey(KEY_NAME, null);
                 Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-                cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(encryptionIv));
-
-                byte[] test = cipher.doFinal(encryptedPasswordBytes);
-                System.out.println("-------------------------------------------------");
-                System.out.println(EncryptionUtils.byte2hex(test));
-
 
                 fingerprintManager.authenticate(
                         new FingerprintManager.CryptoObject(cipher), mCancellationSignal,
@@ -165,9 +174,16 @@ public class FingerprintHandler {
                         new FingerprintManager.AuthenticationCallback() {
                             public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
                                 try {
-                                    System.out.println("FIXED!");
-                                    byte[] passwordBytes = cipher.doFinal(encryptedPasswordBytes);
+                                    KeyStore keyStore = KeyStore.getInstance(ANDROID_KEY_STORE);
+                                    keyStore.load(null);
 
+                                    Cipher cipher = result.getCryptoObject().getCipher();
+
+                                    SecretKey secretKey = (SecretKey) keyStore.getKey(KEY_NAME, null);
+                                    cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(encryptionIv));
+                                    byte[] passwordBytes = cipher.doFinal(encryptedPasswordBytes);
+                                    System.out.println("-------------------------------------------------");
+                                    System.out.println("FIXED!");
                                     System.out.println(EncryptionUtils.byte2hex(passwordBytes));
                                 } catch (Exception e) {
                                     Log.e(TAG, e.getMessage(), e);
@@ -177,10 +193,6 @@ public class FingerprintHandler {
                         }, null);
 
                 return encryptedPasswordBytes;
-
-
-            } catch (UserNotAuthenticatedException e) {
-                e.printStackTrace();
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage(), e);
             }

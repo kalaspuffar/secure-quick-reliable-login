@@ -84,7 +84,13 @@ public class SQRLStorage {
     }
 
     public void createFingerprintHandler(Activity a) {
-        fingerprintHandler = new FingerprintHandler(a);
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            fingerprintHandler = new FingerprintHandler(a);
+            if(!fingerprintHandler.init()) {
+                fingerprintHandler = null;
+            }
+            fingerprintHandler = null;
+        }
     }
 
     public boolean hasMorePreviousKeys() {
@@ -425,13 +431,16 @@ public class SQRLStorage {
         this.progressionUpdater.setMax(iterationCount);
         try {
             byte[] key = null;
-            if(quickPass || fingerprintHandler.hasKey()) {
-                //key = fingerprintHandler.decryptKey();
+            if(fingerprintHandler != null && fingerprintHandler.hasKey()) {
+                key = fingerprintHandler.decryptKey();
+            } else if(quickPass) {
                 key = this.decryptIdentityKeyQuickPass(password);
             }
             if(key == null) {
                 key = EncryptionUtils.enSCryptIterations(password, randomSalt, logNFactor, 32, iterationCount, this.progressionUpdater);
-                //fingerprintHandler.encryptKey(key);
+                if(fingerprintHandler != null) {
+                    fingerprintHandler.encryptKey(key);
+                }
                 this.encryptIdentityKeyQuickPass(password, key, entropyHarvester);
             }
             byte[] identityKeys = EncryptionUtils.combine(identityMasterKeyEncrypted, identityLockKeyEncrypted);

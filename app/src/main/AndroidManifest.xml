@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="org.ea.sqrl"
-    android:versionCode="23"
-    android:versionName="0.8.1">
+    android:versionCode="24"
+    android:versionName="0.8.2">
 
     <uses-sdk
         android:minSdkVersion="16"

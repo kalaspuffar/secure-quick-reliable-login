@@ -187,21 +187,8 @@ public class IdentityPrintDocumentAdapter extends PrintDocumentAdapter {
         }
 
         int canvasMiddle = canvas.getWidth() / 2;
-        Bitmap bitmap = null;
-        QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        try {
-            Map<EncodeHintType,Object> hints = new HashMap<>();
-            hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
-            hints.put(EncodeHintType.CHARACTER_SET, "ASCII");
-
-            BitMatrix bitMatrix = qrCodeWriter.encode(new String(saveData, "ASCII"), BarcodeFormat.QR_CODE,300,300, hints);
-            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-            bitmap = barcodeEncoder.createBitmap(bitMatrix);
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
-
-        if(bitmap == null) return;
+        QrCode qrCode = QrCode.encodeBinary(saveData, QrCode.Ecc.MEDIUM);
+        Bitmap bitmap = qrCode.toImage(3, 0);
 
         int bitmapWidth = bitmap.getScaledWidth(canvas);
 
