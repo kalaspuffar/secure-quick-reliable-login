@@ -78,6 +78,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
                 true);
 
         final SQRLStorage storage = SQRLStorage.getInstance();
+        storage.createFingerprintHandler(SimplifiedActivity.this);
 
         loginPopupWindow.setTouchable(true);
         final EditText txtLoginPassword = popupView.findViewById(R.id.txtLoginPassword);
@@ -239,11 +240,6 @@ public class SimplifiedActivity extends LoginBaseActivity {
                 final String serverData = Utils.readSQRLQRCodeAsString(data);
                 communicationFlowHandler.setServerData(serverData);
                 communicationFlowHandler.setUseSSL(serverData.startsWith("sqrl://"));
-
-
-                for(String key : data.getExtras().keySet()) {
-                    System.out.println(key);
-                }
 
                 if(serverData.indexOf("://") == -1) {
                     handler.post(() -> Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show());

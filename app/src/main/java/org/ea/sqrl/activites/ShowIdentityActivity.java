@@ -9,8 +9,20 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
+
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import io.nayuki.qrcodegen.QrCode;
 
@@ -69,7 +81,19 @@ public class ShowIdentityActivity extends BaseActivity {
         }
 
         ImageView imageView = findViewById(R.id.imgQRCode);
-        Bitmap bitmap = QrCode.encodeBinary(saveData, QrCode.Ecc.MEDIUM).toImage(10, 0);
-        imageView.setImageBitmap(bitmap);
+
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        try {
+            Map<EncodeHintType,Object> hints = new HashMap<>();
+            hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
+            hints.put(EncodeHintType.CHARACTER_SET, "ASCII");
+
+            BitMatrix bitMatrix = qrCodeWriter.encode(new String(saveData, "ASCII"), BarcodeFormat.QR_CODE,300,300, hints);
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+            Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+            imageView.setImageBitmap(bitmap);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
     }
 }

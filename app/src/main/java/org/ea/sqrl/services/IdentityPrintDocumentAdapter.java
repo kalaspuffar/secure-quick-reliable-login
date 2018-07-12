@@ -22,6 +22,14 @@ import android.print.pdf.PrintedPdfDocument;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
+
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
 
@@ -29,6 +37,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.nayuki.qrcodegen.QrCode;
 
@@ -177,7 +187,22 @@ public class IdentityPrintDocumentAdapter extends PrintDocumentAdapter {
         }
 
         int canvasMiddle = canvas.getWidth() / 2;
-        Bitmap bitmap = QrCode.encodeBinary(saveData, QrCode.Ecc.MEDIUM).toImage(3, 0);
+        Bitmap bitmap = null;
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        try {
+            Map<EncodeHintType,Object> hints = new HashMap<>();
+            hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
+            hints.put(EncodeHintType.CHARACTER_SET, "ASCII");
+
+            BitMatrix bitMatrix = qrCodeWriter.encode(new String(saveData, "ASCII"), BarcodeFormat.QR_CODE,300,300, hints);
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+            bitmap = barcodeEncoder.createBitmap(bitMatrix);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+
+        if(bitmap == null) return;
+
         int bitmapWidth = bitmap.getScaledWidth(canvas);
 
         canvas.drawBitmap(bitmap, canvasMiddle - (bitmapWidth / 2), lastBlockY + bodyText, paint);

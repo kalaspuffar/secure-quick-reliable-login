@@ -1,29 +1,22 @@
 package org.ea.sqrl.processors;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
 import android.util.Log;
-
-import com.google.zxing.FormatException;
-import com.google.zxing.Result;
-import com.google.zxing.client.result.ResultParser;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.common.BitSource;
-import com.google.zxing.common.CharacterSetECI;
-import com.google.zxing.qrcode.decoder.Decoder;
-import com.google.zxing.qrcode.decoder.Mode;
-import com.google.zxing.qrcode.decoder.Version;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.BaseActivity;
+import org.ea.sqrl.activites.SimplifiedActivity;
 import org.ea.sqrl.jni.Grc_aesgcm;
+import org.ea.sqrl.services.FingerprintHandler;
 import org.ea.sqrl.utils.EncryptionUtils;
 import org.libsodium.jni.NaCl;
 import org.libsodium.jni.Sodium;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -31,12 +24,16 @@ import java.security.Key;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
 import javax.crypto.AEADBadTagException;
 import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -72,6 +69,8 @@ public class SQRLStorage {
     private boolean hasPreviousBlock = false;
     private int previousKeyIndex = 0;
 
+    private FingerprintHandler fingerprintHandler = null;
+
     private SQRLStorage() {
         Grc_aesgcm.gcm_initialize();
         NaCl.sodium();
@@ -82,6 +81,10 @@ public class SQRLStorage {
             instance = new SQRLStorage();
         }
         return instance;
+    }
+
+    public void createFingerprintHandler(Activity a) {
+        fingerprintHandler = new FingerprintHandler(a);
     }
 
     public boolean hasMorePreviousKeys() {
@@ -422,15 +425,18 @@ public class SQRLStorage {
         this.progressionUpdater.setMax(iterationCount);
         try {
             byte[] key = null;
-            if(quickPass) {
+            if(quickPass || fingerprintHandler.hasKey()) {
+                //key = fingerprintHandler.decryptKey();
                 key = this.decryptIdentityKeyQuickPass(password);
             }
             if(key == null) {
                 key = EncryptionUtils.enSCryptIterations(password, randomSalt, logNFactor, 32, iterationCount, this.progressionUpdater);
+                //fingerprintHandler.encryptKey(key);
                 this.encryptIdentityKeyQuickPass(password, key, entropyHarvester);
             }
             byte[] identityKeys = EncryptionUtils.combine(identityMasterKeyEncrypted, identityLockKeyEncrypted);
             byte[] decryptionResult = new byte[identityKeys.length];
+
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Key keySpec = new SecretKeySpec(key, "AES");
