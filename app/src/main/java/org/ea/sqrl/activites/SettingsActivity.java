@@ -45,6 +45,7 @@ public class SettingsActivity extends BaseActivity {
         rootView = findViewById(R.id.settingsActivityView);
 
         setupSavePopupWindow(getLayoutInflater());
+        setupErrorPopupWindow(getLayoutInflater());
 
         SQRLStorage storage = SQRLStorage.getInstance();
 

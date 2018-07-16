@@ -52,6 +52,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
         setupLoginOptionsPopupWindow(getLayoutInflater(), true);
 
         setupBasePopups(getLayoutInflater(), false);
+        setupErrorPopupWindow(getLayoutInflater());
 
 
         final ImageButton btnUseIdentity = findViewById(R.id.btnUseIdentity);

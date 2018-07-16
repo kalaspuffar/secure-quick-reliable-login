@@ -45,6 +45,7 @@ public class NewIdentityDoneActivity extends LoginBaseActivity {
         SQRLStorage.getInstance().clear();
 
         setupExportOptionsPopupWindow(getLayoutInflater());
+        setupErrorPopupWindow(getLayoutInflater());
 
         rootView = findViewById(R.id.newIdentityDoneActivityView);
 

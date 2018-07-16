@@ -43,6 +43,7 @@ public class TextImportActivity extends BaseActivity {
 
         setupProgressPopupWindow(getLayoutInflater());
         setupResetPasswordPopupWindow(getLayoutInflater());
+        setupErrorPopupWindow(getLayoutInflater());
 
         final EditText txtTextIdentityInput = findViewById(R.id.txtTextIdentityInput);
         txtTextIdentityInput.addTextChangedListener(new TextWatcher() {

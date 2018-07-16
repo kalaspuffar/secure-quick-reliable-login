@@ -31,6 +31,8 @@ public class UrlLoginActivity extends LoginBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_url_login);
 
+        setupErrorPopupWindow(getLayoutInflater());
+
         cboxIdentity = findViewById(R.id.cboxIdentity);
 
         rootView = findViewById(R.id.urlLoginActivityView);

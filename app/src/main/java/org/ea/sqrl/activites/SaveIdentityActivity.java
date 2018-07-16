@@ -26,6 +26,7 @@ public class SaveIdentityActivity extends LoginBaseActivity {
         setContentView(R.layout.activity_save_identity);
 
         setupProgressPopupWindow(getLayoutInflater());
+        setupErrorPopupWindow(getLayoutInflater());
 
         rootView = findViewById(R.id.saveIdentityActivityView);
 

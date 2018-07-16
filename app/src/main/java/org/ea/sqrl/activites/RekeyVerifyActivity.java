@@ -29,6 +29,7 @@ public class RekeyVerifyActivity extends LoginBaseActivity {
         storage.clear();
 
         setupProgressPopupWindow(getLayoutInflater());
+        setupErrorPopupWindow(getLayoutInflater());
 
         rootView = findViewById(R.id.rekeyVerifyActivityView);
 
