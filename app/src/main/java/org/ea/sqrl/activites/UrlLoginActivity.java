@@ -16,7 +16,10 @@ import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
+import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
+
+import java.util.regex.Matcher;
 
 /**
  *
@@ -50,9 +53,15 @@ public class UrlLoginActivity extends LoginBaseActivity {
         communicationFlowHandler.setServerData(serverData);
         communicationFlowHandler.setUseSSL(serverData.startsWith("sqrl://"));
 
-        int indexOfQuery = serverData.indexOf("/", serverData.indexOf("://") + 3);
-        final String queryLink = serverData.substring(indexOfQuery);
-        final String domain = serverData.split("/")[2];
+        Matcher sqrlMatcher = CommunicationHandler.sqrlPattern.matcher(serverData);
+        if(!sqrlMatcher.matches()) {
+            showErrorMessage(R.string.scan_incorrect);
+            return;
+        }
+
+        final String domain = sqrlMatcher.group(1);
+        final String queryLink = sqrlMatcher.group(2);
+
         try {
             communicationFlowHandler.setQueryLink(queryLink);
             communicationFlowHandler.setDomain(domain);

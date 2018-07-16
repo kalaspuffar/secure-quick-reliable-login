@@ -19,6 +19,8 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This handler creates different queries to servers and parses the response so we can talk over
@@ -28,6 +30,7 @@ import java.util.Map;
  */
 public class CommunicationHandler {
     private static final String TAG = "CommunicationHandler";
+    public static final Pattern sqrlPattern = Pattern.compile("^s*qrl://([^?/]+)(.*)$");
 
     private static CommunicationHandler instance = null;
     private String communicationDomain;
@@ -427,10 +430,11 @@ public class CommunicationHandler {
 
             CommunicationHandler commHandler = CommunicationHandler.getInstance();
             String sqrlLink = "sqrl://www.grc.com/sqrl?nut=Na2MOglf7NyyupQ8-dtj1g";
-            String domain = sqrlLink.split("/")[2];
 
-            int indexOfQuery = sqrlLink.indexOf("/", sqrlLink.indexOf("://")+3);
-            String queryLink = sqrlLink.substring(indexOfQuery);
+            Matcher sqrlMatcher = CommunicationHandler.sqrlPattern.matcher(sqrlLink);
+
+            final String domain = sqrlMatcher.group(1);
+            String queryLink = sqrlMatcher.group(2);
 
             commHandler.setDomain(domain);
             String postData = commHandler.createPostParams(commHandler.createClientQuery(true, true), sqrlLink);

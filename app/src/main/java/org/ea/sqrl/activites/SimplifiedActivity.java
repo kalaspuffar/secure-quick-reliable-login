@@ -23,9 +23,12 @@ import com.google.zxing.integration.android.IntentResult;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
+import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.EncryptionUtils;
 import org.ea.sqrl.utils.Utils;
+
+import java.util.regex.Matcher;
 
 /**
  *
@@ -241,14 +244,15 @@ public class SimplifiedActivity extends LoginBaseActivity {
                 communicationFlowHandler.setServerData(serverData);
                 communicationFlowHandler.setUseSSL(serverData.startsWith("sqrl://"));
 
-                if(serverData.indexOf("qrl://") == -1) {
+                Matcher sqrlMatcher = CommunicationHandler.sqrlPattern.matcher(serverData);
+                if(!sqrlMatcher.matches()) {
                     showErrorMessage(R.string.scan_incorrect);
                     return;
                 }
 
-                int indexOfQuery = serverData.indexOf("/", serverData.indexOf("://") + 3);
-                final String queryLink = serverData.substring(indexOfQuery);
-                final String domain = serverData.split("/")[2];
+                final String domain = sqrlMatcher.group(1);
+                final String queryLink = sqrlMatcher.group(2);
+
                 try {
                     communicationFlowHandler.setQueryLink(queryLink);
                     communicationFlowHandler.setDomain(domain);
