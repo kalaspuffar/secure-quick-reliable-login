@@ -4,15 +4,11 @@ import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
-import android.security.keystore.KeyGenParameterSpec;
-import android.security.keystore.KeyProperties;
 import android.util.Log;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.BaseActivity;
-import org.ea.sqrl.activites.SimplifiedActivity;
 import org.ea.sqrl.jni.Grc_aesgcm;
-import org.ea.sqrl.services.FingerprintHandler;
 import org.ea.sqrl.utils.EncryptionUtils;
 import org.libsodium.jni.NaCl;
 import org.libsodium.jni.Sodium;
@@ -24,16 +20,12 @@ import java.security.Key;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
 import javax.crypto.AEADBadTagException;
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
-import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -69,8 +61,6 @@ public class SQRLStorage {
     private boolean hasPreviousBlock = false;
     private int previousKeyIndex = 0;
 
-    private FingerprintHandler fingerprintHandler = null;
-
     private SQRLStorage() {
         Grc_aesgcm.gcm_initialize();
         NaCl.sodium();
@@ -81,16 +71,6 @@ public class SQRLStorage {
             instance = new SQRLStorage();
         }
         return instance;
-    }
-
-    public void createFingerprintHandler(Activity a) {
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-            fingerprintHandler = new FingerprintHandler(a);
-            if(!fingerprintHandler.init()) {
-                fingerprintHandler = null;
-            }
-            fingerprintHandler = null;
-        }
     }
 
     public boolean hasMorePreviousKeys() {
@@ -431,16 +411,11 @@ public class SQRLStorage {
         this.progressionUpdater.setMax(iterationCount);
         try {
             byte[] key = null;
-            if(fingerprintHandler != null && fingerprintHandler.hasKey()) {
-                key = fingerprintHandler.decryptKey();
-            } else if(quickPass) {
+            if(quickPass) {
                 key = this.decryptIdentityKeyQuickPass(password);
             }
             if(key == null) {
                 key = EncryptionUtils.enSCryptIterations(password, randomSalt, logNFactor, 32, iterationCount, this.progressionUpdater);
-                if(fingerprintHandler != null) {
-                    fingerprintHandler.encryptKey(key);
-                }
                 this.encryptIdentityKeyQuickPass(password, key, entropyHarvester);
             }
             byte[] identityKeys = EncryptionUtils.combine(identityMasterKeyEncrypted, identityLockKeyEncrypted);

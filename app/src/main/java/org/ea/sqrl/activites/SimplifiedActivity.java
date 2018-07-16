@@ -78,8 +78,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
                 true);
 
         final SQRLStorage storage = SQRLStorage.getInstance();
-        storage.createFingerprintHandler(SimplifiedActivity.this);
-
+        
         loginPopupWindow.setTouchable(true);
         final EditText txtLoginPassword = popupView.findViewById(R.id.txtLoginPassword);
 
