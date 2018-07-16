@@ -91,6 +91,11 @@ public class StartActivity extends BaseActivity {
             createNewIdentity = true;
             this.showPhoneStatePermission();
         });
+
+        final Button btnTextImport = findViewById(R.id.btnTextImport);
+        btnTextImport.setOnClickListener(
+            v -> startActivity(new Intent(this, TextImportActivity.class))
+        );
     }
 
     protected void setupProgressPopupWindow(LayoutInflater layoutInflater) {
@@ -179,79 +184,6 @@ public class StartActivity extends BaseActivity {
                 });
             }).start();
         });
-    }
-
-    public void showClearNotification() {
-        final String CHANNEL_ID = "sqrl_notify_01";
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "SQRL Notification Channel", NotificationManager.IMPORTANCE_DEFAULT);
-            notificationChannel.enableVibration(false);
-            notificationChannel.enableLights(false);
-            notificationChannel.setSound(null, null);
-
-            if(notificationManager != null) {
-                notificationManager.createNotificationChannel(notificationChannel);
-            }
-        }
-
-        long[] v = {};
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_stat_sqrl_logo_vector_outline)
-                        .setContentTitle(getString(R.string.notification_identity_unlocked))
-                        .setContentText(getString(R.string.notification_identity_unlocked_title))
-                        .setAutoCancel(true)
-                        .setVibrate(v)
-                        .setSound(null)
-                        .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText(getString(R.string.notification_identity_unlocked_desc)));
-
-        Intent resultIntent = new Intent(this, ClearIdentityActivity.class);
-
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(ClearIdentityActivity.class);
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        mBuilder.setContentIntent(resultPendingIntent);
-
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if(mNotificationManager != null) {
-            mNotificationManager.notify(NOTIFICATION_IDENTITY_UNLOCKED, mBuilder.build());
-        }
-
-        long delayMillis = SQRLStorage.getInstance().getIdleTimeout() * 60000;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            JobInfo jobInfo = new JobInfo.Builder(ClearIdentityService.JOB_NUMBER, new ComponentName(this, ClearIdentityService.class))
-                    .setMinimumLatency(delayMillis).build();
-
-            JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-            if(jobScheduler != null) jobScheduler.schedule(jobInfo);
-        } else {
-            AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-
-            Intent intent = new Intent(getApplicationContext(), ClearIdentityReceiver.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-
-            int SDK_INT = Build.VERSION.SDK_INT;
-            long timeInMillis = System.currentTimeMillis() + delayMillis;
-
-            if(alarmManager == null) return;
-
-            if (SDK_INT < Build.VERSION_CODES.KITKAT) {
-                alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
-            } else if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
-            }
-        }
     }
 
     protected boolean checkRescueCode(EditText code) {

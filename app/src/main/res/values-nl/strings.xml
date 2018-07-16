@@ -1,81 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="app_name">Secure Quick Reliable Login</string>
-<string name="introduction_startpage"><b>Secure Quick Reliable Login</b>
-
-Welkom in de handleiding. Deze pagina\'s proberen de verschillende concepten van het protocol in groter detail uit te leggen. We gaan ook de verschillende toepassingen van deze applicatie uitleggen. 
-
-Om deze pagina\'s te gebruiken kan u naar links of rechts vegen om te bladeren. 
-
-Als u interesse heeft voor de sourcecode van deze open source applicatie kan u deze vinden op <a href='https://github.com/kalaspuffar/secure-quick-reliable-login'>https://github.com/kalaspuffar/secure-quick-reliable-login</a></string>
-<string name="introduction_nutshell"><b>In het kort</b>
-
-Voordat u SQRL kan gebruiken om aan te melden bij websites moet u eerst een SQRL privé identiteit maken. U heeft er slechts één nodig, waarschijnlijk voor uw gehele leven. Dit komt omdat deze NIETS over u vrijgeeft en zeer veilig is. Het is alleen maar een zeer lang (78 cijferig) willekeurig nummer. 
-
-Daarna wordt, elke keer als u SQRL gebruikt om aan te melden uw persoonlijke identiteit gebruikt om een nieuw 78-cijferig nummer te maken voor deze éne website. Elke website die u bezoekt ziet u als een ander nummer, maar elke keer als u terug komt bij de zelfde site is dit nummer hetzelfde, dat voor deze specifieke site is gemaakt.
-
-Hierdoor kan u uniek en permanent geïdentificeerd worden, en toch anoniem blijven.
-
-Om dat u hiervoor gen e-mailadres of wachtwoord hoeft te gebruiken geeft u de website nooit iets met uw werkelijke identiteit die deze moet beschermen. Als de SQRL identiteit die u heeft bij deze website ooit wordt gestolen, zijn deze allen geldig voor die specifieke website, maar door de onderliggende cryptografie kan deze niet gebruikt worden om deze informatie te gebruiken om als u aan te melden.
-
-Het is werkelijk zo mooi als het klinkt. Het is waar we op hebben gewacht.</string>
-<string name="introduction_password"><b>Uw SQRL wachtwoord</b>
-
-SQRL haalt de zorg voor het aanmelden in verschillende websites weg door het voor u te doen. Helaas betekend dit dat iedereen die de app op uw telefoon kan starten deze zich kan aanmelden als of u het bent.
-
-We lossen dit probleem op door een wachtwoord op SQRL te zetten, waarmee u SQRL activeert. U kan instellen hoe veel beveiliging en complexiteit u nodig heeft. U kan elk wachtwoord van elke lengte gebruiken. Om raden extra lastig te maken kan u ook instellen hoe lang het decoderen moet duren. Om lange en complexe wachtwoorden eenvoudig te kunnen toepassen, zijn de eerste vier tekens genoeg om het volledige wachtwoord te heractiveren.
-
-U kan uw wachtwoord op elk moment veranderen samen met de verschillende instellingen. Als u uw wachtwoord vergeet kan SQRL met de Herstelcode uw toegang opnieuw activeren.</string>
-<string name="introduction_rescue_code"><b>SQRL\'s Herstelcode</b>
-
-U en SQRL hebben waarschijnlijk geen herstel nodig, Maar SQRL\'s beveiliging is zo goed dat u misschien toch een keer moet herstellen. Hieronder zijn twee scenario\'s waar u de herstelcode nodig heeft:
-
-• U heeft uw wachtwoord veranderd maar het nieuwe wachtwoord heeft u vergeten. U kan het aan niemand vragen omdat in tegenstelling tot websites, waar u vaak \'Ik ben mijn wachtwoord vergeten\' kan klikken. De SQRL applicatie weet uw wachtwoord ook niet (anders kan het gehackt worden). Back-ups die u heeft gemaakt zijn mogelijk opgeslagen met het oude wachtwoord, maar als die er niet meer zijn is er de SQRL Herstelcode om uw geheugen te compenseren.
-• Als u SQRL heeft gebruikt om uzelf aan te melden bij een website, kan alleen de Herstelcode deze identiteit aanpassen. Als iemand uw telefoon heeft gestolen en u heeft per ongeluk een slecht wachtwoord gekozen, OF er was een virus op uw systeem. De criminelen kunnen dan tijdelijk nog wel aanmelden maar niet de identiteit omzetten naar zichzelf. Maar U kan uw account opeisen door een nieuwe identiteit te maken met behulp van de Herstelcode van de oude identiteit.
-
-De SQRL Herstelcode is een krachtig hulpmiddel, schrijf het op en raak het niet kwijt. U heeft het mogelijk nooit nodig, maar als dit wel zo is zal u blij zijn dat u het heeft bewaard.</string>
-<string name="introduction_backup"><b>Waarom back-uppen?</b>
-
-Uw SQRL identiteit is een willekeurig gekozen getal van 78-cijfers, welke gebruikt wordt om individuele identiteiten te maken voor elke website. NIEMAND weet wat het is. Als u SQRL gebruikt om uzelf te authenticeren bent u dit 78-cijferige nummer. Als u het kwijtraakt bent u ook uw identiteit kwijt.
-
-Een andere reden om uw privé identiteit te back-uppen is om deze naar een andere computer of mobiel apparaat te kopiëren. Als uw privé SQRL identiteit op al uw apparaten is geïnstalleerd kan u deze allemaal gebruiken om u te authenticeren op het internet.
-
-SQRL heeft een aantal simpele manieren om uw privé identiteit te backuppen, en alle backups zijn altijd beschermd met uw SQRL wachtwoord en Herstelcode
-
-Een backup afdrukken als een kleine QR-code en tekst (misschien zelfs een paar afdrukken) wordt aanbevolen, omdat papier een basis opslagmedium is. En om veel redenen is het nog steeds het beste. Sla het document op bij uw andere belangrijke papieren. U kan uw backup ook op een USB-stick zetten of op CD branden en deze op een veilige plek opslaan.
-
-Maar maak ALSTUBLIEFT een back-up. NIEMAND kent uw unieke 78-cijferige privé identiteit... zelfs u niet!</string>
-<string name="welcome_message"><b>Welkom in de Secure Quick Reliable Login app.</b>
-
-Deze app slaat uw gecodeerde sleutels veilig op dit apparaat op. U kan uw kluis openen en één van de sleutels gebruiken om uzelf te authenticeren  voor een server.
-
-In deze gegevens is geen verbinding met enige persoonlijke informatie, het bevestigt alleen dat u met de zelfde telefoon als de (laatste succesvolle) keer de verbinding wilt hervatten. Dit maakt het mogelijk om unieke anonieme aanmelding te maken voor uw favoriete sites. U bepaalt zelf hoe veel informatie u met de site deelt.
-
-Voor de duidelijkheid: deze applicatie verbergt geen informatie die uw telefoon zelf al geeft, maar zal geen extra informatie lekken.
-
-U kan het proces starten door een geheime sleutel in te lezen die gemaakt is door een desktop applicatie zoals die van <a href='https://grc.com'>https://grc.com</a> en deze te openen met uw wachtwoord. Als uw sleutel is ingelezen kan u zich authenticeren door de QR-code van een site te lezen, het adres te controleren en een aanmeldidentiteit te kiezen.
-
-U moet hiervoor wel de app het recht geven om de camera te gebruiken, anders kan er geen QR-code gelezen worden van een geexporteerde sleutel of een site.
-
-Om dit project te volgen kan u gaan naar <a href='https://github.com/kalaspuffar/secure-quick-reliable-login'>https://github.com/kalaspuffar/secure-quick-reliable-login</a>
-</string>
+<string name="introduction_startpage"><b>Secure Quick Reliable Login</b>\n\nWelkom in de handleiding. Deze pagina\'s proberen de verschillende concepten van het protocol in groter detail uit te leggen. We gaan ook de verschillende toepassingen van deze applicatie uitleggen. \n\nOm deze pagina\'s te gebruiken kan u naar links of rechts vegen om te bladeren. \n\nAls u interesse heeft voor de sourcecode van deze open source applicatie kan u deze vinden op <a href="https://github.com/kalaspuffar/secure-quick-reliable-login">https://github.com/kalaspuffar/secure-quick-reliable-login</a></string>
+<string name="introduction_nutshell"><b>In het kort</b>\n\nVoordat u SQRL kan gebruiken om aan te melden bij websites moet u eerst een SQRL privé identiteit maken. U heeft er slechts één nodig, waarschijnlijk voor uw gehele leven. Dit komt omdat deze NIETS over u vrijgeeft en zeer veilig is. Het is alleen maar een zeer lang (78 cijferig) willekeurig nummer. \n\nDaarna wordt, elke keer als u SQRL gebruikt om aan te melden uw persoonlijke identiteit gebruikt om een nieuw 78-cijferig nummer te maken voor deze éne website. Elke website die u bezoekt ziet u als een ander nummer, maar elke keer als u terug komt bij de zelfde site is dit nummer hetzelfde, dat voor deze specifieke site is gemaakt.\n\nHierdoor kan u uniek en permanent geïdentificeerd worden, en toch anoniem blijven.\n\nOm dat u hiervoor gen e-mailadres of wachtwoord hoeft te gebruiken geeft u de website nooit iets met uw werkelijke identiteit die deze moet beschermen. Als de SQRL identiteit die u heeft bij deze website ooit wordt gestolen, zijn deze allen geldig voor die specifieke website, maar door de onderliggende cryptografie kan deze niet gebruikt worden om deze informatie te gebruiken om als u aan te melden.\n\nHet is werkelijk zo mooi als het klinkt. Het is waar we op hebben gewacht.</string>
+<string name="introduction_password"><b>Uw SQRL wachtwoord</b>\n\nSQRL haalt de zorg voor het aanmelden in verschillende websites weg door het voor u te doen. Helaas betekend dit dat iedereen die de app op uw telefoon kan starten deze zich kan aanmelden als of u het bent.\n\nWe lossen dit probleem op door een wachtwoord op SQRL te zetten, waarmee u SQRL activeert. U kan instellen hoe veel beveiliging en complexiteit u nodig heeft. U kan elk wachtwoord van elke lengte gebruiken. Om raden extra lastig te maken kan u ook instellen hoe lang het decoderen moet duren. Om lange en complexe wachtwoorden eenvoudig te kunnen toepassen, zijn de eerste vier tekens genoeg om het volledige wachtwoord te heractiveren.\n\nU kan uw wachtwoord op elk moment veranderen samen met de verschillende instellingen. Als u uw wachtwoord vergeet kan SQRL met de Herstelcode uw toegang opnieuw activeren.</string>
+<string name="introduction_rescue_code"><b>SQRL\'s Herstelcode</b>\n\nU en SQRL hebben waarschijnlijk geen herstel nodig, Maar SQRL\'s beveiliging is zo goed dat u misschien toch een keer moet herstellen. Hieronder zijn twee scenario\'s waar u de herstelcode nodig heeft:\n\n• U heeft uw wachtwoord veranderd maar het nieuwe wachtwoord heeft u vergeten. U kan het aan niemand vragen omdat in tegenstelling tot websites, waar u vaak \'Ik ben mijn wachtwoord vergeten\' kan klikken. De SQRL applicatie weet uw wachtwoord ook niet (anders kan het gehackt worden). Back-ups die u heeft gemaakt zijn mogelijk opgeslagen met het oude wachtwoord, maar als die er niet meer zijn is er de SQRL Herstelcode om uw geheugen te compenseren.\n• Als u SQRL heeft gebruikt om uzelf aan te melden bij een website, kan alleen de Herstelcode deze identiteit aanpassen. Als iemand uw telefoon heeft gestolen en u heeft per ongeluk een slecht wachtwoord gekozen, OF er was een virus op uw systeem. De criminelen kunnen dan tijdelijk nog wel aanmelden maar niet de identiteit omzetten naar zichzelf. Maar U kan uw account opeisen door een nieuwe identiteit te maken met behulp van de Herstelcode van de oude identiteit.\n\nDe SQRL Herstelcode is een krachtig hulpmiddel, schrijf het op en raak het niet kwijt. U heeft het mogelijk nooit nodig, maar als dit wel zo is zal u blij zijn dat u het heeft bewaard.</string>
+<string name="introduction_backup"><b>Waarom back-uppen?</b>\n\nUw SQRL identiteit is een willekeurig gekozen getal van 78-cijfers, welke gebruikt wordt om individuele identiteiten te maken voor elke website. NIEMAND weet wat het is. Als u SQRL gebruikt om uzelf te authenticeren bent u dit 78-cijferige nummer. Als u het kwijtraakt bent u ook uw identiteit kwijt.\n\nEen andere reden om uw privé identiteit te back-uppen is om deze naar een andere computer of mobiel apparaat te kopiëren. Als uw privé SQRL identiteit op al uw apparaten is geïnstalleerd kan u deze allemaal gebruiken om u te authenticeren op het internet.\n\nSQRL heeft een aantal simpele manieren om uw privé identiteit te backuppen, en alle backups zijn altijd beschermd met uw SQRL wachtwoord en Herstelcode\n\nEen backup afdrukken als een kleine QR-code en tekst (misschien zelfs een paar afdrukken) wordt aanbevolen, omdat papier een basis opslagmedium is. En om veel redenen is het nog steeds het beste. Sla het document op bij uw andere belangrijke papieren. U kan uw backup ook op een USB-stick zetten of op CD branden en deze op een veilige plek opslaan.\n\nMaar maak ALSTUBLIEFT een back-up. NIEMAND kent uw unieke 78-cijferige privé identiteit... zelfs u niet!</string>
+<string name="welcome_message"><b>Welkom in de Secure Quick Reliable Login app.</b>\n\nDeze app slaat uw gecodeerde sleutels veilig op dit apparaat op. U kan uw kluis openen en één van de sleutels gebruiken om uzelf te authenticeren  voor een server.\n\nIn deze gegevens is geen verbinding met enige persoonlijke informatie, het bevestigt alleen dat u met de zelfde telefoon als de (laatste succesvolle) keer de verbinding wilt hervatten. Dit maakt het mogelijk om unieke anonieme aanmelding te maken voor uw favoriete sites. U bepaalt zelf hoe veel informatie u met de site deelt.\n\nVoor de duidelijkheid: deze applicatie verbergt geen informatie die uw telefoon zelf al geeft, maar zal geen extra informatie lekken.\n\nU kan het proces starten door een geheime sleutel in te lezen die gemaakt is door een desktop applicatie zoals die van <a href="https://grc.com">https://grc.com</a> en deze te openen met uw wachtwoord. Als uw sleutel is ingelezen kan u zich authenticeren door de QR-code van een site te lezen, het adres te controleren en een aanmeldidentiteit te kiezen.\n\nU moet hiervoor wel de app het recht geven om de camera te gebruiken, anders kan er geen QR-code gelezen worden van een geexporteerde sleutel of een site.\n\nOm dit project te volgen kan u gaan naar <a href="https://github.com/kalaspuffar/secure-quick-reliable-login">https://github.com/kalaspuffar/secure-quick-reliable-login</a>\n</string>
 <string name="button_scan_secret">Scan Identiteits-QR-code</string>
 <string name="button_login">Aanmelden</string>
 <string name="button_intro_close">Sluiten</string>
 <string name="action_help">Help</string>
 <string name="action_about">Over</string>
 <string name="about_message_title">Over</string>
-<string name="about_message_text">
-<b>Secure Quick Reliable Login</b>
-
-Versie: %s
-
-Github repository:
-<a href='https://github.com/kalaspuffar/secure-quick-reliable-login'>https://github.com/kalaspuffar/secure-quick-reliable-login</a>
-
-Auteur:
-Daniel Persson
-</string>
+<string name="about_message_text">\n<b>Secure Quick Reliable Login</b>\n\nVersie: %s\n\nGithub repository:\n<a href="https://github.com/kalaspuffar/secure-quick-reliable-login">https://github.com/kalaspuffar/secure-quick-reliable-login</a>\n\nAuteur:\nDaniel Persson\n</string>
 <string name="decrypt_identity_message">U heeft uw privé identiteit met succes gescand. Controleer of de herstelcode er onder overeenkomt met de informatie die ook is afgedrukt op het document.</string>
 <string name="communication_incorrect_response">Ongeldig antwoord, de server gaf geen foutcode. Probeer het later opnieuw</string>
 <string name="communication_bad_id_association">Verkeerde ID koppeling: SQRL identiteit die is gekoppeld aan de aangevraagde \'nut\' komt niet overeen met de SQRL ID die gebruikt is om de vraag te stellen.</string>
@@ -99,8 +37,7 @@ Daniel Persson
 <string name="button_rename_ok">Hernoemen</string>
 <string name="current_identity_title">Huidige identiteit</string>
 <string name="title_activity_clear_identity">SQRL - QuickPass wissen</string>
-<string name="notification_identity_unlocked_desc">Voor de zekerheid moet de QuickPass uit het geheugen gewist worden. 
-Klik hier om deze uit het geheugen te wissen.</string>
+<string name="notification_identity_unlocked_desc">Voor de zekerheid moet de QuickPass uit het geheugen gewist worden. \nKlik hier om deze uit het geheugen te wissen.</string>
 <string name="notification_identity_unlocked">QuickPass actief</string>
 <string name="clear_identity_fail">QuickPass is nog in het geheugen, niet mogelijk om het te wissen</string>
 <string name="clear_identity_success">QuickPass gewist</string>
@@ -184,34 +121,8 @@ Klik hier om deze uit het geheugen te wissen.</string>
 <string name="title_rescuecode_enter">SQRL - Herstelcode invoeren</string>
 <string name="button_rekey_identity_start">Start</string>
 <string name="button_create_identity_start">Start</string>
-<string name="create_identity_message">Een nieuwe identiteit maken is een proces in zes stappen.
-
-1. De camera wordt geactiveerd en u moet deze willekeurig in het rond bewegen om willekeurige informatie (entropie) te krijgen voor een veilige sleutel.
-
-2. U krijgt een herstelcode die u moet opslaan (overschrijven) en na stap 3 op een veilige plek moet opslaan.
-
-3. U wordt gevraagd om de herstelcode opnieuw in te voeren om te controleren dat u deze correct heeft overgenomen.
-
-4. U kiest een wachtwoord voor uw nieuwe identiteit.
-
-5. De app maakt en codeert uw identiteit.
-
-6. U krijgt de gelegenheid om uw identiteit op te slaan zodat u deze op een veilige plek kan bewaren.</string>
-<string name="rekey_identity_message">Een nieuwe identiteit genereren is een proces in zeven stappen.
-
-1. Voer de oude herstelcode van de identiteit die u wilt vervangen in om te bewijzen dat u toegang heeft tot deze beveiligingscode.
-
-2. De camera wordt geactiveerd en u moet deze in het rond bewegen om entropie te krijgen voor een veilige sleutel.
-
-3. U krijgt een nieuwe herstelcode welke u opnieuw op een veilige plek moet opslaan.
-
-4. U wordt gevraagd om de herstelcode opnieuw in te voeren om te controleren dat u deze correct heeft overgenomen.
-
-5. U kiest een wachtwoord voor uw nieuwe identiteit.
-
-5. De app maakt en codeert uw identiteit.
-
-6. U krijgt de gelegenheid om uw identiteit op te slaan zodat u deze op een veilige plek kan bewaren.</string>
+<string name="create_identity_message">Een nieuwe identiteit maken is een proces in zes stappen.\n\n1. De camera wordt geactiveerd en u moet deze willekeurig in het rond bewegen om willekeurige informatie (entropie) te krijgen voor een veilige sleutel.\n\n2. U krijgt een herstelcode die u moet opslaan (overschrijven) en na stap 3 op een veilige plek moet opslaan.\n\n3. U wordt gevraagd om de herstelcode opnieuw in te voeren om te controleren dat u deze correct heeft overgenomen.\n\n4. U kiest een wachtwoord voor uw nieuwe identiteit.\n\n5. De app maakt en codeert uw identiteit.\n\n6. U krijgt de gelegenheid om uw identiteit op te slaan zodat u deze op een veilige plek kan bewaren.</string>
+<string name="rekey_identity_message">Een nieuwe identiteit genereren is een proces in zeven stappen.\n\n1. Voer de oude herstelcode van de identiteit die u wilt vervangen in om te bewijzen dat u toegang heeft tot deze beveiligingscode.\n\n2. De camera wordt geactiveerd en u moet deze in het rond bewegen om entropie te krijgen voor een veilige sleutel.\n\n3. U krijgt een nieuwe herstelcode welke u opnieuw op een veilige plek moet opslaan.\n\n4. U wordt gevraagd om de herstelcode opnieuw in te voeren om te controleren dat u deze correct heeft overgenomen.\n\n5. U kiest een wachtwoord voor uw nieuwe identiteit.\n\n5. De app maakt en codeert uw identiteit.\n\n6. U krijgt de gelegenheid om uw identiteit op te slaan zodat u deze op een veilige plek kan bewaren.</string>
 <string name="button_start_create_identity">Identiteit aanmaken</string>
 <string name="title_create_identity">SQRL - Identiteit aanmaken</string>
 <string name="title_rekey_identity">SQRL - Nieuwe identiteit aanmaken</string>
@@ -232,11 +143,7 @@ Klik hier om deze uit het geheugen te wissen.</string>
 <string name="button_new_identity_done_export">Exporteren</string>
 <string name="button_new_identity_done">Voltooid</string>
 <string name="camera_permission_request_title">Toestemming vereist</string>
-<string name="camera_permission_request_desc">Voor het aanmaken en importeren van identiteiten en ook voor het aanmelden maakt deze app gebruik van de camera.
-
-Bij het aanmaken van een identiteit gebruiken we deze om willekeurige informatie te krijgen wat belangrijk is voor de veiligheid van de identiteit.
-
-Bij het importeren en aanmelden heeft u de mogelijkheid om een QR-code te scannen om de informatie voor die taak te krijgen.</string>
+<string name="camera_permission_request_desc">Voor het aanmaken en importeren van identiteiten en ook voor het aanmelden maakt deze app gebruik van de camera.\n\nBij het aanmaken van een identiteit gebruiken we deze om willekeurige informatie te krijgen wat belangrijk is voor de veiligheid van de identiteit.\n\nBij het importeren en aanmelden heeft u de mogelijkheid om een QR-code te scannen om de informatie voor die taak te krijgen.</string>
 <string name="introduction_startpage_title">Start</string>
 <string name="introduction_nutshell_title">In het kort</string>
 <string name="introduction_password_title">Wachtwoord</string>
