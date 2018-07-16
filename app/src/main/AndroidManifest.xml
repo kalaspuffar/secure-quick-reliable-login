@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="org.ea.sqrl"
-    android:versionCode="24"
-    android:versionName="0.8.2">
-
-    <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="27" />
+    package="org.ea.sqrl">
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
