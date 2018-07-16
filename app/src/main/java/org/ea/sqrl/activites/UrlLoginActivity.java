@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
-import android.support.design.widget.Snackbar;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -40,7 +39,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
         Intent intent = getIntent();
         Uri data = intent.getData();
         if(data == null) {
-            handler.post(() -> Snackbar.make(rootView, getString(R.string.url_login_missing_url), Snackbar.LENGTH_LONG).show());
+            showErrorMessage(R.string.url_login_missing_url);
             return;
         }
         txtUrlLogin.setText(data.getHost());
@@ -56,7 +55,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
             communicationFlowHandler.setQueryLink(queryLink);
             communicationFlowHandler.setDomain(domain);
         } catch (Exception e) {
-            handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+            showErrorMessage(e.getMessage());
             Log.e(TAG, e.getMessage(), e);
             return;
         }
@@ -88,7 +87,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                     new Thread(() -> {
                         boolean decryptionOk = storage.decryptIdentityKey(password.toString(), entropyHarvester, true);
                         if(!decryptionOk) {
-                            Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                            showErrorMessage(R.string.decrypt_identity_fail);
                             handler.post(() -> {
                                 txtLoginPassword.setText("");
                                 progressPopupWindow.dismiss();
@@ -146,7 +145,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                 new Thread(() -> {
                     boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, false);
                     if(!decryptionOk) {
-                        Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                        showErrorMessage(R.string.decrypt_identity_fail);
                         handler.post(() -> {
                             txtLoginPassword.setText("");
                             progressPopupWindow.dismiss();

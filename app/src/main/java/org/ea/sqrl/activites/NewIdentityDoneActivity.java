@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.print.PrintAttributes;
 import android.print.PrintManager;
-import android.support.design.widget.Snackbar;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
@@ -92,7 +91,7 @@ public class NewIdentityDoneActivity extends LoginBaseActivity {
             String uriString = "content://org.ea.sqrl.fileprovider/sqrltmp/";
             File directory = new File(getCacheDir(), "sqrltmp");
             if(!directory.mkdir()) {
-                handler.post(() -> Snackbar.make(rootView, getString(R.string.main_activity_could_not_create_dir), Snackbar.LENGTH_LONG).show());
+                showErrorMessage(R.string.main_activity_could_not_create_dir);
             }
 
             try {
@@ -115,7 +114,7 @@ public class NewIdentityDoneActivity extends LoginBaseActivity {
                 shareIntent.setType("application/octet-stream");
                 startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.save_identity_to)));
             } catch (Exception e) {
-                handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                showErrorMessage(e.getMessage());
                 Log.e(TAG, e.getMessage(), e);
             }
         });

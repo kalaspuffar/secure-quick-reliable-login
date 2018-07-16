@@ -31,11 +31,12 @@ public class CommunicationFlowHandler {
 
     private PopupWindow askPopupWindow;
     private PopupWindow errorPopupWindow;
+    private TextView txtErrorMessage;
+
     private Deque<Action> actionStack = new ArrayDeque<>();
     private ServerSocket server;
     private Runnable doneAction;
     private Runnable errorAction;
-    private TextView txtErrorMessage;
     private Handler handler;
     private boolean hasRetried = false;
 
@@ -361,12 +362,7 @@ public class CommunicationFlowHandler {
 
         txtErrorMessage = popupView.findViewById(R.id.txtErrorMessage);
         final Button btnErrorOk = popupView.findViewById(R.id.btnErrorOk);
-        final ImageButton btnCloseError = popupView.findViewById(R.id.btnCloseError);
-
         btnErrorOk.setOnClickListener(v -> {
-            errorPopupWindow.dismiss();
-        });
-        btnCloseError.setOnClickListener(v -> {
             errorPopupWindow.dismiss();
         });
     }

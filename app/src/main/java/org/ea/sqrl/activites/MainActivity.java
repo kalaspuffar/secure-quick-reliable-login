@@ -72,6 +72,7 @@ public class MainActivity extends LoginBaseActivity {
         setupChangePasswordPopupWindow(getLayoutInflater());
         setupExportOptionsPopupWindow(getLayoutInflater());
         setupLoginOptionsPopupWindow(getLayoutInflater(), true);
+        setupErrorPopupWindow(getLayoutInflater());
 
         setupBasePopups(getLayoutInflater(), false);
 
@@ -240,9 +241,7 @@ public class MainActivity extends LoginBaseActivity {
 
                     boolean decryptionOk = storage.decryptUnlockKey(rescueCode);
                     if (!decryptionOk) {
-                        handler.post(() ->
-                            Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show()
-                        );
+                        showErrorMessage(R.string.decrypt_identity_fail);
                         return;
                     }
 
@@ -250,9 +249,7 @@ public class MainActivity extends LoginBaseActivity {
 
                     boolean encryptStatus = storage.encryptIdentityKey(txtResetPasswordNewPassword.getText().toString(), entropyHarvester);
                     if (!encryptStatus) {
-                        handler.post(() ->
-                            Snackbar.make(rootView, getString(R.string.encrypt_identity_fail), Snackbar.LENGTH_LONG).show()
-                        );
+                        showErrorMessage(R.string.encrypt_identity_fail);
                         return;
                     }
                     storage.clear();
@@ -328,7 +325,7 @@ public class MainActivity extends LoginBaseActivity {
                     new Thread(() -> {
                         boolean decryptionOk = storage.decryptIdentityKey(password.toString(), entropyHarvester, true);
                         if(!decryptionOk) {
-                            Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                            showErrorMessage(R.string.decrypt_identity_fail);
                             handler.post(() -> {
                                 progressPopupWindow.dismiss();
                                 loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
@@ -389,7 +386,7 @@ public class MainActivity extends LoginBaseActivity {
                 new Thread(() -> {
                     boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, false);
                     if(!decryptionOk) {
-                        Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                        showErrorMessage(R.string.decrypt_identity_fail);
                         handler.post(() -> {
                             txtLoginPassword.setText("");
                             progressPopupWindow.dismiss();
@@ -451,7 +448,7 @@ public class MainActivity extends LoginBaseActivity {
             String uriString = "content://org.ea.sqrl.fileprovider/sqrltmp/";
             File directory = new File(getCacheDir(), "sqrltmp");
             if(!directory.mkdir()) {
-                handler.post(() -> Snackbar.make(rootView, getString(R.string.main_activity_could_not_create_dir), Snackbar.LENGTH_LONG).show());
+                showErrorMessage(R.string.main_activity_could_not_create_dir);
             }
 
             try {
@@ -474,7 +471,7 @@ public class MainActivity extends LoginBaseActivity {
                 shareIntent.setType("application/octet-stream");
                 startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.save_identity_to)));
             } catch (Exception e) {
-                handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                showErrorMessage(e.getMessage());
                 Log.e(TAG, e.getMessage(), e);
             }
         });
@@ -534,7 +531,7 @@ public class MainActivity extends LoginBaseActivity {
                     boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString(), entropyHarvester, false);
                     if(!decryptStatus) {
                         handler.post(() -> {
-                            Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                            showErrorMessage(R.string.decrypt_identity_fail);
                             txtPassword.setText("");
                             progressPopupWindow.dismiss();
                         });
@@ -545,7 +542,7 @@ public class MainActivity extends LoginBaseActivity {
                     boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
                     if (!encryptStatus) {
                         handler.post(() -> {
-                            Snackbar.make(rootView, getString(R.string.encrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                            showErrorMessage(R.string.encrypt_identity_fail);
                             txtPassword.setText("");
                             progressPopupWindow.dismiss();
                         });
@@ -553,7 +550,7 @@ public class MainActivity extends LoginBaseActivity {
                     }
                     storage.clear();
                 } catch (Exception e) {
-                    handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                    showErrorMessage(e.getMessage());
                     Log.e(TAG, e.getMessage(), e);
                 }
 
@@ -601,7 +598,7 @@ public class MainActivity extends LoginBaseActivity {
         final Button btnChangePassword = popupView.findViewById(R.id.btnDoChangePassword);
         btnChangePassword.setOnClickListener(v -> {
             if(!txtNewPassword.getText().toString().equals(txtRetypePassword.getText().toString())) {
-                Snackbar.make(rootView, getString(R.string.change_password_retyped_password_do_not_match), Snackbar.LENGTH_LONG).show();
+                showErrorMessage(R.string.change_password_retyped_password_do_not_match);
                 txtCurrentPassword.setText("");
                 txtNewPassword.setText("");
                 txtRetypePassword.setText("");
@@ -616,7 +613,7 @@ public class MainActivity extends LoginBaseActivity {
                     boolean decryptStatus = storage.decryptIdentityKey(txtCurrentPassword.getText().toString(), entropyHarvester, false);
                     if (!decryptStatus) {
                         handler.post(() -> {
-                            Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                            showErrorMessage(R.string.decrypt_identity_fail);
                             txtCurrentPassword.setText("");
                             txtNewPassword.setText("");
                             txtRetypePassword.setText("");
@@ -627,8 +624,9 @@ public class MainActivity extends LoginBaseActivity {
 
                     boolean encryptStatus = storage.encryptIdentityKey(txtNewPassword.getText().toString(), entropyHarvester);
                     if (!encryptStatus) {
+                        showErrorMessage(R.string.encrypt_identity_fail);
+
                         handler.post(() -> {
-                            Snackbar.make(rootView, getString(R.string.encrypt_identity_fail), Snackbar.LENGTH_LONG).show();
                             txtCurrentPassword.setText("");
                             txtNewPassword.setText("");
                             txtRetypePassword.setText("");
@@ -719,8 +717,8 @@ public class MainActivity extends LoginBaseActivity {
                     communicationFlowHandler.setServerData(serverData);
                     communicationFlowHandler.setUseSSL(serverData.startsWith("sqrl://"));
 
-                    if(serverData.indexOf("://") == -1) {
-                        handler.post(() -> Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show());
+                    if(serverData.indexOf("qrl://") == -1) {
+                        showErrorMessage(R.string.scan_incorrect);
                         return;
                     }
 
@@ -731,7 +729,7 @@ public class MainActivity extends LoginBaseActivity {
                         communicationFlowHandler.setQueryLink(queryLink);
                         communicationFlowHandler.setDomain(domain);
                     } catch (Exception e) {
-                        handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                        showErrorMessage(e.getMessage());
                         Log.e(TAG, e.getMessage(), e);
                         return;
                     }
@@ -755,7 +753,7 @@ public class MainActivity extends LoginBaseActivity {
                     try {
                         byte[] qrCodeData = Utils.readSQRLQRCode(data);
                         if(qrCodeData.length == 0) {
-                            handler.post(() -> Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show());
+                            showErrorMessage(R.string.scan_incorrect);
                             return;
                         }
 
@@ -778,7 +776,7 @@ public class MainActivity extends LoginBaseActivity {
                             importPopupWindow.showAtLocation(importPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                         }, 100);
                     } catch (Exception e) {
-                        handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                        showErrorMessage(e.getMessage());
                         Log.e(TAG, e.getMessage(), e);
                     }
                 }

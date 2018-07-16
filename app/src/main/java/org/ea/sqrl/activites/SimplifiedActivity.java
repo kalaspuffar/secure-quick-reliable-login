@@ -98,7 +98,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
                     new Thread(() -> {
                         boolean decryptionOk = storage.decryptIdentityKey(password.toString(), entropyHarvester, true);
                         if(!decryptionOk) {
-                            Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                            showErrorMessage(R.string.decrypt_identity_fail);
                             handler.post(() -> {
                                 progressPopupWindow.dismiss();
                                 loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
@@ -160,7 +160,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
                 new Thread(() -> {
                     boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, false);
                     if(!decryptionOk) {
-                        Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                        showErrorMessage(R.string.decrypt_identity_fail);
                         handler.post(() -> {
                             txtLoginPassword.setText("");
                             progressPopupWindow.dismiss();
@@ -218,7 +218,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
                 try {
                     storage.read(identityData);
                 } catch (Exception e) {
-                    handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                    showErrorMessage(e.getMessage());
                     Log.e(TAG, e.getMessage(), e);
                 }
             }
@@ -240,8 +240,8 @@ public class SimplifiedActivity extends LoginBaseActivity {
                 communicationFlowHandler.setServerData(serverData);
                 communicationFlowHandler.setUseSSL(serverData.startsWith("sqrl://"));
 
-                if(serverData.indexOf("://") == -1) {
-                    handler.post(() -> Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show());
+                if(serverData.indexOf("qrl://") == -1) {
+                    showErrorMessage(R.string.scan_incorrect);
                     return;
                 }
 
@@ -252,7 +252,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
                     communicationFlowHandler.setQueryLink(queryLink);
                     communicationFlowHandler.setDomain(domain);
                 } catch (Exception e) {
-                    handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                    showErrorMessage(e.getMessage());
                     Log.e(TAG, e.getMessage(), e);
                     return;
                 }

@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import org.ea.sqrl.BuildConfig;
 import org.ea.sqrl.R;
@@ -39,7 +41,11 @@ public class BaseActivity extends AppCompatActivity {
 
     private final int REQUEST_PERMISSION_CAMERA = 1;
 
+    private Handler handler = new Handler();
+
     private PopupWindow cameraAccessPopupWindow;
+    private PopupWindow errorPopupWindow;
+    private TextView txtErrorMessage;
 
     public static final int NOTIFICATION_IDENTITY_UNLOCKED = 1;
 
@@ -144,5 +150,33 @@ public class BaseActivity extends AppCompatActivity {
         );
     }
 
+    public void setupErrorPopupWindow(LayoutInflater layoutInflater) {
+        View popupView = layoutInflater.inflate(R.layout.fragment_error_dialog, null);
 
+        errorPopupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
+                false);
+
+
+        txtErrorMessage = popupView.findViewById(R.id.txtErrorMessage);
+        final Button btnErrorOk = popupView.findViewById(R.id.btnErrorOk);
+
+        btnErrorOk.setOnClickListener(v -> {
+            errorPopupWindow.dismiss();
+        });
+    }
+
+    public void showErrorMessage(int id) {
+        txtErrorMessage.setText(id);
+        handler.post(() ->
+            errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
+        );
+    }
+
+    public void showErrorMessage(String message) {
+        txtErrorMessage.setText(message);
+        handler.post(() ->
+                errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
+        );
+    }
 }

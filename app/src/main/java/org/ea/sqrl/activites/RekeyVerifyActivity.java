@@ -2,7 +2,6 @@ package org.ea.sqrl.activites;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -63,10 +62,8 @@ public class RekeyVerifyActivity extends LoginBaseActivity {
                         boolean decryptRescueCode = storage.decryptUnlockKey(rescueCode);
                         if (!decryptRescueCode) {
                             Log.e(TAG, "Incorrect decryptRescue");
-                            handler.post(() -> {
-                                Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
-                                progressPopupWindow.dismiss();
-                            });
+                            showErrorMessage(R.string.decrypt_identity_fail);
+                            handler.post(() -> progressPopupWindow.dismiss());
                             return;
                         }
                         this.finish();

@@ -21,24 +21,10 @@
         tools:layout_conversion_absoluteHeight="142dp"
         tools:layout_conversion_absoluteWidth="359dp">
 
-        <ImageButton
-            android:id="@+id/btnCloseError"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/zxing_transparent"
-            android:contentDescription="@string/ask_close"
-            android:src="@drawable/ic_close"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <TextView
             android:id="@+id/txtErrorMessage"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
@@ -47,7 +33,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnCloseError" />
+            app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
         <TextView
             android:id="@+id/textView7"

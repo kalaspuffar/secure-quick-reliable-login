@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.Snackbar;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -73,9 +72,7 @@ public class SettingsActivity extends BaseActivity {
         try {
             return Integer.parseInt(txt.getText().toString());
         } catch (NumberFormatException nfe) {
-            handler.post(() -> {
-                Snackbar.make(rootView, errorMessage, Snackbar.LENGTH_LONG).show();
-            });
+            showErrorMessage(errorMessage);
         }
         return -1;
     }
@@ -104,19 +101,15 @@ public class SettingsActivity extends BaseActivity {
             storage.clearQuickPass(this);
             boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString(), entropyHarvester, false);
             if(!decryptStatus) {
-                handler.post(() -> {
-                    Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
-                    txtPassword.setText("");
-                });
+                showErrorMessage(R.string.decrypt_identity_fail);
+                handler.post(() -> txtPassword.setText(""));
                 return;
             }
 
             int hintLength = getIntValue(txtSettingsHintLength, R.string.settings_hint_length_not_number);
             if(hintLength == -1) return;
             if(hintLength > 255) {
-                handler.post(() -> {
-                    Snackbar.make(rootView, getString(R.string.settings_hint_length_to_large), Snackbar.LENGTH_LONG).show();
-                });
+                showErrorMessage(R.string.settings_hint_length_to_large);
                 return;
             }
             int passwordVerify = getIntValue(txtSettingsPasswordVerify, R.string.settings_password_verify_not_number);
@@ -132,10 +125,8 @@ public class SettingsActivity extends BaseActivity {
 
             boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
             if (!encryptStatus) {
-                handler.post(() -> {
-                    Snackbar.make(rootView, getString(R.string.encrypt_identity_fail), Snackbar.LENGTH_LONG).show();
-                    txtPassword.setText("");
-                });
+                showErrorMessage(R.string.encrypt_identity_fail);
+                handler.post(() -> txtPassword.setText(""));
                 return;
             }
             storage.clear();

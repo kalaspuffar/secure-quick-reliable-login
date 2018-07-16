@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -39,7 +38,7 @@ public class SaveIdentityActivity extends LoginBaseActivity {
         final Button btnSaveIdentity = findViewById(R.id.btnSaveIdentity);
         btnSaveIdentity.setOnClickListener(v -> {
             if(!txtNewPassword.getText().toString().equals(txtRetypePassword.getText().toString())) {
-                Snackbar.make(rootView, getString(R.string.change_password_retyped_password_do_not_match), Snackbar.LENGTH_LONG).show();
+                showErrorMessage(R.string.change_password_retyped_password_do_not_match);
                 txtNewPassword.setError("");
                 txtRetypePassword.setError("");
                 return;
@@ -54,9 +53,7 @@ public class SaveIdentityActivity extends LoginBaseActivity {
                     boolean encryptRescueCode = storage.encryptRescueKey(entropyHarvester);
                     if (!encryptRescueCode) {
                         Log.e(TAG, "Incorrect encryptRescue");
-                        handler.post(() -> {
-                            Snackbar.make(rootView, getString(R.string.encrypt_identity_fail), Snackbar.LENGTH_LONG).show();
-                        });
+                        showErrorMessage(R.string.encrypt_identity_fail);
                         return;
                     }
 
@@ -65,9 +62,7 @@ public class SaveIdentityActivity extends LoginBaseActivity {
                     boolean encryptStatus = storage.encryptIdentityKey(txtNewPassword.getText().toString(), entropyHarvester);
                     if (!encryptStatus) {
                         Log.e(TAG, "Incorrect Password");
-                        handler.post(() -> {
-                            Snackbar.make(rootView, getString(R.string.encrypt_identity_fail), Snackbar.LENGTH_LONG).show();
-                        });
+                        showErrorMessage(R.string.encrypt_identity_fail);
                         return;
                     }
                 } finally {

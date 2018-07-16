@@ -14,7 +14,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
@@ -26,7 +25,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -104,7 +102,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
     protected boolean checkRescueCode(EditText code) {
         if(code.length() != 4) {
-            Snackbar.make(rootView, getString(R.string.rescue_code_incorrect_input), Snackbar.LENGTH_LONG).show();
+            showErrorMessage(R.string.rescue_code_incorrect_input);
             code.requestFocus();
             return false;
         }
@@ -112,7 +110,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         try {
             Integer.parseInt(code.getText().toString());
         } catch (NumberFormatException nfe) {
-            Snackbar.make(rootView, getString(R.string.rescue_code_incorrect_input), Snackbar.LENGTH_LONG).show();
+            showErrorMessage(R.string.rescue_code_incorrect_input);
             code.requestFocus();
             return false;
         }
@@ -193,7 +191,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 if(decryptionOk) {
                     showClearNotification();
                 } else {
-                    Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show();
+                    showErrorMessage(R.string.decrypt_identity_fail);
                     storage.clear();
                     handler.post(() -> {
                         txtDisablePassword.setText("");
@@ -274,14 +272,12 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
                     boolean decryptionOk = storage.decryptUnlockKey(rescueCode);
                     if (!decryptionOk) {
-                        handler.post(() ->
-                                Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show()
-                        );
+                        showErrorMessage(R.string.decrypt_identity_fail);
                         return;
                     }
                     storage.reInitializeMasterKeyIdentity();
                 } catch (Exception e) {
-                    handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                    showErrorMessage(e.getMessage());
                     Log.e(TAG, e.getMessage(), e);
                     this.closeActivity();
                     storage.clear();
@@ -365,15 +361,13 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
                     boolean decryptionOk = storage.decryptUnlockKey(rescueCode);
                     if (!decryptionOk) {
-                        handler.post(() ->
-                            Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show()
-                        );
+                        showErrorMessage(R.string.decrypt_identity_fail);
                         return;
                     }
                     storage.reInitializeMasterKeyIdentity();
 
                 } catch (Exception e) {
-                    handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                    showErrorMessage(e.getMessage());
                     Log.e(TAG, e.getMessage(), e);
                     storage.clear();
                     handler.post(() -> progressPopupWindow.dismiss());
@@ -514,7 +508,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
             try {
                 storage.read(identityData);
             } catch (Exception e) {
-                handler.post(() -> Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show());
+                showErrorMessage(e.getMessage());
                 Log.e(TAG, e.getMessage(), e);
             }
         }
@@ -523,22 +517,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
             btnUseIdentity.setEnabled(storage.hasIdentityBlock());
         }
     }
-
-    /*
-    protected void toastErrorMessage(boolean toastStateChange) {
-        if(commHandler.hasErrorMessage()) {
-            handler.post(() ->
-                    Snackbar.make(rootView, commHandler.getErrorMessage(this), Snackbar.LENGTH_LONG).show()
-            );
-        }
-        if(toastStateChange && commHandler.hasStateChangeMessage()) {
-            handler.post(() ->
-                    Snackbar.make(rootView, commHandler.getStageChangeMessage(this), Snackbar.LENGTH_LONG).show()
-            );
-        }
-    }
-    */
-
 
     @Override
     protected void onPause() {

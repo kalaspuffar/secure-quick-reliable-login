@@ -1,12 +1,10 @@
 package org.ea.sqrl.activites;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -96,7 +94,7 @@ public class TextImportActivity extends BaseActivity {
                         if(line > 0) {
                             txtTextIdentityInput.setError(getString(R.string.text_input_incorrect_on_line) + line);
                         } else {
-                            Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                            showErrorMessage(e.getMessage());
                         }
                         progressPopupWindow.dismiss();
                     });
@@ -149,9 +147,7 @@ public class TextImportActivity extends BaseActivity {
 
                     boolean decryptionOk = storage.decryptUnlockKey(rescueCode);
                     if (!decryptionOk) {
-                        handler.post(() ->
-                                Snackbar.make(rootView, getString(R.string.decrypt_identity_fail), Snackbar.LENGTH_LONG).show()
-                        );
+                        showErrorMessage(R.string.decrypt_identity_fail);
                         return;
                     }
 
@@ -159,9 +155,7 @@ public class TextImportActivity extends BaseActivity {
 
                     boolean encryptStatus = storage.encryptIdentityKey(txtResetPasswordNewPassword.getText().toString(), entropyHarvester);
                     if (!encryptStatus) {
-                        handler.post(() ->
-                                Snackbar.make(rootView, getString(R.string.encrypt_identity_fail), Snackbar.LENGTH_LONG).show()
-                        );
+                        showErrorMessage(R.string.encrypt_identity_fail);
                         return;
                     }
                     storage.clear();
@@ -198,7 +192,7 @@ public class TextImportActivity extends BaseActivity {
 
     protected boolean checkRescueCode(EditText code) {
         if(code.length() != 4) {
-            Snackbar.make(rootView, getString(R.string.rescue_code_incorrect_input), Snackbar.LENGTH_LONG).show();
+            showErrorMessage(R.string.rescue_code_incorrect_input);
             code.requestFocus();
             return false;
         }
@@ -206,7 +200,7 @@ public class TextImportActivity extends BaseActivity {
         try {
             Integer.parseInt(code.getText().toString());
         } catch (NumberFormatException nfe) {
-            Snackbar.make(rootView, getString(R.string.rescue_code_incorrect_input), Snackbar.LENGTH_LONG).show();
+            showErrorMessage(R.string.rescue_code_incorrect_input);
             code.requestFocus();
             return false;
         }
