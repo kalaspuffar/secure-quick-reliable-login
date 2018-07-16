@@ -22,7 +22,7 @@
 
         <TextView
             android:id="@+id/txtRecoverCode1"
-            android:layout_width="60dp"
+            android:layout_width="72dp"
             android:layout_height="wrap_content"
             android:ems="10"
             android:nextFocusDown="@+id/txtRecoverCode2"
@@ -33,8 +33,9 @@
 
         <TextView
             android:id="@+id/txtRecoverCode2"
-            android:layout_width="56dp"
+            android:layout_width="72dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:ems="10"
             android:nextFocusDown="@+id/txtRecoverCode3"
@@ -42,13 +43,13 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintStart_toEndOf="@+id/txtRecoverCode1"
             tools:layout_conversion_absoluteHeight="46dp"
-            tools:layout_conversion_absoluteWidth="327dp"
-            android:layout_marginLeft="8dp" />
+            tools:layout_conversion_absoluteWidth="327dp" />
 
         <TextView
             android:id="@+id/txtRecoverCode3"
-            android:layout_width="56dp"
+            android:layout_width="72dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:ems="10"
             android:nextFocusDown="@+id/txtRecoverCode4"
@@ -56,8 +57,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintStart_toEndOf="@+id/txtRecoverCode2"
             tools:layout_conversion_absoluteHeight="46dp"
-            tools:layout_conversion_absoluteWidth="327dp"
-            android:layout_marginLeft="8dp" />
+            tools:layout_conversion_absoluteWidth="327dp" />
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
@@ -75,7 +75,7 @@
 
         <TextView
             android:id="@+id/txtRecoverCode4"
-            android:layout_width="56dp"
+            android:layout_width="72dp"
             android:layout_height="wrap_content"
             android:ems="10"
             android:nextFocusDown="@+id/txtRecoverCode5"
@@ -86,8 +86,9 @@
 
         <TextView
             android:id="@+id/txtRecoverCode5"
-            android:layout_width="56dp"
+            android:layout_width="72dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:ems="10"
             android:nextFocusDown="@+id/txtRecoverCode6"
@@ -95,13 +96,13 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintStart_toEndOf="@+id/txtRecoverCode4"
             tools:layout_conversion_absoluteHeight="46dp"
-            tools:layout_conversion_absoluteWidth="327dp"
-            android:layout_marginLeft="8dp" />
+            tools:layout_conversion_absoluteWidth="327dp" />
 
         <TextView
             android:id="@+id/txtRecoverCode6"
-            android:layout_width="56dp"
+            android:layout_width="72dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:ems="10"
             android:nextFocusDown="@+id/txtResetPasswordNewPassword"
@@ -109,8 +110,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintStart_toEndOf="@+id/txtRecoverCode5"
             tools:layout_conversion_absoluteHeight="46dp"
-            tools:layout_conversion_absoluteWidth="327dp"
-            android:layout_marginLeft="8dp" />
+            tools:layout_conversion_absoluteWidth="327dp" />
     </android.support.constraint.ConstraintLayout>
 
     <Button

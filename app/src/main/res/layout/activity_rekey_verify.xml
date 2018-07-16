@@ -22,7 +22,7 @@
 
         <EditText
             android:id="@+id/txtRecoverCode1"
-            android:layout_width="60dp"
+            android:layout_width="72dp"
             android:layout_height="48dp"
             android:ems="10"
             android:hint="@string/reset_password_rescuecode_1"
@@ -34,7 +34,7 @@
 
         <EditText
             android:id="@+id/txtRecoverCode2"
-            android:layout_width="56dp"
+            android:layout_width="72dp"
             android:layout_height="48dp"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
@@ -49,7 +49,7 @@
 
         <EditText
             android:id="@+id/txtRecoverCode3"
-            android:layout_width="56dp"
+            android:layout_width="72dp"
             android:layout_height="48dp"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
@@ -78,7 +78,7 @@
 
         <EditText
             android:id="@+id/txtRecoverCode4"
-            android:layout_width="56dp"
+            android:layout_width="72dp"
             android:layout_height="48dp"
             android:ems="10"
             android:hint="@string/reset_password_rescuecode_4"
@@ -90,7 +90,7 @@
 
         <EditText
             android:id="@+id/txtRecoverCode5"
-            android:layout_width="56dp"
+            android:layout_width="72dp"
             android:layout_height="48dp"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
@@ -105,7 +105,7 @@
 
         <EditText
             android:id="@+id/txtRecoverCode6"
-            android:layout_width="56dp"
+            android:layout_width="72dp"
             android:layout_height="48dp"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
