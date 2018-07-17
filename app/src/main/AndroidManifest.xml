@@ -131,6 +131,11 @@
             android:screenOrientation="portrait"
             />
 
+        <activity android:name=".activites.ExportOptionsActivity"
+            android:label="@string/title_export_options"
+            android:screenOrientation="portrait"
+            />
+
         <activity
             android:name=".activites.UrlLoginActivity"
             android:label="@string/title_activity_url_login"

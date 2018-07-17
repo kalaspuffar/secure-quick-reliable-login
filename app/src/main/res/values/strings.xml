@@ -194,5 +194,6 @@
 <string name="title_enable_account">SQRL - Enable account</string>
 <string name="title_remove_account">SQRL - Remove account</string>
 <string name="title_rename_identity">SQRL - Rename identity</string>
+<string name="title_export_options">SQRL - Export</string>
 
 </resources>

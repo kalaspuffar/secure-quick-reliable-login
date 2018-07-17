@@ -1,41 +1,21 @@
 package org.ea.sqrl.activites;
 
-import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.print.PrintAttributes;
-import android.print.PrintManager;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
-import org.ea.sqrl.services.IdentityPrintDocumentAdapter;
-
-import java.io.File;
-import java.io.FileOutputStream;
 
 /**
  *
  * @author Daniel Persson
  */
 public class NewIdentityDoneActivity extends LoginBaseActivity {
-    private static final String TAG = "RekeyIdentityActivity";
-
-    private PopupWindow exportOptionsPopupWindow;
+    private static final String TAG = "NewIdentityDoneActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +24,6 @@ public class NewIdentityDoneActivity extends LoginBaseActivity {
 
         SQRLStorage.getInstance().clear();
 
-        setupExportOptionsPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
         rootView = findViewById(R.id.newIdentityDoneActivityView);
@@ -54,7 +33,7 @@ public class NewIdentityDoneActivity extends LoginBaseActivity {
 
         final Button btnNewIdentityDoneExport = findViewById(R.id.btnNewIdentityDoneExport);
         btnNewIdentityDoneExport.setOnClickListener(
-                v -> exportOptionsPopupWindow.showAtLocation(exportOptionsPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
+                v -> startActivity(new Intent(this, ExportOptionsActivity.class))
         );
 
         final Button btnNewIdentityDone = findViewById(R.id.btnNewIdentityDone);
@@ -64,101 +43,6 @@ public class NewIdentityDoneActivity extends LoginBaseActivity {
                     startActivity(new Intent(this, MainActivity.class));
                 }
         );
-    }
-
-    public void setupExportOptionsPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_export_options, null);
-
-        exportOptionsPopupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                true);
-        exportOptionsPopupWindow.setTouchable(true);
-
-        final CheckBox cbWithoutPassword = popupView.findViewById(R.id.cbWithoutPassword);
-
-        popupView.findViewById(R.id.btnCloseExportOptions).setOnClickListener(v -> {
-            exportOptionsPopupWindow.dismiss();
-        });
-
-        popupView.findViewById(R.id.btnShowIdentity).setOnClickListener(v -> {
-            exportOptionsPopupWindow.dismiss();
-            Intent showIdentityIntent = new Intent(this, ShowIdentityActivity.class);
-            showIdentityIntent.putExtra(EXPORT_WITHOUT_PASSWORD, cbWithoutPassword.isChecked());
-            startActivity(showIdentityIntent);
-        });
-
-        popupView.findViewById(R.id.btnSaveIdentity).setOnClickListener(v -> {
-            exportOptionsPopupWindow.dismiss();
-            String uriString = "content://org.ea.sqrl.fileprovider/sqrltmp/";
-            File directory = new File(getCacheDir(), "sqrltmp");
-            if(!directory.mkdir()) {
-                showErrorMessage(R.string.main_activity_could_not_create_dir);
-            }
-
-            try {
-                File file = File.createTempFile("identity", ".sqrl", directory);
-
-                byte[] saveData;
-                if(cbWithoutPassword.isChecked()) {
-                    saveData = SQRLStorage.getInstance().createSaveDataWithoutPassword();
-                } else {
-                    saveData = SQRLStorage.getInstance().createSaveData();
-                }
-
-                FileOutputStream FileOutputStream = new FileOutputStream(file);
-                FileOutputStream.write(saveData);
-                FileOutputStream.close();
-
-                Intent shareIntent = new Intent();
-                shareIntent.setAction(Intent.ACTION_SEND);
-                shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(uriString + file.getName()));
-                shareIntent.setType("application/octet-stream");
-                startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.save_identity_to)));
-            } catch (Exception e) {
-                showErrorMessage(e.getMessage());
-                Log.e(TAG, e.getMessage(), e);
-            }
-        });
-
-        popupView.findViewById(R.id.btnPrintIdentity).setOnClickListener(v -> {
-            exportOptionsPopupWindow.dismiss();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
-                String jobName = getString(R.string.app_name) + " Document";
-
-                PrintAttributes printAttributes = new PrintAttributes.Builder()
-                        .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
-                        .build();
-
-                SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                        APPS_PREFERENCES,
-                        Context.MODE_PRIVATE
-                );
-                long currentId = sharedPref.getLong(CURRENT_ID, 0);
-                String identityName = mDbHelper.getIdentityName(currentId);
-
-                try {
-                    SQRLStorage.getInstance().createVerifyRecoveryBlock();
-
-                    printManager.print(jobName, new IdentityPrintDocumentAdapter(this, identityName, cbWithoutPassword.isChecked()), printAttributes);
-                } catch (Exception e) {
-                    Log.e(TAG, e.getMessage(), e);
-                }
-            } else {
-                showPrintingNotAvailableDialog();
-            }
-        });
-    }
-
-    public void showPrintingNotAvailableDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(NewIdentityDoneActivity.this);
-        builder.setTitle(R.string.print_not_available_title)
-                .setMessage(getString(R.string.print_not_available_text))
-                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                    dialog.dismiss();
-                })
-                .setIcon(android.R.drawable.ic_dialog_info)
-                .show();
     }
 
     @Override
