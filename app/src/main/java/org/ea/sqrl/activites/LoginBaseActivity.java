@@ -1,20 +1,9 @@
 package org.ea.sqrl.activites;
 
-import android.app.AlarmManager;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -32,20 +21,8 @@ import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
-import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.processors.SQRLStorage;
-import org.ea.sqrl.services.AskDialogService;
-import org.ea.sqrl.services.ClearIdentityReceiver;
-import org.ea.sqrl.services.ClearIdentityService;
-import org.ea.sqrl.utils.EncryptionUtils;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -410,79 +387,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 communicationFlowHandler.handleNextAction();
             }).start();
         });
-    }
-
-    public void showClearNotification() {
-        final String CHANNEL_ID = "sqrl_notify_01";
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "SQRL Notification Channel", NotificationManager.IMPORTANCE_DEFAULT);
-            notificationChannel.enableVibration(false);
-            notificationChannel.enableLights(false);
-            notificationChannel.setSound(null, null);
-
-            if(notificationManager != null) {
-                notificationManager.createNotificationChannel(notificationChannel);
-            }
-        }
-
-        long[] v = {};
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_stat_sqrl_logo_vector_outline)
-                        .setContentTitle(getString(R.string.notification_identity_unlocked))
-                        .setContentText(getString(R.string.notification_identity_unlocked_title))
-                        .setAutoCancel(true)
-                        .setVibrate(v)
-                        .setSound(null)
-                        .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText(getString(R.string.notification_identity_unlocked_desc)));
-
-        Intent resultIntent = new Intent(this, ClearIdentityActivity.class);
-
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(ClearIdentityActivity.class);
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        mBuilder.setContentIntent(resultPendingIntent);
-
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if(mNotificationManager != null) {
-            mNotificationManager.notify(NOTIFICATION_IDENTITY_UNLOCKED, mBuilder.build());
-        }
-
-        long delayMillis = SQRLStorage.getInstance().getIdleTimeout() * 60000;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            JobInfo jobInfo = new JobInfo.Builder(ClearIdentityService.JOB_NUMBER, new ComponentName(this, ClearIdentityService.class))
-                    .setMinimumLatency(delayMillis).build();
-
-            JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-            if(jobScheduler != null) jobScheduler.schedule(jobInfo);
-        } else {
-            AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-
-            Intent intent = new Intent(getApplicationContext(), ClearIdentityReceiver.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-
-            int SDK_INT = Build.VERSION.SDK_INT;
-            long timeInMillis = System.currentTimeMillis() + delayMillis;
-
-            if(alarmManager == null) return;
-
-            if (SDK_INT < Build.VERSION_CODES.KITKAT) {
-                alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
-            } else if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
-            }
-        }
     }
 
     @Override

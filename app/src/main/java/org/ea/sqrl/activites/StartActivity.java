@@ -70,6 +70,7 @@ public class StartActivity extends BaseActivity {
         setupImportPopupWindow(getLayoutInflater());
         setupResetPasswordPopupWindow(getLayoutInflater());
         setupProgressPopupWindow(getLayoutInflater());
+        setupCameraAccessPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
         final Button btnScanSecret = findViewById(R.id.btnScanSecret);

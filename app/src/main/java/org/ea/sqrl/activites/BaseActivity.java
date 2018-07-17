@@ -2,12 +2,23 @@ package org.ea.sqrl.activites;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -19,12 +30,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.ea.sqrl.BuildConfig;
 import org.ea.sqrl.R;
 import org.ea.sqrl.database.IdentityDBHelper;
 import org.ea.sqrl.processors.EntropyHarvester;
+import org.ea.sqrl.processors.ProgressionUpdater;
+import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.services.ClearIdentityReceiver;
+import org.ea.sqrl.services.ClearIdentityService;
 
 /**
  * This base activity is inherited by all other activities. We place logic used for menus,
@@ -45,6 +61,8 @@ public class BaseActivity extends AppCompatActivity {
 
     private PopupWindow cameraAccessPopupWindow;
     private PopupWindow errorPopupWindow;
+    protected PopupWindow progressPopupWindow;
+
     private TextView txtErrorMessage;
 
     public static final int NOTIFICATION_IDENTITY_UNLOCKED = 1;
@@ -101,6 +119,21 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void setupProgressPopupWindow(LayoutInflater layoutInflater) {
+        View popupView = layoutInflater.inflate(R.layout.fragment_progress, null);
+
+        progressPopupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
+                false);
+
+
+        final ProgressBar progressBar = popupView.findViewById(R.id.pbEntropy);
+        final TextView lblProgressTitle = popupView.findViewById(R.id.lblProgressTitle);
+        final TextView lblProgressText = popupView.findViewById(R.id.lblProgressText);
+
+        SQRLStorage storage = SQRLStorage.getInstance();
+        storage.setProgressionUpdater(new ProgressionUpdater(handler, lblProgressTitle, progressBar, lblProgressText));
+    }
+    protected void setupCameraAccessPopupWindow(LayoutInflater layoutInflater) {
         View popupView = layoutInflater.inflate(R.layout.fragment_camera_permission, null);
 
         cameraAccessPopupWindow = new PopupWindow(popupView,
@@ -178,5 +211,79 @@ public class BaseActivity extends AppCompatActivity {
         handler.post(() ->
                 errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
         );
+    }
+
+
+    public void showClearNotification() {
+        final String CHANNEL_ID = "sqrl_notify_01";
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "SQRL Notification Channel", NotificationManager.IMPORTANCE_DEFAULT);
+            notificationChannel.enableVibration(false);
+            notificationChannel.enableLights(false);
+            notificationChannel.setSound(null, null);
+
+            if(notificationManager != null) {
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
+        }
+
+        long[] v = {};
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_stat_sqrl_logo_vector_outline)
+                        .setContentTitle(getString(R.string.notification_identity_unlocked))
+                        .setContentText(getString(R.string.notification_identity_unlocked_title))
+                        .setAutoCancel(true)
+                        .setVibrate(v)
+                        .setSound(null)
+                        .setStyle(new NotificationCompat.BigTextStyle()
+                                .bigText(getString(R.string.notification_identity_unlocked_desc)));
+
+        Intent resultIntent = new Intent(this, ClearIdentityActivity.class);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(ClearIdentityActivity.class);
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if(mNotificationManager != null) {
+            mNotificationManager.notify(NOTIFICATION_IDENTITY_UNLOCKED, mBuilder.build());
+        }
+
+        long delayMillis = SQRLStorage.getInstance().getIdleTimeout() * 60000;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            JobInfo jobInfo = new JobInfo.Builder(ClearIdentityService.JOB_NUMBER, new ComponentName(this, ClearIdentityService.class))
+                    .setMinimumLatency(delayMillis).build();
+
+            JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+            if(jobScheduler != null) jobScheduler.schedule(jobInfo);
+        } else {
+            AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+
+            Intent intent = new Intent(getApplicationContext(), ClearIdentityReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+
+            int SDK_INT = Build.VERSION.SDK_INT;
+            long timeInMillis = System.currentTimeMillis() + delayMillis;
+
+            if(alarmManager == null) return;
+
+            if (SDK_INT < Build.VERSION_CODES.KITKAT) {
+                alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
+            } else if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
+            }
+        }
     }
 }

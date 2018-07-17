@@ -101,6 +101,11 @@
             android:label="@string/title_save_identity"
             android:screenOrientation="portrait"
             />
+        <activity android:name=".activites.ChangePasswordActivity"
+            android:label="@string/title_change_password"
+            android:screenOrientation="portrait"
+            />
+
 
         <activity
             android:name=".activites.UrlLoginActivity"

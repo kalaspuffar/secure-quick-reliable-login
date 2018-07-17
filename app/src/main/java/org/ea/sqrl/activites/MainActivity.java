@@ -52,7 +52,6 @@ public class MainActivity extends LoginBaseActivity {
     private PopupWindow renamePopupWindow;
     private PopupWindow importPopupWindow;
     private PopupWindow resetPasswordPopupWindow;
-    private PopupWindow changePasswordPopupWindow;
     private PopupWindow exportOptionsPopupWindow;
 
     private EditText txtIdentityName;
@@ -71,7 +70,6 @@ public class MainActivity extends LoginBaseActivity {
         setupLoginPopupWindow(getLayoutInflater());
         setupImportPopupWindow(getLayoutInflater());
         setupResetPasswordPopupWindow(getLayoutInflater());
-        setupChangePasswordPopupWindow(getLayoutInflater());
         setupExportOptionsPopupWindow(getLayoutInflater());
         setupLoginOptionsPopupWindow(getLayoutInflater(), true);
         setupErrorPopupWindow(getLayoutInflater());
@@ -148,7 +146,7 @@ public class MainActivity extends LoginBaseActivity {
 
         final Button btnChangePassword = findViewById(R.id.btnChangePassword);
         btnChangePassword.setOnClickListener(
-                v -> changePasswordPopupWindow.showAtLocation(changePasswordPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
+                v -> startActivity(new Intent(this, ChangePasswordActivity.class))
         );
 
         final Button btnExport = findViewById(R.id.btnExport);
@@ -581,80 +579,7 @@ public class MainActivity extends LoginBaseActivity {
     }
 
 
-    public void setupChangePasswordPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_change_password, null);
 
-        changePasswordPopupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                true);
-
-        changePasswordPopupWindow.setTouchable(true);
-
-        final EditText txtCurrentPassword = popupView.findViewById(R.id.txtCurrentPassword);
-        final EditText txtNewPassword = popupView.findViewById(R.id.txtNewPassword);
-        final EditText txtRetypePassword = popupView.findViewById(R.id.txtRetypePassword);
-
-        SQRLStorage storage = SQRLStorage.getInstance();
-
-        popupView.findViewById(R.id.btnCloseChangePassword).setOnClickListener(v -> changePasswordPopupWindow.dismiss());
-        final Button btnChangePassword = popupView.findViewById(R.id.btnDoChangePassword);
-        btnChangePassword.setOnClickListener(v -> {
-            if(!txtNewPassword.getText().toString().equals(txtRetypePassword.getText().toString())) {
-                showErrorMessage(R.string.change_password_retyped_password_do_not_match);
-                txtCurrentPassword.setText("");
-                txtNewPassword.setText("");
-                txtRetypePassword.setText("");
-                return;
-            }
-
-            changePasswordPopupWindow.dismiss();
-            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-
-            new Thread(() -> {
-                try {
-                    boolean decryptStatus = storage.decryptIdentityKey(txtCurrentPassword.getText().toString(), entropyHarvester, false);
-                    if (!decryptStatus) {
-                        handler.post(() -> {
-                            showErrorMessage(R.string.decrypt_identity_fail);
-                            txtCurrentPassword.setText("");
-                            txtNewPassword.setText("");
-                            txtRetypePassword.setText("");
-                        });
-                        return;
-                    }
-                    showClearNotification();
-
-                    boolean encryptStatus = storage.encryptIdentityKey(txtNewPassword.getText().toString(), entropyHarvester);
-                    if (!encryptStatus) {
-                        showErrorMessage(R.string.encrypt_identity_fail);
-
-                        handler.post(() -> {
-                            txtCurrentPassword.setText("");
-                            txtNewPassword.setText("");
-                            txtRetypePassword.setText("");
-                        });
-                        return;
-                    }
-                } finally {
-                    storage.clear();
-                    handler.post(() -> progressPopupWindow.dismiss());
-                }
-
-                SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                        APPS_PREFERENCES,
-                        Context.MODE_PRIVATE
-                );
-                long currentId = sharedPref.getLong(CURRENT_ID, 0);
-                mDbHelper.updateIdentityData(currentId, storage.createSaveData());
-
-                handler.post(() -> {
-                    txtCurrentPassword.setText("");
-                    txtNewPassword.setText("");
-                    txtRetypePassword.setText("");
-                });
-            }).start();
-        });
-    }
 
     public void showPrintingNotAvailableDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -675,8 +600,6 @@ public class MainActivity extends LoginBaseActivity {
             importPopupWindow.dismiss();
         } else if (loginPopupWindow != null && loginPopupWindow.isShowing()) {
             loginPopupWindow.dismiss();
-        } else if (changePasswordPopupWindow != null && changePasswordPopupWindow.isShowing()) {
-            changePasswordPopupWindow.dismiss();
         } else {
             MainActivity.this.finish();
         }

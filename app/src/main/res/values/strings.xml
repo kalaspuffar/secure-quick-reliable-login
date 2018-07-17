@@ -186,4 +186,7 @@
 <string name="text_input_hint">Input identity rescue text printed on your identity paper version</string>
 <string name="error_dialog_title">An error has occured</string>
 <string name="login_identity_quickpass">Password (First %s characters)</string>
+
+
+<string name="title_change_password">SQRL - Change password</string>
 </resources>
