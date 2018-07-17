@@ -45,6 +45,7 @@ public class SettingsActivity extends BaseActivity {
         rootView = findViewById(R.id.settingsActivityView);
 
         setupSavePopupWindow(getLayoutInflater());
+        setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
         SQRLStorage storage = SQRLStorage.getInstance();
@@ -88,22 +89,26 @@ public class SettingsActivity extends BaseActivity {
         savePopupWindow.setTouchable(true);
         savePopupWindow.setFocusable(true);
 
-        final ProgressBar pbDecrypting = popupView.findViewById(R.id.pbDecrypting);
-        final TextView lblProgressTitle = popupView.findViewById(R.id.lblProgressTitle);
         final EditText txtPassword = popupView.findViewById(R.id.txtPassword);
         final TextView progressText = popupView.findViewById(R.id.lblProgressText);
 
         SQRLStorage storage = SQRLStorage.getInstance();
-        storage.setProgressionUpdater(new ProgressionUpdater(handler, lblProgressTitle, pbDecrypting, progressText));
 
         popupView.findViewById(R.id.btnCloseSaveSettings).setOnClickListener(v -> savePopupWindow.dismiss());
         final Button btnSaveSettings = popupView.findViewById(R.id.btnSaveSettings);
         btnSaveSettings.setOnClickListener(v -> new Thread(() -> {
+            handler.post(() -> {
+                savePopupWindow.dismiss();
+                progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+            });
             storage.clearQuickPass(this);
             boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString(), entropyHarvester, false);
             if(!decryptStatus) {
                 showErrorMessage(R.string.decrypt_identity_fail);
-                handler.post(() -> txtPassword.setText(""));
+                handler.post(() -> {
+                    progressPopupWindow.dismiss();
+                    txtPassword.setText("");
+                });
                 return;
             }
 
@@ -111,6 +116,10 @@ public class SettingsActivity extends BaseActivity {
             if(hintLength == -1) return;
             if(hintLength > 255) {
                 showErrorMessage(R.string.settings_hint_length_to_large);
+                handler.post(() -> {
+                    progressPopupWindow.dismiss();
+                    txtPassword.setText("");
+                });
                 return;
             }
             int passwordVerify = getIntValue(txtSettingsPasswordVerify, R.string.settings_password_verify_not_number);
@@ -127,7 +136,10 @@ public class SettingsActivity extends BaseActivity {
             boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
             if (!encryptStatus) {
                 showErrorMessage(R.string.encrypt_identity_fail);
-                handler.post(() -> txtPassword.setText(""));
+                handler.post(() -> {
+                    progressPopupWindow.dismiss();
+                    txtPassword.setText("");
+                });
                 return;
             }
             storage.clear();
@@ -141,7 +153,7 @@ public class SettingsActivity extends BaseActivity {
 
             handler.post(() -> {
                 txtPassword.setText("");
-                savePopupWindow.dismiss();
+                progressPopupWindow.dismiss();
                 SettingsActivity.this.finish();
             });
 

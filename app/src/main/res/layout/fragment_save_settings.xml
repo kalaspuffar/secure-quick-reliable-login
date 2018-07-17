@@ -48,20 +48,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ProgressBar
-            android:id="@+id/pbDecrypting"
-            style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
-            android:layout_width="0dp"
-            android:layout_height="18dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
-            android:indeterminate="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView15" />
-
         <Button
             android:id="@+id/btnSaveSettings"
             android:layout_width="0dp"
@@ -83,28 +69,15 @@
             android:layout_height="48dp"
             android:layout_marginEnd="30dp"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:ems="10"
-            android:nextFocusDown="@+id/btnSaveSettings"
             android:hint="@string/save_settings_password"
             android:inputType="textPassword"
+            android:nextFocusDown="@+id/btnSaveSettings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.233"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lblProgressText" />
-
-        <TextView
-            android:id="@+id/lblProgressText"
-            android:layout_width="0dp"
-            android:layout_height="25dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:gravity="end"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.25"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pbDecrypting" />
+            app:layout_constraintTop_toBottomOf="@+id/btnCloseSaveSettings" />
 
 
     </android.support.constraint.ConstraintLayout>
