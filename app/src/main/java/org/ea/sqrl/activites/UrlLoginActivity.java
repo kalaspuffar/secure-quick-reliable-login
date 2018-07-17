@@ -39,6 +39,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
         cboxIdentity = findViewById(R.id.cboxIdentity);
 
         rootView = findViewById(R.id.urlLoginActivityView);
+        communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
         final TextView txtUrlLogin = findViewById(R.id.txtSite);
         Intent intent = getIntent();

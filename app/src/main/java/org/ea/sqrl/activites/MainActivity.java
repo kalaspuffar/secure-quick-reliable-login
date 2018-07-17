@@ -63,6 +63,7 @@ public class MainActivity extends LoginBaseActivity {
 
         cboxIdentity = findViewById(R.id.cboxIdentity);
         rootView = findViewById(R.id.mainActivityView);
+        communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
         setupRenamePopupWindow(getLayoutInflater());
         setupLoginPopupWindow(getLayoutInflater());

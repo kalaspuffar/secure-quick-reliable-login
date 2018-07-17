@@ -116,6 +116,10 @@
             android:screenOrientation="portrait"
             />
 
+        <activity android:name=".activites.EnableAccountActivity"
+            android:label="@string/title_enable_account"
+            android:screenOrientation="portrait"
+            />
 
         <activity
             android:name=".activites.UrlLoginActivity"

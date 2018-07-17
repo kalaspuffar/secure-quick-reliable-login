@@ -43,6 +43,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
         setContentView(R.layout.activity_simplified);
 
         rootView = findViewById(R.id.simplifiedActivityView);
+        communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);

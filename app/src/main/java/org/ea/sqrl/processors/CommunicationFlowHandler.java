@@ -141,6 +141,8 @@ public class CommunicationFlowHandler {
                 break;
             case LOCK_ACCOUNT:
             case LOCK_ACCOUNT_CPS:
+                if(commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED))
+                    throw new Exception(currentActivity.getString(R.string.communication_sqrl_disabled));
                 if(!commHandler.isIdentityKnown(false)) return;
                 break;
             case UNLOCK_ACCOUNT:
