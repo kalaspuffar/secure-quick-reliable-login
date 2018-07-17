@@ -193,5 +193,6 @@
 <string name="title_disable_account">SQRL - Disable account</string>
 <string name="title_enable_account">SQRL - Enable account</string>
 <string name="title_remove_account">SQRL - Remove account</string>
+<string name="title_rename_identity">SQRL - Rename identity</string>
 
 </resources>

@@ -49,11 +49,9 @@ import java.util.regex.Matcher;
 public class MainActivity extends LoginBaseActivity {
     private static final String TAG = "MainActivity";
 
-    private PopupWindow renamePopupWindow;
     private PopupWindow importPopupWindow;
     private PopupWindow exportOptionsPopupWindow;
 
-    private EditText txtIdentityName;
     private boolean importIdentity = false;
 
     @Override
@@ -65,7 +63,6 @@ public class MainActivity extends LoginBaseActivity {
         rootView = findViewById(R.id.mainActivityView);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
-        setupRenamePopupWindow(getLayoutInflater());
         setupLoginPopupWindow(getLayoutInflater());
         setupImportPopupWindow(getLayoutInflater());
         setupExportOptionsPopupWindow(getLayoutInflater());
@@ -129,17 +126,7 @@ public class MainActivity extends LoginBaseActivity {
 
         final Button btnRename = findViewById(R.id.btnRename);
         btnRename.setOnClickListener(
-                v -> {
-                    SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                            APPS_PREFERENCES,
-                            Context.MODE_PRIVATE
-                    );
-                    long currentId = sharedPref.getLong(CURRENT_ID, 0);
-                    if(currentId != 0) {
-                        txtIdentityName.setText(mDbHelper.getIdentityName(currentId));
-                    }
-                    renamePopupWindow.showAtLocation(renamePopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                }
+                v -> startActivity(new Intent(this, RenameActivity.class))
         );
 
         final Button btnChangePassword = findViewById(R.id.btnChangePassword);
@@ -168,32 +155,6 @@ public class MainActivity extends LoginBaseActivity {
 
         final Button btnRekey = findViewById(R.id.btnRekey);
         btnRekey.setOnClickListener(v -> startActivity(new Intent(this, RekeyIdentityActivity.class)));
-    }
-
-    public void setupRenamePopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_rename, null);
-
-        renamePopupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                true);
-
-        renamePopupWindow.setTouchable(true);
-        txtIdentityName = popupView.findViewById(R.id.txtIdentityName);
-
-        popupView.findViewById(R.id.btnCloseRename).setOnClickListener(v -> renamePopupWindow.dismiss());
-        popupView.findViewById(R.id.btnRename).setOnClickListener(v -> {
-            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                    APPS_PREFERENCES,
-                    Context.MODE_PRIVATE
-            );
-            long currentId = sharedPref.getLong(CURRENT_ID, 0);
-            if(currentId != 0) {
-                mDbHelper.updateIdentityName(currentId, txtIdentityName.getText().toString());
-                updateSpinnerData(currentId);
-            }
-            txtIdentityName.setText("");
-            renamePopupWindow.dismiss();
-        });
     }
 
     public void setupLoginPopupWindow(LayoutInflater layoutInflater) {
@@ -469,8 +430,7 @@ public class MainActivity extends LoginBaseActivity {
                     progressPopupWindow.dismiss();
 
                     if(newIdentityId != 0) {
-                        txtIdentityName.setText(mDbHelper.getIdentityName(newIdentityId));
-                        renamePopupWindow.showAtLocation(renamePopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                        startActivity(new Intent(this, RenameActivity.class));
                     }
                 });
             }).start();
@@ -490,9 +450,7 @@ public class MainActivity extends LoginBaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (renamePopupWindow != null && renamePopupWindow.isShowing()) {
-            renamePopupWindow.dismiss();
-        } else if (importPopupWindow != null && importPopupWindow.isShowing()) {
+        if (importPopupWindow != null && importPopupWindow.isShowing()) {
             importPopupWindow.dismiss();
         } else if (loginPopupWindow != null && loginPopupWindow.isShowing()) {
             loginPopupWindow.dismiss();

@@ -126,6 +126,11 @@
             android:screenOrientation="portrait"
             />
 
+        <activity android:name=".activites.RenameActivity"
+            android:label="@string/title_rename_identity"
+            android:screenOrientation="portrait"
+            />
+
         <activity
             android:name=".activites.UrlLoginActivity"
             android:label="@string/title_activity_url_login"
