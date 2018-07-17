@@ -26,9 +26,6 @@ import com.google.zxing.integration.android.IntentResult;
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.processors.SQRLStorage;
-import org.ea.sqrl.services.ClearIdentityReceiver;
-import org.ea.sqrl.services.ClearIdentityService;
-import org.ea.sqrl.utils.EncryptionUtils;
 import org.ea.sqrl.utils.Utils;
 
 /**
@@ -45,7 +42,6 @@ public class StartActivity extends BaseActivity {
     private ConstraintLayout rootView;
     private Handler handler = new Handler();
     private PopupWindow importPopupWindow;
-    private PopupWindow resetPasswordPopupWindow;
     private PopupWindow progressPopupWindow;
 
     @Override
@@ -68,7 +64,6 @@ public class StartActivity extends BaseActivity {
 
         setupProgressPopupWindow(getLayoutInflater());
         setupImportPopupWindow(getLayoutInflater());
-        setupResetPasswordPopupWindow(getLayoutInflater());
         setupProgressPopupWindow(getLayoutInflater());
         setupCameraAccessPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
@@ -122,7 +117,7 @@ public class StartActivity extends BaseActivity {
         popupView.findViewById(R.id.btnCloseImportIdentity).setOnClickListener(v -> importPopupWindow.dismiss());
         popupView.findViewById(R.id.btnForgotPassword).setOnClickListener(v -> {
             importPopupWindow.dismiss();
-            resetPasswordPopupWindow.showAtLocation(resetPasswordPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+            startActivity(new Intent(this, ResetPasswordActivity.class));
         });
 
         btnImportIdentityDo.setOnClickListener(v -> {
@@ -179,111 +174,6 @@ public class StartActivity extends BaseActivity {
         });
     }
 
-    protected boolean checkRescueCode(EditText code) {
-        if(code.length() != 4) {
-            showErrorMessage(R.string.rescue_code_incorrect_input);
-            code.requestFocus();
-            return false;
-        }
-
-        try {
-            Integer.parseInt(code.getText().toString());
-        } catch (NumberFormatException nfe) {
-            showErrorMessage(R.string.rescue_code_incorrect_input);
-            code.requestFocus();
-            return false;
-        }
-        return true;
-    }
-
-    public void setupResetPasswordPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_reset_password, null);
-
-        resetPasswordPopupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                true);
-
-        resetPasswordPopupWindow.setTouchable(true);
-
-        final EditText txtRecoverCode1 = popupView.findViewById(R.id.txtRecoverCode1);
-        final EditText txtRecoverCode2 = popupView.findViewById(R.id.txtRecoverCode2);
-        final EditText txtRecoverCode3 = popupView.findViewById(R.id.txtRecoverCode3);
-        final EditText txtRecoverCode4 = popupView.findViewById(R.id.txtRecoverCode4);
-        final EditText txtRecoverCode5 = popupView.findViewById(R.id.txtRecoverCode5);
-        final EditText txtRecoverCode6 = popupView.findViewById(R.id.txtRecoverCode6);
-        final EditText txtResetPasswordNewPassword = popupView.findViewById(R.id.txtResetPasswordNewPassword);
-
-        popupView.findViewById(R.id.btnCloseResetPassword).setOnClickListener(v -> resetPasswordPopupWindow.dismiss());
-        popupView.findViewById(R.id.btnResetPassword).setOnClickListener(v -> {
-
-            SQRLStorage storage = SQRLStorage.getInstance();
-
-            if(!checkRescueCode(txtRecoverCode1)) return;
-            if(!checkRescueCode(txtRecoverCode2)) return;
-            if(!checkRescueCode(txtRecoverCode3)) return;
-            if(!checkRescueCode(txtRecoverCode4)) return;
-            if(!checkRescueCode(txtRecoverCode5)) return;
-            if(!checkRescueCode(txtRecoverCode6)) return;
-
-            resetPasswordPopupWindow.dismiss();
-            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-
-            new Thread(() -> {
-                try {
-                    String rescueCode = txtRecoverCode1.getText().toString();
-                    rescueCode += txtRecoverCode2.getText().toString();
-                    rescueCode += txtRecoverCode3.getText().toString();
-                    rescueCode += txtRecoverCode4.getText().toString();
-                    rescueCode += txtRecoverCode5.getText().toString();
-                    rescueCode += txtRecoverCode6.getText().toString();
-
-                    boolean decryptionOk = storage.decryptUnlockKey(rescueCode);
-                    if (!decryptionOk) {
-                        showErrorMessage(R.string.decrypt_identity_fail);
-                        return;
-                    }
-
-                    storage.reInitializeMasterKeyIdentity();
-
-                    boolean encryptStatus = storage.encryptIdentityKey(txtResetPasswordNewPassword.getText().toString(), entropyHarvester);
-                    if (!encryptStatus) {
-                        showErrorMessage(R.string.encrypt_identity_fail);
-                        return;
-                    }
-                    storage.clear();
-
-                    SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                            APPS_PREFERENCES,
-                            Context.MODE_PRIVATE
-                    );
-
-                    long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
-                    mDbHelper.updateIdentityName(newIdentityId, "Default");
-
-                    SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putLong(CURRENT_ID, newIdentityId);
-                    editor.apply();
-
-                    handler.post(() -> {
-                        startActivity(new Intent(this, SimplifiedActivity.class));
-                    });
-                } finally {
-                    storage.clear();
-                    handler.post(() -> {
-                        progressPopupWindow.dismiss();
-                        txtResetPasswordNewPassword.setText("");
-                        txtRecoverCode1.setText("");
-                        txtRecoverCode2.setText("");
-                        txtRecoverCode3.setText("");
-                        txtRecoverCode4.setText("");
-                        txtRecoverCode5.setText("");
-                        txtRecoverCode6.setText("");
-                    });
-                }
-            }).start();
-        });
-    }
-
     @Override
     protected void permissionOkCallback() {
         if(createNewIdentity) {
@@ -322,9 +212,7 @@ public class StartActivity extends BaseActivity {
                     storage.read(qrCodeData);
 
                     if(!storage.hasEncryptedKeys()) {
-                        handler.postDelayed(() -> {
-                            resetPasswordPopupWindow.showAtLocation(resetPasswordPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                        }, 100);
+                        handler.postDelayed(() -> startActivity(new Intent(this, ResetPasswordActivity.class)), 100);
                         return;
                     }
 

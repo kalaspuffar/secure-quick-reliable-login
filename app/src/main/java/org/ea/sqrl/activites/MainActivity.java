@@ -51,11 +51,9 @@ public class MainActivity extends LoginBaseActivity {
 
     private PopupWindow renamePopupWindow;
     private PopupWindow importPopupWindow;
-    private PopupWindow resetPasswordPopupWindow;
     private PopupWindow exportOptionsPopupWindow;
 
     private EditText txtIdentityName;
-    private int startMode = 0;
     private boolean importIdentity = false;
 
     @Override
@@ -69,7 +67,6 @@ public class MainActivity extends LoginBaseActivity {
         setupRenamePopupWindow(getLayoutInflater());
         setupLoginPopupWindow(getLayoutInflater());
         setupImportPopupWindow(getLayoutInflater());
-        setupResetPasswordPopupWindow(getLayoutInflater());
         setupExportOptionsPopupWindow(getLayoutInflater());
         setupLoginOptionsPopupWindow(getLayoutInflater(), true);
         setupErrorPopupWindow(getLayoutInflater());
@@ -156,7 +153,7 @@ public class MainActivity extends LoginBaseActivity {
 
         final Button btnReset = findViewById(R.id.btnReset);
         btnReset.setOnClickListener(
-                v -> resetPasswordPopupWindow.showAtLocation(resetPasswordPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
+                v -> startActivity(new Intent(this, ResetPasswordActivity.class))
         );
 
         final Button btnTextImport = findViewById(R.id.btnTextImport);
@@ -195,105 +192,6 @@ public class MainActivity extends LoginBaseActivity {
             }
             txtIdentityName.setText("");
             renamePopupWindow.dismiss();
-        });
-    }
-
-    public void setupResetPasswordPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_reset_password, null);
-
-        resetPasswordPopupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                true);
-
-        resetPasswordPopupWindow.setTouchable(true);
-
-        final EditText txtRecoverCode1 = popupView.findViewById(R.id.txtRecoverCode1);
-        final EditText txtRecoverCode2 = popupView.findViewById(R.id.txtRecoverCode2);
-        final EditText txtRecoverCode3 = popupView.findViewById(R.id.txtRecoverCode3);
-        final EditText txtRecoverCode4 = popupView.findViewById(R.id.txtRecoverCode4);
-        final EditText txtRecoverCode5 = popupView.findViewById(R.id.txtRecoverCode5);
-        final EditText txtRecoverCode6 = popupView.findViewById(R.id.txtRecoverCode6);
-        final EditText txtResetPasswordNewPassword = popupView.findViewById(R.id.txtResetPasswordNewPassword);
-
-        popupView.findViewById(R.id.btnCloseResetPassword).setOnClickListener(v -> resetPasswordPopupWindow.dismiss());
-        popupView.findViewById(R.id.btnResetPassword).setOnClickListener(v -> {
-
-            SQRLStorage storage = SQRLStorage.getInstance();
-
-            if(!checkRescueCode(txtRecoverCode1)) return;
-            if(!checkRescueCode(txtRecoverCode2)) return;
-            if(!checkRescueCode(txtRecoverCode3)) return;
-            if(!checkRescueCode(txtRecoverCode4)) return;
-            if(!checkRescueCode(txtRecoverCode5)) return;
-            if(!checkRescueCode(txtRecoverCode6)) return;
-
-            resetPasswordPopupWindow.dismiss();
-            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-
-            new Thread(() -> {
-                try {
-                    String rescueCode = txtRecoverCode1.getText().toString();
-                    rescueCode += txtRecoverCode2.getText().toString();
-                    rescueCode += txtRecoverCode3.getText().toString();
-                    rescueCode += txtRecoverCode4.getText().toString();
-                    rescueCode += txtRecoverCode5.getText().toString();
-                    rescueCode += txtRecoverCode6.getText().toString();
-
-                    boolean decryptionOk = storage.decryptUnlockKey(rescueCode);
-                    if (!decryptionOk) {
-                        showErrorMessage(R.string.decrypt_identity_fail);
-                        return;
-                    }
-
-                    storage.reInitializeMasterKeyIdentity();
-
-                    boolean encryptStatus = storage.encryptIdentityKey(txtResetPasswordNewPassword.getText().toString(), entropyHarvester);
-                    if (!encryptStatus) {
-                        showErrorMessage(R.string.encrypt_identity_fail);
-                        return;
-                    }
-                    storage.clear();
-
-                    SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                            APPS_PREFERENCES,
-                            Context.MODE_PRIVATE
-                    );
-
-                    if(importIdentity) {
-                        long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putLong(CURRENT_ID, newIdentityId);
-                        editor.apply();
-
-                        handler.post(() -> {
-                            updateSpinnerData(newIdentityId);
-                            importPopupWindow.dismiss();
-
-                            if(newIdentityId != 0) {
-                                txtIdentityName.setText(mDbHelper.getIdentityName(newIdentityId));
-                                renamePopupWindow.showAtLocation(renamePopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                            }
-                        });
-                    } else {
-                        long currentId = sharedPref.getLong(CURRENT_ID, 0);
-                        if(currentId != 0) {
-                            mDbHelper.updateIdentityData(currentId, storage.createSaveData());
-                        }
-                    }
-                } finally {
-                    storage.clear();
-                    handler.post(() -> {
-                        progressPopupWindow.dismiss();
-                        txtResetPasswordNewPassword.setText("");
-                        txtRecoverCode1.setText("");
-                        txtRecoverCode2.setText("");
-                        txtRecoverCode3.setText("");
-                        txtRecoverCode4.setText("");
-                        txtRecoverCode5.setText("");
-                        txtRecoverCode6.setText("");
-                    });
-                }
-            }).start();
         });
     }
 
@@ -517,7 +415,7 @@ public class MainActivity extends LoginBaseActivity {
         popupView.findViewById(R.id.btnForgotPassword).setOnClickListener(
                 v -> {
                     importPopupWindow.dismiss();
-                    resetPasswordPopupWindow.showAtLocation(resetPasswordPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                    startActivity(new Intent(this, ResetPasswordActivity.class));
                 }
         );
 
@@ -577,9 +475,6 @@ public class MainActivity extends LoginBaseActivity {
             }).start();
         });
     }
-
-
-
 
     public void showPrintingNotAvailableDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -685,9 +580,7 @@ public class MainActivity extends LoginBaseActivity {
                         storage.read(qrCodeData);
 
                         if(!storage.hasEncryptedKeys()) {
-                            handler.postDelayed(() -> {
-                                resetPasswordPopupWindow.showAtLocation(resetPasswordPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                            }, 100);
+                            handler.postDelayed(() -> startActivity(new Intent(this, ResetPasswordActivity.class)), 100);
                             return;
                         }
 

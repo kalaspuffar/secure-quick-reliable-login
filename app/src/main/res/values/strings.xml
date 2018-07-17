@@ -189,4 +189,5 @@
 
 
 <string name="title_change_password">SQRL - Change password</string>
+<string name="title_reset_password">SQRL - Reset password</string>
 </resources>
