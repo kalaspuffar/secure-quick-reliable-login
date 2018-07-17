@@ -31,6 +31,7 @@ import java.util.regex.Matcher;
 public class ImportActivity extends BaseActivity {
     private static final String TAG = "ImportActivity";
 
+    private boolean firstIdentity = false;
     private Handler handler = new Handler();
 
     private ConstraintLayout rootView = null;
@@ -87,6 +88,10 @@ public class ImportActivity extends BaseActivity {
                     Log.e(TAG, e.getMessage(), e);
                 }
 
+                if(!mDbHelper.hasIdentities()) {
+                    firstIdentity = true;
+                }
+
                 long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
 
                 SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
@@ -102,6 +107,8 @@ public class ImportActivity extends BaseActivity {
                     progressPopupWindow.dismiss();
 
                     if(newIdentityId != 0) {
+                        Intent renameIntent = new Intent(this, RenameActivity.class);
+                        renameIntent.putExtra("firstIdentity", firstIdentity);
                         startActivity(new Intent(this, RenameActivity.class));
                         ImportActivity.this.finish();
                     }
