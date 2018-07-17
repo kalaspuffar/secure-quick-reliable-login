@@ -57,6 +57,7 @@ public class CommunicationFlowHandler {
         UNLOCK_ACCOUNT_CPS
     }
 
+    private static CommunicationFlowHandler instance = null;
     private EntropyHarvester entropyHarvester;
     private final CommunicationHandler commHandler = CommunicationHandler.getInstance();
     private String serverData = null;
@@ -64,14 +65,30 @@ public class CommunicationFlowHandler {
     private boolean shouldRunServer = false;
     private Activity currentActivity;
 
-    public CommunicationFlowHandler(Activity currentActivity, Handler handler) {
-        this.currentActivity = currentActivity;
-        this.handler = handler;
+
+    public CommunicationFlowHandler() {
         try {
             entropyHarvester = EntropyHarvester.getInstance();
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
         }
+    }
+
+    public static CommunicationFlowHandler getInstance(Activity currentActivity, Handler handler) {
+        if(instance == null) {
+            instance = new CommunicationFlowHandler();
+        }
+        instance.currentActivity = currentActivity;
+        instance.handler = handler;
+        return instance;
+    }
+
+    public void setUrlBasedLogin(boolean urlBasedLogin) {
+        commHandler.setUrlBasedLogin(urlBasedLogin);
+    }
+
+    public boolean isUrlBasedLogin() {
+        return commHandler.isUrlBasedLogin();
     }
 
     public void setServerData(String serverData) {

@@ -40,6 +40,7 @@ public class CommunicationHandler {
     private AskDialogService askDialogService;
     private String response;
     private boolean useSSL;
+    private boolean urlBasedLogin = false;
 
     public static final int TIF_CURRENT_ID_MATCH = 0;
     public static final int TIF_PREVIOUS_ID_MATCH = 1;
@@ -58,6 +59,14 @@ public class CommunicationHandler {
             instance = new CommunicationHandler();
         }
         return instance;
+    }
+
+    public void setUrlBasedLogin(boolean urlBasedLogin) {
+        this.urlBasedLogin = urlBasedLogin;
+    }
+
+    public boolean isUrlBasedLogin() {
+        return this.urlBasedLogin;
     }
 
     public void clearLastResponse() {

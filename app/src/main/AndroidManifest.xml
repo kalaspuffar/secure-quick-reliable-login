@@ -111,6 +111,12 @@
             android:screenOrientation="portrait"
             />
 
+        <activity android:name=".activites.DisableAccountActivity"
+            android:label="@string/title_disable_account"
+            android:screenOrientation="portrait"
+            />
+
+
         <activity
             android:name=".activites.UrlLoginActivity"
             android:label="@string/title_activity_url_login"

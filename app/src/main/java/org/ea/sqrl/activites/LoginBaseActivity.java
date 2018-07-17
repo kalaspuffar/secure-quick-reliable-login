@@ -1,6 +1,7 @@
 package org.ea.sqrl.activites;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
@@ -39,12 +40,11 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     protected Button btnUseIdentity;
 
     protected PopupWindow loginOptionsPopupWindow;
-    private PopupWindow disableAccountPopupWindow;
     private PopupWindow enableAccountPopupWindow;
     private PopupWindow removeAccountPopupWindow;
     protected PopupWindow progressPopupWindow;
     protected PopupWindow loginPopupWindow;
-    protected CommunicationFlowHandler communicationFlowHandler = new CommunicationFlowHandler(this, handler);
+    protected CommunicationFlowHandler communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
 
     protected void setupBasePopups(LayoutInflater layoutInflater, boolean urlBasedLogin) {
@@ -66,8 +66,8 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
         communicationFlowHandler.setupAskPopupWindow(layoutInflater, handler);
         communicationFlowHandler.setupErrorPopupWindow(layoutInflater);
+        communicationFlowHandler.setUrlBasedLogin(urlBasedLogin);
         setupEnableAccountPopupWindow(layoutInflater, urlBasedLogin);
-        setupDisableAccountPopupWindow(layoutInflater, urlBasedLogin);
         setupRemoveAccountPopupWindow(layoutInflater, urlBasedLogin);
     }
 
@@ -116,7 +116,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
         popupView.findViewById(R.id.btnLockAccount).setOnClickListener(v -> {
             loginOptionsPopupWindow.dismiss();
-            disableAccountPopupWindow.showAtLocation(disableAccountPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+            startActivity(new Intent(this, DisableAccountActivity.class));
         });
 
         popupView.findViewById(R.id.btnUnlockAccount).setOnClickListener(v -> {
@@ -142,68 +142,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     }
 
     protected void closeActivity() {}
-
-    private void setupDisableAccountPopupWindow(LayoutInflater layoutInflater, boolean urlBasedLogin) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_disable_account, null);
-
-        disableAccountPopupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                true);
-        disableAccountPopupWindow.setTouchable(true);
-
-        popupView.findViewById(R.id.btnCloseLogin).setOnClickListener(v -> {
-            disableAccountPopupWindow.dismiss();
-            loginOptionsPopupWindow.showAtLocation(loginOptionsPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-        });
-
-        SQRLStorage storage = SQRLStorage.getInstance();
-
-        final EditText txtDisablePassword = popupView.findViewById(R.id.txtDisablePassword);
-        popupView.findViewById(R.id.btnDisableAccount).setOnClickListener(v -> {
-            disableAccountPopupWindow.dismiss();
-            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-
-            new Thread(() -> {
-                boolean decryptionOk = storage.decryptIdentityKey(txtDisablePassword.getText().toString(), entropyHarvester, false);
-                if(decryptionOk) {
-                    showClearNotification();
-                } else {
-                    showErrorMessage(R.string.decrypt_identity_fail);
-                    storage.clear();
-                    handler.post(() -> {
-                        txtDisablePassword.setText("");
-                        progressPopupWindow.dismiss();
-                    });
-                    return;
-                }
-                txtDisablePassword.setText("");
-
-                if(urlBasedLogin) {
-                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
-                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOCK_ACCOUNT_CPS);
-                } else {
-                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK_QRCODE);
-                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOCK_ACCOUNT);
-                }
-
-                communicationFlowHandler.setDoneAction(() -> {
-                    storage.clear();
-                    handler.post(() -> {
-                        progressPopupWindow.dismiss();
-                        closeActivity();
-                    });
-                });
-
-                communicationFlowHandler.setErrorAction(() -> {
-                    storage.clear();
-                    handler.post(() -> progressPopupWindow.dismiss());
-                });
-
-                communicationFlowHandler.handleNextAction();
-
-            }).start();
-        });
-    }
 
     private void setupEnableAccountPopupWindow(LayoutInflater layoutInflater, boolean urlBasedLogin) {
         View popupView = layoutInflater.inflate(R.layout.fragment_enable_account, null);
@@ -452,8 +390,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     public void onBackPressed() {
         if (loginOptionsPopupWindow != null && loginOptionsPopupWindow.isShowing()) {
             loginOptionsPopupWindow.dismiss();
-        } else if (disableAccountPopupWindow != null && disableAccountPopupWindow.isShowing()) {
-            disableAccountPopupWindow.dismiss();
         } else if (enableAccountPopupWindow != null && enableAccountPopupWindow.isShowing()) {
             enableAccountPopupWindow.dismiss();
         } else if (removeAccountPopupWindow != null && removeAccountPopupWindow.isShowing()) {
