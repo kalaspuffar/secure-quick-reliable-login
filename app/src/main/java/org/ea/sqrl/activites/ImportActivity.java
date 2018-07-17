@@ -107,9 +107,12 @@ public class ImportActivity extends BaseActivity {
                     progressPopupWindow.dismiss();
 
                     if(newIdentityId != 0) {
-                        Intent renameIntent = new Intent(this, RenameActivity.class);
-                        renameIntent.putExtra("firstIdentity", firstIdentity);
-                        startActivity(new Intent(this, RenameActivity.class));
+                        if(firstIdentity) {
+                            mDbHelper.updateIdentityName(newIdentityId, "Default");
+                            startActivity(new Intent(this, SimplifiedActivity.class));
+                        } else {
+                            startActivity(new Intent(this, RenameActivity.class));
+                        }
                         ImportActivity.this.finish();
                     }
                 });

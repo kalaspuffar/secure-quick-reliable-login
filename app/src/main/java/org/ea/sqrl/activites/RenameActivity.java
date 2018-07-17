@@ -32,17 +32,12 @@ public class RenameActivity extends BaseActivity {
             txtIdentityName.setText(mDbHelper.getIdentityName(currentId));
         }
 
-        final boolean firstIdentity = this.getIntent().getBooleanExtra("firstIdentity", false);
-
         findViewById(R.id.btnRename).setOnClickListener(v -> {
             if(currentId != 0) {
                 mDbHelper.updateIdentityName(currentId, txtIdentityName.getText().toString());
             }
             txtIdentityName.setText("");
 
-            if(firstIdentity) {
-                startActivity(new Intent(this, SimplifiedActivity.class));
-            }
             RenameActivity.this.finish();
         });
     }
