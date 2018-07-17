@@ -1,14 +1,9 @@
 package org.ea.sqrl.activites;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.print.PrintAttributes;
-import android.print.PrintManager;
 import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
@@ -32,11 +26,8 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
-import org.ea.sqrl.services.IdentityPrintDocumentAdapter;
 import org.ea.sqrl.utils.Utils;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.regex.Matcher;
 
 /**
@@ -48,8 +39,6 @@ import java.util.regex.Matcher;
  */
 public class MainActivity extends LoginBaseActivity {
     private static final String TAG = "MainActivity";
-
-    private PopupWindow importPopupWindow;
 
     private boolean importIdentity = false;
 
@@ -63,7 +52,6 @@ public class MainActivity extends LoginBaseActivity {
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
         setupLoginPopupWindow(getLayoutInflater());
-        setupImportPopupWindow(getLayoutInflater());
         setupLoginOptionsPopupWindow(getLayoutInflater(), true);
         setupErrorPopupWindow(getLayoutInflater());
 
@@ -90,11 +78,7 @@ public class MainActivity extends LoginBaseActivity {
 
         final Button btnImportIdentity = findViewById(R.id.btnImportIdentity);
         btnImportIdentity.setOnClickListener(
-                v -> {
-                    importIdentity = true;
-                    integrator.setPrompt(this.getString(R.string.scan_identity));
-                    integrator.initiateScan();
-                }
+                v -> startActivity(new Intent(this, ImportActivity.class))
         );
 
         final Button btnSettings = findViewById(R.id.btnSettings);
@@ -280,87 +264,10 @@ public class MainActivity extends LoginBaseActivity {
         });
     }
 
-    public void setupImportPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_import, null);
-
-        importPopupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                true);
-
-        importPopupWindow.setTouchable(true);
-
-        final EditText txtPassword = popupView.findViewById(R.id.txtPassword);
-        final Button btnImportIdentityDo = popupView.findViewById(R.id.btnImportIdentityDo);
-
-        popupView.findViewById(R.id.btnCloseImportIdentity).setOnClickListener(v -> importPopupWindow.dismiss());
-        popupView.findViewById(R.id.btnForgotPassword).setOnClickListener(
-                v -> {
-                    importPopupWindow.dismiss();
-                    startActivity(new Intent(this, ResetPasswordActivity.class));
-                }
-        );
-
-        btnImportIdentityDo.setOnClickListener(v -> {
-            importPopupWindow.dismiss();
-            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-
-            new Thread(() -> {
-                SQRLStorage storage = SQRLStorage.getInstance();
-                try {
-                    boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString(), entropyHarvester, false);
-                    if(!decryptStatus) {
-                        handler.post(() -> {
-                            showErrorMessage(R.string.decrypt_identity_fail);
-                            txtPassword.setText("");
-                            progressPopupWindow.dismiss();
-                        });
-                        return;
-                    }
-                    storage.clearQuickPass(this);
-
-                    boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
-                    if (!encryptStatus) {
-                        handler.post(() -> {
-                            showErrorMessage(R.string.encrypt_identity_fail);
-                            txtPassword.setText("");
-                            progressPopupWindow.dismiss();
-                        });
-                        return;
-                    }
-                    storage.clear();
-                } catch (Exception e) {
-                    showErrorMessage(e.getMessage());
-                    Log.e(TAG, e.getMessage(), e);
-                }
-
-                long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
-
-                SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                        APPS_PREFERENCES,
-                        Context.MODE_PRIVATE
-                );
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putLong(CURRENT_ID, newIdentityId);
-                editor.apply();
-
-                handler.post(() -> {
-                    updateSpinnerData(newIdentityId);
-                    txtPassword.setText("");
-                    progressPopupWindow.dismiss();
-
-                    if(newIdentityId != 0) {
-                        startActivity(new Intent(this, RenameActivity.class));
-                    }
-                });
-            }).start();
-        });
-    }
 
     @Override
     public void onBackPressed() {
-        if (importPopupWindow != null && importPopupWindow.isShowing()) {
-            importPopupWindow.dismiss();
-        } else if (loginPopupWindow != null && loginPopupWindow.isShowing()) {
+        if (loginPopupWindow != null && loginPopupWindow.isShowing()) {
             loginPopupWindow.dismiss();
         } else {
             MainActivity.this.finish();
@@ -435,35 +342,6 @@ public class MainActivity extends LoginBaseActivity {
 
                         loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                     }, 100);
-                } else {
-                    SQRLStorage storage = SQRLStorage.getInstance();
-                    try {
-                        byte[] qrCodeData = Utils.readSQRLQRCode(data);
-                        if(qrCodeData.length == 0) {
-                            showErrorMessage(R.string.scan_incorrect);
-                            return;
-                        }
-
-                        storage.read(qrCodeData);
-
-                        if(!storage.hasEncryptedKeys()) {
-                            handler.postDelayed(() -> startActivity(new Intent(this, ResetPasswordActivity.class)), 100);
-                            return;
-                        }
-
-                        String recoveryBlock = storage.getVerifyingRecoveryBlock();
-
-                        handler.postDelayed(() -> {
-                            final TextView txtRecoveryKey = importPopupWindow.getContentView().findViewById(R.id.txtRecoveryKey);
-                            txtRecoveryKey.setText(recoveryBlock);
-                            txtRecoveryKey.setMovementMethod(LinkMovementMethod.getInstance());
-
-                            importPopupWindow.showAtLocation(importPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                        }, 100);
-                    } catch (Exception e) {
-                        showErrorMessage(e.getMessage());
-                        Log.e(TAG, e.getMessage(), e);
-                    }
                 }
             }
         }

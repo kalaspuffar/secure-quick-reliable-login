@@ -51,7 +51,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         if(cboxIdentity != null) {
             identities = mDbHelper.getIdentitys();
 
-            ArrayAdapter adapter = new ArrayAdapter(
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(
                     this,
                     R.layout.simple_spinner_item,
                     identities.values().toArray(new String[identities.size()])
@@ -192,7 +192,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     protected void updateSpinnerData(long currentId) {
         identities = mDbHelper.getIdentitys();
 
-        ArrayAdapter adapter = new ArrayAdapter(
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
                 R.layout.simple_spinner_item,
                 identities.values().toArray(new String[identities.size()])
