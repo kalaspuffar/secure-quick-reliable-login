@@ -186,4 +186,13 @@
 <string name="text_input_hint">Geben Sie den Rettungs-Text an, den Sie auf dem Ausdruck finden, den Sie beim Erzeugen Ihrer Identität erstellt haben.</string>
 <string name="error_dialog_title">An error has occured</string>
 <string name="login_identity_quickpass">Password (First %s characters)</string>
+<string name="title_change_password">SQRL - Change password</string>
+<string name="title_reset_password">SQRL - Reset password</string>
+<string name="title_disable_account">SQRL - Disable account</string>
+<string name="title_enable_account">SQRL - Enable account</string>
+<string name="title_remove_account">SQRL - Remove account</string>
+<string name="title_rename_identity">SQRL - Rename identity</string>
+<string name="title_export_options">SQRL - Export</string>
+<string name="title_import">SQRL - Import</string>
+<string name="title_account_options">SQRL - Account options</string>
 </resources>

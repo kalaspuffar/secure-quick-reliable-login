@@ -186,4 +186,13 @@
 <string name="text_input_hint">Skriv in identitetens text utskrift från pappers utskriften</string>
 <string name="error_dialog_title">Ett fel har uppstått</string>
 <string name="login_identity_quickpass">Lösenord (Första %s tecknen)</string>
+<string name="title_change_password">SQRL - Ändra lösenord</string>
+<string name="title_reset_password">SQRL - Återställ lösenord</string>
+<string name="title_disable_account">SQRL - Inactivera konto</string>
+<string name="title_enable_account">SQRL - Activera konto</string>
+<string name="title_remove_account">SQRL - Ta bort konto</string>
+<string name="title_rename_identity">SQRL - Byt namn</string>
+<string name="title_export_options">SQRL -.Exportera</string>
+<string name="title_import">SQRL - Importera</string>
+<string name="title_account_options">SQRL - Konto alternativ</string>
 </resources>
