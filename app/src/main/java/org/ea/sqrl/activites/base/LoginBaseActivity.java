@@ -124,7 +124,9 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     @Override
     protected void onPause() {
         super.onPause();
-        communicationFlowHandler.closeServer();
+        if(communicationFlowHandler != null) {
+            communicationFlowHandler.closeServer();
+        }
     }
 
     @Override

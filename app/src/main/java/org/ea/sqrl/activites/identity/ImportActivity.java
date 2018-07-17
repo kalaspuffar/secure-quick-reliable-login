@@ -114,6 +114,11 @@ public class ImportActivity extends BaseActivity {
             }).start();
         });
 
+        boolean testing = getIntent().getBooleanExtra("RUNNING_TEST", false);
+        if(testing) {
+            return;
+        }
+
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
         integrator.setCameraId(0);

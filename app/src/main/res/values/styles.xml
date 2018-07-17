@@ -2,23 +2,9 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="CommonTheme">
         <item name="actionButtonStyle">@style/myActionButtonStyle</item>
-        <item name="android:textViewStyle">@style/SQRLTextViewStyle</item>
-        <item name="android:buttonStyle">@style/SQRLButtonStyle</item>
         <item name="android:actionOverflowButtonStyle">@style/myActionButtonStyle</item>
     </style>
 
-
-    <style name="SQRLTextViewStyle" parent="android:Widget.TextView">
-<!--
-        <item name="android:fontFamily">@font/source_han_sans</item>
--->
-    </style>
-
-    <style name="SQRLButtonStyle" parent="Widget.AppCompat.Button.Colored">
-<!--
-        <item name="android:fontFamily">@font/source_han_sans</item>
--->
-    </style>
 
     <style name="myActionButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
         <item name="android:width">48dp</item>

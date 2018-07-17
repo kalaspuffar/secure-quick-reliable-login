@@ -45,6 +45,12 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
         final TextView txtUrlLogin = findViewById(R.id.txtSite);
         Intent intent = getIntent();
+
+        boolean testing = intent.getBooleanExtra("RUNNING_TEST", false);
+        if(testing) {
+            return;
+        }
+
         Uri data = intent.getData();
         if(data == null) {
             showErrorMessage(R.string.url_login_missing_url);

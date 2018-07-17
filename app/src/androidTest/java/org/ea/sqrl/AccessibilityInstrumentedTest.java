@@ -11,6 +11,11 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.view.WindowManager;
 
 import org.ea.sqrl.activites.SimplifiedActivity;
+import org.ea.sqrl.activites.account.AccountOptionsActivity;
+import org.ea.sqrl.activites.account.DisableAccountActivity;
+import org.ea.sqrl.activites.account.EnableAccountActivity;
+import org.ea.sqrl.activites.account.RemoveAccountActivity;
+import org.ea.sqrl.activites.identity.ChangePasswordActivity;
 import org.ea.sqrl.activites.identity.ClearIdentityActivity;
 import org.ea.sqrl.activites.create.CreateIdentityActivity;
 import org.ea.sqrl.activites.create.EntropyGatherActivity;
@@ -23,6 +28,10 @@ import org.ea.sqrl.activites.create.RescueCodeEnterActivity;
 import org.ea.sqrl.activites.create.RescueCodeShowActivity;
 import org.ea.sqrl.activites.create.SaveIdentityActivity;
 import org.ea.sqrl.activites.SettingsActivity;
+import org.ea.sqrl.activites.identity.ExportOptionsActivity;
+import org.ea.sqrl.activites.identity.ImportActivity;
+import org.ea.sqrl.activites.identity.RenameActivity;
+import org.ea.sqrl.activites.identity.ResetPasswordActivity;
 import org.ea.sqrl.activites.identity.ShowIdentityActivity;
 import org.ea.sqrl.activites.StartActivity;
 import org.ea.sqrl.activites.UrlLoginActivity;
@@ -107,6 +116,42 @@ public class AccessibilityInstrumentedTest {
     public ActivityTestRule<UrlLoginActivity> urlLoginActivityRule =
             new ActivityTestRule<>(UrlLoginActivity.class, true, false);
 
+    @Rule
+    public ActivityTestRule<ChangePasswordActivity> changePasswordActivityRule =
+            new ActivityTestRule<>(ChangePasswordActivity.class, true, false);
+
+    @Rule
+    public ActivityTestRule<ResetPasswordActivity> resetPasswordActivityRule =
+            new ActivityTestRule<>(ResetPasswordActivity.class, true, false);
+
+    @Rule
+    public ActivityTestRule<DisableAccountActivity> disableAccountActivityRule =
+            new ActivityTestRule<>(DisableAccountActivity.class, true, false);
+
+    @Rule
+    public ActivityTestRule<EnableAccountActivity> enableAccountActivityRule =
+            new ActivityTestRule<>(EnableAccountActivity.class, true, false);
+
+    @Rule
+    public ActivityTestRule<RemoveAccountActivity> removeAccountActivityRule =
+            new ActivityTestRule<>(RemoveAccountActivity.class, true, false);
+
+    @Rule
+    public ActivityTestRule<RenameActivity> renameIdentityActivityRule =
+            new ActivityTestRule<>(RenameActivity.class, true, false);
+
+    @Rule
+    public ActivityTestRule<ExportOptionsActivity> exportOptionsActivityRule =
+            new ActivityTestRule<>(ExportOptionsActivity.class, true, false);
+
+    @Rule
+    public ActivityTestRule<ImportActivity> importActivityRule =
+            new ActivityTestRule<>(ImportActivity.class, true, false);
+
+    @Rule
+    public ActivityTestRule<AccountOptionsActivity> accountOptionsActivityRule =
+            new ActivityTestRule<>(AccountOptionsActivity.class, true, false);
+
 
     @BeforeClass
     public static void enableAccessibilityChecks() {
@@ -133,7 +178,7 @@ public class AccessibilityInstrumentedTest {
     }
 
     @Test
-    @Ignore // Still failing test, not important as it don't have that many elements.
+//    @Ignore // Still failing test, not important as it don't have that many elements.
     public void testClearIdentityActivityAccessibility() throws Exception {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
@@ -301,5 +346,113 @@ public class AccessibilityInstrumentedTest {
         unlockScreen(a);
 
         onView(withId(R.id.urlLoginActivityView)).perform(click());
+    }
+
+    @Test
+    public void changePasswordActivityAccessibility() throws Exception {
+        Context targetContext = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext();
+        Intent intent = new Intent(targetContext, ChangePasswordActivity.class);
+        intent.putExtra("RUNNING_TEST", true);
+        ChangePasswordActivity a = changePasswordActivityRule.launchActivity(intent);
+        unlockScreen(a);
+
+        onView(withId(R.id.changePasswordActivityView)).perform(click());
+    }
+
+    @Test
+    public void resetPasswordActivityAccessibility() throws Exception {
+        Context targetContext = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext();
+        Intent intent = new Intent(targetContext, ResetPasswordActivity.class);
+        intent.putExtra("RUNNING_TEST", true);
+        ResetPasswordActivity a = resetPasswordActivityRule.launchActivity(intent);
+        unlockScreen(a);
+
+        onView(withId(R.id.resetPasswordActivityView)).perform(click());
+    }
+
+    @Test
+    public void disableAccountActivityAccessibility() throws Exception {
+        Context targetContext = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext();
+        Intent intent = new Intent(targetContext, DisableAccountActivity.class);
+        intent.putExtra("RUNNING_TEST", true);
+        DisableAccountActivity a = disableAccountActivityRule.launchActivity(intent);
+        unlockScreen(a);
+
+        onView(withId(R.id.disableAccountActivityView)).perform(click());
+    }
+
+    @Test
+    public void enableAccountActivityAccessibility() throws Exception {
+        Context targetContext = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext();
+        Intent intent = new Intent(targetContext, EnableAccountActivity.class);
+        intent.putExtra("RUNNING_TEST", true);
+        EnableAccountActivity a = enableAccountActivityRule.launchActivity(intent);
+        unlockScreen(a);
+
+        onView(withId(R.id.enableAccountActivityView)).perform(click());
+    }
+
+    @Test
+    public void removeAccountActivityAccessibility() throws Exception {
+        Context targetContext = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext();
+        Intent intent = new Intent(targetContext, RemoveAccountActivity.class);
+        intent.putExtra("RUNNING_TEST", true);
+        RemoveAccountActivity a = removeAccountActivityRule.launchActivity(intent);
+        unlockScreen(a);
+
+        onView(withId(R.id.removeAccountActivityView)).perform(click());
+    }
+
+    @Test
+    public void renameIdentityActivityAccessibility() throws Exception {
+        Context targetContext = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext();
+        Intent intent = new Intent(targetContext, RenameActivity.class);
+        intent.putExtra("RUNNING_TEST", true);
+        RenameActivity a = renameIdentityActivityRule.launchActivity(intent);
+        unlockScreen(a);
+
+        onView(withId(R.id.renameActivityView)).perform(click());
+    }
+
+    @Test
+    public void exportOptionsActivityAccessibility() throws Exception {
+        Context targetContext = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext();
+        Intent intent = new Intent(targetContext, ExportOptionsActivity.class);
+        intent.putExtra("RUNNING_TEST", true);
+        ExportOptionsActivity a = exportOptionsActivityRule.launchActivity(intent);
+        unlockScreen(a);
+
+        onView(withId(R.id.exportOptionsActivityView)).perform(click());
+    }
+
+    @Test
+    public void importActivityAccessibility() throws Exception {
+        Context targetContext = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext();
+        Intent intent = new Intent(targetContext, ImportActivity.class);
+        intent.putExtra("RUNNING_TEST", true);
+        ImportActivity a = importActivityRule.launchActivity(intent);
+        unlockScreen(a);
+
+        onView(withId(R.id.importActivityView)).perform(click());
+    }
+
+    @Test
+    public void accountOptionsActivityAccessibility() throws Exception {
+        Context targetContext = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext();
+        Intent intent = new Intent(targetContext, AccountOptionsActivity.class);
+        intent.putExtra("RUNNING_TEST", true);
+        AccountOptionsActivity a = accountOptionsActivityRule.launchActivity(intent);
+        unlockScreen(a);
+
+        onView(withId(R.id.accountOptionsActivityView)).perform(click());
     }
 }

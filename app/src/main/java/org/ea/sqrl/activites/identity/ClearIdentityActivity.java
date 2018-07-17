@@ -30,7 +30,9 @@ public class ClearIdentityActivity extends AppCompatActivity {
         txtClearIdentity.setText(getString(R.string.clear_identity_fail));
 
         boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
-        if(runningTest) return;
+        if(runningTest) {
+            return;
+        }
 
         SQRLStorage storage = SQRLStorage.getInstance();
         storage.clearQuickPass(this);
