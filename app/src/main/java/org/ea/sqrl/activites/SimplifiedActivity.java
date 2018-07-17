@@ -53,7 +53,6 @@ public class SimplifiedActivity extends LoginBaseActivity {
         integrator.setBarcodeImageEnabled(false);
 
         setupLoginPopupWindow(getLayoutInflater());
-        setupLoginOptionsPopupWindow(getLayoutInflater(), true);
 
         setupBasePopups(getLayoutInflater(), false);
         setupErrorPopupWindow(getLayoutInflater());
@@ -147,7 +146,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
         popupView.findViewById(R.id.btnCloseLogin).setOnClickListener(v -> loginPopupWindow.dismiss());
         popupView.findViewById(R.id.btnLoginOptions).setOnClickListener(v -> {
             loginPopupWindow.dismiss();
-            loginOptionsPopupWindow.showAtLocation(loginOptionsPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+            startActivity(new Intent(this, AccountOptionsActivity.class));
         });
 
         popupView.findViewById(R.id.btnLogin).setOnClickListener(v -> {

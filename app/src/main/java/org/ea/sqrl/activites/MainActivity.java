@@ -52,7 +52,6 @@ public class MainActivity extends LoginBaseActivity {
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
         setupLoginPopupWindow(getLayoutInflater());
-        setupLoginOptionsPopupWindow(getLayoutInflater(), true);
         setupErrorPopupWindow(getLayoutInflater());
 
         setupBasePopups(getLayoutInflater(), false);
@@ -210,7 +209,7 @@ public class MainActivity extends LoginBaseActivity {
         popupView.findViewById(R.id.btnCloseLogin).setOnClickListener(v -> loginPopupWindow.dismiss());
         popupView.findViewById(R.id.btnLoginOptions).setOnClickListener(v -> {
             loginPopupWindow.dismiss();
-            loginOptionsPopupWindow.showAtLocation(loginOptionsPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+            startActivity(new Intent(this, AccountOptionsActivity.class));
         });
 
         popupView.findViewById(R.id.btnLogin).setOnClickListener(v -> {

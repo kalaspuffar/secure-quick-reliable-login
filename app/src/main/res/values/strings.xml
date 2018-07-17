@@ -196,5 +196,6 @@
 <string name="title_rename_identity">SQRL - Rename identity</string>
 <string name="title_export_options">SQRL - Export</string>
 <string name="title_import">SQRL - Import</string>
+<string name="title_account_options">SQRL - Account options</string>
 
 </resources>

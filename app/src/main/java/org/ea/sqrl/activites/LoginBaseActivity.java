@@ -38,7 +38,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     protected Map<Long, String> identities;
     protected Button btnUseIdentity;
 
-    protected PopupWindow loginOptionsPopupWindow;
     protected PopupWindow progressPopupWindow;
     protected PopupWindow loginPopupWindow;
     protected CommunicationFlowHandler communicationFlowHandler = null;
@@ -70,37 +69,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     protected void onResume() {
         super.onResume();
         setupProgressPopupWindow(getLayoutInflater());
-    }
-
-    public void setupLoginOptionsPopupWindow(LayoutInflater layoutInflater, boolean popup) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_login_optional, null);
-
-        loginOptionsPopupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                true);
-        loginOptionsPopupWindow.setTouchable(true);
-
-        popupView.findViewById(R.id.btnCloseLoginOptional).setOnClickListener(v -> {
-            loginOptionsPopupWindow.dismiss();
-            if(popup) {
-                loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-            }
-        });
-
-        popupView.findViewById(R.id.btnRemoveAccount).setOnClickListener(v -> {
-            loginOptionsPopupWindow.dismiss();
-            startActivity(new Intent(this, RemoveAccountActivity.class));
-        });
-
-        popupView.findViewById(R.id.btnLockAccount).setOnClickListener(v -> {
-            loginOptionsPopupWindow.dismiss();
-            startActivity(new Intent(this, DisableAccountActivity.class));
-        });
-
-        popupView.findViewById(R.id.btnUnlockAccount).setOnClickListener(v -> {
-            loginOptionsPopupWindow.dismiss();
-            startActivity(new Intent(this, EnableAccountActivity.class));
-        });
     }
 
     protected void setupProgressPopupWindow(LayoutInflater layoutInflater) {
@@ -177,15 +145,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         if (view != null) {
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (loginOptionsPopupWindow != null && loginOptionsPopupWindow.isShowing()) {
-            loginOptionsPopupWindow.dismiss();
-        } else {
-            super.onBackPressed();
         }
     }
 

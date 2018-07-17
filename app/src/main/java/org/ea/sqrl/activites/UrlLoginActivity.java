@@ -72,7 +72,6 @@ public class UrlLoginActivity extends LoginBaseActivity {
             return;
         }
 
-        setupLoginOptionsPopupWindow(getLayoutInflater(), false);
         setupBasePopups(getLayoutInflater(), true);
 
         SQRLStorage storage = SQRLStorage.getInstance();
@@ -139,9 +138,9 @@ public class UrlLoginActivity extends LoginBaseActivity {
             }
         });
 
-        findViewById(R.id.btnLoginOptions).setOnClickListener(v -> {
-            loginOptionsPopupWindow.showAtLocation(loginOptionsPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-        });
+        findViewById(R.id.btnLoginOptions).setOnClickListener(v ->
+            startActivity(new Intent(this, AccountOptionsActivity.class))
+        );
 
         findViewById(R.id.btnLogin).setOnClickListener(v -> {
             SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
