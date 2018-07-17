@@ -22,10 +22,11 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.account.AccountOptionsActivity;
+import org.ea.sqrl.activites.base.LoginBaseActivity;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
-import org.ea.sqrl.utils.EncryptionUtils;
 import org.ea.sqrl.utils.Utils;
 
 import java.util.regex.Matcher;

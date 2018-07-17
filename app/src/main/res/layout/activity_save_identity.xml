@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/saveIdentityActivityView"
-    tools:context="org.ea.sqrl.activites.SaveIdentityActivity">
+    tools:context="org.ea.sqrl.activites.create.SaveIdentityActivity">
 
     <EditText
         android:id="@+id/txtIdentityName"

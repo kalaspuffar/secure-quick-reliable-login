@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/loginOptionsActivityView"
-    tools:context="org.ea.sqrl.activites.AccountOptionsActivity">
+    tools:context="org.ea.sqrl.activites.account.AccountOptionsActivity">
 
     <Button
         android:id="@+id/btnLockAccount"

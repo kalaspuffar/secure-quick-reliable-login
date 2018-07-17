@@ -1,4 +1,4 @@
-package org.ea.sqrl.activites;
+package org.ea.sqrl.activites.identity;
 
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;

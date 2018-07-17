@@ -1,4 +1,4 @@
-package org.ea.sqrl.activites;
+package org.ea.sqrl.activites.identity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.EncryptionUtils;

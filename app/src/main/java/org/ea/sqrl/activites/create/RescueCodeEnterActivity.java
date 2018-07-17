@@ -1,4 +1,4 @@
-package org.ea.sqrl.activites;
+package org.ea.sqrl.activites.create;
 
 import android.content.Intent;
 import android.os.Bundle;

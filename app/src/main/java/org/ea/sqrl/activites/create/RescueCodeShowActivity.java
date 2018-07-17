@@ -1,4 +1,4 @@
-package org.ea.sqrl.activites;
+package org.ea.sqrl.activites.create;
 
 import android.app.AlertDialog;
 import android.content.Context;

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/entropyGatherActivityView"
-    tools:context="org.ea.sqrl.activites.EntropyGatherActivity">
+    tools:context="org.ea.sqrl.activites.create.EntropyGatherActivity">
 
     <FrameLayout
         android:id="@+id/camera_preview"

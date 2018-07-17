@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/clearIdentityActivityView"
-    tools:context="org.ea.sqrl.activites.ClearIdentityActivity">
+    tools:context="org.ea.sqrl.activites.identity.ClearIdentityActivity">
 
     <ImageView
         android:id="@+id/imgClearIdentity"

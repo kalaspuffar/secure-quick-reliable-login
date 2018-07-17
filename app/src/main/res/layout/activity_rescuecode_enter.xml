@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/rescueCodeEntryActivityView"
-    tools:context="org.ea.sqrl.activites.RescueCodeEnterActivity">
+    tools:context="org.ea.sqrl.activites.create.RescueCodeEnterActivity">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/inputRow1"

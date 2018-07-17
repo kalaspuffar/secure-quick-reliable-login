@@ -1,4 +1,4 @@
-package org.ea.sqrl.activites;
+package org.ea.sqrl.activites.create;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.base.LoginBaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
 
 /**

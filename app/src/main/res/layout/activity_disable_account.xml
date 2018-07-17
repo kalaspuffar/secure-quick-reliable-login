@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/disableAccountActivityView"
-    tools:context="org.ea.sqrl.activites.DisableAccountActivity">
+    tools:context="org.ea.sqrl.activites.account.DisableAccountActivity">
 
     <Button
         android:id="@+id/btnDisableAccount"

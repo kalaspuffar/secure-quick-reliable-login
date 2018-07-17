@@ -1,15 +1,11 @@
-package org.ea.sqrl.activites;
+package org.ea.sqrl.activites.account;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Gravity;
-import android.widget.EditText;
 
 import org.ea.sqrl.R;
-import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.activites.base.BaseActivity;
 
 public class AccountOptionsActivity extends BaseActivity {
     private Handler handler = new Handler();

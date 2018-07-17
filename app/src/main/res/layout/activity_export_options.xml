@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/exportOptionsActivityView"
-    tools:context="org.ea.sqrl.activites.ExportOptionsActivity">
+    tools:context="org.ea.sqrl.activites.identity.ExportOptionsActivity">
 
     <Button
         android:id="@+id/btnShowIdentity"

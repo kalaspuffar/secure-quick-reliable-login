@@ -1,4 +1,4 @@
-package org.ea.sqrl.activites;
+package org.ea.sqrl.activites.identity;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -11,15 +11,10 @@ import android.os.Handler;
 import android.print.PrintAttributes;
 import android.print.PrintManager;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.PopupWindow;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.services.IdentityPrintDocumentAdapter;
 

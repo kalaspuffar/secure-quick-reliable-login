@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/rekeyIdentityActivityView"
-    tools:context="org.ea.sqrl.activites.RekeyIdentityActivity">
+    tools:context="org.ea.sqrl.activites.create.RekeyIdentityActivity">
 
     <TextView
         android:id="@+id/txtRekeyIdentityMessage"

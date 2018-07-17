@@ -1,10 +1,9 @@
-package org.ea.sqrl.activites;
+package org.ea.sqrl.activites.create;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.LinkMovementMethod;
-import android.view.Menu;
 import android.widget.Button;
 import android.widget.TextView;
 

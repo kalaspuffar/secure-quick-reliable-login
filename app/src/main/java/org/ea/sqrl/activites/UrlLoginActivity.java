@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.account.AccountOptionsActivity;
+import org.ea.sqrl.activites.base.LoginBaseActivity;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;

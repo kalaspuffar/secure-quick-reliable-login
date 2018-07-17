@@ -1,4 +1,4 @@
-package org.ea.sqrl.activites;
+package org.ea.sqrl.activites.base;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -16,7 +16,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -35,6 +34,8 @@ import android.widget.TextView;
 
 import org.ea.sqrl.BuildConfig;
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.identity.ClearIdentityActivity;
+import org.ea.sqrl.activites.IntroductionActivity;
 import org.ea.sqrl.database.IdentityDBHelper;
 import org.ea.sqrl.processors.EntropyHarvester;
 import org.ea.sqrl.processors.ProgressionUpdater;

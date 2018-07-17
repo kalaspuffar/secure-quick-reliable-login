@@ -1,19 +1,12 @@
-package org.ea.sqrl.activites;
+package org.ea.sqrl.activites.identity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.PopupWindow;
 
 import org.ea.sqrl.R;
-import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.activites.base.BaseActivity;
 
 public class RenameActivity extends BaseActivity {
     @Override

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/newIdentityDoneActivityView"
-    tools:context="org.ea.sqrl.activites.NewIdentityDoneActivity">
+    tools:context="org.ea.sqrl.activites.create.NewIdentityDoneActivity">
 
     <TextView
         android:id="@+id/txtNewIdentityDoneMessage"

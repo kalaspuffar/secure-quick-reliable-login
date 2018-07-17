@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/importActivityView"
-    tools:context="org.ea.sqrl.activites.ImportActivity">
+    tools:context="org.ea.sqrl.activites.identity.ImportActivity">
 
     <EditText
         android:id="@+id/txtPassword"

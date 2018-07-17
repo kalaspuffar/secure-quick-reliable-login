@@ -1,13 +1,12 @@
 package org.ea.sqrl.processors;
 
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
 import org.ea.sqrl.R;
-import org.ea.sqrl.activites.BaseActivity;
+import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.jni.Grc_aesgcm;
 import org.ea.sqrl.utils.EncryptionUtils;
 import org.libsodium.jni.NaCl;
