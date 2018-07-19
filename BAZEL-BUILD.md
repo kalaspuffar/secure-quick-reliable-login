@@ -37,6 +37,3 @@ After the first install you may run incremental install in order to improve the 
 ```
 bazel mobile-install --incremental --adb_arg=-s --adb_arg=<SERIAL> --start_app //app:sqrl
 ```
-
-
-[link](sqrl://www.grc.com/sqrl/?nut=ThisIsABadNut)
