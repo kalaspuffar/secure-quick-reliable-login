@@ -37,6 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:nextFocusDown="@+id/btnDisableAccount"
+            android:contentDescription="@string/login_identity_password"
             android:hint="@string/login_identity_password"
             android:inputType="textPassword"/>
     </android.support.design.widget.TextInputLayout>

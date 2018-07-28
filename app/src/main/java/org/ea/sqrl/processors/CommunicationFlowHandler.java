@@ -1,7 +1,13 @@
 package org.ea.sqrl.processors;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -13,6 +19,9 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.MainActivity;
+import org.ea.sqrl.activites.StartActivity;
+import org.ea.sqrl.activites.identity.ExportOptionsActivity;
 import org.ea.sqrl.services.AskDialogService;
 import org.ea.sqrl.utils.EncryptionUtils;
 
@@ -126,7 +135,9 @@ public class CommunicationFlowHandler {
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
             if(e.getMessage() != null) {
-                if("CONN_ERROR".equalsIgnoreCase(e.getMessage())) {
+                if("CPS_FAILURE".equalsIgnoreCase(e.getMessage())) {
+                    txtErrorMessage.setText(currentActivity.getString(R.string.error_client_provided_session_missing));
+                } else if("CONN_ERROR".equalsIgnoreCase(e.getMessage())) {
                     txtErrorMessage.setText(currentActivity.getString(R.string.connection_error));
                 } else {
                     txtErrorMessage.setText(e.getMessage());
@@ -416,8 +427,8 @@ public class CommunicationFlowHandler {
         }
     }
 
-    private void startCPSServer(String successUrl, boolean cancel, Runnable closeScreen) {
-        new Thread(() -> {
+    private void startCPSServer(String successUrl, boolean cancel, Runnable closeScreen) throws Exception {
+        Thread cpsThread = new Thread(() -> {
             try {
                 server = new ServerSocket(25519);
                 boolean done = false;
@@ -472,7 +483,23 @@ public class CommunicationFlowHandler {
             }
 
             closeScreen.run();
-        }).start();
+        });
+        cpsThread.start();
+
+        int time = 0;
+        while(cpsThread.isAlive() && time < 10) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            time++;
+        }
+
+        if(cpsThread.isAlive()) {
+            cpsThread.interrupt();
+            throw new Exception("CPS_FAILURE");
+        }
     }
 
 }

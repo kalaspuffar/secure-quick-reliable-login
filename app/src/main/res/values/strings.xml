@@ -199,4 +199,5 @@
 <string name="remove_identity_confirmation">Are you sure you want to remove this identity?</string>
 <string name="remove_identity_confirmation_positive">Yes</string>
 <string name="remove_identity_confirmation_negative">No</string>
+    <string name="error_client_provided_session_missing">A client provided session is missing, login was not successful contact login provider to fix the error.</string>
 </resources>
