@@ -177,6 +177,8 @@ public class MainActivity extends LoginBaseActivity {
                         if(!decryptionOk) {
                             showErrorMessage(R.string.decrypt_identity_fail);
                             handler.post(() -> {
+                                txtLoginPassword.setHint(R.string.login_identity_password);
+                                txtLoginPassword.setText("");
                                 progressPopupWindow.dismiss();
                                 loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                             });
