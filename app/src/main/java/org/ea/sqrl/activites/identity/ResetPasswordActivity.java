@@ -57,7 +57,7 @@ public class ResetPasswordActivity extends BaseActivity {
 
                 boolean decryptionOk = storage.decryptUnlockKey(rescueCode);
                 if (!decryptionOk) {
-                    progressPopupWindow.dismiss();
+                    handler.post(() -> progressPopupWindow.dismiss());
                     showErrorMessage(R.string.decrypt_identity_fail);
                     return;
                 }
@@ -66,7 +66,7 @@ public class ResetPasswordActivity extends BaseActivity {
 
                 boolean encryptStatus = storage.encryptIdentityKey(txtResetPasswordNewPassword.getText().toString(), entropyHarvester);
                 if (!encryptStatus) {
-                    progressPopupWindow.dismiss();
+                    handler.post(() -> progressPopupWindow.dismiss());
                     showErrorMessage(R.string.encrypt_identity_fail);
                     return;
                 }
