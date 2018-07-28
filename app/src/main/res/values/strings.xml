@@ -195,5 +195,8 @@
 <string name="title_export_options">SQRL - Export</string>
 <string name="title_import">SQRL - Import</string>
 <string name="title_account_options">SQRL - Account options</string>
-    <string name="connection_error">Unable to connect to server, please try again</string>
+<string name="connection_error">Unable to connect to server, please try again</string>
+<string name="remove_identity_confirmation">Are you sure you want to remove this identity?</string>
+<string name="remove_identity_confirmation_positive">Yes</string>
+<string name="remove_identity_confirmation_negative">No</string>
 </resources>

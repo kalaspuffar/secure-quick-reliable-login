@@ -1,6 +1,8 @@
 package org.ea.sqrl.activites;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -111,20 +113,35 @@ public class MainActivity extends LoginBaseActivity {
         final Button btnRemove = findViewById(R.id.btnRemove);
         btnRemove.setOnClickListener(
                 v -> {
-                    SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                            APPS_PREFERENCES,
-                            Context.MODE_PRIVATE
-                    );
-                    long currentId = sharedPref.getLong(CURRENT_ID, 0);
-                    if(currentId != 0) {
-                        mDbHelper.deleteIdentity(currentId);
-                        updateSpinnerData(currentId);
-                        Snackbar.make(rootView, getString(R.string.main_identity_removed), Snackbar.LENGTH_LONG).show();
+                    DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+                        switch (which){
+                            case DialogInterface.BUTTON_POSITIVE:
+                                SharedPreferences sharedPref = MainActivity.this.getApplication().getSharedPreferences(
+                                        APPS_PREFERENCES,
+                                        Context.MODE_PRIVATE
+                                );
+                                long currentId = sharedPref.getLong(CURRENT_ID, 0);
+                                if(currentId != 0) {
+                                    mDbHelper.deleteIdentity(currentId);
+                                    updateSpinnerData(currentId);
+                                    Snackbar.make(rootView, getString(R.string.main_identity_removed), Snackbar.LENGTH_LONG).show();
 
-                        if(!mDbHelper.hasIdentities()) {
-                            startActivity(new Intent(this, StartActivity.class));
+                                    if(!mDbHelper.hasIdentities()) {
+                                        startActivity(new Intent(MainActivity.this, StartActivity.class));
+                                    }
+                                }
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                break;
                         }
-                    }
+                    };
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage(R.string.remove_identity_confirmation)
+                            .setNegativeButton(R.string.remove_identity_confirmation_negative, dialogClickListener)
+                            .setPositiveButton(R.string.remove_identity_confirmation_positive, dialogClickListener)
+                            .show();
                 }
         );
 
