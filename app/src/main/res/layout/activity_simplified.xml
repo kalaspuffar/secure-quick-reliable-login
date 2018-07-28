@@ -11,12 +11,12 @@
     <Button
         android:id="@+id/btnAdvancedFunctions"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:text="@string/button_advanced_functions"
         android:focusable="true"
+        android:text="@string/button_advanced_functions"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
