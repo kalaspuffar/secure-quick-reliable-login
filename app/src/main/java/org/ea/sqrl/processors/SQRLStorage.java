@@ -743,7 +743,9 @@ public class SQRLStorage {
     private boolean encryptIdentityKeyQuickPass(String password, byte[] encKey, EntropyHarvester entropyHarvester) {
         this.progressionUpdater.setState(R.string.progress_state_encrypting_identity);
         this.progressionUpdater.clear();
-        password = password.substring(0, this.getHintLength());
+        if(password.length() >= this.getHintLength()) {
+            password = password.substring(0, this.getHintLength());
+        }
 
         this.quickPassRandomSalt = new byte[16];
         this.quickPassInitializationVector = new byte[12];

@@ -63,8 +63,6 @@ public class MainActivity extends LoginBaseActivity {
         cboxIdentity = findViewById(R.id.cboxIdentity);
         rootView = findViewById(R.id.mainActivityView);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
-        communicationFlowHandler.setupErrorPopupWindow(getLayoutInflater());
-
 
         ImageView moreIndicator = findViewById(R.id.more_indicator);
         ScrollView scrollView = findViewById(R.id.main_scroll);

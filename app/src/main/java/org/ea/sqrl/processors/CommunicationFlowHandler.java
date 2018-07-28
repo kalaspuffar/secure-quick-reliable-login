@@ -19,6 +19,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.CPSMissingActivity;
 import org.ea.sqrl.activites.MainActivity;
 import org.ea.sqrl.activites.StartActivity;
 import org.ea.sqrl.activites.identity.ExportOptionsActivity;
@@ -38,17 +39,6 @@ import java.util.Map;
 public class CommunicationFlowHandler {
     private static final String TAG = "CommFlowHandler";
 
-    private PopupWindow askPopupWindow;
-    private PopupWindow errorPopupWindow;
-    private TextView txtErrorMessage;
-
-    private Deque<Action> actionStack = new ArrayDeque<>();
-    private ServerSocket server;
-    private Runnable doneAction;
-    private Runnable errorAction;
-    private Handler handler;
-    private boolean hasRetried = false;
-
     public enum Action {
         QUERY_WITH_SUK,
         QUERY_WITHOUT_SUK,
@@ -66,26 +56,39 @@ public class CommunicationFlowHandler {
         UNLOCK_ACCOUNT_CPS
     }
 
+    private PopupWindow askPopupWindow;
+    private PopupWindow errorPopupWindow;
+    private TextView txtErrorMessage;
+
+    private Deque<Action> actionStack = new ArrayDeque<>();
+    private ServerSocket server;
+    private Runnable doneAction;
+    private Runnable errorAction;
+    private Handler handler;
+    private boolean hasRetried = false;
+    private boolean sentImage = false;
+    private Thread cpsThread;
+
     private static CommunicationFlowHandler instance = null;
     private EntropyHarvester entropyHarvester;
     private final CommunicationHandler commHandler = CommunicationHandler.getInstance();
     private String serverData = null;
     private String queryLink = null;
     private boolean shouldRunServer = false;
+    private boolean cpsServerStarted = false;
+    private boolean cancelCPS = false;
     private Activity currentActivity;
 
-
-    public CommunicationFlowHandler() {
-        try {
-            entropyHarvester = EntropyHarvester.getInstance();
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
-    }
+    private CommunicationFlowHandler() {}
 
     public static CommunicationFlowHandler getInstance(Activity currentActivity, Handler handler) {
         if(instance == null) {
             instance = new CommunicationFlowHandler();
+        }
+        try {
+            instance.entropyHarvester = EntropyHarvester.getInstance();
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
         }
         instance.currentActivity = currentActivity;
         instance.handler = handler;
@@ -116,28 +119,51 @@ public class CommunicationFlowHandler {
         this.commHandler.setDomain(domain);
     }
 
+    public void waitForCPS() {
+        int time = 0;
+        while (cpsThread.isAlive() && time < 10 && !sentImage) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {}
+            time++;
+        }
+    }
+
+    public void waitForTransactionDone() {
+        while (cpsThread.isAlive() && !this.commHandler.hasCPSUrl()) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {}
+        }
+    }
+
     public void handleNextAction() {
-        if(commHandler.hasErrorMessage()) {
-            txtErrorMessage.setText(commHandler.getErrorMessage(this.currentActivity));
+        if(commHandler.hasErrorMessage(shouldRunServer)) {
+            txtErrorMessage.setText(commHandler.getErrorMessage(this.currentActivity, shouldRunServer));
             error();
             return;
         }
         try {
+            if (shouldRunServer && !cpsServerStarted) {
+                cpsServerStarted = startCPSServer(() -> done());
+                if(!cpsServerStarted) {
+                    cpsThread.interrupt();
+                    currentActivity.startActivity(new Intent(currentActivity, CPSMissingActivity.class));
+                    return;
+                }
+            }
             if (!actionStack.isEmpty()) {
                 runAction(actionStack.pop());
             } else {
                 if (shouldRunServer) {
-                    startCPSServer(commHandler.getCPSUrl(), false, () -> done());
-                } else {
-                    done();
+                    waitForCPS();
                 }
+                done();
             }
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
             if(e.getMessage() != null) {
-                if("CPS_FAILURE".equalsIgnoreCase(e.getMessage())) {
-                    txtErrorMessage.setText(currentActivity.getString(R.string.error_client_provided_session_missing));
-                } else if("CONN_ERROR".equalsIgnoreCase(e.getMessage())) {
+                if("CONN_ERROR".equalsIgnoreCase(e.getMessage())) {
                     txtErrorMessage.setText(currentActivity.getString(R.string.connection_error));
                 } else {
                     txtErrorMessage.setText(e.getMessage());
@@ -235,6 +261,38 @@ public class CommunicationFlowHandler {
                 break;
         }
 
+        if(commHandler.hasAskQuestion() && this.actionStack.isEmpty()) {
+            this.actionStack.add(Action.QUERY_WITHOUT_SUK);
+        }
+
+        commHandler.setAskAction(this::handleNextAction);
+        commHandler.showAskDialog();
+    }
+
+    private void done() {
+        shouldRunServer = false;
+        hasRetried = false;
+        cpsServerStarted = false;
+        sentImage = false;
+        new Thread(doneAction).start();
+    }
+
+    private void error() {
+        if(shouldRunServer && cpsServerStarted) {
+            cancelCPS = true;
+        }
+        shouldRunServer = false;
+        hasRetried = false;
+        cpsServerStarted = false;
+        sentImage = false;
+        commHandler.clearLastResponse();
+        handler.post(() ->
+            errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
+        );
+        new Thread(errorAction).start();
+    }
+
+    public void addAction(Action a) {
         switch (a) {
             case CREATE_ACCOUNT_CPS:
             case LOGIN_CPS:
@@ -245,29 +303,6 @@ public class CommunicationFlowHandler {
                 break;
         }
 
-        if(commHandler.hasAskQuestion() && this.actionStack.isEmpty()) {
-            this.actionStack.add(Action.QUERY_WITHOUT_SUK);
-        }
-
-        commHandler.setAskAction(this::handleNextAction);
-        commHandler.showAskDialog();
-    }
-
-    private void done() {
-        hasRetried = false;
-        new Thread(doneAction).start();
-    }
-
-    private void error() {
-        hasRetried = false;
-        commHandler.clearLastResponse();
-        handler.post(() ->
-            errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
-        );
-        new Thread(errorAction).start();
-    }
-
-    public void addAction(Action a) {
         commHandler.clearLastResponse();
         this.actionStack.add(a);
     }
@@ -427,11 +462,11 @@ public class CommunicationFlowHandler {
         }
     }
 
-    private void startCPSServer(String successUrl, boolean cancel, Runnable closeScreen) throws Exception {
-        Thread cpsThread = new Thread(() -> {
+    private boolean startCPSServer(Runnable closeScreen) throws Exception {
+        cpsThread = new Thread(() -> {
+            boolean done = false;
             try {
                 server = new ServerSocket(25519);
-                boolean done = false;
 
                 while (!server.isClosed() && !done) {
                     Socket socket = server.accept();
@@ -454,19 +489,24 @@ public class CommunicationFlowHandler {
                         os.write(content);
                         os.flush();
                         os.close();
+                        sentImage = true;
                     } else {
                         String[] linearg = line.split(" ");
                         String data = linearg[1].substring(1);
+
                         Map<String, String> params = getQueryParams(data);
                         Log.i(TAG, params.get("can"));
 
                         OutputStream os = socket.getOutputStream();
                         StringBuilder out = new StringBuilder();
+
+                        waitForTransactionDone();
+
                         out.append("HTTP/1.0 302 Found\r\n");
-                        if(cancel) {
+                        if(cancelCPS) {
                             out.append("Location: ").append(params.get("can")).append("\r\n\r\n");
                         } else {
-                            out.append("Location: ").append(successUrl).append("\r\n\r\n");
+                            out.append("Location: ").append(commHandler.getCPSUrl()).append("\r\n\r\n");
                         }
                         Log.i(TAG, out.toString());
                         os.write(out.toString().getBytes("UTF-8"));
@@ -482,24 +522,25 @@ public class CommunicationFlowHandler {
                 Log.e(TAG, e.getMessage(), e);
             }
 
-            closeScreen.run();
+            if(done) {
+                closeScreen.run();
+            }
         });
         cpsThread.start();
 
-        int time = 0;
-        while(cpsThread.isAlive() && time < 10) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            time++;
-        }
+        waitForCPS();
 
-        if(cpsThread.isAlive()) {
-            cpsThread.interrupt();
-            throw new Exception("CPS_FAILURE");
+        if(cpsThread.isAlive() && !sentImage) {
+            return false;
         }
+        return true;
     }
 
+    public String getDomain() {
+        return commHandler.getDomain();
+    }
+
+    public void setNoCPSServer() {
+        this.cpsServerStarted = true;
+    }
 }

@@ -45,7 +45,6 @@ public class SimplifiedActivity extends LoginBaseActivity {
 
         rootView = findViewById(R.id.simplifiedActivityView);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
-        communicationFlowHandler.setupErrorPopupWindow(getLayoutInflater());
 
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
@@ -55,10 +54,8 @@ public class SimplifiedActivity extends LoginBaseActivity {
         integrator.setBarcodeImageEnabled(false);
 
         setupLoginPopupWindow(getLayoutInflater());
-
-        setupBasePopups(getLayoutInflater(), false);
         setupErrorPopupWindow(getLayoutInflater());
-
+        setupBasePopups(getLayoutInflater(), false);
 
         final ImageButton btnUseIdentity = findViewById(R.id.btnUseIdentity);
         btnUseIdentity.setOnClickListener(

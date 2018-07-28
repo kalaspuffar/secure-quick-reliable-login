@@ -36,13 +36,10 @@ public class UrlLoginActivity extends LoginBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_url_login);
 
-        setupErrorPopupWindow(getLayoutInflater());
-
         cboxIdentity = findViewById(R.id.cboxIdentity);
 
         rootView = findViewById(R.id.urlLoginActivityView);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
-        communicationFlowHandler.setupErrorPopupWindow(getLayoutInflater());
 
         final TextView txtUrlLogin = findViewById(R.id.txtSite);
         Intent intent = getIntent();
@@ -82,6 +79,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
         }
 
         setupBasePopups(getLayoutInflater(), true);
+        setupErrorPopupWindow(getLayoutInflater());
 
         SQRLStorage storage = SQRLStorage.getInstance();
 
@@ -235,6 +233,15 @@ public class UrlLoginActivity extends LoginBaseActivity {
             if(currentId != 0) {
                 updateSpinnerData(currentId);
             }
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if(progressPopupWindow.isShowing()) {
+            progressPopupWindow.dismiss();
         }
     }
 }

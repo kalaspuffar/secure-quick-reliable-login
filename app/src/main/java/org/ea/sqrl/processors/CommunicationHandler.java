@@ -366,8 +366,12 @@ public class CommunicationHandler {
         return tif == 0;
     }
 
-    public boolean hasErrorMessage() {
+    public boolean hasErrorMessage(boolean shouldUseCPSServer) {
         return lastResponse.containsKey("tif") &&
+            (
+                shouldUseCPSServer &&
+                !isTIFBitSet(CommunicationHandler.TIF_IP_MATCHED)
+            ) ||
             (
                 isTIFBitSet(CommunicationHandler.TIF_BAD_ID_ASSOCIATION) ||
                 isTIFBitSet(CommunicationHandler.TIF_CLIENT_FAILURE) ||
@@ -377,10 +381,15 @@ public class CommunicationHandler {
             );
     }
 
-    public String getErrorMessage(Activity a) {
+    public String getErrorMessage(Activity a, boolean shouldUseCPSServer) {
         StringBuilder sb = new StringBuilder();
         if(!lastResponse.containsKey("tif")) {
             return a.getString(R.string.communication_incorrect_response);
+        }
+
+        if(shouldUseCPSServer && !isTIFBitSet(CommunicationHandler.TIF_IP_MATCHED)) {
+            sb.append(a.getString(R.string.communication_ip_mismatch));
+            sb.append("\n\n");
         }
 
         if(isTIFBitSet(CommunicationHandler.TIF_BAD_ID_ASSOCIATION)) {
@@ -531,5 +540,9 @@ public class CommunicationHandler {
 
     public String getCPSUrl() {
         return this.lastResponse.get("url");
+    }
+
+    public String getDomain() {
+        return this.cryptDomain;
     }
 }

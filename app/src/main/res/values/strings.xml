@@ -199,5 +199,10 @@
 <string name="remove_identity_confirmation">Are you sure you want to remove this identity?</string>
 <string name="remove_identity_confirmation_positive">Yes</string>
 <string name="remove_identity_confirmation_negative">No</string>
-    <string name="error_client_provided_session_missing">A client provided session is missing, login was not successful contact login provider to fix the error.</string>
+<string name="error_client_provided_session_missing">A client provided session is missing, login was not successful contact login provider to fix the error.</string>
+<string name="title_cps_missing">SQRL - NO Identity Spoof Protection</string>
+<string name="cps_missing_text"><b>You should CANCEL, or proceed with caution!</b>\n\nSQRL identity spoof protection has been prevented from operating. This could be the result of a system or web browser configuration setting. But since SQRL anti-spoof system is usually functional, this failure could be the result of an intentional attempt to steal your online identity for the website shown below, by a malicious website that is spoofing its identity.\n\nYou MAY proceed to use SQRL, but you should be VERY SURE that you wish to provide your personal SQRL identity for the website show below to the website you are logging into -- THEY MAY NOT BE THE SAME.</string>
+<string name="button_cps_continue">Login anyway</string>
+<string name="button_cps_cancel">Cancel</string>
+<string name="communication_ip_mismatch"><b>Possible Login Attack Detected</b>\n\nLogin prevented\n\nThe website you were attempting to login to with SQRL may have been \"spoofing\" the actual website\'s identity in an attempt to capture your SQRL identity and use it to login to the real website as you.</string>
 </resources>

@@ -145,6 +145,11 @@
             android:screenOrientation="portrait"
             />
 
+        <activity android:name=".activites.CPSMissingActivity"
+            android:label="@string/title_cps_missing"
+            android:screenOrientation="portrait"
+            />
+
         <activity
             android:name=".activites.UrlLoginActivity"
             android:label="@string/title_activity_url_login"
