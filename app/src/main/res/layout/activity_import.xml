@@ -23,7 +23,6 @@
             android:id="@+id/txtPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/import_enter_password"
             android:hint="@string/import_enter_password"
             android:inputType="textPassword"/>
     </android.support.design.widget.TextInputLayout>

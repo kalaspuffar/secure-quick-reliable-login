@@ -80,7 +80,6 @@
                 android:id="@+id/txtPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:contentDescription="@string/save_settings_password"
                 android:hint="@string/save_settings_password"
                 android:inputType="textPassword"/>
         </android.support.design.widget.TextInputLayout>
