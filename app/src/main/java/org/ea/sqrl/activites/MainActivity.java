@@ -15,7 +15,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -59,6 +61,17 @@ public class MainActivity extends LoginBaseActivity {
         cboxIdentity = findViewById(R.id.cboxIdentity);
         rootView = findViewById(R.id.mainActivityView);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
+
+
+        ImageView moreIndicator = findViewById(R.id.more_indicator);
+        ScrollView scrollView = findViewById(R.id.main_scroll);
+        scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
+            if(!scrollView.canScrollVertically(1)) {
+                moreIndicator.setVisibility(View.INVISIBLE);
+            } else {
+                moreIndicator.setVisibility(View.VISIBLE);
+            }
+        });
 
         setupLoginPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());

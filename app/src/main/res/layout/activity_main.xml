@@ -49,13 +49,16 @@
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <ScrollView
+        android:id="@+id/main_scroll"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cboxIdentity">
+        app:layout_constraintTop_toBottomOf="@+id/cboxIdentity"
+        app:layout_constraintVertical_bias="0.0">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/linearLayout"
@@ -238,5 +241,17 @@
                 app:layout_constraintTop_toBottomOf="@+id/btnCreate" />
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
+
+    <ImageView
+        android:id="@+id/more_indicator"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/list_more_shape" />
 
 </android.support.constraint.ConstraintLayout>
