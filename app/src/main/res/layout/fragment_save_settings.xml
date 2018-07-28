@@ -61,24 +61,28 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtPassword" />
+            app:layout_constraintTop_toBottomOf="@+id/txtPasswordLayout" />
 
-        <EditText
-            android:id="@+id/txtPassword"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/txtPasswordLayout"
             android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginEnd="30dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="16dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:ems="10"
-            android:hint="@string/save_settings_password"
-            android:inputType="textPassword"
-            android:nextFocusDown="@+id/btnSaveSettings"
+            app:passwordToggleEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.233"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnCloseSaveSettings" />
+            app:layout_constraintTop_toBottomOf="@+id/btnCloseSaveSettings">
 
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/txtPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/save_settings_password"
+                android:inputType="textPassword"/>
+        </android.support.design.widget.TextInputLayout>
 
     </android.support.constraint.ConstraintLayout>
 

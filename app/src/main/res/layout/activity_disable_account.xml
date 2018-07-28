@@ -19,19 +19,26 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
-        android:id="@+id/txtDisablePassword"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/txtDisablePasswordLayout"
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="@string/login_identity_password"
-        android:inputType="textPassword"
-        android:nextFocusDown="@+id/btnDisableAccount"
+        app:passwordToggleEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/txtSite">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/txtDisablePassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nextFocusDown="@+id/btnDisableAccount"
+            android:hint="@string/login_identity_password"
+            android:inputType="textPassword"/>
+    </android.support.design.widget.TextInputLayout>
 
 </android.support.constraint.ConstraintLayout>

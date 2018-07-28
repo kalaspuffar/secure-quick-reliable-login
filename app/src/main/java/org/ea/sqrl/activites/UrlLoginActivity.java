@@ -42,6 +42,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
         rootView = findViewById(R.id.urlLoginActivityView);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
+        communicationFlowHandler.setupErrorPopupWindow(getLayoutInflater());
 
         final TextView txtUrlLogin = findViewById(R.id.txtSite);
         Intent intent = getIntent();
