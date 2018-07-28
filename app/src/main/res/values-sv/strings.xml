@@ -195,4 +195,13 @@
 <string name="title_export_options">SQRL -.Exportera</string>
 <string name="title_import">SQRL - Importera</string>
 <string name="title_account_options">SQRL - Konto alternativ</string>
+<string name="connection_error">Uppkoppling misslyckades, vargod försök igen</string>
+<string name="remove_identity_confirmation">Är du säker att du vill ta bort denna identitiet?</string>
+<string name="remove_identity_confirmation_positive">Ja</string>
+<string name="remove_identity_confirmation_negative">Nej</string>
+<string name="title_cps_missing">SQRL - Identitet skydd saknas</string>
+<string name="cps_missing_text"><b>Du borde AVBRYTA, eller fortsätta försiktigt!</b>\n\nSQRL identitets skydd har hindrats från att genomföras. Detta kan bero på systemet eller webläsarens konfiguration. Men då SQRL identitets skydd brukar fungera, kan detta fel vara ett resultat av ett avsiktligt försök att stjäla din identitet för hemsidan visad nedan.\n\nDu KAN fortsätta att använda SQRL, men var väldigt SÄKER att du vill delge din personliga SQRL identitet för hemsidan nedan till den hemsidan du försöker logga in på -- DE KAN VARA OLIKA.</string>
+<string name="button_cps_continue">Logga in ändå</string>
+<string name="button_cps_cancel">Avbryt</string>
+<string name="communication_ip_mismatch"><b>Möjlig login attack avslöjad</b>\n\nLogin stoppad\n\nHemsidan du försökte logga in till med SQRL kan ha gjort \"spoofing\" av den riktiga hemsidans identitet i ett försök att fånga din SQRL identitet och använda denna för inloggning på den riktiga hemsidan som dig.</string>
 </resources>
