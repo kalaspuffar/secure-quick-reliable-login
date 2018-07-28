@@ -126,7 +126,11 @@ public class CommunicationFlowHandler {
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
             if(e.getMessage() != null) {
-                txtErrorMessage.setText(e.getMessage());
+                if("CONN_ERROR".equalsIgnoreCase(e.getMessage())) {
+                    txtErrorMessage.setText(currentActivity.getString(R.string.connection_error));
+                } else {
+                    txtErrorMessage.setText(e.getMessage());
+                }
             }
             error();
         }

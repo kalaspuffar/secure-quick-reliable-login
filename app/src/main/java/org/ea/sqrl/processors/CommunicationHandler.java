@@ -260,7 +260,6 @@ public class CommunicationHandler {
         SQRLStorage storage = SQRLStorage.getInstance();
         storage.setProgressState(R.string.progresstate_contact_server);
 
-
         String loginURL = (useSSL ? "https://" : "http://") + communicationDomain + link;
 
         HttpURLConnection con = null;
@@ -280,7 +279,9 @@ public class CommunicationHandler {
             output.writeBytes(data);
             output.close();
 
-            Log.d(TAG, "Resp Code:" + con.getResponseCode());
+            if(con.getResponseCode() != 200) {
+                throw new Exception("CONN_ERROR");
+            }
 
             input = new DataInputStream(con.getInputStream());
 
@@ -295,6 +296,11 @@ public class CommunicationHandler {
             input.close();
 
             setResponseData(result.toString());
+
+            if(!lastResponse.containsKey("tif")) {
+                throw new Exception("CONN_ERROR");
+            }
+
         } catch (Exception e) {
             throw e;
         } finally {
