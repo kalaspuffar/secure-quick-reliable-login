@@ -119,9 +119,9 @@ public class CommunicationFlowHandler {
         this.commHandler.setDomain(domain);
     }
 
-    public void waitForCPS() {
+    public void waitForCPS(boolean afterConversation) {
         int time = 0;
-        while (cpsThread.isAlive() && time < 10 && !sentImage) {
+        while (cpsThread.isAlive() && time < 10 && (!sentImage || afterConversation)) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {}
@@ -156,7 +156,7 @@ public class CommunicationFlowHandler {
                 runAction(actionStack.pop());
             } else {
                 if (shouldRunServer) {
-                    waitForCPS();
+                    waitForCPS(true);
                 }
                 done();
             }
@@ -495,7 +495,9 @@ public class CommunicationFlowHandler {
                         String data = linearg[1].substring(1);
 
                         Map<String, String> params = getQueryParams(data);
-                        Log.i(TAG, params.get("can"));
+                        if(params.containsKey("can")) {
+                            Log.i(TAG, params.get("can"));
+                        }
 
                         OutputStream os = socket.getOutputStream();
                         StringBuilder out = new StringBuilder();
@@ -504,7 +506,11 @@ public class CommunicationFlowHandler {
 
                         out.append("HTTP/1.0 302 Found\r\n");
                         if(cancelCPS) {
-                            out.append("Location: ").append(params.get("can")).append("\r\n\r\n");
+                            if(params.containsKey("can")) {
+                                out.append("Location: ").append(params.get("can")).append("\r\n\r\n");
+                            } else {
+                                out.append("Location: ").append("https://www.google.com").append("\r\n\r\n");
+                            }
                         } else {
                             out.append("Location: ").append(commHandler.getCPSUrl()).append("\r\n\r\n");
                         }
@@ -528,7 +534,7 @@ public class CommunicationFlowHandler {
         });
         cpsThread.start();
 
-        waitForCPS();
+        waitForCPS(false);
 
         if(cpsThread.isAlive() && !sentImage) {
             return false;
