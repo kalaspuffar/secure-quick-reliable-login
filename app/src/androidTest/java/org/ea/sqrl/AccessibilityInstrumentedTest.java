@@ -7,7 +7,6 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.accessibility.AccessibilityChecks;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.suitebuilder.annotation.LargeTest;
 import android.view.WindowManager;
 
 import org.ea.sqrl.activites.SimplifiedActivity;
@@ -50,7 +49,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
  * @author Daniel Persson
  */
 @RunWith(AndroidJUnit4.class)
-@LargeTest
 public class AccessibilityInstrumentedTest {
     @Rule
     public ActivityTestRule<SimplifiedActivity> simplifiedActivityTestRule =
