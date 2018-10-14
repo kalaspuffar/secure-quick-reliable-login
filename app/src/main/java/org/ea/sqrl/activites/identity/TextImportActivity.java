@@ -26,10 +26,6 @@ import org.ea.sqrl.utils.Utils;
 public class TextImportActivity extends BaseActivity {
     private static final String TAG = "TextImportActivity";
 
-    private Handler handler = new Handler();
-
-    private PopupWindow progressPopupWindow;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +33,8 @@ public class TextImportActivity extends BaseActivity {
 
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
+
+        reOpenIfNeeded(savedInstanceState);
 
         final EditText txtTextIdentityInput = findViewById(R.id.txtTextIdentityInput);
         txtTextIdentityInput.addTextChangedListener(new TextWatcher() {
@@ -94,21 +92,5 @@ public class TextImportActivity extends BaseActivity {
                 }
             }).start();
         });
-    }
-
-    protected void setupProgressPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_progress, null);
-
-        progressPopupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                false);
-
-
-        final ProgressBar progressBar = popupView.findViewById(R.id.pbEntropy);
-        final TextView lblProgressTitle = popupView.findViewById(R.id.lblProgressTitle);
-        final TextView lblProgressText = popupView.findViewById(R.id.lblProgressText);
-
-        SQRLStorage storage = SQRLStorage.getInstance();
-        storage.setProgressionUpdater(new ProgressionUpdater(handler, lblProgressTitle, progressBar, lblProgressText));
     }
 }

@@ -32,12 +32,10 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     private static final String TAG = "LoginBaseActivity";
     protected ConstraintLayout rootView;
 
-    protected Handler handler = new Handler();
     protected Spinner cboxIdentity;
     protected Map<Long, String> identities;
     protected Button btnUseIdentity;
 
-    protected PopupWindow progressPopupWindow;
     protected PopupWindow loginPopupWindow;
     protected CommunicationFlowHandler communicationFlowHandler = null;
 
@@ -68,22 +66,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     protected void onResume() {
         super.onResume();
         setupProgressPopupWindow(getLayoutInflater());
-    }
-
-    protected void setupProgressPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_progress, null);
-
-        progressPopupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                false);
-
-
-        final ProgressBar progressBar = popupView.findViewById(R.id.pbEntropy);
-        final TextView lblProgressTitle = popupView.findViewById(R.id.lblProgressTitle);
-        final TextView lblProgressText = popupView.findViewById(R.id.lblProgressText);
-
-        SQRLStorage storage = SQRLStorage.getInstance();
-        storage.setProgressionUpdater(new ProgressionUpdater(handler, lblProgressTitle, progressBar, lblProgressText));
     }
 
     protected void closeActivity() {}

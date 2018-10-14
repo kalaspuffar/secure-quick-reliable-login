@@ -15,7 +15,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -58,7 +61,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private final int REQUEST_PERMISSION_CAMERA = 1;
 
-    private Handler handler = new Handler();
+    protected Handler handler = new Handler();
 
     private PopupWindow cameraAccessPopupWindow;
     private PopupWindow errorPopupWindow;
@@ -78,6 +81,26 @@ public class BaseActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
         }
+    }
+
+    protected void reOpenIfNeeded(Bundle savedInstanceState) {
+        if(savedInstanceState == null) return;
+        boolean progressWindowOpen = savedInstanceState.getBoolean("progressWindowOpen", false);
+        if(progressWindowOpen && !progressPopupWindow.isShowing()) {
+            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("progressWindowOpen", progressPopupWindow.isShowing());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        reOpenIfNeeded(savedInstanceState);
     }
 
     @Override

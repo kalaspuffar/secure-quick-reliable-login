@@ -47,6 +47,8 @@ public class SettingsActivity extends BaseActivity {
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
+        reOpenIfNeeded(savedInstanceState);
+
         SQRLStorage storage = SQRLStorage.getInstance();
 
         txtSettingsHintLength = findViewById(R.id.txtSettingsHintLength);

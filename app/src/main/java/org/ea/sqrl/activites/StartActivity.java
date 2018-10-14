@@ -33,7 +33,6 @@ public class StartActivity extends BaseActivity {
     private static final String TAG = "StartActivity";
     private boolean createNewIdentity = false;
     private ConstraintLayout rootView;
-    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +45,10 @@ public class StartActivity extends BaseActivity {
         rootView = findViewById(R.id.startActivityView);
 
         setupProgressPopupWindow(getLayoutInflater());
-        setupProgressPopupWindow(getLayoutInflater());
         setupCameraAccessPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
+
+        reOpenIfNeeded(savedInstanceState);
 
         final Button btnScanSecret = findViewById(R.id.btnScanSecret);
         btnScanSecret.setOnClickListener(v -> {
@@ -66,22 +66,6 @@ public class StartActivity extends BaseActivity {
         btnTextImport.setOnClickListener(
             v -> startActivity(new Intent(this, TextImportActivity.class))
         );
-    }
-
-    protected void setupProgressPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_progress, null);
-
-        progressPopupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                false);
-
-
-        final ProgressBar progressBar = popupView.findViewById(R.id.pbEntropy);
-        final TextView lblProgressTitle = popupView.findViewById(R.id.lblProgressTitle);
-        final TextView lblProgressText = popupView.findViewById(R.id.lblProgressText);
-
-        SQRLStorage storage = SQRLStorage.getInstance();
-        storage.setProgressionUpdater(new ProgressionUpdater(handler, lblProgressTitle, progressBar, lblProgressText));
     }
 
     @Override

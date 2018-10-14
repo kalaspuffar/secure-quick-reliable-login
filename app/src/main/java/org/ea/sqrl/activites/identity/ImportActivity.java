@@ -41,6 +41,8 @@ public class ImportActivity extends BaseActivity {
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
+        reOpenIfNeeded(savedInstanceState);
+
         final EditText txtPassword = findViewById(R.id.txtPassword);
         final Button btnImportIdentityDo = findViewById(R.id.btnImportIdentityDo);
 

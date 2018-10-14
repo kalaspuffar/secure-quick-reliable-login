@@ -24,6 +24,8 @@ public class ResetPasswordActivity extends BaseActivity {
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
+        reOpenIfNeeded(savedInstanceState);
+
         final EditText txtRecoverCode1 = findViewById(R.id.txtRecoverCode1);
         final EditText txtRecoverCode2 = findViewById(R.id.txtRecoverCode2);
         final EditText txtRecoverCode3 = findViewById(R.id.txtRecoverCode3);

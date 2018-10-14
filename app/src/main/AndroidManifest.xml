@@ -30,10 +30,7 @@
             android:name=".activites.MainActivity"
             android:label="@string/title_activity_advanced"
             />
-        <activity
-            android:name="com.journeyapps.barcodescanner.CaptureActivity"
-            android:stateNotNeeded="true"
-            tools:replace="android:screenOrientation" />
+
         <activity
             android:name=".activites.identity.ShowIdentityActivity"
             android:label="@string/title_activity_show_identity"
@@ -144,6 +141,12 @@
                 <data android:scheme="qrl" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:stateNotNeeded="true"
+            android:screenOrientation="portrait"
+            tools:replace="android:screenOrientation" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
