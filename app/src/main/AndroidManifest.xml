@@ -21,36 +21,35 @@
         <activity
             android:name=".activites.IntroductionActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" />
+            />
         <activity
             android:name=".activites.StartActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"/>
+            />
         <activity
             android:name=".activites.MainActivity"
             android:label="@string/title_activity_advanced"
-            android:screenOrientation="portrait" />
+            />
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
-            android:screenOrientation="portrait"
             android:stateNotNeeded="true"
             tools:replace="android:screenOrientation" />
         <activity
             android:name=".activites.identity.ShowIdentityActivity"
             android:label="@string/title_activity_show_identity"
-            android:screenOrientation="portrait" />
+            />
         <activity
             android:name=".activites.identity.ClearIdentityActivity"
             android:label="@string/title_activity_clear_identity"
-            android:screenOrientation="portrait"/>
+            />
         <activity
             android:name=".activites.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:screenOrientation="portrait" />
+            />
         <activity
             android:name=".activites.SimplifiedActivity"
             android:label="@string/title_activity_main"
-            android:screenOrientation="portrait">
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -58,102 +57,83 @@
         </activity>
         <activity android:name=".activites.create.EntropyGatherActivity"
             android:label="@string/title_entropy_gather"
-            android:screenOrientation="portrait"
             />
 
         <activity android:name=".activites.create.RescueCodeShowActivity"
             android:label="@string/title_rescuecode_show"
-            android:screenOrientation="portrait"
             />
 
         <activity android:name=".activites.create.RescueCodeEnterActivity"
             android:label="@string/title_rescuecode_enter"
-            android:screenOrientation="portrait"
             />
 
         <activity android:name=".activites.create.CreateIdentityActivity"
             android:label="@string/title_create_identity"
-            android:screenOrientation="portrait"
             />
 
         <activity android:name=".activites.identity.TextImportActivity"
             android:label="@string/title_text_import"
-            android:screenOrientation="portrait"
             />
 
         <activity android:name=".activites.create.RekeyIdentityActivity"
             android:label="@string/title_rekey_identity"
-            android:screenOrientation="portrait"
             />
 
         <activity android:name=".activites.create.RekeyVerifyActivity"
             android:label="@string/title_rekey_verify"
-            android:screenOrientation="portrait"
             />
 
         <activity android:name=".activites.create.NewIdentityDoneActivity"
             android:label="@string/title_new_identity_done"
-            android:screenOrientation="portrait"
             />
 
         <activity android:name=".activites.create.SaveIdentityActivity"
             android:label="@string/title_save_identity"
-            android:screenOrientation="portrait"
             />
         <activity android:name=".activites.identity.ChangePasswordActivity"
             android:label="@string/title_change_password"
-            android:screenOrientation="portrait"
             />
 
         <activity android:name=".activites.identity.ResetPasswordActivity"
             android:label="@string/title_reset_password"
-            android:screenOrientation="portrait"
             />
 
         <activity android:name=".activites.account.DisableAccountActivity"
             android:label="@string/title_disable_account"
-            android:screenOrientation="portrait"
             />
 
         <activity android:name=".activites.account.EnableAccountActivity"
             android:label="@string/title_enable_account"
-            android:screenOrientation="portrait"
             />
 
         <activity android:name=".activites.account.RemoveAccountActivity"
             android:label="@string/title_remove_account"
-            android:screenOrientation="portrait"
             />
 
         <activity android:name=".activites.identity.RenameActivity"
             android:label="@string/title_rename_identity"
-            android:screenOrientation="portrait"
             />
 
         <activity android:name=".activites.identity.ExportOptionsActivity"
             android:label="@string/title_export_options"
-            android:screenOrientation="portrait"
             />
 
         <activity android:name=".activites.identity.ImportActivity"
             android:label="@string/title_import"
-            android:screenOrientation="portrait"
             />
 
         <activity android:name=".activites.account.AccountOptionsActivity"
             android:label="@string/title_account_options"
-            android:screenOrientation="portrait"
             />
 
         <activity android:name=".activites.CPSMissingActivity"
             android:label="@string/title_cps_missing"
-            android:screenOrientation="portrait"
             />
 
         <activity
             android:name=".activites.UrlLoginActivity"
             android:label="@string/title_activity_url_login"
-            android:screenOrientation="portrait">
+            >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
