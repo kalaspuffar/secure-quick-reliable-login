@@ -87,7 +87,10 @@ public class BaseActivity extends AppCompatActivity {
         if(savedInstanceState == null) return;
         boolean progressWindowOpen = savedInstanceState.getBoolean("progressWindowOpen", false);
         if(progressWindowOpen && !progressPopupWindow.isShowing()) {
-            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+            SQRLStorage.getInstance().resetProgressWindow();
+            handler.postDelayed(() ->
+                progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
+            , 300);
         }
     }
 
@@ -155,8 +158,9 @@ public class BaseActivity extends AppCompatActivity {
         final TextView lblProgressText = popupView.findViewById(R.id.lblProgressText);
 
         SQRLStorage storage = SQRLStorage.getInstance();
-        storage.setProgressionUpdater(new ProgressionUpdater(handler, lblProgressTitle, progressBar, lblProgressText));
+        storage.createProgressionUpdater(handler, lblProgressTitle, progressBar, lblProgressText);
     }
+
     protected void setupCameraAccessPopupWindow(LayoutInflater layoutInflater) {
         View popupView = layoutInflater.inflate(R.layout.fragment_camera_permission, null);
 
