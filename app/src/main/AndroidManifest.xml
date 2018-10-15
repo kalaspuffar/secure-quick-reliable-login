@@ -143,10 +143,7 @@
         </activity>
 
         <activity
-            android:name="com.journeyapps.barcodescanner.CaptureActivity"
-            android:stateNotNeeded="true"
-            android:screenOrientation="portrait"
-            tools:replace="android:screenOrientation" />
+            android:name="com.journeyapps.barcodescanner.CaptureActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
