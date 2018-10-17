@@ -83,17 +83,6 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    protected void reOpenIfNeeded(Bundle savedInstanceState) {
-        if(savedInstanceState == null) return;
-        boolean progressWindowOpen = savedInstanceState.getBoolean("progressWindowOpen", false);
-        if(progressWindowOpen && !progressPopupWindow.isShowing()) {
-            SQRLStorage.getInstance().resetProgressWindow();
-            handler.postDelayed(() ->
-                progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
-            , 300);
-        }
-    }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -103,7 +92,22 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        reOpenIfNeeded(savedInstanceState);
+        boolean progressWindowOpen = savedInstanceState.getBoolean("progressWindowOpen", false);
+        if(progressWindowOpen && !progressPopupWindow.isShowing()) {
+            AlertDialog.Builder builder;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                builder = new AlertDialog.Builder(BaseActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+            } else {
+                builder = new AlertDialog.Builder(BaseActivity.this);
+            }
+            builder.setTitle(R.string.progress_interrupted_title)
+                    .setMessage(R.string.progress_interrupted_text)
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                        dialog.dismiss();
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
     }
 
     @Override
@@ -158,7 +162,7 @@ public class BaseActivity extends AppCompatActivity {
         final TextView lblProgressText = popupView.findViewById(R.id.lblProgressText);
 
         SQRLStorage storage = SQRLStorage.getInstance();
-        storage.createProgressionUpdater(handler, lblProgressTitle, progressBar, lblProgressText);
+        storage.setProgressionUpdater(new ProgressionUpdater(handler, lblProgressTitle, progressBar, lblProgressText));
     }
 
     protected void setupCameraAccessPopupWindow(LayoutInflater layoutInflater) {
@@ -228,17 +232,35 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void showErrorMessage(int id) {
-        txtErrorMessage.setText(id);
-        handler.post(() ->
-            errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
-        );
+        showErrorMessageInternal(getString(id));
     }
 
     public void showErrorMessage(String message) {
-        txtErrorMessage.setText(message);
-        handler.post(() ->
-            errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
-        );
+        showErrorMessageInternal(message);
+    }
+
+    public void showErrorMessageInternal(String message) {
+        if(errorPopupWindow.getContentView() != null) {
+            txtErrorMessage.setText(message);
+            handler.post(() ->
+                    errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
+            );
+            return;
+        }
+
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(BaseActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+        } else {
+            builder = new AlertDialog.Builder(BaseActivity.this);
+        }
+        builder.setTitle(R.string.error_dialog_title)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
 

@@ -50,7 +50,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
         integrator.setCameraId(0);
         integrator.setBeepEnabled(false);
-        integrator.setOrientationLocked(true);
+        integrator.setOrientationLocked(false);
         integrator.setBarcodeImageEnabled(false);
 
         setupLoginPopupWindow(getLayoutInflater());

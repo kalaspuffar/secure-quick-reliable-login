@@ -35,8 +35,6 @@ public class ExportOptionsActivity extends BaseActivity {
         setupErrorPopupWindow(getLayoutInflater());
         final CheckBox cbWithoutPassword = findViewById(R.id.cbWithoutPassword);
 
-        reOpenIfNeeded(savedInstanceState);
-
         findViewById(R.id.btnShowIdentity).setOnClickListener(v -> {
             Intent showIdentityIntent = new Intent(this, ShowIdentityActivity.class);
             showIdentityIntent.putExtra(EXPORT_WITHOUT_PASSWORD, cbWithoutPassword.isChecked());

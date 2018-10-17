@@ -48,8 +48,6 @@ public class StartActivity extends BaseActivity {
         setupCameraAccessPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
-        reOpenIfNeeded(savedInstanceState);
-
         final Button btnScanSecret = findViewById(R.id.btnScanSecret);
         btnScanSecret.setOnClickListener(v -> {
             createNewIdentity = false;

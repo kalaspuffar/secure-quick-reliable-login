@@ -1477,29 +1477,6 @@ public class SQRLStorage {
     public boolean hasAllPreviousKeys() {
         return this.previousKey4Encrypted != null;
     }
-
-    public void resetProgressWindow() {
-        this.progressionUpdater.reset();
-    }
-
-    public void createProgressionUpdater(Handler handler, TextView lblProgressTitle, ProgressBar progressBar, TextView lblProgressText) {
-        if(this.progressionUpdater == null) {
-            this.progressionUpdater = new ProgressionUpdater();
-        }
-
-        if(handler != null) {
-            this.progressionUpdater.setHandler(handler);
-        }
-        if(lblProgressTitle != null) {
-            this.progressionUpdater.setProgressTitle(lblProgressTitle);
-        }
-        if(progressBar != null) {
-            this.progressionUpdater.setProgressBar(progressBar);
-        }
-        if(lblProgressText != null) {
-            this.progressionUpdater.setProgressText(lblProgressText);
-        }
-    }
 }
 
 

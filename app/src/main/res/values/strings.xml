@@ -204,4 +204,6 @@
 <string name="button_cps_continue">Login anyway</string>
 <string name="button_cps_cancel">Cancel</string>
 <string name="communication_ip_mismatch"><b>Possible Login Attack Detected</b>\n\nLogin prevented\n\nThe website you were attempting to login to with SQRL may have been \"spoofing\" the actual website\'s identity in an attempt to capture your SQRL identity and use it to login to the real website as you.</string>
+<string name="progress_interrupted_title">Progress interrupted</string>
+<string name="progress_interrupted_text">You changed orientation or moved around in the application during operation. The current operation might not be completed correctly, please try again.</string>
 </resources>

@@ -41,8 +41,6 @@ public class ImportActivity extends BaseActivity {
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
-        reOpenIfNeeded(savedInstanceState);
-
         final EditText txtPassword = findViewById(R.id.txtPassword);
         final Button btnImportIdentityDo = findViewById(R.id.btnImportIdentityDo);
 
@@ -125,7 +123,7 @@ public class ImportActivity extends BaseActivity {
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
         integrator.setCameraId(0);
         integrator.setBeepEnabled(false);
-        integrator.setOrientationLocked(true);
+        integrator.setOrientationLocked(false);
         integrator.setBarcodeImageEnabled(false);
 
         integrator.setPrompt(this.getString(R.string.scan_identity));

@@ -22,8 +22,6 @@ public class ChangePasswordActivity extends BaseActivity {
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
-        reOpenIfNeeded(savedInstanceState);
-        
         final EditText txtCurrentPassword = findViewById(R.id.txtCurrentPassword);
         final EditText txtNewPassword = findViewById(R.id.txtNewPassword);
         final EditText txtRetypePassword = findViewById(R.id.txtRetypePassword);

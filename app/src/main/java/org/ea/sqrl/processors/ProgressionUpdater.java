@@ -27,12 +27,21 @@ public class ProgressionUpdater {
     private TextView progressTitle;
     private TextView progressText;
     private int max;
-    private int counter;
-    private int state;
     private long startTime;
     private long endTime;
+    private boolean dummy = false;
 
-    public ProgressionUpdater() {}
+    public ProgressionUpdater() {
+        dummy = true;
+    }
+
+
+    public ProgressionUpdater(Handler handler, TextView progressTitle, ProgressBar progressBar, TextView progressText) {
+        this.handler = handler;
+        this.progressBar = progressBar;
+        this.progressTitle = progressTitle;
+        this.progressText = progressText;
+    }
 
     public String getTimeLeft() {
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -45,7 +54,7 @@ public class ProgressionUpdater {
     }
 
     public void setTimeDone(long timeInMilliSeconds) {
-        if(handler == null) return;
+        if(dummy) return;
 
         int timeInSeconds = Math.round(timeInMilliSeconds / 1000f);
         handler.post(() -> {
@@ -57,17 +66,13 @@ public class ProgressionUpdater {
     }
 
     public void setState(int state) {
-        this.state = state;
         if (progressTitle != null) {
             handler.post(() -> progressTitle.setText(state));
         }
     }
 
     public void incrementProgress() {
-        if(handler == null) return;
-
-        this.counter++;
-
+        if(dummy) return;
         handler.post(() -> {
             progressBar.incrementProgressBy(1);
             progressText.setTextColor(Color.GRAY);
@@ -84,9 +89,8 @@ public class ProgressionUpdater {
     }
 
     public void setMax(int max) {
-        if(handler == null) return;
+        if(dummy) return;
         this.max = max;
-        this.counter = 0;
 
         handler.post(() -> {
             progressBar.setMax(max);
@@ -97,10 +101,9 @@ public class ProgressionUpdater {
     }
 
     public void clear() {
-        if(handler == null) return;
+        if(dummy) return;
 
         this.max = 1;
-        this.counter = 0;
 
         handler.post(() -> {
             progressBar.setMax(1);
@@ -108,31 +111,5 @@ public class ProgressionUpdater {
             progressText.setTextColor(Color.GRAY);
             progressText.setText("");
         });
-    }
-
-    public void reset() {
-        handler.post(() -> {
-            progressTitle.setText(this.state);
-            progressBar.setMax(this.max);
-            progressBar.setProgress(this.counter);
-            progressText.setTextColor(Color.GRAY);
-            progressText.setText(getString(R.string.progress_time_left, getTimeLeft()));
-        });
-    }
-
-    public void setHandler(Handler handler) {
-        this.handler = handler;
-    }
-
-    public void setProgressTitle(TextView progressTitle) {
-        this.progressTitle = progressTitle;
-    }
-
-    public void setProgressBar(ProgressBar progressBar) {
-        this.progressBar = progressBar;
-    }
-
-    public void setProgressText(TextView progressText) {
-        this.progressText = progressText;
     }
 }

@@ -446,7 +446,7 @@ public class CommunicationHandler {
             byte[] bytesArray = EncryptionUtils.hex2Byte("7371726c646174617d0001002d00b51fd99559b887d106a8d877c70133bb20a12fa1a7c829b194db94f309c5000000f30104050f000d174cc6e7b70baa158aa4ce75e2f2b99a02a40e4beb2e5d16c2f03442bd3e932035419a63885a663125a600e5486c42b38f708c1094ced1ab0b0050137f6df449caf78581fec678408a804caf74f91c490002005528fc85e3e36866a85574146fe7776d09cf0000004a4e12277dd48366fc1f335dd37188bbcba02bc32a12aef0188f5e83593665518483d638b80051c2b4b013491eb06835");
 
             SQRLStorage storage = SQRLStorage.getInstance();
-            storage.createProgressionUpdater(null, null, null, null);
+            storage.setProgressionUpdater(new ProgressionUpdater());
             storage.read(bytesArray);
             storage.decryptIdentityKey("Testing1234", EntropyHarvester.getInstance(), false);
             boolean didIt = storage.decryptUnlockKey("7276-0587-2230-1119-8559-3839");
