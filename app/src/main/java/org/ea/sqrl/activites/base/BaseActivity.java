@@ -93,7 +93,8 @@ public class BaseActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         boolean progressWindowOpen = savedInstanceState.getBoolean("progressWindowOpen", false);
-        if(progressWindowOpen && !progressPopupWindow.isShowing()) {
+        savedInstanceState.putBoolean("progressWindowOpen", false);
+        if(progressWindowOpen) {
             AlertDialog.Builder builder;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 builder = new AlertDialog.Builder(BaseActivity.this, android.R.style.Theme_Material_Dialog_Alert);
