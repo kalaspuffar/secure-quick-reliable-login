@@ -4,8 +4,6 @@
 
 This repository is an implementation for SQRL (Secure Quick Reliable Login) on android.
 
-***This repository is in active development***
-
 ## Help wanted / appreciated
 
 We are closely nearing a full implementation of the specification. But there is still a lot of things to do.
@@ -16,26 +14,22 @@ We are closely nearing a full implementation of the specification. But there is 
 * Security audit
 * Bug reporting
 * Translation (https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation Chinese (simplified) Status](http://uhash.com/poeditor/ar.svg?t=7)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation Chinese (simplified) Status](http://uhash.com/poeditor/zh-CN.svg?t=7)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation Dutch Status](http://uhash.com/poeditor/nl.svg?t=7)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation English Status](http://uhash.com/poeditor/en.svg?t=7)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation French Status](http://uhash.com/poeditor/fr.svg?t=7)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation German Status](http://uhash.com/poeditor/de.svg?t=7)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation Hebrew Status](http://uhash.com/poeditor/he.svg?t=7)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation Japanese Status](http://uhash.com/poeditor/ja.svg?t=7)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation Norwegian Status](http://uhash.com/poeditor/no.svg?t=7)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation Russian Status](http://uhash.com/poeditor/ru.svg?t=7)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation Spanish Status](http://uhash.com/poeditor/es.svg?t=7)](https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation Swedish Status](http://uhash.com/poeditor/sv.svg?t=7)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Chinese (simplified) Status](http://uhash.com/poeditor/ar.svg?t=8)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Chinese (simplified) Status](http://uhash.com/poeditor/zh-CN.svg?t=8)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Dutch Status](http://uhash.com/poeditor/nl.svg?t=8)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation English Status](http://uhash.com/poeditor/en.svg?t=8)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation French Status](http://uhash.com/poeditor/fr.svg?t=8)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation German Status](http://uhash.com/poeditor/de.svg?t=8)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Hebrew Status](http://uhash.com/poeditor/he.svg?t=8)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Japanese Status](http://uhash.com/poeditor/ja.svg?t=8)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Norwegian Status](http://uhash.com/poeditor/no.svg?t=8)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Russian Status](http://uhash.com/poeditor/ru.svg?t=8)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Spanish Status](http://uhash.com/poeditor/es.svg?t=8)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Swedish Status](http://uhash.com/poeditor/sv.svg?t=8)](https://poeditor.com/join/project/Jlsa1tqxlx)
 
 Some of these areas are not my speciallity so all help / merge requests are welcome.
 
 Thank you for your time.
-
-## Usage
-
-***TODO***
 
 ## Introduction
 
@@ -49,10 +43,33 @@ Since you never need to use an eMail address or a password, you never give a web
 
 This is as good as it sounds. It's what we've been waiting for.
 
+## Usage
+
+Follow the install instructions below. When the application is installed you get the choice to either
+create or import an existing identity from a textual version or via scanning a QR code.
+
+Follow these instructions in the application in order to get your identity setup and ready for use.
+After that you can just visit a site you want to login to either on your phone or other device.
+
+Then you scan the QR code on the page or if you are on the same device you click the provided
+"Login with SQRL" link and the application opens up in order to enable you to login.
+
+On the login prompt on your phone you need to verify that the domain your visiting is correct so you
+don't fall victim to a man in the middle attack. Then you supply the identity password, the application
+will then contact the server in order to verify your identity.
+
+You may be required to create an account on the site if you haven't visited before. Then when ever you
+return you repeat the procedure from scanning the QR code or clicking the login link to verify your identity.
+
+If you have any questions you can freely ask them in the SQRL forum at [SQRL forum](https://sqrl.grc.com)
+or opening a ticket on the issue tracker here on github.
+
 ## Installation
 
 The client is available on google play. Following the link below you will be redirected to the store page.
-[Secure Quick Reliable Login](https://play.google.com/store/apps/details?id=org.ea.sqrl)
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+     alt="Get it on Google Play"
+     height="80">](https://play.google.com/store/apps/details?id=org.ea.sqrl)
 
 ## Build from source
 
