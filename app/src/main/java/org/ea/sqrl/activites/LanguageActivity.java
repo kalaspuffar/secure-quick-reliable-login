@@ -61,8 +61,14 @@ public class LanguageActivity extends AppCompatActivity {
         // Set layout manager to position the items
         lstLanguageSelector.setLayoutManager(new LinearLayoutManager(this));
 
-        final Button btnCreateIdentityCreate = findViewById(R.id.btnLanguageClose);
-        btnCreateIdentityCreate.setOnClickListener(v -> this.finish());
+        ImageView moreIndicator = findViewById(R.id.more_indicator);
+        lstLanguageSelector.getViewTreeObserver().addOnScrollChangedListener(() -> {
+            if(!lstLanguageSelector.canScrollVertically(1)) {
+                moreIndicator.setVisibility(View.INVISIBLE);
+            } else {
+                moreIndicator.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private class Language {
