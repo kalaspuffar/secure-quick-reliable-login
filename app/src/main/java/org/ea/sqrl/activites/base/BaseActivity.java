@@ -13,16 +13,20 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -37,6 +41,7 @@ import android.widget.TextView;
 
 import org.ea.sqrl.BuildConfig;
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.LanguageActivity;
 import org.ea.sqrl.activites.identity.ClearIdentityActivity;
 import org.ea.sqrl.activites.IntroductionActivity;
 import org.ea.sqrl.database.IdentityDBHelper;
@@ -45,6 +50,9 @@ import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.services.ClearIdentityReceiver;
 import org.ea.sqrl.services.ClearIdentityService;
+import org.ea.sqrl.utils.Utils;
+
+import java.util.Locale;
 
 /**
  * This base activity is inherited by all other activities. We place logic used for menus,
@@ -58,6 +66,8 @@ public class BaseActivity extends AppCompatActivity {
     protected static final String CURRENT_ID = "current_id";
     protected static final String APPS_PREFERENCES = "org.ea.sqrl.preferences";
     protected static final String EXPORT_WITHOUT_PASSWORD = "export_without_password";
+
+    private boolean openLanguageDialog = false;
 
     private final int REQUEST_PERMISSION_CAMERA = 1;
 
@@ -84,6 +94,21 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Utils.setLanguage(this);
+        if(openLanguageDialog) {
+            this.recreate();
+            openLanguageDialog = false;
+        }
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean("progressWindowOpen", progressPopupWindow.isShowing());
@@ -92,6 +117,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+
         boolean progressWindowOpen = savedInstanceState.getBoolean("progressWindowOpen", false);
         savedInstanceState.putBoolean("progressWindowOpen", false);
         if(progressWindowOpen) {
@@ -127,8 +153,11 @@ public class BaseActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_help:
-                Intent intent = new Intent(this, IntroductionActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(this, IntroductionActivity.class));
+                return true;
+            case R.id.action_language:
+                openLanguageDialog = true;
+                startActivity(new Intent(this, LanguageActivity.class));
                 return true;
             case R.id.action_about:
                 AlertDialog.Builder builder;

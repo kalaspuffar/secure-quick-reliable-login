@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.Utils;
 
 /**
  * Start activity should be a base for the user so we bring them into the application and they know
@@ -24,6 +25,8 @@ public class CreateIdentityActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_identity);
+
+        Utils.setLanguage(this);
 
         SQRLStorage.getInstance().cleanIdentity();
 

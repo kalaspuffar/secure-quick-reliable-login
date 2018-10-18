@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.Utils;
 
 /**
  *
@@ -19,6 +20,8 @@ public class ClearIdentityActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clear_identity);
+
+        Utils.setLanguage(this);
 
         final ImageView imgClearIdentity = findViewById(R.id.imgClearIdentity);
         final TextView txtClearIdentity = findViewById(R.id.txtClearIdentity);

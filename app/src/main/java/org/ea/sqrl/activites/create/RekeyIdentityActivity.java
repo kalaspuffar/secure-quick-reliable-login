@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.Utils;
 
 /**
  *
@@ -21,6 +22,8 @@ public class RekeyIdentityActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rekey_identity);
+
+        Utils.setLanguage(this);
 
         SQRLStorage.getInstance().clear();
 

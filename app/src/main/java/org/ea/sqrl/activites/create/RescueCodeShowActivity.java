@@ -16,6 +16,7 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.processors.EntropyHarvester;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.services.RescueCodePrintDocumentAdapter;
+import org.ea.sqrl.utils.Utils;
 
 import java.util.List;
 
@@ -30,6 +31,8 @@ public class RescueCodeShowActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rescuecode_show);
+
+        Utils.setLanguage(this);
 
         try {
             final EntropyHarvester entropyHarvester = EntropyHarvester.getInstance();

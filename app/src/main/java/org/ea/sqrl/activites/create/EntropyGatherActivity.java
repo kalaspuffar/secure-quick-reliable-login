@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.EntropyHarvester;
+import org.ea.sqrl.utils.Utils;
 
 import java.io.IOException;
 
@@ -39,6 +40,8 @@ public class EntropyGatherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entropy_gather);
+
+        Utils.setLanguage(this);
 
         showPhoneStatePermission();
     }

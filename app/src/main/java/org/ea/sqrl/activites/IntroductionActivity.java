@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.Utils;
 
 /**
  * This activity is used to inform the user about the different features, techniques use cases
@@ -33,6 +34,8 @@ public class IntroductionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_introduction);
+
+        Utils.setLanguage(this);
 
         final SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 

@@ -9,6 +9,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.WindowManager;
 
+import org.ea.sqrl.activites.LanguageActivity;
 import org.ea.sqrl.activites.SimplifiedActivity;
 import org.ea.sqrl.activites.account.AccountOptionsActivity;
 import org.ea.sqrl.activites.account.DisableAccountActivity;
@@ -150,6 +151,9 @@ public class AccessibilityInstrumentedTest {
     public ActivityTestRule<AccountOptionsActivity> accountOptionsActivityRule =
             new ActivityTestRule<>(AccountOptionsActivity.class, true, false);
 
+    @Rule
+    public ActivityTestRule<LanguageActivity> languageActivityRule =
+            new ActivityTestRule<>(LanguageActivity.class, true, false);
 
     @BeforeClass
     public static void enableAccessibilityChecks() {
@@ -452,5 +456,17 @@ public class AccessibilityInstrumentedTest {
         unlockScreen(a);
 
         onView(withId(R.id.accountOptionsActivityView)).perform(click());
+    }
+
+    @Test
+    public void languageActivityAccessibility() throws Exception {
+        Context targetContext = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext();
+        Intent intent = new Intent(targetContext, LanguageActivity.class);
+        intent.putExtra("RUNNING_TEST", true);
+        LanguageActivity a = languageActivityRule.launchActivity(intent);
+        unlockScreen(a);
+
+        onView(withId(R.id.languageActivityView)).perform(click());
     }
 }

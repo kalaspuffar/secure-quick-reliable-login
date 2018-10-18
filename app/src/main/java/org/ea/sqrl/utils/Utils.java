@@ -1,9 +1,17 @@
 package org.ea.sqrl.utils;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.os.Build;
+import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.google.zxing.FormatException;
+
+import java.util.Locale;
 
 /**
  *
@@ -36,6 +44,22 @@ public class Utils {
             return Integer.parseInt(s);
         } catch (NumberFormatException nfe) {
             return -1;
+        }
+    }
+
+    public static void setLanguage(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        String lang = sharedPreferences.getString("language", "");
+
+        lang = lang.isEmpty() ? Locale.getDefault().getLanguage() : lang;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            Resources res = context.getResources();
+
+            DisplayMetrics dm = res.getDisplayMetrics();
+            android.content.res.Configuration conf = res.getConfiguration();
+            conf.setLocale(new Locale(lang));
+            res.updateConfiguration(conf, dm);
         }
     }
 }

@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.Utils;
 
 import java.util.List;
 
@@ -31,6 +32,8 @@ public class RescueCodeEnterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rescuecode_enter);
+
+        Utils.setLanguage(this);
 
         txtRecoverCode1 = findViewById(R.id.txtRecoverCode1);
         txtRecoverCode2 = findViewById(R.id.txtRecoverCode2);

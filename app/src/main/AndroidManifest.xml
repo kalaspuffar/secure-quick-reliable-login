@@ -127,6 +127,10 @@
             android:label="@string/title_cps_missing"
             />
 
+        <activity android:name=".activites.LanguageActivity"
+            android:label="@string/title_language"
+            />
+
         <activity
             android:name=".activites.UrlLoginActivity"
             android:label="@string/title_activity_url_login"
