@@ -71,6 +71,11 @@ The client is available on google play. Following the link below you will be red
      alt="Get it on Google Play"
      height="80">](https://play.google.com/store/apps/details?id=org.ea.sqrl)
 
+We recommend that you download apps from Google Play. You can also get them from other sources.
+[<img src="https://f-droid.org/badge/get-it-on.png"
+    alt="Get it on F-Droid"
+    height="80">](https://f-droid.org/packages/org.ea.sqrl/)
+
 ## Build from source
 
 There is three different ways to build this project.
