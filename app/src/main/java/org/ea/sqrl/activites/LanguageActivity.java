@@ -39,6 +39,7 @@ public class LanguageActivity extends AppCompatActivity {
         languages.add(new Language(R.string.language_arabic, "ar"));
         languages.add(new Language(R.string.language_dutch, "nl"));
         languages.add(new Language(R.string.language_english, "en"));
+        languages.add(new Language(R.string.language_spanish, "es"));
         languages.add(new Language(R.string.language_german, "de"));
         languages.add(new Language(R.string.language_hebrew, "he"));
         languages.add(new Language(R.string.language_french, "fr"));
@@ -90,7 +91,7 @@ public class LanguageActivity extends AppCompatActivity {
     }
 
     private class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHolder> {
-        private int focusedItem = 0;
+        private int focusedItem;
         private List<Language> languageList;
 
         // Pass in the contact array into the constructor
@@ -133,10 +134,6 @@ public class LanguageActivity extends AppCompatActivity {
         @Override
         public int getItemCount() {
             return languageList.size();
-        }
-
-        public int getFocusedItem() {
-            return focusedItem;
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {

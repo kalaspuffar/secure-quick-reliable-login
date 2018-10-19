@@ -204,4 +204,20 @@
 <string name="button_cps_continue">Logga in ändå</string>
 <string name="button_cps_cancel">Avbryt</string>
 <string name="communication_ip_mismatch"><b>Möjlig login attack avslöjad</b>\n\nLogin stoppad\n\nHemsidan du försökte logga in till med SQRL kan ha gjort \"spoofing\" av den riktiga hemsidans identitet i ett försök att fånga din SQRL identitet och använda denna för inloggning på den riktiga hemsidan som dig.</string>
+<string name="progress_interrupted_title">Funktion avbruten</string>
+<string name="progress_interrupted_text">Ni växlade mellan vågrätt och lodrätt läge när applikationen jobbade. Den senaste funktionen kanske inte avslutades korrekt, försök igen.</string>
+<string name="action_language">Språk</string>
+<string name="title_language">Väl språk</string>
+<string name="btn_language_close">Stäng</string>
+<string name="language_default">Standard</string>
+<string name="language_arabic">Arabiska</string>
+<string name="language_dutch">Hollänska</string>
+<string name="language_english">Engelska</string>
+<string name="language_german">Tyska</string>
+<string name="language_hebrew">Hebreiska</string>
+<string name="language_french">Franska</string>
+<string name="language_japanese">Japanska</string>
+<string name="language_norwegian">Norska</string>
+<string name="language_swedish">Svenska</string>
+<string name="language_spanish">Spanska</string>
 </resources>

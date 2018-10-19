@@ -13,20 +13,14 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.PersistableBundle;
-import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -52,8 +46,6 @@ import org.ea.sqrl.services.ClearIdentityReceiver;
 import org.ea.sqrl.services.ClearIdentityService;
 import org.ea.sqrl.utils.Utils;
 
-import java.util.Locale;
-
 /**
  * This base activity is inherited by all other activities. We place logic used for menus,
  * background processes and other things that are untied to the current context of the application.
@@ -66,8 +58,6 @@ public class BaseActivity extends AppCompatActivity {
     protected static final String CURRENT_ID = "current_id";
     protected static final String APPS_PREFERENCES = "org.ea.sqrl.preferences";
     protected static final String EXPORT_WITHOUT_PASSWORD = "export_without_password";
-
-    private boolean openLanguageDialog = false;
 
     private final int REQUEST_PERMISSION_CAMERA = 1;
 
@@ -83,6 +73,8 @@ public class BaseActivity extends AppCompatActivity {
 
     protected final IdentityDBHelper mDbHelper;
     protected EntropyHarvester entropyHarvester;
+
+    private boolean openedLanguageDialog = false;
 
     public BaseActivity() {
         mDbHelper = new IdentityDBHelper(this);
@@ -102,9 +94,9 @@ public class BaseActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Utils.setLanguage(this);
-        if(openLanguageDialog) {
+        if(openedLanguageDialog) {
             this.recreate();
-            openLanguageDialog = false;
+            openedLanguageDialog = false;
         }
     }
 
@@ -146,6 +138,10 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_default, menu);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            menu.findItem(R.id.action_language).setVisible(false);
+        }
         return true;
     }
 
@@ -156,7 +152,7 @@ public class BaseActivity extends AppCompatActivity {
                 startActivity(new Intent(this, IntroductionActivity.class));
                 return true;
             case R.id.action_language:
-                openLanguageDialog = true;
+                openedLanguageDialog = true;
                 startActivity(new Intent(this, LanguageActivity.class));
                 return true;
             case R.id.action_about:

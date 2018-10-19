@@ -56,10 +56,9 @@ public class Utils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             Resources res = context.getResources();
 
-            DisplayMetrics dm = res.getDisplayMetrics();
             android.content.res.Configuration conf = res.getConfiguration();
             conf.setLocale(new Locale(lang));
-            res.updateConfiguration(conf, dm);
+            res.updateConfiguration(conf, res.getDisplayMetrics());
         }
     }
 }
