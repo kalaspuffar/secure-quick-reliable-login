@@ -360,7 +360,7 @@ public class MainActivity extends LoginBaseActivity {
                     final String queryLink = sqrlMatcher.group(2);
                     try {
                         communicationFlowHandler.setQueryLink(queryLink);
-                        communicationFlowHandler.setDomain(domain);
+                        communicationFlowHandler.setDomain(domain, queryLink);
                     } catch (Exception e) {
                         showErrorMessage(e.getMessage());
                         Log.e(TAG, e.getMessage(), e);

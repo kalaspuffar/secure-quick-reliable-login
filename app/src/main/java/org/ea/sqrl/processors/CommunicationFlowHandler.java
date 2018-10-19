@@ -115,8 +115,8 @@ public class CommunicationFlowHandler {
         this.queryLink = queryLink;
     }
 
-    public void setDomain(String domain) throws Exception {
-        this.commHandler.setDomain(domain);
+    public void setDomain(String domain, String queryLink) throws Exception {
+        this.commHandler.setDomain(domain, queryLink);
     }
 
     public void waitForCPS(boolean afterConversation) {

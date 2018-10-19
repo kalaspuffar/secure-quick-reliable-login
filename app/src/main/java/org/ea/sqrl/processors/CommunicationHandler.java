@@ -6,6 +6,7 @@ import android.util.Log;
 import org.ea.sqrl.R;
 import org.ea.sqrl.services.AskDialogService;
 import org.ea.sqrl.utils.EncryptionUtils;
+import org.ea.sqrl.utils.Utils;
 import org.libsodium.jni.Sodium;
 
 import java.io.BufferedReader;
@@ -31,6 +32,8 @@ import java.util.regex.Pattern;
 public class CommunicationHandler {
     private static final String TAG = "CommunicationHandler";
     public static final Pattern sqrlPattern = Pattern.compile("^s*qrl://([^?/]+)(.*)$");
+    private static final Pattern sqrlQueryPattern = Pattern.compile("^([^?]+)\\?.*x=([0-9]+).*$");
+
 
     private static CommunicationHandler instance = null;
     private String communicationDomain;
@@ -77,7 +80,7 @@ public class CommunicationHandler {
         this.useSSL = useSSL;
     }
 
-    public void setDomain(String domain) throws Exception {
+    public void setDomain(String domain, String queryLink) throws Exception {
         this.communicationDomain = domain;
         int atSignIndex = domain.indexOf("@");
         int portColon = domain.indexOf(":");
@@ -93,7 +96,17 @@ public class CommunicationHandler {
         if (atSignIndex != -1 || portColon != -1) {
             throw new Exception("Incorrect cryptDomain " + domain);
         }
+
         this.cryptDomain = domain;
+
+        Matcher queryMatcher = sqrlQueryPattern.matcher(queryLink);
+        if(queryMatcher.find()) {
+            String path = queryMatcher.group(1);
+            int sizeOfPath = Utils.getInteger(queryMatcher.group(2));
+            if(sizeOfPath > 0 && sizeOfPath < path.length() + 1) {
+                this.cryptDomain += path.substring(0, sizeOfPath);
+            }
+        }
     }
 
     private String getAskButtonAnswer() {
@@ -442,7 +455,20 @@ public class CommunicationHandler {
     public static void main(String[] args) {
 
         try {
+/*
+            CommunicationHandler commHandler = CommunicationHandler.getInstance();
+            String sqrlLink = "sqrl://www.grc.com/sqrl?x=5&nut=Na2MOglf7NyyupQ8-dtj1g";
 
+            Matcher sqrlMatcher = CommunicationHandler.sqrlPattern.matcher(sqrlLink);
+
+            if(sqrlMatcher.find()) {
+                final String domain = sqrlMatcher.group(1);
+                String queryLink = sqrlMatcher.group(2);
+
+                commHandler.setDomain(domain, queryLink);
+                System.out.println(commHandler.cryptDomain);
+            }
+*/
             byte[] bytesArray = EncryptionUtils.hex2Byte("7371726c646174617d0001002d00b51fd99559b887d106a8d877c70133bb20a12fa1a7c829b194db94f309c5000000f30104050f000d174cc6e7b70baa158aa4ce75e2f2b99a02a40e4beb2e5d16c2f03442bd3e932035419a63885a663125a600e5486c42b38f708c1094ced1ab0b0050137f6df449caf78581fec678408a804caf74f91c490002005528fc85e3e36866a85574146fe7776d09cf0000004a4e12277dd48366fc1f335dd37188bbcba02bc32a12aef0188f5e83593665518483d638b80051c2b4b013491eb06835");
 
             SQRLStorage storage = SQRLStorage.getInstance();
@@ -460,7 +486,7 @@ public class CommunicationHandler {
             final String domain = sqrlMatcher.group(1);
             String queryLink = sqrlMatcher.group(2);
 
-            commHandler.setDomain(domain);
+            commHandler.setDomain(domain, queryLink);
             String postData = commHandler.createPostParams(commHandler.createClientQuery(true, true), sqrlLink);
             commHandler.postRequest(queryLink, postData);
 
@@ -486,6 +512,7 @@ public class CommunicationHandler {
                 commHandler.postRequest(queryLink, postData2);
             }
             commHandler.printParams();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

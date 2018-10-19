@@ -256,7 +256,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
 
                 try {
                     communicationFlowHandler.setQueryLink(queryLink);
-                    communicationFlowHandler.setDomain(domain);
+                    communicationFlowHandler.setDomain(domain, queryLink);
                 } catch (Exception e) {
                     showErrorMessage(e.getMessage());
                     Log.e(TAG, e.getMessage(), e);
