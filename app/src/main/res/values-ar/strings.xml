@@ -173,7 +173,7 @@
 <string name="scan_cancel">إلغاء عملية المسح</string>
 <string name="scan_incorrect">QR code غير صحيح ، حاول مرة أخرى</string>
 <string name="button_forgot_password">نسيت كلمة المرور؟</string>
-<string name="account_creation_require_full_password">Creating accounts requires more security, please try again and supply full lenght password.</string>
+<string name="account_creation_require_full_password">Creating accounts requires more security, please try again and supply full length password.</string>
 <string name="button_use_identity">استخدم الهوية</string>
 <string name="button_advanced_functions">وظائف متقدمة</string>
 <string name="import_text_message">Below you can enter the text supplied with your identity to import it. After that\'s done your prompted to enter rescue code and a new password. Each row of the identity text will be verified separately.</string>
@@ -220,4 +220,6 @@
 <string name="language_norwegian">Norwegian</string>
 <string name="language_swedish">Swedish</string>
 <string name="language_spanish">Spanish</string>
+<string name="language_russian">Russian</string>
+<string name="language_hungarian">Hungarian</string>
 </resources>
