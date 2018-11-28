@@ -223,7 +223,7 @@ public class IdentityPrintDocumentAdapter extends PrintDocumentAdapter {
         versionString.append(" * ");
         versionString.append("Version: ");
 
-        Bitmap loadLogo = BitmapFactory.decodeResource(activity.getResources(), R.drawable.ic_sqrl_icon_vector_outline);
+        Bitmap loadLogo = BitmapFactory.decodeResource(activity.getResources(), R.drawable.sqrl_print_logo);
         Bitmap sqrlLogo = Bitmap.createScaledBitmap(loadLogo, 40, 40, false);
 
         canvas.drawBitmap(
