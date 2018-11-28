@@ -46,6 +46,7 @@ public class LanguageActivity extends AppCompatActivity {
         languages.add(new Language(R.string.language_japanese, "ja"));
         languages.add(new Language(R.string.language_norwegian, "no"));
         languages.add(new Language(R.string.language_russian, "ru"));
+        languages.add(new Language(R.string.language_slovenian, "sl"));
         languages.add(new Language(R.string.language_swedish, "sv"));
         languages.add(new Language(R.string.language_spanish, "es"));
 
