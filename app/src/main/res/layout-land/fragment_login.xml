@@ -30,7 +30,8 @@
             android:layout_marginBottom="8dp"
             android:text="@string/button_login_options"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginRight="16dp" />
 
         <ImageButton
             android:id="@+id/btnCloseLogin"
@@ -40,7 +41,7 @@
             android:layout_marginTop="8dp"
             android:contentDescription="@string/login_close"
             android:background="@color/zxing_transparent"
-            android:src="@drawable/ic_close"
+            app:srcCompat="@drawable/ic_close"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginLeft="8dp" />
@@ -93,7 +94,8 @@
             android:text="@string/button_login"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtLoginPasswordLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/txtLoginPasswordLayout"
+            android:layout_marginLeft="16dp" />
 
         <TextView
             android:id="@+id/textView3"

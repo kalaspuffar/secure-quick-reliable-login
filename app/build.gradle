@@ -10,6 +10,7 @@ android {
         versionCode 29
         versionName "0.11.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
 
     compileOptions {

@@ -45,7 +45,7 @@
             android:layout_marginTop="8dp"
             android:contentDescription="@string/login_close"
             android:background="@color/zxing_transparent"
-            android:src="@drawable/ic_close"
+            app:srcCompat="@drawable/ic_close"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginLeft="8dp" />

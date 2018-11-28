@@ -79,7 +79,7 @@ We recommend that you download apps from Google Play. You can also get them from
 
 ## Build from source
 
-There is three different ways to build this project.
+There is two different ways to build this project.
 
 #### Android studio
 First of you can install android studio, import the project and run / build / release it using the graphical interface.
