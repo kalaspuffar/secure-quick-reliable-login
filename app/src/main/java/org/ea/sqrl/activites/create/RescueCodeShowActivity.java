@@ -9,6 +9,7 @@ import android.print.PrintAttributes;
 import android.print.PrintManager;
 
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -31,6 +32,7 @@ public class RescueCodeShowActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rescuecode_show);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
 
         Utils.setLanguage(this);
 

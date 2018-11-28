@@ -12,12 +12,13 @@
     </style>
 
     <!-- Base application theme. -->
-    <style name="CommonTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="CommonTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
+        <item name="android:textColor">@color/primary_text_disabled_material_light</item>
     </style>
 
 
