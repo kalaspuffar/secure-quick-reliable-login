@@ -18,7 +18,6 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
-        <item name="android:textColor">@color/primary_text_disabled_material_light</item>
     </style>
 
 
