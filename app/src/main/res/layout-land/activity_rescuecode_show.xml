@@ -121,7 +121,8 @@
         android:layout_marginBottom="16dp"
         android:text="@string/button_print_rescue_code"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="16dp" />
 
     <Button
         android:id="@+id/btnRescueCodeShowNext"
@@ -131,7 +132,8 @@
         android:layout_marginBottom="16dp"
         android:text="@string/button_entropy_gather_next"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginRight="16dp" />
 
     <TextView
         android:id="@+id/textView17"

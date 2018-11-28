@@ -30,7 +30,8 @@
         android:layout_marginBottom="8dp"
         android:text="@string/button_start_create_identity"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="8dp" />
 
     <Button
         android:id="@+id/btnTextImport"
@@ -51,5 +52,6 @@
         android:layout_marginBottom="8dp"
         android:text="@string/button_scan_secret"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginRight="8dp" />
 </android.support.constraint.ConstraintLayout>

@@ -308,7 +308,7 @@ public class BaseActivity extends AppCompatActivity {
         long[] v = {};
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_stat_sqrl_logo_vector_outline)
+                        .setSmallIcon(R.drawable.ic_sqrl_logo_vector_outline)
                         .setContentTitle(getString(R.string.notification_identity_unlocked))
                         .setContentText(getString(R.string.notification_identity_unlocked_title))
                         .setAutoCancel(true)

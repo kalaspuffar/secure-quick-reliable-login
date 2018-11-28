@@ -14,7 +14,7 @@
         android:layout_marginTop="8dp"
         android:background="@color/zxing_transparent"
         android:contentDescription="@string/change_password_close"
-        android:src="@drawable/ic_close"
+        app:srcCompat="@drawable/ic_close"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

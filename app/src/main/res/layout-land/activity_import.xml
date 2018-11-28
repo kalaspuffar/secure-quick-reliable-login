@@ -47,7 +47,8 @@
         android:layout_marginBottom="8dp"
         android:text="@string/button_import_identity"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="16dp" />
 
     <TextView
         android:id="@+id/txtRecoveryKey"
@@ -71,6 +72,7 @@
         android:layout_marginBottom="8dp"
         android:text="@string/button_forgot_password"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginRight="16dp" />
 
 </android.support.constraint.ConstraintLayout>
