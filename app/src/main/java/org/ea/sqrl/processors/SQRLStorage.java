@@ -58,6 +58,8 @@ public class SQRLStorage {
 
     private byte[] tempRescueCode;
 
+    private byte[] extraBytes;
+
     private boolean hasIdentityBlock = false;
     private boolean hasRescueBlock = false;
     private boolean hasPreviousBlock = false;
@@ -73,6 +75,14 @@ public class SQRLStorage {
             instance = new SQRLStorage();
         }
         return instance;
+    }
+
+    public byte[] getExtraBytes() {
+        return extraBytes;
+    }
+
+    public void setExtraBytes(byte[] extraBytes) {
+        this.extraBytes = extraBytes;
     }
 
     public boolean hasMorePreviousKeys() {

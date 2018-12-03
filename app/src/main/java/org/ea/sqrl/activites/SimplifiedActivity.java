@@ -1,12 +1,19 @@
 package org.ea.sqrl.activites;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.hardware.biometrics.BiometricPrompt;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.CancellationSignal;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
 import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,7 +36,15 @@ import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.Utils;
 
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.spec.RSAKeyGenParameterSpec;
 import java.util.regex.Matcher;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+
+import static java.security.spec.RSAKeyGenParameterSpec.F4;
 
 /**
  *
@@ -56,6 +71,79 @@ public class SimplifiedActivity extends LoginBaseActivity {
         setupLoginPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
         setupBasePopups(getLayoutInflater(), false);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && false) {
+            BiometricPrompt.AuthenticationCallback biometricCallback = new BiometricPrompt.AuthenticationCallback() {
+                @Override
+                public void onAuthenticationError(int errorCode, CharSequence errString) {
+                    super.onAuthenticationError(errorCode, errString);
+                }
+
+                @Override
+                public void onAuthenticationHelp(int helpCode, CharSequence helpString) {
+                    super.onAuthenticationHelp(helpCode, helpString);
+                }
+
+                @Override
+                public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
+                    super.onAuthenticationSucceeded(result);
+                    try {
+                        BiometricPrompt.CryptoObject co = result.getCryptoObject();
+                        byte[] encrypted = SQRLStorage.getInstance().getExtraBytes();
+                        byte[] done = co.getCipher().doFinal(encrypted);
+                        System.out.println("Private Key is: " + new String(done));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onAuthenticationFailed() {
+                    super.onAuthenticationFailed();
+                }
+            };
+            BiometricPrompt bioPrompt = new BiometricPrompt.Builder(this)
+                    .setTitle("Auth")
+                    .setSubtitle("Sign in")
+                    .setDescription("Signing in with SQRL")
+                    .setNegativeButton("NOPE!", this.getMainExecutor(), (dialogInterface, i) ->
+                            System.out.println("NIOOP!")
+                    )
+                    .build();
+
+            CancellationSignal cancelSign = new CancellationSignal();
+            cancelSign.setOnCancelListener(() -> System.out.println("NOPE!"));
+
+            try {
+                KeyPairGenerator keyPairGenerator =
+                        KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore");
+                keyPairGenerator.initialize(new KeyGenParameterSpec.Builder("quickPass",
+                        KeyProperties.PURPOSE_ENCRYPT
+                                | KeyProperties.PURPOSE_DECRYPT).setAlgorithmParameterSpec(
+                        new RSAKeyGenParameterSpec(1024, F4))
+                        .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
+                        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
+                        .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA384,
+                                KeyProperties.DIGEST_SHA512)
+                        // Only permit the private key to be used if the user authenticated
+                        // within the last five minutes.
+                        .setUserAuthenticationRequired(true)
+                        .build());
+
+                KeyPair keyPair = keyPairGenerator.generateKeyPair();
+
+                Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1PADDING"); //or try with "RSA"
+                cipher.init(Cipher.ENCRYPT_MODE, keyPair.getPublic());
+                byte[] encrypted = cipher.doFinal("This is a secret".getBytes());
+                SQRLStorage.getInstance().setExtraBytes(encrypted);
+                Cipher decCipher = Cipher.getInstance("RSA/ECB/PKCS1PADDING"); //or try with "RSA"
+                decCipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
+                bioPrompt.authenticate(new BiometricPrompt.CryptoObject(decCipher), cancelSign, this.getMainExecutor(), biometricCallback);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
 
         final ImageButton btnUseIdentity = findViewById(R.id.btnUseIdentity);
         btnUseIdentity.setOnClickListener(
