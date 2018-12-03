@@ -27,8 +27,6 @@ public class ImportActivity extends BaseActivity {
     private static final String TAG = "ImportActivity";
 
     private boolean firstIdentity = false;
-    private Handler handler = new Handler();
-
     private ConstraintLayout rootView = null;
 
     @Override
@@ -164,8 +162,12 @@ public class ImportActivity extends BaseActivity {
                         txtRecoveryKey.setMovementMethod(LinkMovementMethod.getInstance());
                     }, 100);
                 } catch (Exception e) {
-                    showErrorMessage(e.getMessage());
-                    Log.e(TAG, e.getMessage(), e);
+                    if(e.getMessage().equals("Incorrect header")) {
+                        showErrorMessage(R.string.scan_incorrect);
+                    } else {
+                        showErrorMessage(e.getMessage());
+                        Log.e(TAG, e.getMessage(), e);
+                    }
                 }
             }
         }

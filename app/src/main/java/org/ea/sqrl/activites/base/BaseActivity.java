@@ -268,16 +268,18 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void showErrorMessageInternal(String message) {
-        if(errorPopupWindow.getContentView() != null) {
-            txtErrorMessage.setText(message);
-            handler.post(() ->
-                    errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
-            );
-            return;
-        }
 
         AlertDialog.Builder builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            if(errorPopupWindow.getContentView() != null) {
+                txtErrorMessage.setText(message);
+                handler.post(() ->
+                        errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
+                );
+                return;
+            }
+
             builder = new AlertDialog.Builder(BaseActivity.this, android.R.style.Theme_Material_Dialog_Alert);
         } else {
             builder = new AlertDialog.Builder(BaseActivity.this);
