@@ -333,7 +333,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
                                 ).build();
 
                         CancellationSignal cancelSign = new CancellationSignal();
-                        cancelSign.setOnCancelListener(() -> System.out.println("NOPE!"));
+                        cancelSign.setOnCancelListener(() -> {});
 
                         try {
                             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
