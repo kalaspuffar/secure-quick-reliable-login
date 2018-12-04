@@ -4,6 +4,8 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -19,7 +21,10 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.security.Key;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.SecureRandom;
+import java.security.spec.RSAKeyGenParameterSpec;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +35,8 @@ import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+
+import static java.security.spec.RSAKeyGenParameterSpec.F4;
 
 /**
  * This class handles the S4 Storage data. We can load identities from disk, QRCode or pure
@@ -58,12 +65,11 @@ public class SQRLStorage {
 
     private byte[] tempRescueCode;
 
-    private byte[] extraBytes;
-
     private boolean hasIdentityBlock = false;
     private boolean hasRescueBlock = false;
     private boolean hasPreviousBlock = false;
     private int previousKeyIndex = 0;
+    private byte[] biometricKeyEncrypted;
 
     private SQRLStorage() {
         Grc_aesgcm.gcm_initialize();
@@ -75,14 +81,6 @@ public class SQRLStorage {
             instance = new SQRLStorage();
         }
         return instance;
-    }
-
-    public byte[] getExtraBytes() {
-        return extraBytes;
-    }
-
-    public void setExtraBytes(byte[] extraBytes) {
-        this.extraBytes = extraBytes;
     }
 
     public boolean hasMorePreviousKeys() {
@@ -367,6 +365,11 @@ public class SQRLStorage {
     }
 
 
+    public boolean decryptIdentityKeyBiometric(Cipher cypher) throws Exception {
+        byte[] key = cypher.doFinal(this.biometricKeyEncrypted);
+        return decryptIdentityKeyInternal(key);
+    }
+
     private byte[] decryptIdentityKeyQuickPass(String password) {
         this.progressionUpdater.setState(R.string.progress_state_descrypting_identity);
         this.progressionUpdater.setMax(quickPassIterationCount);
@@ -411,6 +414,44 @@ public class SQRLStorage {
         return quickPassKey;
     }
 
+    public boolean decryptIdentityKeyInternal(byte[] key) throws Exception{
+        byte[] identityKeys = EncryptionUtils.combine(identityMasterKeyEncrypted, identityLockKeyEncrypted);
+        byte[] decryptionResult = new byte[identityKeys.length];
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Key keySpec = new SecretKeySpec(key, "AES");
+            Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
+            GCMParameterSpec params = new GCMParameterSpec(128, initializationVector);
+            cipher.init(Cipher.DECRYPT_MODE, keySpec, params);
+            cipher.updateAAD(identityPlaintext);
+            cipher.update(identityKeys);
+            try {
+                decryptionResult = cipher.doFinal(identityVerificationTag);
+            } catch (AEADBadTagException badTag) {
+                return false;
+            }
+        } else {
+            Grc_aesgcm.gcm_setkey(key, key.length);
+            int res = Grc_aesgcm.gcm_auth_decrypt(
+                    initializationVector, initializationVector.length,
+                    identityPlaintext, identityPlaintextLength,
+                    identityKeys, decryptionResult, identityKeys.length,
+                    identityVerificationTag, identityVerificationTag.length
+            );
+            Grc_aesgcm.gcm_zero_ctx();
+
+            if (res == 0x55555555) return false;
+        }
+
+        identityMasterKey = Arrays.copyOfRange(decryptionResult, 0, 32);
+        identityLockKey = Arrays.copyOfRange(decryptionResult, 32, 64);
+
+        if(hasPreviousBlock) {
+            return decryptPreviousBlock();
+        }
+        return true;
+    }
+
     /**
      * Decrypt the identity key using quickpass, this has the master key used to login to sites and also the lock
      * key that we supply to the sites in order to unlock at a later date if the master key ever
@@ -429,47 +470,14 @@ public class SQRLStorage {
             if(key == null) {
                 key = EncryptionUtils.enSCryptIterations(password, randomSalt, logNFactor, 32, iterationCount, this.progressionUpdater);
                 this.encryptIdentityKeyQuickPass(password, key, entropyHarvester);
-            }
-            byte[] identityKeys = EncryptionUtils.combine(identityMasterKeyEncrypted, identityLockKeyEncrypted);
-            byte[] decryptionResult = new byte[identityKeys.length];
-
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Key keySpec = new SecretKeySpec(key, "AES");
-                Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
-                GCMParameterSpec params = new GCMParameterSpec(128, initializationVector);
-                cipher.init(Cipher.DECRYPT_MODE, keySpec, params);
-                cipher.updateAAD(identityPlaintext);
-                cipher.update(identityKeys);
-                try {
-                    decryptionResult = cipher.doFinal(identityVerificationTag);
-                } catch (AEADBadTagException badTag) {
-                    return false;
-                }
-            } else {
-                Grc_aesgcm.gcm_setkey(key, key.length);
-                int res = Grc_aesgcm.gcm_auth_decrypt(
-                        initializationVector, initializationVector.length,
-                        identityPlaintext, identityPlaintextLength,
-                        identityKeys, decryptionResult, identityKeys.length,
-                        identityVerificationTag, identityVerificationTag.length
-                );
-                Grc_aesgcm.gcm_zero_ctx();
-
-                if (res == 0x55555555) return false;
+                this.encryptIdentityKeyBiometric(key);
             }
 
-            identityMasterKey = Arrays.copyOfRange(decryptionResult, 0, 32);
-            identityLockKey = Arrays.copyOfRange(decryptionResult, 32, 64);
-
-            if(hasPreviousBlock) {
-                return decryptPreviousBlock();
-            }
+            return decryptIdentityKeyInternal(key);
         } catch (Exception e) {
             Log.e(SQRLStorage.TAG, e.getMessage(), e);
             return false;
         }
-        return true;
     }
 
     private boolean decryptPreviousBlock() {
@@ -680,6 +688,10 @@ public class SQRLStorage {
         return this.quickPassKeyEncrypted != null;
     }
 
+    public boolean hasBiometric() {
+        return this.biometricKeyEncrypted != null;
+    }
+
     public void clearQuickPass(Context context) {
         this.previousKeyIndex = 0;
         try {
@@ -688,6 +700,14 @@ public class SQRLStorage {
             }
         } finally {
             this.quickPassKeyEncrypted = null;
+        }
+
+        try {
+            if(this.biometricKeyEncrypted != null) {
+                clearBytes(this.biometricKeyEncrypted);
+            }
+        } finally {
+            this.biometricKeyEncrypted = null;
         }
 
         NotificationManager notificationManager =
@@ -744,6 +764,39 @@ public class SQRLStorage {
         r.nextBytes(data);
         Arrays.fill(data, (byte)255);
     }
+
+    private boolean encryptIdentityKeyBiometric(byte[] encKey) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            try {
+                KeyPairGenerator keyPairGenerator =
+                        KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore");
+                keyPairGenerator.initialize(new KeyGenParameterSpec.Builder("quickPass",
+                        KeyProperties.PURPOSE_ENCRYPT
+                                | KeyProperties.PURPOSE_DECRYPT).setAlgorithmParameterSpec(
+                        new RSAKeyGenParameterSpec(1024, F4))
+                        .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
+                        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
+                        .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA384,
+                                KeyProperties.DIGEST_SHA512)
+                        // Only permit the private key to be used if the user authenticated
+                        // within the last five minutes.
+                        .setUserAuthenticationRequired(true)
+                        .build());
+
+                KeyPair keyPair = keyPairGenerator.generateKeyPair();
+
+                Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1PADDING"); //or try with "RSA"
+                cipher.init(Cipher.ENCRYPT_MODE, keyPair.getPublic());
+                this.biometricKeyEncrypted = cipher.doFinal(encKey);
+                return true;
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage(), e);
+                return false;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * Encrypt the identity key, this has the master key used to login to sites and also the lock

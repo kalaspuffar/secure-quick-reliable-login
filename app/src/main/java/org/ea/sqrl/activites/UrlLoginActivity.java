@@ -3,8 +3,10 @@ package org.ea.sqrl.activites;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.hardware.biometrics.BiometricPrompt;
 import android.net.Uri;
 import android.os.Build;
+import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.Bundle;
 import android.text.Editable;
@@ -17,11 +19,15 @@ import android.widget.TextView;
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.account.AccountOptionsActivity;
 import org.ea.sqrl.activites.base.LoginBaseActivity;
+import org.ea.sqrl.processors.BioAuthenticationCallback;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
 
+import java.security.KeyStore;
 import java.util.regex.Matcher;
+
+import javax.crypto.Cipher;
 
 /**
  *
@@ -199,6 +205,57 @@ public class UrlLoginActivity extends LoginBaseActivity {
                 }).start();
             }
         });
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && storage.hasBiometric()) {
+            BioAuthenticationCallback biometricCallback =
+                    new BioAuthenticationCallback(handler, loginPopupWindow, () -> {
+                        handler.post(() -> {
+                            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                        });
+                        communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
+                        communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN_CPS);
+
+                        communicationFlowHandler.setDoneAction(() -> {
+                            storage.clear();
+                            handler.post(() -> {
+                                progressPopupWindow.dismiss();
+                                closeActivity();
+                            });
+                        });
+
+                        communicationFlowHandler.setErrorAction(() -> {
+                            storage.clear();
+                            storage.clearQuickPass(UrlLoginActivity.this);
+                            handler.post(() -> progressPopupWindow.dismiss());
+                        });
+
+                        communicationFlowHandler.handleNextAction();
+                    });
+
+            BiometricPrompt bioPrompt = new BiometricPrompt.Builder(this)
+                    .setTitle(getString(R.string.login_title))
+                    .setSubtitle(domain)
+                    .setDescription(getString(R.string.login_verify_domain_text))
+                    .setNegativeButton(
+                            getString(R.string.button_cps_cancel),
+                            this.getMainExecutor(),
+                            (dialogInterface, i) -> {}
+                    ).build();
+
+            CancellationSignal cancelSign = new CancellationSignal();
+            cancelSign.setOnCancelListener(() -> {});
+
+            try {
+                KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+                keyStore.load(null);
+                KeyStore.Entry entry = keyStore.getEntry("quickPass", null);
+                Cipher decCipher = Cipher.getInstance("RSA/ECB/PKCS1PADDING"); //or try with "RSA"
+                decCipher.init(Cipher.DECRYPT_MODE, ((KeyStore.PrivateKeyEntry) entry).getPrivateKey());
+                bioPrompt.authenticate(new BiometricPrompt.CryptoObject(decCipher), cancelSign, this.getMainExecutor(), biometricCallback);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

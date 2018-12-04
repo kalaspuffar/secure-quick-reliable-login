@@ -31,6 +31,7 @@ import com.google.zxing.integration.android.IntentResult;
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.account.AccountOptionsActivity;
 import org.ea.sqrl.activites.base.LoginBaseActivity;
+import org.ea.sqrl.processors.BioAuthenticationCallback;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
@@ -38,6 +39,7 @@ import org.ea.sqrl.utils.Utils;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.KeyStore;
 import java.security.spec.RSAKeyGenParameterSpec;
 import java.util.regex.Matcher;
 
@@ -71,79 +73,6 @@ public class SimplifiedActivity extends LoginBaseActivity {
         setupLoginPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
         setupBasePopups(getLayoutInflater(), false);
-
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && false) {
-            BiometricPrompt.AuthenticationCallback biometricCallback = new BiometricPrompt.AuthenticationCallback() {
-                @Override
-                public void onAuthenticationError(int errorCode, CharSequence errString) {
-                    super.onAuthenticationError(errorCode, errString);
-                }
-
-                @Override
-                public void onAuthenticationHelp(int helpCode, CharSequence helpString) {
-                    super.onAuthenticationHelp(helpCode, helpString);
-                }
-
-                @Override
-                public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
-                    super.onAuthenticationSucceeded(result);
-                    try {
-                        BiometricPrompt.CryptoObject co = result.getCryptoObject();
-                        byte[] encrypted = SQRLStorage.getInstance().getExtraBytes();
-                        byte[] done = co.getCipher().doFinal(encrypted);
-                        System.out.println("Private Key is: " + new String(done));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onAuthenticationFailed() {
-                    super.onAuthenticationFailed();
-                }
-            };
-            BiometricPrompt bioPrompt = new BiometricPrompt.Builder(this)
-                    .setTitle("Auth")
-                    .setSubtitle("Sign in")
-                    .setDescription("Signing in with SQRL")
-                    .setNegativeButton("NOPE!", this.getMainExecutor(), (dialogInterface, i) ->
-                            System.out.println("NIOOP!")
-                    )
-                    .build();
-
-            CancellationSignal cancelSign = new CancellationSignal();
-            cancelSign.setOnCancelListener(() -> System.out.println("NOPE!"));
-
-            try {
-                KeyPairGenerator keyPairGenerator =
-                        KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore");
-                keyPairGenerator.initialize(new KeyGenParameterSpec.Builder("quickPass",
-                        KeyProperties.PURPOSE_ENCRYPT
-                                | KeyProperties.PURPOSE_DECRYPT).setAlgorithmParameterSpec(
-                        new RSAKeyGenParameterSpec(1024, F4))
-                        .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-                        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
-                        .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA384,
-                                KeyProperties.DIGEST_SHA512)
-                        // Only permit the private key to be used if the user authenticated
-                        // within the last five minutes.
-                        .setUserAuthenticationRequired(true)
-                        .build());
-
-                KeyPair keyPair = keyPairGenerator.generateKeyPair();
-
-                Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1PADDING"); //or try with "RSA"
-                cipher.init(Cipher.ENCRYPT_MODE, keyPair.getPublic());
-                byte[] encrypted = cipher.doFinal("This is a secret".getBytes());
-                SQRLStorage.getInstance().setExtraBytes(encrypted);
-                Cipher decCipher = Cipher.getInstance("RSA/ECB/PKCS1PADDING"); //or try with "RSA"
-                decCipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
-                bioPrompt.authenticate(new BiometricPrompt.CryptoObject(decCipher), cancelSign, this.getMainExecutor(), biometricCallback);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
 
         final ImageButton btnUseIdentity = findViewById(R.id.btnUseIdentity);
         btnUseIdentity.setOnClickListener(
@@ -364,6 +293,60 @@ public class SimplifiedActivity extends LoginBaseActivity {
                     }
 
                     loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && storage.hasBiometric()) {
+
+                        BioAuthenticationCallback biometricCallback =
+                                new BioAuthenticationCallback(handler, loginPopupWindow, () -> {
+                                    handler.post(() -> {
+                                        loginPopupWindow.dismiss();
+                                        progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                                    });
+                                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK_QRCODE);
+                                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN);
+
+                                    communicationFlowHandler.setDoneAction(() -> {
+                                        storage.clear();
+                                        handler.post(() -> {
+                                            progressPopupWindow.dismiss();
+                                            closeActivity();
+                                        });
+                                    });
+
+                                    communicationFlowHandler.setErrorAction(() -> {
+                                        storage.clear();
+                                        storage.clearQuickPass(SimplifiedActivity.this);
+                                        handler.post(() -> progressPopupWindow.dismiss());
+                                    });
+
+                                    communicationFlowHandler.handleNextAction();
+                                });
+
+                        BiometricPrompt bioPrompt = new BiometricPrompt.Builder(this)
+                                .setTitle(getString(R.string.login_title))
+                                .setSubtitle(domain)
+                                .setDescription(getString(R.string.login_verify_domain_text))
+                                .setNegativeButton(
+                                    getString(R.string.button_cps_cancel),
+                                    this.getMainExecutor(),
+                                    (dialogInterface, i) -> {}
+                                ).build();
+
+                        CancellationSignal cancelSign = new CancellationSignal();
+                        cancelSign.setOnCancelListener(() -> System.out.println("NOPE!"));
+
+                        try {
+                            KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+                            keyStore.load(null);
+                            KeyStore.Entry entry = keyStore.getEntry("quickPass", null);
+                            Cipher decCipher = Cipher.getInstance("RSA/ECB/PKCS1PADDING"); //or try with "RSA"
+                            decCipher.init(Cipher.DECRYPT_MODE, ((KeyStore.PrivateKeyEntry) entry).getPrivateKey());
+                            bioPrompt.authenticate(new BiometricPrompt.CryptoObject(decCipher), cancelSign, this.getMainExecutor(), biometricCallback);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
                 }, 100);
             }
         }
