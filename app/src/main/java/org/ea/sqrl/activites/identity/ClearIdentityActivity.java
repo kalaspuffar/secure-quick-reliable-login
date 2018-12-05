@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,11 +12,14 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.Utils;
 
+import java.security.KeyStore;
+
 /**
  *
  * @author Daniel Persson
  */
 public class ClearIdentityActivity extends AppCompatActivity {
+    private static final String TAG = "ClearIdentityActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +45,18 @@ public class ClearIdentityActivity extends AppCompatActivity {
 
         SQRLStorage storage = SQRLStorage.getInstance();
         storage.clearQuickPass(this);
-        if(!storage.hasQuickPass()) {
-            imgClearIdentity.setImageDrawable(successImage);
-            txtClearIdentity.setText(getString(R.string.clear_identity_success));
+
+        try {
+            KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+            keyStore.load(null);
+            keyStore.deleteEntry("quickPass");
+
+            if (!storage.hasQuickPass()) {
+                imgClearIdentity.setImageDrawable(successImage);
+                txtClearIdentity.setText(getString(R.string.clear_identity_success));
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
         }
     }
 }
