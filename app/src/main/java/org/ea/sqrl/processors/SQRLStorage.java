@@ -773,13 +773,12 @@ public class SQRLStorage {
                 keyPairGenerator.initialize(new KeyGenParameterSpec.Builder("quickPass",
                         KeyProperties.PURPOSE_ENCRYPT
                                 | KeyProperties.PURPOSE_DECRYPT).setAlgorithmParameterSpec(
-                        new RSAKeyGenParameterSpec(1024, F4))
+                        new RSAKeyGenParameterSpec(2048, F4))
                         .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
                         .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
                         .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA384,
                                 KeyProperties.DIGEST_SHA512)
-                        // Only permit the private key to be used if the user authenticated
-                        // within the last five minutes.
+                        .setUserAuthenticationValidityDurationSeconds(timeInSecondsToRunPWEnScryptOnPassword)
                         .setUserAuthenticationRequired(true)
                         .build());
 
