@@ -40,12 +40,9 @@ public class SaveIdentityActivity extends LoginBaseActivity {
         final Button btnSaveIdentity = findViewById(R.id.btnSaveIdentity);
         btnSaveIdentity.setOnClickListener(v -> {
             if(!txtNewPassword.getText().toString().equals(txtRetypePassword.getText().toString())) {
-                showErrorMessage(R.string.change_password_retyped_password_do_not_match);
-                txtNewPassword.setError("");
-                txtRetypePassword.setError("");
+                txtRetypePassword.setError(getString(R.string.change_password_retyped_password_do_not_match));
                 return;
             }
-            txtNewPassword.setError(null);
             txtRetypePassword.setError(null);
 
             progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
