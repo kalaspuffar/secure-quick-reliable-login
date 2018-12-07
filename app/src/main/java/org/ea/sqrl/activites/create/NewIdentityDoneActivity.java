@@ -1,6 +1,7 @@
 package org.ea.sqrl.activites.create;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.Menu;
@@ -8,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.UrlLoginActivity;
 import org.ea.sqrl.activites.identity.ExportOptionsActivity;
 import org.ea.sqrl.activites.MainActivity;
 import org.ea.sqrl.activites.base.LoginBaseActivity;
@@ -51,5 +53,13 @@ public class NewIdentityDoneActivity extends LoginBaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        NewIdentityDoneActivity.this.finishAffinity();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            NewIdentityDoneActivity.this.finishAndRemoveTask();
+        }
     }
 }

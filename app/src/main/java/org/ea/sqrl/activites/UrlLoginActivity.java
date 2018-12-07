@@ -268,7 +268,6 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         this.closeActivity();
     }
 
