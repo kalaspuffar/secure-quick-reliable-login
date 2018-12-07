@@ -14,7 +14,8 @@ We are closely nearing a full implementation of the specification. But there is 
 * Security audit
 * Bug reporting
 * Translation (https://poeditor.com/join/project/Jlsa1tqxlx)
-    * [![Translation Chinese (simplified) Status](http://uhash.com/poeditor/ar.svg?t=10)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Arabic Status](http://uhash.com/poeditor/ar.svg?t=10)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Czech Status](http://uhash.com/poeditor/cs.svg?t=10)](https://poeditor.com/join/project/Jlsa1tqxlx)
     * [![Translation Chinese (simplified) Status](http://uhash.com/poeditor/zh-CN.svg?t=10)](https://poeditor.com/join/project/Jlsa1tqxlx)
     * [![Translation Dutch Status](http://uhash.com/poeditor/nl.svg?t=10)](https://poeditor.com/join/project/Jlsa1tqxlx)
     * [![Translation English Status](http://uhash.com/poeditor/en.svg?t=10)](https://poeditor.com/join/project/Jlsa1tqxlx)
@@ -25,6 +26,7 @@ We are closely nearing a full implementation of the specification. But there is 
     * [![Translation Japanese Status](http://uhash.com/poeditor/ja.svg?t=10)](https://poeditor.com/join/project/Jlsa1tqxlx)
     * [![Translation Norwegian Status](http://uhash.com/poeditor/no.svg?t=10)](https://poeditor.com/join/project/Jlsa1tqxlx)
     * [![Translation Russian Status](http://uhash.com/poeditor/ru.svg?t=10)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Slovenian Status](http://uhash.com/poeditor/sl.svg?t=10)](https://poeditor.com/join/project/Jlsa1tqxlx)
     * [![Translation Spanish Status](http://uhash.com/poeditor/es.svg?t=10)](https://poeditor.com/join/project/Jlsa1tqxlx)
     * [![Translation Swedish Status](http://uhash.com/poeditor/sv.svg?t=10)](https://poeditor.com/join/project/Jlsa1tqxlx)
 
