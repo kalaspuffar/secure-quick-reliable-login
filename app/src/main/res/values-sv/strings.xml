@@ -1,83 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="app_name">Secure Quick Reliable Login</string>
-<string name="introduction_startpage"><b>Secure Quick Reliable Login</b>
-
-Välkommen till hjälp sidorna. Dessa sidor beskriver protokollets olika koncept mer i detalj. Vi försöker också förklara olika användningsområden för denna applikation.
-
-När du skall läsa hjälpsidorna gör du detta genom att swipa höger och vänster för att byta sida.
-
-Om du har intresse att titta på koden till applikationen går det bra då projektet är open source och går att finna här <a href='https://github.com/kalaspuffar/secure-quick-reliable-login'>https://github.com/kalaspuffar/secure-quick-reliable-login</a></string>
-<string name="introduction_nutshell"><b>I ett nötskal</b>
-
-Innan du börjar använda SQRL för inloggning, behöver du skapa en privat identitet. Det behövs bara en, troligen för hela din livstid, för denna teknik avslöjar INGET om dig, och är mycket säker. Det är bara ett väldigt långt (77-siffror) slumpmässigt tal.
-
-Därefter, när du loggar in, kommer din privata identitet användas för att skapa ett annat 77-siffrors nummer per hemsida. Varje hemsida du besöker ser dig som ett annat nummer, samtidigt när du besöker en hemsida igen kommer den sidans unika nummer återskapas.
-
-Detta tillåter att du kan bli identifierad som en unik person samtidigt som du är helt anonym.
-
-Då du inte behöver ange e-post eller lösenord, ger du inte hemsidan din identitet att skydda. Om hemsidans SQRL identiteter skulle stjälas, så skulle inte bara identiteterna bara vara giltliga för den sidan, så också SQRL\'s kryptografi skyddar mot att sidan kan söka upp dig i efterhand.
-
-Detta är så bra som det låter. Det är vad vi har väntat på.</string>
-<string name="introduction_password"><b>Ditt SQRL lösenord</b>
-
-SQRL gör att du slipper logga in till hemsidor, applikationen löser detta åt dig. Men det betyder också att om någon får tillgång till din SQRL applikation så kan de utge sig för att vara dig.
-
-Vi löser detta problem med ett SQRL lösenord vilket DU använder för att logga in till din applikation. Du väljer hur mycket säkerhet du behöver. Du väljer ett lösenord med vilken längd som helst och med de tecken du vill använda. För att ingen skall kunna gissa ditt lösenord bestämmer du själv hur lång tid varje försök skall ta. Och använder du ett långt och krångligt lösenord så kan de första fyra tecknen användas för när du återanvänder ditt lösenord.
-
-Du kan välja ett nytt lösenord eller ändra inställningar när du vill. Skulle du glömma bort vilket lösenord du valt kan detta återställas med din återställningskod.</string>
-<string name="introduction_rescue_code"><b>SQRLs återställningskod</b>
-
-Troligen behöver du aldrig återställa men då säkerheten kring SQRL är så hård kan det finnas behov av återställning som säkerhetsåtgärd.
-
-• Om du byter lösenord och det nya lösenordet helt enkelt glöms bort, då finns det ingen du kan fråga. Till skillnad från hemsidor, där du kan klicka en länk \"Jag har glömt mitt lösenord\", så kommer denna applikation inte veta heller vilket lösenord du valt. Om applikationen hade känt till det skulle denna teknik kunnat hackas för att stjäla din identitet. Om du gjort en säkerhetskopia av din identitet så använder den kopian det lösenord du hade då vilket kanske kan hjälpa dig. Men din återställningskod kommer alltid hjälpa dig när du glömt ditt lösenord.
-• När du kopplat din identitet med en hemsida så kan detta inte ändras, förutom om du har tillgång till återställningskoden vill säga. Detta är en extra säkerhetsåtgärd utifall du skulle bli av med applikationen antingen via malware eller stöld. I detta fall kan inte tjuvarna byta identitet med deras men du kan byta. Det du gör då är att återskapa din identitet med hjälp av din återställningskod vilken tjuvarna inte har tillgång till. Därefter kan du byta din identitet på hemsidorna till den nya.
-
-SQRLs återställningskod är en kraftfull hjälp. Skriv ner den, och skydda den, tappa inte bort den. Du kommer troligen aldrig behöva använda den men om du behöver så kommer du vara glad att du sparade den.</string>
-<string name="introduction_backup"><b>Varför skall du säkerhetskopiera?</b>
-
-Din privata SQRL identitet är en slumpmässigt vald 77 siffror långt nummer som används för att skapa hemside inviduella identiteter. INGEN vet vilket nummer det är. Då du använder SQRL för att identifiera dig själv på internet, så BLIR din identitet detta 77 siffror långa numret. Om du förlorar det, förlorar du din identitet på nätet.
-
-En annan anledning att säkerhetskopiera är att kunna byta enhet när du byter telefon, använder datorn eller liknade. Så fort du installerat din identitet på en ny enhet kan den användas för att identifera dig själv på internet.
-
-SQRL ger dig ett antal enkla vis att säkerhetskopiera din identitet, samt alla säkerhetskopior är ALLTID skyddade med ditt SQRL lösenord eller återställningskod.
-
-Att skriva ut din identitet på papper med en QR kod och text (kanske mer än en gång) är rekommenderat, då papper är ett hyfsat beståndigt medium. Och för många tillämplingar fortfarande bättre än andra. Spara bara din identitet tillsammans med andra viktiga tillgångar. Du kan också göra en säkerhetskopia till en USB sticka, bränna den på en CD eller spara den säkert på annat håll.
-
-Men SNÄLLA gör en backup, INGEN känner till din unika 77 siffror långa privata identitet... inte ens du!</string>
-<string name="welcome_message">Välkommen till Secure Quick Reliable Login (SQRL).
-
-Denna applikation kommer hjälpa dig att på ett säkert och enkelt sätt logga in dig på hemsidor som stöjder SQRL protokollet.
-
-Applikationen låter dig spara och hantera din SQRL identitet på ett säkert sätt, som applikationen använder för att skapa unika per hemsida login uppgifter, som i sin tur är anonyma och ger hemsidan inga hemligheter att spara.
-
-Det som sparas har ingen koppling till person uppgifter, det som applikationen gör är att verifiera att det är samma enhet som identifierar sig som förra gången. Detta gör att vi kan logga in anonymt med en unik identitet på dina favorit hemsidor och du bestämmer hur mycket du vill dela med dig av.
-
-För att vara tydlig så gömmer inte applikationen dig så att ingen kan avlyssna din aktivitet men den tillför ingen extra data.
-
-Börja med att skapa en identitet eller scanna en identitet som du skapat med en annan klient och öppna denna med ditt lösenord. En windows klient går att hämta från <a href='https://grc.com'>https://grc.com</a>. När du laddat din identitet kan du scanna QR kod, verifiera addressen och logga in.
-
-Det går även att klicka på en SQRL länk för att starta login flödet.
-
-Observera att vi behöver tillgång till kameran för att scanna identiteter, skapa identiteter eller scanna QR koder för hemsidor.
-
-Vill du veta mer om projektet är det open-source och koden finns att hämta 
-<a href='https://github.com/kalaspuffar/secure-quick-reliable-login'>https://github.com/kalaspuffar/secure-quick-reliable-login</a></string>
+<string name="introduction_startpage"><b>Secure Quick Reliable Login</b>\n\nVälkommen till hjälp sidorna. Dessa sidor beskriver protokollets olika koncept mer i detalj. Vi försöker också förklara olika användningsområden för denna applikation.\n\nNär du skall läsa hjälpsidorna gör du detta genom att swipa höger och vänster för att byta sida.\n\nOm du har intresse att titta på koden till applikationen går det bra då projektet är open source och går att finna här <a href="https://github.com/kalaspuffar/secure-quick-reliable-login">https://github.com/kalaspuffar/secure-quick-reliable-login</a></string>
+<string name="introduction_nutshell"><b>I ett nötskal</b>\n\nInnan du börjar använda SQRL för inloggning, behöver du skapa en privat identitet. Det behövs bara en, troligen för hela din livstid, för denna teknik avslöjar INGET om dig, och är mycket säker. Det är bara ett väldigt långt (77-siffror) slumpmässigt tal.\n\nDärefter, när du loggar in, kommer din privata identitet användas för att skapa ett annat 77-siffrors nummer per hemsida. Varje hemsida du besöker ser dig som ett annat nummer, samtidigt när du besöker en hemsida igen kommer den sidans unika nummer återskapas.\n\nDetta tillåter att du kan bli identifierad som en unik person samtidigt som du är helt anonym.\n\nDå du inte behöver ange e-post eller lösenord, ger du inte hemsidan din identitet att skydda. Om hemsidans SQRL identiteter skulle stjälas, så skulle inte bara identiteterna bara vara giltliga för den sidan, så också SQRL\'s kryptografi skyddar mot att sidan kan söka upp dig i efterhand.\n\nDetta är så bra som det låter. Det är vad vi har väntat på.</string>
+<string name="introduction_password"><b>Ditt SQRL lösenord</b>\n\nSQRL gör att du slipper logga in till hemsidor, applikationen löser detta åt dig. Men det betyder också att om någon får tillgång till din SQRL applikation så kan de utge sig för att vara dig.\n\nVi löser detta problem med ett SQRL lösenord vilket DU använder för att logga in till din applikation. Du väljer hur mycket säkerhet du behöver. Du väljer ett lösenord med vilken längd som helst och med de tecken du vill använda. För att ingen skall kunna gissa ditt lösenord bestämmer du själv hur lång tid varje försök skall ta. Och använder du ett långt och krångligt lösenord så kan de första fyra tecknen användas för när du återanvänder ditt lösenord.\n\nDu kan välja ett nytt lösenord eller ändra inställningar när du vill. Skulle du glömma bort vilket lösenord du valt kan detta återställas med din återställningskod.</string>
+<string name="introduction_rescue_code"><b>SQRLs återställningskod</b>\n\nTroligen behöver du aldrig återställa men då säkerheten kring SQRL är så hård kan det finnas behov av återställning som säkerhetsåtgärd.\n\n• Om du byter lösenord och det nya lösenordet helt enkelt glöms bort, då finns det ingen du kan fråga. Till skillnad från hemsidor, där du kan klicka en länk \"Jag har glömt mitt lösenord\", så kommer denna applikation inte veta heller vilket lösenord du valt. Om applikationen hade känt till det skulle denna teknik kunnat hackas för att stjäla din identitet. Om du gjort en säkerhetskopia av din identitet så använder den kopian det lösenord du hade då vilket kanske kan hjälpa dig. Men din återställningskod kommer alltid hjälpa dig när du glömt ditt lösenord.\n• När du kopplat din identitet med en hemsida så kan detta inte ändras, förutom om du har tillgång till återställningskoden vill säga. Detta är en extra säkerhetsåtgärd utifall du skulle bli av med applikationen antingen via malware eller stöld. I detta fall kan inte tjuvarna byta identitet med deras men du kan byta. Det du gör då är att återskapa din identitet med hjälp av din återställningskod vilken tjuvarna inte har tillgång till. Därefter kan du byta din identitet på hemsidorna till den nya.\n\nSQRLs återställningskod är en kraftfull hjälp. Skriv ner den, och skydda den, tappa inte bort den. Du kommer troligen aldrig behöva använda den men om du behöver så kommer du vara glad att du sparade den.</string>
+<string name="introduction_backup"><b>Varför skall du säkerhetskopiera?</b>\n\nDin privata SQRL identitet är en slumpmässigt vald 77 siffror långt nummer som används för att skapa hemside inviduella identiteter. INGEN vet vilket nummer det är. Då du använder SQRL för att identifiera dig själv på internet, så BLIR din identitet detta 77 siffror långa numret. Om du förlorar det, förlorar du din identitet på nätet.\n\nEn annan anledning att säkerhetskopiera är att kunna byta enhet när du byter telefon, använder datorn eller liknade. Så fort du installerat din identitet på en ny enhet kan den användas för att identifera dig själv på internet.\n\nSQRL ger dig ett antal enkla vis att säkerhetskopiera din identitet, samt alla säkerhetskopior är ALLTID skyddade med ditt SQRL lösenord eller återställningskod.\n\nAtt skriva ut din identitet på papper med en QR kod och text (kanske mer än en gång) är rekommenderat, då papper är ett hyfsat beståndigt medium. Och för många tillämplingar fortfarande bättre än andra. Spara bara din identitet tillsammans med andra viktiga tillgångar. Du kan också göra en säkerhetskopia till en USB sticka, bränna den på en CD eller spara den säkert på annat håll.\n\nMen SNÄLLA gör en backup, INGEN känner till din unika 77 siffror långa privata identitet... inte ens du!</string>
+<string name="welcome_message">Välkommen till Secure Quick Reliable Login (SQRL).\n\nDenna applikation kommer hjälpa dig att på ett säkert och enkelt sätt logga in dig på hemsidor som stöjder SQRL protokollet.\n\nApplikationen låter dig spara och hantera din SQRL identitet på ett säkert sätt, som applikationen använder för att skapa unika per hemsida login uppgifter, som i sin tur är anonyma och ger hemsidan inga hemligheter att spara.\n\nDet som sparas har ingen koppling till person uppgifter, det som applikationen gör är att verifiera att det är samma enhet som identifierar sig som förra gången. Detta gör att vi kan logga in anonymt med en unik identitet på dina favorit hemsidor och du bestämmer hur mycket du vill dela med dig av.\n\nFör att vara tydlig så gömmer inte applikationen dig så att ingen kan avlyssna din aktivitet men den tillför ingen extra data.\n\nBörja med att skapa en identitet eller scanna en identitet som du skapat med en annan klient och öppna denna med ditt lösenord. En windows klient går att hämta från <a href="https://grc.com">https://grc.com</a>. När du laddat din identitet kan du scanna QR kod, verifiera addressen och logga in.\n\nDet går även att klicka på en SQRL länk för att starta login flödet.\n\nObservera att vi behöver tillgång till kameran för att scanna identiteter, skapa identiteter eller scanna QR koder för hemsidor.\n\nVill du veta mer om projektet är det open-source och koden finns att hämta \n<a href="https://github.com/kalaspuffar/secure-quick-reliable-login">https://github.com/kalaspuffar/secure-quick-reliable-login</a></string>
 <string name="button_scan_secret">Scanna identitetens QR kod</string>
 <string name="button_login">Logga in</string>
 <string name="button_intro_close">Stäng</string>
 <string name="action_help">Hjälp</string>
 <string name="action_about">Om</string>
 <string name="about_message_title">Om</string>
-<string name="about_message_text"><b>Secure Quick Reliable Login</b>
-
-Version: %s
-
-Github repository:
-<a href='https://github.com/kalaspuffar/secure-quick-reliable-login'>https://github.com/kalaspuffar/secure-quick-reliable-login</a>
-
-Författare:
-Daniel Persson</string>
+<string name="about_message_text"><b>Secure Quick Reliable Login</b>\n\nVersion: %s\n\nGithub repository:\n<a href="https://github.com/kalaspuffar/secure-quick-reliable-login">https://github.com/kalaspuffar/secure-quick-reliable-login</a>\n\nFörfattare:\nDaniel Persson</string>
 <string name="decrypt_identity_message">Du har lyckats scanna din säkra identitet. Vad god kontrollera att återställnings texten stämmer med den text som finns på din utskrift.</string>
 <string name="communication_incorrect_response">Felaktigt svar, hemsidans information stämde inte med någon felkod. Försök igen senare.</string>
 <string name="communication_bad_id_association">Felaktig identitet: SQRL identitet som användes tidigare stämmer inte överrens med den som användes i det sista anroppet.</string>
@@ -185,34 +121,8 @@ Daniel Persson</string>
 <string name="title_rescuecode_enter">SQRL - Skriv in återställningskod</string>
 <string name="button_rekey_identity_start">Börja</string>
 <string name="button_create_identity_start">Börja</string>
-<string name="create_identity_message">Att skapa en ny identitet görs i 6 enkla steg.
-
-1. Först behöver vi aktivera kameran och kameran se sig omkring för att samla entropi och göra nyckeln säkrare.
-
-2. Ni får sedan se en återställningskod som ni skall spara på ett säkert ställe.
-
-3. Applikationen ber sedan att ni skriver in återställningskoden igen så vi kan verifiera att ni skrivit ner den korrekt.
-
-4. Efter det får ni välja ett lösenord för er nya identitet.
-
-5. Applikationen skapar och krypterar identiteten.
-
-6. Slutligen får ni möjligheten att göra en säkerhetskopia på identiten som ni kan spara på en säker plats.</string>
-<string name="rekey_identity_message">Återskapa en identitet görs i 7 enkla steg.
-
-1. Först ber vi dig skriva in den gamla återställningskoden för att verifiera att du har tillgång till denna.
-
-2. Sedan aktiverar kameran vi kameran så den kan se sig omkring för att samla entropi och göra nyckeln säkrare.
-
-3. Ni får sedan se en återställningskod som ni skall spara på ett säkert ställe.
-
-4. Applikationen ber sedan att ni skriver in återställningskoden igen så vi kan verifiera att ni skrivit ner den korrekt.
-
-5. Efter det får ni välja ett lösenord för er nya identitet.
-
-6. Applikationen skapar och krypterar identiteten.
-
-7. Slutligen får ni möjligheten att göra en säkerhetskopia på identiten som ni kan spara på en säker plats.</string>
+<string name="create_identity_message">Att skapa en ny identitet görs i 6 enkla steg.\n\n1. Först behöver vi aktivera kameran och kameran se sig omkring för att samla entropi och göra nyckeln säkrare.\n\n2. Ni får sedan se en återställningskod som ni skall spara på ett säkert ställe.\n\n3. Applikationen ber sedan att ni skriver in återställningskoden igen så vi kan verifiera att ni skrivit ner den korrekt.\n\n4. Efter det får ni välja ett lösenord för er nya identitet.\n\n5. Applikationen skapar och krypterar identiteten.\n\n6. Slutligen får ni möjligheten att göra en säkerhetskopia på identiten som ni kan spara på en säker plats.</string>
+<string name="rekey_identity_message">Återskapa en identitet görs i 7 enkla steg.\n\n1. Först ber vi dig skriva in den gamla återställningskoden för att verifiera att du har tillgång till denna.\n\n2. Sedan aktiverar kameran vi kameran så den kan se sig omkring för att samla entropi och göra nyckeln säkrare.\n\n3. Ni får sedan se en återställningskod som ni skall spara på ett säkert ställe.\n\n4. Applikationen ber sedan att ni skriver in återställningskoden igen så vi kan verifiera att ni skrivit ner den korrekt.\n\n5. Efter det får ni välja ett lösenord för er nya identitet.\n\n6. Applikationen skapar och krypterar identiteten.\n\n7. Slutligen får ni möjligheten att göra en säkerhetskopia på identiten som ni kan spara på en säker plats.</string>
 <string name="button_start_create_identity">Skapa identitet</string>
 <string name="title_create_identity">SQRL - Skapa identitet</string>
 <string name="title_rekey_identity">SQRL - Återskapa identitet</string>
@@ -233,11 +143,7 @@ Daniel Persson</string>
 <string name="button_new_identity_done_export">Exportera</string>
 <string name="button_new_identity_done">Klar</string>
 <string name="camera_permission_request_title">Tillstånd krävs</string>
-<string name="camera_permission_request_desc">För att kunna skapa, läsa in identiteter och logga in behöver vi använda kameran.
-
-När vi skapar nya identiteter använder vi kameran för att läsa in data och använda vad kameran ser som slumpmässig data för att öka säkerheten.
-
-I fallet där vi importerar och loggar in ger applikationen möjlighet att scanna QR koder för att läsa in data som krävs för att utföra dessa uppgifter.</string>
+<string name="camera_permission_request_desc">För att kunna skapa, läsa in identiteter och logga in behöver vi använda kameran.\n\nNär vi skapar nya identiteter använder vi kameran för att läsa in data och använda vad kameran ser som slumpmässig data för att öka säkerheten.\n\nI fallet där vi importerar och loggar in ger applikationen möjlighet att scanna QR koder för att läsa in data som krävs för att utföra dessa uppgifter.</string>
 <string name="introduction_startpage_title">Börja</string>
 <string name="introduction_nutshell_title">Nötskal</string>
 <string name="introduction_password_title">Lösenord</string>
@@ -294,18 +200,10 @@ I fallet där vi importerar och loggar in ger applikationen möjlighet att scann
 <string name="remove_identity_confirmation_positive">Ja</string>
 <string name="remove_identity_confirmation_negative">Nej</string>
 <string name="title_cps_missing">SQRL - Identitet skydd saknas</string>
-<string name="cps_missing_text"><b>Du borde AVBRYTA, eller fortsätta försiktigt!</b>
-
-SQRL identitets skydd har hindrats från att genomföras. Detta kan bero på systemet eller webläsarens konfiguration. Men då SQRL identitets skydd brukar fungera, kan detta fel vara ett resultat av ett avsiktligt försök att stjäla din identitet för hemsidan visad nedan.
-
-Du KAN fortsätta att använda SQRL, men var väldigt SÄKER att du vill delge din personliga SQRL identitet för hemsidan nedan till den hemsidan du försöker logga in på -- DE KAN VARA OLIKA.</string>
+<string name="cps_missing_text"><b>Du borde AVBRYTA, eller fortsätta försiktigt!</b>\n\nSQRL identitets skydd har hindrats från att genomföras. Detta kan bero på systemet eller webläsarens konfiguration. Men då SQRL identitets skydd brukar fungera, kan detta fel vara ett resultat av ett avsiktligt försök att stjäla din identitet för hemsidan visad nedan.\n\nDu KAN fortsätta att använda SQRL, men var väldigt SÄKER att du vill delge din personliga SQRL identitet för hemsidan nedan till den hemsidan du försöker logga in på -- DE KAN VARA OLIKA.</string>
 <string name="button_cps_continue">Logga in ändå</string>
 <string name="button_cps_cancel">Avbryt</string>
-<string name="communication_ip_mismatch"><b>Möjlig login attack avslöjad</b>
-
-Login stoppad
-
-Hemsidan du försökte logga in till med SQRL kan ha gjort \"spoofing\" av den riktiga hemsidans identitet i ett försök att fånga din SQRL identitet och använda denna för inloggning på den riktiga hemsidan som dig.</string>
+<string name="communication_ip_mismatch"><b>Möjlig login attack avslöjad</b>\n\nLogin stoppad\n\nHemsidan du försökte logga in till med SQRL kan ha gjort \"spoofing\" av den riktiga hemsidans identitet i ett försök att fånga din SQRL identitet och använda denna för inloggning på den riktiga hemsidan som dig.</string>
 <string name="progress_interrupted_title">Funktion avbruten</string>
 <string name="progress_interrupted_text">Ni växlade mellan vågrätt och lodrätt läge när applikationen jobbade. Den senaste funktionen kanske inte avslutades korrekt, försök igen.</string>
 <string name="action_language">Språk</string>

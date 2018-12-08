@@ -1,81 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="app_name">Secure Quick Reliable Login</string>
-<string name="introduction_startpage"><b>Secure Quick Reliable Login</b>
-
-Welcome to the help pages. These pages try to explain the different concepts in the protocol in more detail. We will also try to explain the different use cases available to you using this application.
-
-To use the help pages you can swipe left or right in order to change page.
-
-If you are interested in looking at the source code of this application it\'s open source and available at <a href='https://github.com/kalaspuffar/secure-quick-reliable-login'>https://github.com/kalaspuffar/secure-quick-reliable-login</a></string>
-<string name="introduction_nutshell"><b>In a Nutshell</b>
-
-Before you begin using SQRL to log in to websites, your SQRL private identity must be created. You only need one, probably for life, because it reveals NOTHING about you, and it\'s highly secure. It\'s just a very long (77-digit) random number.
-
-From then on, whenever you log in with SQRL to a website, your private identity is used to generate another 77-digit number for that one website. Every website you visit sees you as a different number, yet every time you return to the same site, that site\'s unique number is regenerated.
-
-This allows you to be uniquely and permanently identified, yet completely anonymous.
-
-Since you never need to use an email address or a password, you never give a website your actual identity to protect. If the website\'s SQRL identities are ever stolen, not only would the stolen identities only be valid for that one website, but SQRL\'s cryptography prevents impersonation by using stolen identities.
-
-This is as good as it sounds. It\'s what we\'ve been waiting for.</string>
-<string name="introduction_password"><b>Your SQRL Password</b>
-
-SQRL frees you from the burden of logging into Internet websites by doing it for you. But this means if someone else gained control of your SQRL app, they could impersonate you.
-
-We solve this problem with an SQRL password which YOU use to login to your SQRL. You decide how much login protection you need. You choose your own password of whatever length and complexity you desire. To impede someone guessing, you set how long any password takes to process. And to make longer, more complex passwords less painful to use, the password\'s first four characters may be used to refresh the full password you recently entered
-
-You are free to change your password and its various settings at any time. And if you should ever forget or lose your password for any reason, SQRL\'s Rescue Code can be used to recover your access.</string>
-<string name="introduction_rescue_code"><b>SQRL\'s Rescue Code</b>
-
-You and SQRL will probably never need rescuing. But SQRL\'s security is so tight that you MIGHT need a way to unlock things a bit. Here are the two scenarios where you WOULD need rescuing:
-
-• If you changed your password and the new one slipped your mind, there\'s no one to ask. Unlike websites, where you click I forgot my password, your SQRL app doesn\'t know it either. If it did, it could be hacked and used to steal your identity. Backups you have made of your identity will have been saved under the password you were using then, so that might help. But your SQRL-assigned Rescue Code will always forgive any memory lapse.
-• Once you have established your SQRL identity with a website, that identity can ONLY be changed with ITS Rescue Code. If someone WERE to somehow steal your SQRL identity (if your phone was stolen and you used a VERY weak or guessable password, or malware infected your device), they could never replace your identity with theirs. But YOU could retake your stolen identity by creating a new one and using the old identity\'s Rescue Code (which the bad guys would never have) to replace that old identity with your new one.
-
-SQRL\'s Rescue Code is a powerful ally. Write it down, keep it safe and never lose it. You will probably never need it, but if you do you\'ll be very glad you kept it.</string>
-<string name="introduction_backup"><b>Why Backup?</b>
-
-Your SQRL private identity is a randomly chosen 77-digit number used to generate each of your individual web identities. NO ONE knows what it is. As you use SQRL to identify yourself to the Internet, your identity BECOMES that 77-digit number. If it is ever lost, so is your Internet identity.
-
-The other reason to backup your private identity is to copy it to another computer or mobile device. Once your one private SQRL identity has been installed into all of your devices, you can use any of them to easily identify yourself on the Internet.
-
-SQRL provides many simple ways to back up your private identity, and all backups are ALWAYS protected by your SQRL password and Rescue Code.
-
-Printing backups onto paper, as a small QR code and text (perhaps more than once) is recommended since paper is the original data storage medium. In many ways, it\'s still the best. Simply store it where you store your life\'s other important documents. You can also record your backup to thumb drives, burn them to CD\'s, and store them safely anywhere.
-
-But PLEASE do make backups, since NO ONE knows your unique 77-digit private identity… not even you!</string>
-<string name="welcome_message"><b>Welcome to the Secure Quick Reliable Login (SQRL) client.</b>
-
-This client app will help you securely and effortlessly log in to websites supporting the SQRL protocol. 
-
-It safely stores and lets you manage your SQRL identity, which the app uses to create unique per-site logins, which are anonymous and give the website owner no secrets to keep.
-
-There is no connection to any personal information. It just verifies that the same phone that authenticated last time is the same even this time. This makes it possible to create a unique anonymous login on your favorite sites, and you decide how much data you share with the site.
-
-Just to be clear, this application will not hide any identifiers that your phone may provide, but it will not provide any extra data.
-
-You start the process by creating an identity or scanning an identity generated by another compatible client (like the desktop client supplied by <a href='https://grc.com'>https://grc.com</a>) and open it with your password. When your key is loaded you\'re then able to authenticate by scanning QR codes supplied by websites, verifying the address and choosing to log in.
-
-Please note that permission to use the camera needs to be supplied in order to scan exported secrets, create identities or scan site QR Codes.
-
-To follow this project on GitHub you can visit
-<a href='https://github.com/kalaspuffar/secure-quick-reliable-login'>https://github.com/kalaspuffar/secure-quick-reliable-login</a></string>
+<string name="introduction_startpage"><b>Secure Quick Reliable Login</b>\n\nWelcome to the help pages. These pages try to explain the different concepts in the protocol in more detail. We will also try to explain the different use cases available to you using this application.\n\nTo use the help pages you can swipe left or right in order to change page.\n\nIf you are interested in looking at the source code of this application it\'s open source and available at <a href="https://github.com/kalaspuffar/secure-quick-reliable-login">https://github.com/kalaspuffar/secure-quick-reliable-login</a></string>
+<string name="introduction_nutshell"><b>In a Nutshell</b>\n\nBefore you begin using SQRL to log in to websites, your SQRL private identity must be created. You only need one, probably for life, because it reveals NOTHING about you, and it\'s highly secure. It\'s just a very long (77-digit) random number.\n\nFrom then on, whenever you log in with SQRL to a website, your private identity is used to generate another 77-digit number for that one website. Every website you visit sees you as a different number, yet every time you return to the same site, that site\'s unique number is regenerated.\n\nThis allows you to be uniquely and permanently identified, yet completely anonymous.\n\nSince you never need to use an email address or a password, you never give a website your actual identity to protect. If the website\'s SQRL identities are ever stolen, not only would the stolen identities only be valid for that one website, but SQRL\'s cryptography prevents impersonation by using stolen identities.\n\nThis is as good as it sounds. It\'s what we\'ve been waiting for.</string>
+<string name="introduction_password"><b>Your SQRL Password</b>\n\nSQRL frees you from the burden of logging into Internet websites by doing it for you. But this means if someone else gained control of your SQRL app, they could impersonate you.\n\nWe solve this problem with an SQRL password which YOU use to login to your SQRL. You decide how much login protection you need. You choose your own password of whatever length and complexity you desire. To impede someone guessing, you set how long any password takes to process. And to make longer, more complex passwords less painful to use, the password\'s first four characters may be used to refresh the full password you recently entered\n\nYou are free to change your password and its various settings at any time. And if you should ever forget or lose your password for any reason, SQRL\'s Rescue Code can be used to recover your access.</string>
+<string name="introduction_rescue_code"><b>SQRL\'s Rescue Code</b>\n\nYou and SQRL will probably never need rescuing. But SQRL\'s security is so tight that you MIGHT need a way to unlock things a bit. Here are the two scenarios where you WOULD need rescuing:\n\n• If you changed your password and the new one slipped your mind, there\'s no one to ask. Unlike websites, where you click I forgot my password, your SQRL app doesn\'t know it either. If it did, it could be hacked and used to steal your identity. Backups you have made of your identity will have been saved under the password you were using then, so that might help. But your SQRL-assigned Rescue Code will always forgive any memory lapse.\n• Once you have established your SQRL identity with a website, that identity can ONLY be changed with ITS Rescue Code. If someone WERE to somehow steal your SQRL identity (if your phone was stolen and you used a VERY weak or guessable password, or malware infected your device), they could never replace your identity with theirs. But YOU could retake your stolen identity by creating a new one and using the old identity\'s Rescue Code (which the bad guys would never have) to replace that old identity with your new one.\n\nSQRL\'s Rescue Code is a powerful ally. Write it down, keep it safe and never lose it. You will probably never need it, but if you do you\'ll be very glad you kept it.</string>
+<string name="introduction_backup"><b>Why Backup?</b>\n\nYour SQRL private identity is a randomly chosen 77-digit number used to generate each of your individual web identities. NO ONE knows what it is. As you use SQRL to identify yourself to the Internet, your identity BECOMES that 77-digit number. If it is ever lost, so is your Internet identity.\n\nThe other reason to backup your private identity is to copy it to another computer or mobile device. Once your one private SQRL identity has been installed into all of your devices, you can use any of them to easily identify yourself on the Internet.\n\nSQRL provides many simple ways to back up your private identity, and all backups are ALWAYS protected by your SQRL password and Rescue Code.\n\nPrinting backups onto paper, as a small QR code and text (perhaps more than once) is recommended since paper is the original data storage medium. In many ways, it\'s still the best. Simply store it where you store your life\'s other important documents. You can also record your backup to thumb drives, burn them to CD\'s, and store them safely anywhere.\n\nBut PLEASE do make backups, since NO ONE knows your unique 77-digit private identity… not even you!</string>
+<string name="welcome_message"><b>Welcome to the Secure Quick Reliable Login (SQRL) client.</b>\n\nThis client app will help you securely and effortlessly log in to websites supporting the SQRL protocol. \n\nIt safely stores and lets you manage your SQRL identity, which the app uses to create unique per-site logins, which are anonymous and give the website owner no secrets to keep.\n\nThere is no connection to any personal information. It just verifies that the same phone that authenticated last time is the same even this time. This makes it possible to create a unique anonymous login on your favorite sites, and you decide how much data you share with the site.\n\nJust to be clear, this application will not hide any identifiers that your phone may provide, but it will not provide any extra data.\n\nYou start the process by creating an identity or scanning an identity generated by another compatible client (like the desktop client supplied by <a href="https://grc.com">https://grc.com</a>) and open it with your password. When your key is loaded you\'re then able to authenticate by scanning QR codes supplied by websites, verifying the address and choosing to log in.\n\nPlease note that permission to use the camera needs to be supplied in order to scan exported secrets, create identities or scan site QR Codes.\n\nTo follow this project on GitHub you can visit\n<a href="https://github.com/kalaspuffar/secure-quick-reliable-login">https://github.com/kalaspuffar/secure-quick-reliable-login</a></string>
 <string name="button_scan_secret">Scan identity QR code</string>
 <string name="button_login">Login</string>
 <string name="button_intro_close">閉じる</string>
 <string name="action_help">ヘルプ</string>
 <string name="action_about">アプリについて</string>
 <string name="about_message_title">アプリについて</string>
-<string name="about_message_text"><b>Secure Quick Reliable Login</b>
-
-Version: %s
-
-Github repository:
-<a href='https://github.com/kalaspuffar/secure-quick-reliable-login'>https://github.com/kalaspuffar/secure-quick-reliable-login</a>
-
-Authors:
-Daniel Persson</string>
+<string name="about_message_text"><b>Secure Quick Reliable Login</b>\n\nVersion: %s\n\nGithub repository:\n<a href="https://github.com/kalaspuffar/secure-quick-reliable-login">https://github.com/kalaspuffar/secure-quick-reliable-login</a>\n\nAuthors:\nDaniel Persson</string>
 <string name="decrypt_identity_message">You\'ve successfully scanned your secure identity. Please verify that the rescue data presented below corresponds to the data printed on your key page.</string>
 <string name="communication_incorrect_response">Incorrect response, the server didn\'t respond with an error code. Try again later.</string>
 <string name="communication_bad_id_association">Bad ID Association: SQRL identity which may be associated with the query nut does not match the SQRL ID used to submit the query.</string>
@@ -99,8 +37,7 @@ Daniel Persson</string>
 <string name="button_rename_ok">Rename</string>
 <string name="current_identity_title">Current identity</string>
 <string name="title_activity_clear_identity">SQRL - Clear QuickPass</string>
-<string name="notification_identity_unlocked_desc">To be secure, QuickPass should be removed after use.
-Click here to clear it from memory.</string>
+<string name="notification_identity_unlocked_desc">To be secure, QuickPass should be removed after use.\nClick here to clear it from memory.</string>
 <string name="notification_identity_unlocked">QuickPass active</string>
 <string name="clear_identity_fail">QuickPass is still in memory, unable to be removed</string>
 <string name="clear_identity_success">QuickPass removed</string>
@@ -184,34 +121,8 @@ Click here to clear it from memory.</string>
 <string name="title_rescuecode_enter">SQRL - Rescue code enter</string>
 <string name="button_rekey_identity_start">Start</string>
 <string name="button_create_identity_start">Start</string>
-<string name="create_identity_message">Creating a new identity is a process done in 6 steps.
-
-1. First, the camera will be activated and you wave it around to create entropy to make a more secure key.
-
-2. Next up you will be presented with a rescue code that you need to record and keep safe.
-
-3. You will be asked to reenter the rescue code in order to verify that it\'s been recorded correctly.
-
-4. You\'ll select a password for your new identity.
-
-5. The application creates and encrypts your identity.
-
-6. You\'ll be presented with the option to save your identity for store keeping in a safe place.</string>
-<string name="rekey_identity_message">Rekeying your identity is a process done in 7 steps.
-
-1. First, you need to enter the old rescue code for this identity in order to verify that you have access to this security code.
-
-2. Second, the camera will be activated and you wave it around to create entropy to make a more secure key.
-
-3. Next up you will be presented with a new rescue code that you need to record and keep safe.
-
-4. You will be asked to reenter the rescue code in order to verify that it\'s been recorded correctly.
-
-5. You\'ll select a password for your new identity.
-
-6. The application creates and encrypts your identity.
-
-7. You\'ll be presented with the option to save your identity for store keeping in a safe place.</string>
+<string name="create_identity_message">Creating a new identity is a process done in 6 steps.\n\n1. First, the camera will be activated and you wave it around to create entropy to make a more secure key.\n\n2. Next up you will be presented with a rescue code that you need to record and keep safe.\n\n3. You will be asked to reenter the rescue code in order to verify that it\'s been recorded correctly.\n\n4. You\'ll select a password for your new identity.\n\n5. The application creates and encrypts your identity.\n\n6. You\'ll be presented with the option to save your identity for store keeping in a safe place.</string>
+<string name="rekey_identity_message">Rekeying your identity is a process done in 7 steps.\n\n1. First, you need to enter the old rescue code for this identity in order to verify that you have access to this security code.\n\n2. Second, the camera will be activated and you wave it around to create entropy to make a more secure key.\n\n3. Next up you will be presented with a new rescue code that you need to record and keep safe.\n\n4. You will be asked to reenter the rescue code in order to verify that it\'s been recorded correctly.\n\n5. You\'ll select a password for your new identity.\n\n6. The application creates and encrypts your identity.\n\n7. You\'ll be presented with the option to save your identity for store keeping in a safe place.</string>
 <string name="button_start_create_identity">Create identity</string>
 <string name="title_create_identity">SQRL - Create identity</string>
 <string name="title_rekey_identity">SQRL - Rekey identity</string>
@@ -232,11 +143,7 @@ Click here to clear it from memory.</string>
 <string name="button_new_identity_done_export">Export</string>
 <string name="button_new_identity_done">Done</string>
 <string name="camera_permission_request_title">Permission required</string>
-<string name="camera_permission_request_desc">In order to create and import identities and also to log in, the app needs to use the camera.
-
-When creating an identity, the app uses the camera to gather random data to improve the security of that identity.
-
-In the case of import and log in, the app gives you the option to scan QR codes in order to input data required for that task. </string>
+<string name="camera_permission_request_desc">In order to create and import identities and also to log in, the app needs to use the camera.\n\nWhen creating an identity, the app uses the camera to gather random data to improve the security of that identity.\n\nIn the case of import and log in, the app gives you the option to scan QR codes in order to input data required for that task. </string>
 <string name="introduction_startpage_title">Start</string>
 <string name="introduction_nutshell_title">Nutshell</string>
 <string name="introduction_password_title">Password</string>
@@ -293,18 +200,10 @@ In the case of import and log in, the app gives you the option to scan QR codes 
 <string name="remove_identity_confirmation_positive">Yes</string>
 <string name="remove_identity_confirmation_negative">No</string>
 <string name="title_cps_missing">SQRL - NO Identity Spoof Protection</string>
-<string name="cps_missing_text"><b>You should CANCEL, or proceed with caution!</b>
-
-SQRL identity spoof protection has been prevented from operating. This could be the result of a system or web browser configuration setting. But since SQRL anti-spoof system is usually functional, this failure could be the result of an intentional attempt to steal your online identity for the website shown below, by a malicious website that is spoofing its identity.
-
-You MAY proceed to use SQRL, but you should be VERY SURE that you wish to provide your personal SQRL identity for the website show below to the website you are logging into -- THEY MAY NOT BE THE SAME.</string>
+<string name="cps_missing_text"><b>You should CANCEL, or proceed with caution!</b>\n\nSQRL identity spoof protection has been prevented from operating. This could be the result of a system or web browser configuration setting. But since SQRL anti-spoof system is usually functional, this failure could be the result of an intentional attempt to steal your online identity for the website shown below, by a malicious website that is spoofing its identity.\n\nYou MAY proceed to use SQRL, but you should be VERY SURE that you wish to provide your personal SQRL identity for the website show below to the website you are logging into -- THEY MAY NOT BE THE SAME.</string>
 <string name="button_cps_continue">Login anyway</string>
 <string name="button_cps_cancel">Cancel</string>
-<string name="communication_ip_mismatch"><b>Possible Login Attack Detected</b>
-
-Login prevented
-
-The website you were attempting to login to with SQRL may have been \"spoofing\" the actual website\'s identity in an attempt to capture your SQRL identity and use it to login to the real website as you.</string>
+<string name="communication_ip_mismatch"><b>Possible Login Attack Detected</b>\n\nLogin prevented\n\nThe website you were attempting to login to with SQRL may have been \"spoofing\" the actual website\'s identity in an attempt to capture your SQRL identity and use it to login to the real website as you.</string>
 <string name="progress_interrupted_title">Progress interrupted</string>
 <string name="progress_interrupted_text">You changed orientation or moved around in the application during operation. The current operation might not be completed correctly, please try again.</string>
 <string name="action_language">Language</string>

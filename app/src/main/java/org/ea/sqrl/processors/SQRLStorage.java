@@ -765,7 +765,7 @@ public class SQRLStorage {
         Arrays.fill(data, (byte)255);
     }
 
-    private boolean encryptIdentityKeyBiometric(byte[] encKey) {
+    private void encryptIdentityKeyBiometric(byte[] encKey) {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             try {
                 KeyPairGenerator keyPairGenerator =
@@ -787,13 +787,10 @@ public class SQRLStorage {
                 Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1PADDING"); //or try with "RSA"
                 cipher.init(Cipher.ENCRYPT_MODE, keyPair.getPublic());
                 this.biometricKeyEncrypted = cipher.doFinal(encKey);
-                return true;
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage(), e);
-                return false;
             }
         }
-        return false;
     }
 
 
