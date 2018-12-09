@@ -135,9 +135,7 @@ public class ImportActivity extends BaseActivity {
             if(result.getContents() == null) {
                 Log.d("MainActivity", "Cancelled scan");
                 Snackbar.make(rootView, R.string.scan_cancel, Snackbar.LENGTH_LONG).show();
-                if(!mDbHelper.hasIdentities()) {
-                    ImportActivity.this.finish();
-                }
+                ImportActivity.this.finish();
             } else {
                 SQRLStorage storage = SQRLStorage.getInstance();
                 try {
