@@ -51,7 +51,7 @@ public class SettingsActivity extends BaseActivity {
 
         txtSettingsHintLength = findViewById(R.id.txtSettingsHintLength);
         txtSettingsHintLength.setText(Integer.toString(storage.getHintLength()));
-        txtSettingsPasswordVerify = findViewById(R.id.txtSettingsPasswordVerify);
+        txtSettingsPasswordVerify = findViewById(R.id.txtSettingsPasswordVerifyInSeconds);
         txtSettingsPasswordVerify.setText(Integer.toString(storage.getPasswordVerify()));
         txtSettingsIdleTimeout = findViewById(R.id.txtSettingsIdleTimeout);
         txtSettingsIdleTimeout.setText(Integer.toString(storage.getIdleTimeout()));

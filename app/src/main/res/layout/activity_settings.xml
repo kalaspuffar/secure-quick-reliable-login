@@ -16,14 +16,14 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="number"
-        android:nextFocusDown="@+id/txtSettingsPasswordVerify"
+        android:nextFocusDown="@+id/txtSettingsPasswordVerifyInSeconds"
         android:hint="@string/settings_hint_length"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
     <EditText
-        android:id="@+id/txtSettingsPasswordVerify"
+        android:id="@+id/txtSettingsPasswordVerifyInSeconds"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginEnd="16dp"
@@ -87,7 +87,7 @@
         android:text="@string/settings_idle_timeout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtSettingsPasswordVerify" />
+        app:layout_constraintTop_toBottomOf="@+id/txtSettingsPasswordVerifyInSeconds" />
 
     <CheckBox
         android:id="@+id/cbSettingsSQRLOnly"
