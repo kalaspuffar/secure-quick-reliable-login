@@ -28,10 +28,10 @@ public class SaveIdentityActivity extends LoginBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_save_identity);
 
+        rootView = findViewById(R.id.saveIdentityActivityView);
+
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
-
-        rootView = findViewById(R.id.saveIdentityActivityView);
 
         SQRLStorage storage = SQRLStorage.getInstance();
 
@@ -39,11 +39,6 @@ public class SaveIdentityActivity extends LoginBaseActivity {
         final EditText txtNewPassword = findViewById(R.id.txtNewPassword);
         final EditText txtRetypePassword = findViewById(R.id.txtRetypePassword);
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            txtIdentityName.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
-            txtNewPassword.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
-            txtRetypePassword.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
-        }
 
         final Button btnSaveIdentity = findViewById(R.id.btnSaveIdentity);
         btnSaveIdentity.setOnClickListener(v -> {

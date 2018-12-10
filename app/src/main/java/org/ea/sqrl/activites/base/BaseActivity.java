@@ -17,6 +17,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -62,7 +63,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private final int REQUEST_PERMISSION_CAMERA = 1;
 
-    protected Handler handler = new Handler();
+    protected final Handler handler = new Handler(Looper.getMainLooper());
 
     private PopupWindow cameraAccessPopupWindow;
     private PopupWindow errorPopupWindow;
@@ -283,13 +284,17 @@ public class BaseActivity extends AppCompatActivity {
         } else {
             builder = new AlertDialog.Builder(BaseActivity.this);
         }
-        builder.setTitle(R.string.error_dialog_title)
-                .setMessage(message)
-                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                    dialog.dismiss();
-                })
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
+
+        handler.post(() ->
+            builder.setTitle(R.string.error_dialog_title)
+                    .setMessage(message)
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                        dialog.dismiss();
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show()
+        );
+
     }
 
 

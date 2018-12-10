@@ -16,8 +16,6 @@ import org.ea.sqrl.processors.SQRLStorage;
 public class EnableAccountActivity extends BaseActivity {
     private static final String TAG = "EnableAccountActivity";
 
-    private Handler handler = new Handler();
-
     protected CommunicationFlowHandler communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
     @Override

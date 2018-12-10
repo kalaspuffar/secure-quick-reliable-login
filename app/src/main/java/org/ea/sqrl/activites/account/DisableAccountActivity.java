@@ -12,8 +12,6 @@ import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.SQRLStorage;
 
 public class DisableAccountActivity extends BaseActivity {
-    private Handler handler = new Handler();
-
     protected CommunicationFlowHandler communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
     @Override

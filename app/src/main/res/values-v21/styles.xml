@@ -13,12 +13,17 @@
     </style>
 
 
-    <style name="myActionButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
+    <style name="myActionButtonStyle" parent="Widget.AppCompat.ActionButton">
         <item name="android:width">48dp</item>
         <item name="android:height">48dp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:paddingEnd">4dp</item>
+        <item name="android:contentDescription">@string/action_help</item>
     </style>
 
-    <style name="AppTheme.ActionBar" parent="Widget.AppCompat.Light.ActionBar">
+    <style name="AppTheme.ActionBar" parent="Widget.AppCompat.ActionBar">
         <item name="android:height">48dp</item>
         <item name="height">48dp</item>
     </style>
