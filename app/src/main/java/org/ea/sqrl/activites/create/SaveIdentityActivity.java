@@ -31,7 +31,7 @@ public class SaveIdentityActivity extends LoginBaseActivity {
 /*
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
-
+*/
         rootView = findViewById(R.id.saveIdentityActivityView);
 
         SQRLStorage storage = SQRLStorage.getInstance();
@@ -93,8 +93,6 @@ public class SaveIdentityActivity extends LoginBaseActivity {
                 });
             }).start();
         });
-*/
-
     }
 
     @Override
