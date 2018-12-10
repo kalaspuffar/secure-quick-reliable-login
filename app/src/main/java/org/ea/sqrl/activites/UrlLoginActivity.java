@@ -104,7 +104,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
             public void onTextChanged(CharSequence password, int start, int before, int count) {
                 if (!storage.hasQuickPass()) return;
                 if ((start + count) >= storage.getHintLength()) {
-                    progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                    showProgressPopup();
                     closeKeyboard();
 
                     new Thread(() -> {
@@ -114,7 +114,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                             handler.post(() -> {
                                 txtLoginPassword.setHint(R.string.login_identity_password);
                                 txtLoginPassword.setText("");
-                                progressPopupWindow.dismiss();
+                                hideProgressPopup();
                             });
                             storage.clear();
                             storage.clearQuickPass(UrlLoginActivity.this);
@@ -129,7 +129,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                         communicationFlowHandler.setDoneAction(() -> {
                             storage.clear();
                             handler.post(() -> {
-                                progressPopupWindow.dismiss();
+                                hideProgressPopup();
                                 closeActivity();
                             });
                         });
@@ -137,7 +137,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                         communicationFlowHandler.setErrorAction(() -> {
                             storage.clear();
                             storage.clearQuickPass(UrlLoginActivity.this);
-                            handler.post(() -> progressPopupWindow.dismiss());
+                            handler.post(() -> hideProgressPopup());
                         });
 
                         communicationFlowHandler.handleNextAction();
@@ -163,7 +163,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
             long currentId = sharedPref.getLong(CURRENT_ID, 0);
 
             if(currentId != 0) {
-                progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                showProgressPopup();
                 closeKeyboard();
 
                 new Thread(() -> {
@@ -172,7 +172,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                         showErrorMessage(R.string.decrypt_identity_fail);
                         handler.post(() -> {
                             txtLoginPassword.setText("");
-                            progressPopupWindow.dismiss();
+                            hideProgressPopup();
                         });
                         storage.clear();
                         storage.clearQuickPass(this);
@@ -188,7 +188,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                     communicationFlowHandler.setDoneAction(() -> {
                         storage.clear();
                         handler.post(() -> {
-                            progressPopupWindow.dismiss();
+                            hideProgressPopup();
                             closeActivity();
                         });
                     });
@@ -196,7 +196,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                     communicationFlowHandler.setErrorAction(() -> {
                         storage.clear();
                         storage.clearQuickPass(UrlLoginActivity.this);
-                        handler.post(() -> progressPopupWindow.dismiss());
+                        handler.post(() -> hideProgressPopup());
                     });
 
                     communicationFlowHandler.handleNextAction();
@@ -207,17 +207,15 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && storage.hasBiometric()) {
             BioAuthenticationCallback biometricCallback =
-                    new BioAuthenticationCallback(handler, loginPopupWindow, () -> {
-                        handler.post(() -> {
-                            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                        });
+                    new BioAuthenticationCallback(() -> {
+                        handler.post(() -> showProgressPopup());
                         communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
                         communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN_CPS);
 
                         communicationFlowHandler.setDoneAction(() -> {
                             storage.clear();
                             handler.post(() -> {
-                                progressPopupWindow.dismiss();
+                                hideProgressPopup();
                                 closeActivity();
                             });
                         });
@@ -225,7 +223,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                         communicationFlowHandler.setErrorAction(() -> {
                             storage.clear();
                             storage.clearQuickPass(UrlLoginActivity.this);
-                            handler.post(() -> progressPopupWindow.dismiss());
+                            handler.post(() -> hideProgressPopup());
                         });
 
                         communicationFlowHandler.handleNextAction();
@@ -296,7 +294,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
         super.onStop();
 
         if(progressPopupWindow.isShowing()) {
-            progressPopupWindow.dismiss();
+            hideProgressPopup();
         }
     }
 }

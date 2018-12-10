@@ -62,7 +62,7 @@ public class TextImportActivity extends BaseActivity {
         findViewById(R.id.btnTextImportClose).setOnClickListener(v -> this.finish());
 
         btnImportIdentityDo.setOnClickListener(v -> {
-            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+            showProgressPopup();
 
             new Thread(() -> {
                 SQRLStorage storage = SQRLStorage.getInstance();
@@ -84,7 +84,7 @@ public class TextImportActivity extends BaseActivity {
                         } else {
                             showErrorMessage(e.getMessage());
                         }
-                        progressPopupWindow.dismiss();
+                        hideProgressPopup();
                     });
                     Log.e(TAG, e.getMessage(), e);
                 }

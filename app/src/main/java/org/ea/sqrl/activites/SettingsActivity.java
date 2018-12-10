@@ -97,14 +97,14 @@ public class SettingsActivity extends BaseActivity {
         btnSaveSettings.setOnClickListener(v -> new Thread(() -> {
             handler.post(() -> {
                 savePopupWindow.dismiss();
-                progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                showProgressPopup();
             });
             storage.clearQuickPass(this);
             boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString(), entropyHarvester, false);
             if(!decryptStatus) {
                 showErrorMessage(R.string.decrypt_identity_fail);
                 handler.post(() -> {
-                    progressPopupWindow.dismiss();
+                    hideProgressPopup();
                     txtPassword.setText("");
                 });
                 return;
@@ -115,7 +115,7 @@ public class SettingsActivity extends BaseActivity {
             if(hintLength > 255) {
                 showErrorMessage(R.string.settings_hint_length_to_large);
                 handler.post(() -> {
-                    progressPopupWindow.dismiss();
+                    hideProgressPopup();
                     txtPassword.setText("");
                 });
                 return;
@@ -135,7 +135,7 @@ public class SettingsActivity extends BaseActivity {
             if (!encryptStatus) {
                 showErrorMessage(R.string.encrypt_identity_fail);
                 handler.post(() -> {
-                    progressPopupWindow.dismiss();
+                    hideProgressPopup();
                     txtPassword.setText("");
                 });
                 return;
@@ -151,7 +151,7 @@ public class SettingsActivity extends BaseActivity {
 
             handler.post(() -> {
                 txtPassword.setText("");
-                progressPopupWindow.dismiss();
+                hideProgressPopup();
                 SettingsActivity.this.finish();
             });
 

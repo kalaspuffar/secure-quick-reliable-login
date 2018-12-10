@@ -50,7 +50,7 @@ public class ImportActivity extends BaseActivity {
         );
 
         btnImportIdentityDo.setOnClickListener(v -> {
-            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+            showProgressPopup();
 
             new Thread(() -> {
                 SQRLStorage storage = SQRLStorage.getInstance();
@@ -60,7 +60,7 @@ public class ImportActivity extends BaseActivity {
                         handler.post(() -> {
                             showErrorMessage(R.string.decrypt_identity_fail);
                             txtPassword.setText("");
-                            progressPopupWindow.dismiss();
+                            hideProgressPopup();
                         });
                         return;
                     }
@@ -71,7 +71,7 @@ public class ImportActivity extends BaseActivity {
                         handler.post(() -> {
                             showErrorMessage(R.string.encrypt_identity_fail);
                             txtPassword.setText("");
-                            progressPopupWindow.dismiss();
+                            hideProgressPopup();
                         });
                         return;
                     }
@@ -97,7 +97,7 @@ public class ImportActivity extends BaseActivity {
 
                 handler.post(() -> {
                     txtPassword.setText("");
-                    progressPopupWindow.dismiss();
+                    hideProgressPopup();
 
                     if(newIdentityId != 0) {
                         if(firstIdentity) {

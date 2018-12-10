@@ -48,7 +48,7 @@ public class SaveIdentityActivity extends LoginBaseActivity {
             }
             txtRetypePassword.setError(null);
 
-            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+            showProgressPopup();
 
             new Thread(() -> {
                 try {
@@ -69,7 +69,7 @@ public class SaveIdentityActivity extends LoginBaseActivity {
                     }
                 } finally {
                     storage.clear();
-                    handler.post(() -> progressPopupWindow.dismiss());
+                    handler.post(() -> hideProgressPopup());
                 }
 
                 long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());

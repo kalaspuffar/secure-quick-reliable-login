@@ -45,7 +45,7 @@ public class RemoveAccountActivity extends BaseActivity {
             if(!checkRescueCode(txtRecoverCode5)) return;
             if(!checkRescueCode(txtRecoverCode6)) return;
 
-            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+            showProgressPopup();
 
             new Thread(() -> {
                 try {
@@ -67,7 +67,7 @@ public class RemoveAccountActivity extends BaseActivity {
                     showErrorMessage(e.getMessage());
                     Log.e(TAG, e.getMessage(), e);
                     storage.clear();
-                    handler.post(() -> progressPopupWindow.dismiss());
+                    handler.post(() -> hideProgressPopup());
                     handler.postDelayed(() -> closeActivity(), 5000);
                     return;
                 } finally {
@@ -94,14 +94,14 @@ public class RemoveAccountActivity extends BaseActivity {
                 communicationFlowHandler.setDoneAction(() -> {
                     storage.clear();
                     handler.post(() -> {
-                        progressPopupWindow.dismiss();
+                        hideProgressPopup();
                         closeActivity();
                     });
                 });
 
                 communicationFlowHandler.setErrorAction(() -> {
                     storage.clear();
-                    handler.post(() -> progressPopupWindow.dismiss());
+                    handler.post(() -> hideProgressPopup());
                 });
 
                 communicationFlowHandler.handleNextAction();
