@@ -24,8 +24,6 @@ import java.io.FileOutputStream;
 public class ExportOptionsActivity extends BaseActivity {
     private static final String TAG = "ExportOptionsActivity";
 
-    private Handler handler = new Handler();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

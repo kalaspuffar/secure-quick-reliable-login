@@ -15,8 +15,6 @@ import org.ea.sqrl.processors.SQRLStorage;
 public class RemoveAccountActivity extends BaseActivity {
     private static final String TAG = "RemoveAccountActivity";
 
-    private Handler handler = new Handler();
-
     protected CommunicationFlowHandler communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
     @Override

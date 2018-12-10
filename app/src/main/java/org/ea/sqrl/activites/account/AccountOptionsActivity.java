@@ -8,7 +8,6 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
 
 public class AccountOptionsActivity extends BaseActivity {
-    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

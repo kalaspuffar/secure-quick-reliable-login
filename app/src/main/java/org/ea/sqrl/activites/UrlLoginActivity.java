@@ -35,7 +35,6 @@ import javax.crypto.Cipher;
  */
 public class UrlLoginActivity extends LoginBaseActivity {
     private static final String TAG = "UrlLoginActivity";
-    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
