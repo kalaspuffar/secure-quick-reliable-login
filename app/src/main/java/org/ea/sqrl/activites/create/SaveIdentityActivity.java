@@ -39,7 +39,7 @@ public class SaveIdentityActivity extends LoginBaseActivity {
         final EditText txtNewPassword = findViewById(R.id.txtNewPassword);
         final EditText txtRetypePassword = findViewById(R.id.txtRetypePassword);
 
-/*
+
         final Button btnSaveIdentity = findViewById(R.id.btnSaveIdentity);
         btnSaveIdentity.setOnClickListener(v -> {
             if(!txtNewPassword.getText().toString().equals(txtRetypePassword.getText().toString())) {
@@ -93,7 +93,6 @@ public class SaveIdentityActivity extends LoginBaseActivity {
                 });
             }).start();
         });
-*/
     }
 
     @Override
