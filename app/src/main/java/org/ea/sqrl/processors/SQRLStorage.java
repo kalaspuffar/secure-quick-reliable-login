@@ -778,7 +778,6 @@ public class SQRLStorage {
                         .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
                         .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA384,
                                 KeyProperties.DIGEST_SHA512)
-                        .setUserAuthenticationValidityDurationSeconds(timeInSecondsToRunPWEnScryptOnPassword)
                         .setUserAuthenticationRequired(true)
                         .build());
 
