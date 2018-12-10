@@ -113,12 +113,27 @@ public class IdentityDBHelper extends SQLiteOpenHelper {
         );
     }
 
+    public boolean checkUnique(String name) {
+        for(Map.Entry<Long, String> entry : getIdentitys().entrySet()) {
+            if(entry.getValue().equals(name)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public void updateIdentityName(long id, String name) {
         SQLiteDatabase db = this.getWritableDatabase();
 
+        String newName = name;
+        int i = 1;
+        while(!checkUnique(newName)) {
+            newName = name + " (" + i + ")";
+            i++;
+        }
+
         ContentValues values = new ContentValues();
-        values.put(IdentityEntry.COLUMN_NAME_NAME, name);
+        values.put(IdentityEntry.COLUMN_NAME_NAME, newName);
 
         db.update(
                 IdentityEntry.TABLE_NAME,
