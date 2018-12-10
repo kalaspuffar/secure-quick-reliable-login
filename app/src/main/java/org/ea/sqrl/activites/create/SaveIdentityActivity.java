@@ -28,6 +28,7 @@ public class SaveIdentityActivity extends LoginBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_save_identity);
 
+/*
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
@@ -38,12 +39,6 @@ public class SaveIdentityActivity extends LoginBaseActivity {
         final EditText txtIdentityName = findViewById(R.id.txtIdentityName);
         final EditText txtNewPassword = findViewById(R.id.txtNewPassword);
         final EditText txtRetypePassword = findViewById(R.id.txtRetypePassword);
-
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            txtIdentityName.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
-            txtNewPassword.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
-            txtRetypePassword.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
-        }
 
         final Button btnSaveIdentity = findViewById(R.id.btnSaveIdentity);
         btnSaveIdentity.setOnClickListener(v -> {
@@ -98,6 +93,8 @@ public class SaveIdentityActivity extends LoginBaseActivity {
                 });
             }).start();
         });
+*/
+
     }
 
     @Override
