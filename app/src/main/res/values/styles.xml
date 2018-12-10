@@ -13,7 +13,7 @@
         <item name="android:paddingRight">4dp</item>
         <item name="android:paddingStart">4dp</item>
         <item name="android:paddingEnd">4dp</item>
-        <item name="android:contentDescription">@string/action_help</item>
+        <item name="android:contentDescription">@string/actionbar_menu</item>
     </style>
 
     <style name="AppTheme.ActionBar" parent="Widget.AppCompat.ActionBar">
