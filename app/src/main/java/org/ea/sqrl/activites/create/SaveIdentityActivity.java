@@ -28,11 +28,10 @@ public class SaveIdentityActivity extends LoginBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_save_identity);
 
-/*
+        rootView = findViewById(R.id.saveIdentityActivityView);
+
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
-*/
-        rootView = findViewById(R.id.saveIdentityActivityView);
 
         SQRLStorage storage = SQRLStorage.getInstance();
 
@@ -40,6 +39,7 @@ public class SaveIdentityActivity extends LoginBaseActivity {
         final EditText txtNewPassword = findViewById(R.id.txtNewPassword);
         final EditText txtRetypePassword = findViewById(R.id.txtRetypePassword);
 
+/*
         final Button btnSaveIdentity = findViewById(R.id.btnSaveIdentity);
         btnSaveIdentity.setOnClickListener(v -> {
             if(!txtNewPassword.getText().toString().equals(txtRetypePassword.getText().toString())) {
@@ -93,6 +93,7 @@ public class SaveIdentityActivity extends LoginBaseActivity {
                 });
             }).start();
         });
+*/
     }
 
     @Override
