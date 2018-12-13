@@ -1,4 +1,4 @@
-# Secure Quick Reliable Login
+# SQRL Login
 
 [![Build Status](https://travis-ci.org/kalaspuffar/secure-quick-reliable-login.svg?branch=master)](https://travis-ci.org/kalaspuffar/secure-quick-reliable-login)
 
