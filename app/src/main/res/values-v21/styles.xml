@@ -14,18 +14,13 @@
 
 
     <style name="myActionButtonStyle" parent="Widget.AppCompat.ActionButton">
-        <item name="android:width">48dp</item>
-        <item name="android:height">48dp</item>
-        <item name="android:paddingLeft">4dp</item>
-        <item name="android:paddingRight">4dp</item>
-        <item name="android:paddingStart">4dp</item>
-        <item name="android:paddingEnd">4dp</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:minHeight">48dp</item>
         <item name="android:contentDescription">@string/actionbar_menu</item>
     </style>
 
     <style name="AppTheme.ActionBar" parent="Widget.AppCompat.ActionBar">
-        <item name="android:height">48dp</item>
-        <item name="height">48dp</item>
+        <item name="android:minHeight">48dp</item>
     </style>
 
     <style name="spinnerItemStyle" parent="android:Widget.TextView.SpinnerItem" />

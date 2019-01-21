@@ -62,6 +62,8 @@ public class ImportActivity extends BaseActivity {
                             txtPassword.setText("");
                             hideProgressPopup();
                         });
+                        storage.clearQuickPass(this);
+                        storage.clear();
                         return;
                     }
                     storage.clearQuickPass(this);

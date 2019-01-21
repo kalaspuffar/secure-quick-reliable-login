@@ -256,6 +256,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                             txtLoginPassword.setText("");
                             hideProgressPopup();
                         });
+                        storage.clearQuickPass(quickPassContext);
                         storage.clear();
                         return;
                     }

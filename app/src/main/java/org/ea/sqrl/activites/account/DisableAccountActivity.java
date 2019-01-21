@@ -36,6 +36,7 @@ public class DisableAccountActivity extends BaseActivity {
                     showClearNotification();
                 } else {
                     showErrorMessage(R.string.decrypt_identity_fail);
+                    storage.clearQuickPass(this);
                     storage.clear();
                     handler.post(() -> {
                         txtDisablePassword.setText("");

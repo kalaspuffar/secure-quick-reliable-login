@@ -49,6 +49,9 @@ public class ChangePasswordActivity extends BaseActivity {
                         txtNewPassword.setText("");
                         txtRetypePassword.setText("");
                     });
+                    storage.clearQuickPass(this);
+                    storage.clear();
+
                     return;
                 }
                 showClearNotification();

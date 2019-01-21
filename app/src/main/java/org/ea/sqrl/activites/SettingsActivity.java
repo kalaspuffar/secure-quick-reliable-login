@@ -103,6 +103,8 @@ public class SettingsActivity extends BaseActivity {
             boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString(), entropyHarvester, false);
             if(!decryptStatus) {
                 showErrorMessage(R.string.decrypt_identity_fail);
+                storage.clearQuickPass(this);
+                storage.clear();
                 handler.post(() -> {
                     hideProgressPopup();
                     txtPassword.setText("");
