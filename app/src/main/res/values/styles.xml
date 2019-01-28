@@ -2,7 +2,6 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="CommonTheme">
         <item name="actionButtonStyle">@style/myActionButtonStyle</item>
-        <item name="android:actionOverflowButtonStyle">@style/myActionButtonStyle</item>
     </style>
     
     <style name="myActionButtonStyle" parent="Widget.AppCompat.ActionButton">

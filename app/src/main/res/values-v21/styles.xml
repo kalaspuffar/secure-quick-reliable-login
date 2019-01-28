@@ -9,7 +9,6 @@
         <item name="android:windowExitTransition">@android:transition/slide_left</item>
 
         <item name="actionButtonStyle">@style/myActionButtonStyle</item>
-        <item name="android:actionOverflowButtonStyle">@style/myActionButtonStyle</item>
     </style>
 
 
