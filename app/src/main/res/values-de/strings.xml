@@ -220,9 +220,9 @@
 <string name="language_norwegian">Norwegisch</string>
 <string name="language_swedish">Schwedisch</string>
 <string name="language_spanish">Spanisch</string>
-<string name="language_russian">Russian</string>
-<string name="language_hungarian">Hungarian</string>
-<string name="language_slovenian">Slovenian</string>
-<string name="language_czech">Czech</string>
-<string name="actionbar_menu">Menu</string>
+<string name="language_russian">Russisch</string>
+<string name="language_hungarian">Ungarisch</string>
+<string name="language_slovenian">Slowenisch</string>
+<string name="language_czech">Tschechisch</string>
+<string name="actionbar_menu">Menü</string>
 </resources>

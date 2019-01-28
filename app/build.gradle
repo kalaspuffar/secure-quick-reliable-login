@@ -7,8 +7,8 @@ android {
         applicationId "org.ea.sqrl"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 32
-        versionName "0.12.2"
+        versionCode 33
+        versionName "0.13.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -21,6 +21,7 @@ android {
     externalNativeBuild {
         cmake {
             path 'CMakeLists.txt'
+            version "3.10.2"
         }
     }
     adbOptions {
@@ -49,5 +50,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-web:3.0.2'
     androidTestImplementation 'com.android.support.test.espresso.idling:idling-concurrent:3.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-idling-resource:3.0.2'
-    androidTestImplementation 'com.google.guava:guava:23.0'
+    androidTestImplementation 'com.google.guava:guava:24.1-jre'
 }
