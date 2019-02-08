@@ -8,15 +8,11 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
-
+        classpath 'com.android.tools.build:gradle:3.3.0'
+        classpath 'org.owasp:dependency-check-gradle:4.0.1'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
-}
-
-plugins {
-    id "org.owasp.dependencycheck" version "3.2.1"
 }
 
 buildDir = 'gen_build'
@@ -26,6 +22,7 @@ allprojects {
         google()
         jcenter()
     }
+    apply plugin: 'org.owasp.dependencycheck'
 }
 
 task clean(type: Delete) {
