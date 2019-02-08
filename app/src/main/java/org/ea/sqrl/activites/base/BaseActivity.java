@@ -106,12 +106,14 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        if(outState == null) return;
         super.onSaveInstanceState(outState);
         outState.putBoolean("progressWindowOpen", progressPopupWindow.isShowing());
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        if(savedInstanceState == null) return;
         super.onRestoreInstanceState(savedInstanceState);
 
         boolean progressWindowOpen = savedInstanceState.getBoolean("progressWindowOpen", false);
