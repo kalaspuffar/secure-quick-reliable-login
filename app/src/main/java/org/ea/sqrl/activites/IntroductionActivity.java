@@ -29,8 +29,6 @@ import org.ea.sqrl.utils.Utils;
  * @author Daniel Persson
  */
 public class IntroductionActivity extends AppCompatActivity {
-    private TabLayout tabLayout;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +42,7 @@ public class IntroductionActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         final ViewPager mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        tabLayout = findViewById(R.id.tab_dots);
+        TabLayout tabLayout = findViewById(R.id.tab_dots);
         tabLayout.setupWithViewPager(mViewPager, true);
 
         tabLayout.getTabAt(0).setText(R.string.introduction_startpage_title);

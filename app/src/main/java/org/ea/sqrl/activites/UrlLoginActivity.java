@@ -207,7 +207,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && storage.hasBiometric()) {
             BioAuthenticationCallback biometricCallback =
-                    new BioAuthenticationCallback(handler, loginPopupWindow, () -> {
+                    new BioAuthenticationCallback(() -> {
                         handler.post(() -> {
                             progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
                         });

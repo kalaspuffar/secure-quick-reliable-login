@@ -1,5 +1,6 @@
 package org.ea.sqrl.activites.base;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
@@ -28,6 +29,7 @@ import java.util.Map;
  *
  * @author Daniel Persson
  */
+@SuppressLint("Registered")
 public class LoginBaseActivity extends BaseActivity implements AdapterView.OnItemSelectedListener {
     private static final String TAG = "LoginBaseActivity";
     protected ConstraintLayout rootView;

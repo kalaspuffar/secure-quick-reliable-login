@@ -33,14 +33,11 @@ public class SettingsActivity extends BaseActivity {
     private EditText txtSettingsIdleTimeout;
     private CheckBox cbSettingsSQRLOnly;
     private CheckBox cbSettingsNoBypass;
-    private ConstraintLayout rootView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-
-        rootView = findViewById(R.id.settingsActivityView);
 
         setupSavePopupWindow(getLayoutInflater());
         setupProgressPopupWindow(getLayoutInflater());

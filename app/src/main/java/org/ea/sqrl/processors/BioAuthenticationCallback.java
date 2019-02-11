@@ -9,13 +9,9 @@ import android.widget.PopupWindow;
 @TargetApi(value=28)
 public class BioAuthenticationCallback extends BiometricPrompt.AuthenticationCallback {
 
-    private Handler handler;
-    private final PopupWindow loginWindow;
     private final Runnable doneCallback;
 
-    public BioAuthenticationCallback(Handler handler, PopupWindow loginWindow, Runnable doneCallback) {
-        this.handler = handler;
-        this.loginWindow = loginWindow;
+    public BioAuthenticationCallback(Runnable doneCallback) {
         this.doneCallback = doneCallback;
     }
 

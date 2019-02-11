@@ -38,6 +38,7 @@ import java.util.Map;
 
 public class CommunicationFlowHandler {
     private static final String TAG = "CommFlowHandler";
+    private int lastTIF = 0;
 
     public enum Action {
         QUERY_WITH_SUK,
@@ -92,6 +93,7 @@ public class CommunicationFlowHandler {
         }
         instance.currentActivity = currentActivity;
         instance.handler = handler;
+        instance.lastTIF = 0;
         return instance;
     }
 
@@ -244,10 +246,22 @@ public class CommunicationFlowHandler {
         }
 
         /*
-         * Remove the option of the server returning transient error when the request is not accepted
-         * due to IP restriction or reusing of code. Retry to with a fresh nut and hope the error
-         * disappears.
+         * If an error occurs try again if we have a different error code than last time.
          */
+        if(
+            (
+                commHandler.isTIFBitSet(CommunicationHandler.TIF_TRANSIENT_ERROR) ||
+                commHandler.isTIFBitSet(CommunicationHandler.TIF_CLIENT_FAILURE) ||
+                commHandler.isTIFBitSet(CommunicationHandler.TIF_COMMAND_FAILED) ||
+                commHandler.isTIFBitSet(CommunicationHandler.TIF_BAD_ID_ASSOCIATION)
+            ) && commHandler.getTif() != lastTIF
+        ) {
+            actionStack.push(a);
+            commHandler.clearLastResponse();
+            lastTIF = commHandler.getTif();
+        }
+
+        /*
         switch (a) {
             case QUERY_WITH_SUK:
             case QUERY_WITHOUT_SUK:
@@ -260,6 +274,7 @@ public class CommunicationFlowHandler {
                 }
                 break;
         }
+        */
 
         if(commHandler.hasAskQuestion() && this.actionStack.isEmpty()) {
             this.actionStack.add(Action.QUERY_WITHOUT_SUK);

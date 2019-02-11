@@ -32,7 +32,6 @@ import org.ea.sqrl.processors.SQRLStorage;
 public class StartActivity extends BaseActivity {
     private static final String TAG = "StartActivity";
     private boolean createNewIdentity = false;
-    private ConstraintLayout rootView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +40,6 @@ public class StartActivity extends BaseActivity {
 
         final TextView txtWelcomeMessage = findViewById(R.id.txtWelcomeMessage);
         txtWelcomeMessage.setMovementMethod(LinkMovementMethod.getInstance());
-
-        rootView = findViewById(R.id.startActivityView);
 
         setupProgressPopupWindow(getLayoutInflater());
         setupCameraAccessPopupWindow(getLayoutInflater());
