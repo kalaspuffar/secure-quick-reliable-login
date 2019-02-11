@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="app_name">Secure Quick Reliable Login</string>
+<string name="app_name">SQRL Login</string>
 <string name="introduction_startpage"><b>Secure Quick Reliable Login</b>\n\nVälkommen till hjälp sidorna. Dessa sidor beskriver protokollets olika koncept mer i detalj. Vi försöker också förklara olika användningsområden för denna applikation.\n\nNär du skall läsa hjälpsidorna gör du detta genom att swipa höger och vänster för att byta sida.\n\nOm du har intresse att titta på koden till applikationen går det bra då projektet är open source och går att finna här <a href="https://github.com/kalaspuffar/secure-quick-reliable-login">https://github.com/kalaspuffar/secure-quick-reliable-login</a></string>
 <string name="introduction_nutshell"><b>I ett nötskal</b>\n\nInnan du börjar använda SQRL för inloggning, behöver du skapa en privat identitet. Det behövs bara en, troligen för hela din livstid, för denna teknik avslöjar INGET om dig, och är mycket säker. Det är bara ett väldigt långt (77-siffror) slumpmässigt tal.\n\nDärefter, när du loggar in, kommer din privata identitet användas för att skapa ett annat 77-siffrors nummer per hemsida. Varje hemsida du besöker ser dig som ett annat nummer, samtidigt när du besöker en hemsida igen kommer den sidans unika nummer återskapas.\n\nDetta tillåter att du kan bli identifierad som en unik person samtidigt som du är helt anonym.\n\nDå du inte behöver ange e-post eller lösenord, ger du inte hemsidan din identitet att skydda. Om hemsidans SQRL identiteter skulle stjälas, så skulle inte bara identiteterna bara vara giltliga för den sidan, så också SQRL\'s kryptografi skyddar mot att sidan kan söka upp dig i efterhand.\n\nDetta är så bra som det låter. Det är vad vi har väntat på.</string>
 <string name="introduction_password"><b>Ditt SQRL lösenord</b>\n\nSQRL gör att du slipper logga in till hemsidor, applikationen löser detta åt dig. Men det betyder också att om någon får tillgång till din SQRL applikation så kan de utge sig för att vara dig.\n\nVi löser detta problem med ett SQRL lösenord vilket DU använder för att logga in till din applikation. Du väljer hur mycket säkerhet du behöver. Du väljer ett lösenord med vilken längd som helst och med de tecken du vill använda. För att ingen skall kunna gissa ditt lösenord bestämmer du själv hur lång tid varje försök skall ta. Och använder du ett långt och krångligt lösenord så kan de första fyra tecknen användas för när du återanvänder ditt lösenord.\n\nDu kan välja ett nytt lösenord eller ändra inställningar när du vill. Skulle du glömma bort vilket lösenord du valt kan detta återställas med din återställningskod.</string>
@@ -97,15 +97,11 @@
 <string name="button_enable_account_enable">Lås upp</string>
 <string name="remove_account_title">Remove account</string>
 <string name="button_remove_account_remove">Remove</string>
-<string name="export_title">Exportera</string>
 <string name="button_export_show_identity">Visa identitet</string>
 <string name="button_export_save_identity">Spara identitet</string>
 <string name="button_print_identity">Skriv ut identitet</string>
 <string name="title_activity_url_login">SQRL - Logga in</string>
 <string name="change_password_close">Stäng ändra lösenord ruta</string>
-<string name="decrypt_close">Stäng importera identitets ruta</string>
-<string name="disable_account_close">Stäng lås konto ruta</string>
-<string name="enable_account_close">Stäng lås upp ruta</string>
 <string name="export_options_close">Stäng exportera ruta</string>
 <string name="login_close">Stäng logga in ruta</string>
 <string name="login_optional_close">Stäng extra funktioner ruta</string>
@@ -208,7 +204,6 @@
 <string name="progress_interrupted_text">Ni växlade mellan vågrätt och lodrätt läge när applikationen jobbade. Den senaste funktionen kanske inte avslutades korrekt, försök igen.</string>
 <string name="action_language">Språk</string>
 <string name="title_language">Väl språk</string>
-<string name="btn_language_close">Stäng</string>
 <string name="language_default">Standard</string>
 <string name="language_arabic">Arabiska</string>
 <string name="language_dutch">Hollänska</string>
@@ -224,4 +219,7 @@
 <string name="language_hungarian">Ungerska</string>
 <string name="language_slovenian">Slovenska</string>
 <string name="language_czech">Tjeckiska</string>
+<string name="actionbar_menu">Meny</string>
+<string name="error_message_stale_page">Sessionen för SQRL login har gått ut. Var vänlig ladda om sidan och försök sedan på nytt.</string>
+<string name="error_message_login_failed">SQRL misslyckades att logga in på sidan. Ladda om sidan och försök igen. Om problemet inte löser sig, var god använd en annan inloggningsmetod.</string>
 </resources>

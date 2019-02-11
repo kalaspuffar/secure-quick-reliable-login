@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="app_name">Secure Quick Reliable Login</string>
+<string name="app_name">SQRL Login</string>
 <string name="introduction_startpage"><b>Secure Quick Reliable Login</b>\n\nWillkommen auf den Hilfeseiten. Hier wird versucht, die verschiedenen Konzepte hinter dem Protokoll detaillierter zu erläutern. Wir werden auch versuchen, die verschiedenen Anwendungsfälle zu erklären, die Ihnen mit dieser App zur Verfügung stehen.\n\nUm diese Hilfeseiten zu verwenden, wischen Sie einfach nach links oder rechts, um zwischen den Seiten zu wechseln.\n\nFalls Sie am Quellcode dieser App interessiert sind, dieser ist als Open-Source verfügbar unter <a href="https://github.com/kalaspuffar/secure-quick-reliable-login">https://github.com/kalaspuffar/secure-quick-reliable-login</a></string>
 <string name="introduction_nutshell"><b>In aller Kürze</b>\n\nBevor Sie damit beginnen SQRL zu verwenden, um sich bei Webseiten anzumelden, muss ihre private SQRL Identität erstellt werden. Sie brauchen nur eine, vermutlich ein ganzes Leben lang, denn diese Identität verrät NICHTS über Sie, und sie ist hochsicher. Es ist nur eine sehr lange (77-stellige) Zufallszahl.\n\nWenn Sie sich nun mit SQRL auf einer Webseite anmelden, wird Ihre private Identität dazu verwendet, eine weitere 77-stellige Zahl für diese eine Webseite zu erzeugen. Jede Webseite, die Sie besuchen, sieht Sie als eine andere Nummer, aber trotzdem wird jedes Mal, wenn Sie zu dieser Seite zurückkehren, die selbe eindeutige Nummer für diese Seite generiert.\n\nDies erlaubt es, Sie eindeutig und permanent zu identifizieren, aber dabei komplett anonym zu bleiben.\n\nWeil Sie dazu niemals eine Email-Adresse oder ein Passwort benötigen, geben sie einer Webseite nie Ihre wahre Identität, welche diese beschützten müsste. Sollten die SQRL-Identitäten einer Webseite jemals gestohlen werden, würden diese einzig und allein für diese Webseite gültig sein. Auch ein Vortäuschen einer fremden Identität durch gestohlene SQRL-Identitäten wird durch die in SQRL verwendete Kryptographie verhindert.\n\nEs ist tatsächlich so gut, wie es sich anhört. Es ist das, auf was wir alle gewartet haben.</string>
 <string name="introduction_password"><b>Ihr SQRL-Passwort</b>\n\nSQRL befreit Sie davon, sich bei Webseiten anmelden zu müssen - das erledigt ab sofort SQRL für Sie! Dies bedeutet aber auch, dass jemand, der Zugang zu Ihrer SQRL-App erlangt, sich als Sie ausgeben könnte.\n\nWir lösen dieses Problem mit einem SQRL-Passwort, welches SIE nutzen, um sich bei Ihrer SQRL-App anzumelden. Sie entscheiden, wie viel Anmelde-Schutz Sie benötigen. Sie wählen Ihr Passwort mit Länge und Komplexität ganz nach Ihrer Wahl. Um jemanden vom Erraten des Passworts abzuhalten, legen Sie auch fest, wie lange die Passwort-Überprüfung dauern soll.  Und um es weniger mühsam zu machen, ein langes und komplexes Passwort zu verwenden, können die ersten vier Zeichen davon benutzt werden, das vollständige Passwort \"aufzufrischen\", sofern es erst kürzlich eingegeben wurde.\n\nSie können Ihr Passwort uns dessen diverse Einstellungen jederzeit ändern. Sollten Sie Ihr Passwort jemals verlieren oder vergessen, kann der SQRL Rettungs-Code verwendet werden, um Ihren Zugang wiederherzustellen.</string>
@@ -97,15 +97,11 @@
 <string name="button_enable_account_enable">Entsperren</string>
 <string name="remove_account_title">Konto löschen</string>
 <string name="button_remove_account_remove">Löschen</string>
-<string name="export_title">Exportieren</string>
 <string name="button_export_show_identity">Identität anzeigen</string>
 <string name="button_export_save_identity">Identität speichern</string>
 <string name="button_print_identity">Identität ausdrucken</string>
 <string name="title_activity_url_login">SQRL - Anmeldung</string>
 <string name="change_password_close">Fenster \"Passwort ändern\" schließen</string>
-<string name="decrypt_close">Fenster \"Identität importieren\" schließen</string>
-<string name="disable_account_close">Fenster \"Konto sperren\" schließen</string>
-<string name="enable_account_close">Fenster \"Konto entsperren\" schließen</string>
 <string name="export_options_close">Fenster \"Export-Optionen\" schließen</string>
 <string name="login_close">Anmelde-Fenster schließen</string>
 <string name="login_optional_close">Fenster \"Anmelde-Optionen\" schließen</string>
@@ -208,7 +204,6 @@
 <string name="progress_interrupted_text">Sie haben das Gerät um 90° gedreht oder haben sich in der App während des Vorgangs bewegt. Der gerade ausgeführte Vorgang ist womöglich nicht korrekt beendet worden. Bitte erneut versuchen.</string>
 <string name="action_language">Sprache</string>
 <string name="title_language">Sprache auswählen</string>
-<string name="btn_language_close">Schließen</string>
 <string name="language_default">Standard</string>
 <string name="language_arabic">Arabisch</string>
 <string name="language_dutch">Niederländisch</string>
@@ -220,8 +215,11 @@
 <string name="language_norwegian">Norwegisch</string>
 <string name="language_swedish">Schwedisch</string>
 <string name="language_spanish">Spanisch</string>
-<string name="language_russian">Russian</string>
-<string name="language_hungarian">Hungarian</string>
-<string name="language_slovenian">Slovenian</string>
-<string name="language_czech">Czech</string>
+<string name="language_russian">Russisch</string>
+<string name="language_hungarian">Ungarisch</string>
+<string name="language_slovenian">Slowenisch</string>
+<string name="language_czech">Tschechisch</string>
+<string name="actionbar_menu">Menü</string>
+<string name="error_message_stale_page">The SQRL login page has expired. Please refresh the page, then log in with SQRL.</string>
+<string name="error_message_login_failed">SQRL was unable to login to this site. Please refresh the page and try again. If the problem persists please use another login method.</string>
 </resources>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="app_name">Secure Quick Reliable Login - Rask, sikker og pålitelig innlogging</string>
+<string name="app_name">SQRL Login - Rask, sikker og pålitelig innlogging</string>
 <string name="introduction_startpage"><b>Secure Quick Reliable Login</b>\n\nVelkommen til disse hjelpesidene.  Her vil vi forsøke å forklare de forskjellige konseptene i protokollen. Vi vil også forsøke å vise de forskjellige måtene du kan bruke applikasjonen på.  \n\nDu kan vise de forskjellige hjelpesidene ved å sveipe til venstre eller høyre. \n\nHvis du er interessert i å se på koden til denne applikasjonen finner du den på <a href="https://github.com/kalaspuffar/secure-quick-reliable-login">https://github.com/kalaspuffar/secure-quick-reliable-login</a> under en åpen kildekode-lisens.</string>
 <string name="introduction_nutshell"><b>Kort fortalt</b>\n\nFør du kan begynne å bruke SQRL til å logge inn på websider som støtter dette, må du opprette din private SQRL-identitet.  Du trenger bare en, sannsynligvis for resten av livet. Denne avslører ingenting om deg, og er svært sikker. Det er bare et svært langt (77-siffer) tilfeldig tall. \n\nNår du har opprettet din private identitet, vil SQRL bruke denne til å generere et annet 77-siffer langt tall som bare gjelder siden du prøver å logge inn på.  Hver side du prøver å logge inn på ser deg som et forskjellig nummer. Dette nummeret er forskjellig hver gang du besøker siden.\n\nDette lar deg være permanent og unikt identifisert, men samtidig helt anonym. \n\nSiden du  ikke trenger å identifisere deg med en epostadresse eller et passord,  vil du aldri gi  fra deg noe som er knyttet til din identitet.  Hvis websidens liste over sqrl-identiteter noensinne blir eksponert eller stjålet, vil skaden være svært begrenset siden disse identitetene vil være spesifikke for denne websiden, og SQRLs kryptografiske funksjoner forhindrer  identitetsutvikling ved hjelp av stjålne identiteter.</string>
 <string name="introduction_password"><B>Ditt SQRL passord</B>\n\nSQRL logger deg inn på websider for deg, uten at du må oppgi brukernavn eller passord. Men det betyr også at hvis noen får kontroll på din mobil eller PC vil de kunne logge seg inn som om de var deg. \n\nVi løser dette problemet ved å beskytte SQRL-appen med et passord, sin DU må oppgi i når du starter SQRL. Du bestemmer selv hvor mye beskyttelse du trenger. Du velger ditt passord selv, med den lengde og kompleksitet du sov ønsker. For å gjøre livet til hackere vanskeligere, kan du velge hvor lenge passordet skal prosesseres. Og for å gjøre bruken av lange og komplekse passord enklere, kan du bruke de fire første tegnene i passordet til å \"friske opp\" et fullt passord man nylig har tastet inn.\n\nDu kan selv endre passord i klienten når og så ofte du selv ønsker. Og skulle du glemme passordet ditt, har SQRL redningskoder.</string>
@@ -97,15 +97,11 @@
 <string name="button_enable_account_enable">Unlock</string>
 <string name="remove_account_title">Remove account</string>
 <string name="button_remove_account_remove">remove</string>
-<string name="export_title">Export</string>
 <string name="button_export_show_identity">Show identity</string>
 <string name="button_export_save_identity">Save identity</string>
 <string name="button_print_identity">Print identity</string>
 <string name="title_activity_url_login">SQRL - Login</string>
 <string name="change_password_close">Close change password window</string>
-<string name="decrypt_close">Close import identity window</string>
-<string name="disable_account_close">Close lock account window</string>
-<string name="enable_account_close">Close unlock account window</string>
 <string name="export_options_close">Close export options window</string>
 <string name="login_close">Close login window</string>
 <string name="login_optional_close">Close login options window</string>
@@ -184,7 +180,7 @@
 <string name="title_text_import">SQRL - Text import</string>
 <string name="button_text_import_close">Close</string>
 <string name="text_input_hint">Input identity rescue text printed on your identity paper version</string>
-<string name="error_dialog_title">An error has occured</string>
+<string name="error_dialog_title">An error has occurred</string>
 <string name="login_identity_quickpass">Password (First %s characters)</string>
 <string name="title_change_password">SQRL - Change password</string>
 <string name="title_reset_password">SQRL - Reset password</string>
@@ -208,7 +204,6 @@
 <string name="progress_interrupted_text">You changed orientation or moved around in the application during operation. The current operation might not be completed correctly, please try again.</string>
 <string name="action_language">Language</string>
 <string name="title_language">Select language</string>
-<string name="btn_language_close">Close</string>
 <string name="language_default">Default</string>
 <string name="language_arabic">Arabic</string>
 <string name="language_dutch">Dutch</string>
@@ -224,4 +219,7 @@
 <string name="language_hungarian">Hungarian</string>
 <string name="language_slovenian">Slovenian</string>
 <string name="language_czech">Czech</string>
+<string name="actionbar_menu">Menu</string>
+<string name="error_message_stale_page">The SQRL login page has expired. Please refresh the page, then log in with SQRL.</string>
+<string name="error_message_login_failed">SQRL was unable to login to this site. Please refresh the page and try again. If the problem persists please use another login method.</string>
 </resources>

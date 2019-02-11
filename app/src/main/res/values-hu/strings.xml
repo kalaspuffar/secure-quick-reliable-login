@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="app_name">Biztonságos Gyors Megbízható Bejelentkezés</string>
+<string name="app_name">SQRL Login</string>
 <string name="introduction_startpage"><b>Biztonságos Gyors Megbízható Bejelentkezés</b>\n\nÜdvözlünk a súgó oldalain, melyek részletesen elmagyarázzák a protokoll elemeit. Megpróbáljuk felvázolni a különböző eseteket az alkalmazás használatához.\n\nA súgóban jobbra/balra húzással tudsz az oldalak között navigálni.\n\nHa érdekel az alkalmazás forráskódja, ezen a címen érheted el: <a href="https://github.com/kalaspuffar/secure-quick-reliable-login">https://github.com/kalaspuffar/secure-quick-reliable-login</a></string>
 <string name="introduction_nutshell"><b>Dióhéjban</b>\n\nMielőtt bejelentkezéshez használhatnád az SQRL-t, létre kell hoznod a privát azonosítódat. Ebből csak egyre van szükséged, talán egész életedben, mivel SEMMIT nem fed fel rólad és különösen biztonságos. Valójában egy nagyon hosszú (77 számjegyű) véletlenszám.\n\nEzután, ha SQRL-lel jelentkezel be egy weboldalra, a privát azonosítód segítségével generálunk egy újabb 77 jegyű véltelenszámot a weboldal számára. Minden weboldal amit meglátogatsz különböző számként lát, és minden alkalommal mikor visszatérsz ugyanarra az oldalra az oldal száma újragenerálódik.\n\nEzáltal egyedileg és véglegesen azonosítható vagy, mégis teljesen névtelen.\n\nMivel nincs szükség e-mail cím vagy jelszó használatára, soha nem adod ki a valódi identitásodat, így a weboldalnak nem is kell megőriznie azt. Ha a weboldalon tárolt SQRL azonosítókat el is lopják, ezek az azonosítók csak ezen az egy helyen használhatók fel, ráadásul az SQRL-be épített titkosítás lehetetlenné teszi az ellopott azonosítók használatát.\n\nPontosan olyan jó, amilyennek hangzik. Ez az, amire vártunk.</string>
 <string name="introduction_password"><b>Az SQRL jelszavad</b>\n\nAz SQRL felszabadít bejelentkezés súlya alól azzal, hogy megcsinálja helyetted. De ez azt is jelenti, hogy ha valaki megszerzi az SQRL alkalmazásodat, meg tud személyesíteni téged.\n\nEzt egy SQRL jelszó használatával küszöböljük ki, melyet TE használsz hogy bejelentkezz az SQRL-be. Te döntöd el, milyen erős védelemre van szükséged. Te választod ki a saját jelszavadat, annak hosszát és komplexitását. A találgatás megelőzése érdekében beállíthatod mennyi ideig tartson a jelszavad feldolgozása. És a hosszabb és bonyolultabb jelszavak használatád megkönnyítendő a jelszó első négy karakterének újbóli begépelése elegendő a jelszó felfrissítéséhez.\n\nJelszavadat és annak beállításait bármikor szabadon megváltoztathatod. És ha bármikor elfelejtenéd vagy elveszítenéd, az SQRL mentő kódját tudod használni hogy újra hozzáférj az azonosítódhoz.</string>
@@ -97,15 +97,11 @@
 <string name="button_enable_account_enable">Feloldás</string>
 <string name="remove_account_title">Fiók eltávolítása</string>
 <string name="button_remove_account_remove">Eltávolítás</string>
-<string name="export_title">Export</string>
 <string name="button_export_show_identity">Azonosító megjelenítése</string>
 <string name="button_export_save_identity">Azonosító mentése</string>
 <string name="button_print_identity">Azonosító nyomtatása</string>
 <string name="title_activity_url_login">SQRL: Bejelentkezés</string>
 <string name="change_password_close">Jelszóváltoztatás ablak bezárása</string>
-<string name="decrypt_close">Close import identity window</string>
-<string name="disable_account_close">Close lock account window</string>
-<string name="enable_account_close">Close unlock account window</string>
 <string name="export_options_close">Close export options window</string>
 <string name="login_close">Bejelentkező ablak bezárása</string>
 <string name="login_optional_close">Close login options window</string>
@@ -208,7 +204,6 @@
 <string name="progress_interrupted_text">You changed orientation or moved around in the application during operation. The current operation might not be completed correctly, please try again.</string>
 <string name="action_language">Nyelv</string>
 <string name="title_language">Válassz nyelvet</string>
-<string name="btn_language_close">Bezárás</string>
 <string name="language_default">Alapértelmezett</string>
 <string name="language_arabic">Arab</string>
 <string name="language_dutch">Holland</string>
@@ -224,4 +219,7 @@
 <string name="language_hungarian">Hungarian</string>
 <string name="language_slovenian">Slovenian</string>
 <string name="language_czech">Czech</string>
+<string name="actionbar_menu">Menu</string>
+<string name="error_message_stale_page">The SQRL login page has expired. Please refresh the page, then log in with SQRL.</string>
+<string name="error_message_login_failed">SQRL was unable to login to this site. Please refresh the page and try again. If the problem persists please use another login method.</string>
 </resources>
