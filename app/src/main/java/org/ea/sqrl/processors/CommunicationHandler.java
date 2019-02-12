@@ -387,7 +387,6 @@ public class CommunicationHandler {
         }
     }
 
-
     private void setResponseData(String responseData) throws Exception {
         this.response = new String(EncryptionUtils.decodeUrlSafe(responseData));
         for(String param : response.split("\r\n")) {
@@ -413,16 +412,15 @@ public class CommunicationHandler {
         return response;
     }
 
+    public int getTif() {
+        if(!lastResponse.containsKey("tif")) return -1;
+        return Integer.parseInt(lastResponse.get("tif"), 16);
+    }
+
     public boolean isTIFBitSet(int k) {
         if(!lastResponse.containsKey("tif")) return false;
         int tif = Integer.parseInt(lastResponse.get("tif"), 16);
         return (tif & 1 << k) != 0;
-    }
-
-    public boolean isTIFZero() {
-        if(!lastResponse.containsKey("tif")) return false;
-        int tif = Integer.parseInt(lastResponse.get("tif"));
-        return tif == 0;
     }
 
     public boolean hasErrorMessage(boolean shouldUseCPSServer) {
@@ -434,7 +432,7 @@ public class CommunicationHandler {
             (
                 isTIFBitSet(CommunicationHandler.TIF_BAD_ID_ASSOCIATION) ||
                 isTIFBitSet(CommunicationHandler.TIF_CLIENT_FAILURE) ||
-                //isTIFBitSet(CommunicationHandler.TIF_COMMAND_FAILED) ||
+                isTIFBitSet(CommunicationHandler.TIF_COMMAND_FAILED) ||
                 isTIFBitSet(CommunicationHandler.TIF_FUNCTION_NOT_SUPPORTED) ||
                 isTIFBitSet(CommunicationHandler.TIF_TRANSIENT_ERROR)
             );
@@ -444,59 +442,21 @@ public class CommunicationHandler {
         StringBuilder sb = new StringBuilder();
         if(!lastResponse.containsKey("tif")) {
             return a.getString(R.string.communication_incorrect_response);
-        }
-
-        if(shouldUseCPSServer && !isTIFBitSet(CommunicationHandler.TIF_IP_MATCHED)) {
+        } else if(shouldUseCPSServer && !isTIFBitSet(CommunicationHandler.TIF_IP_MATCHED)) {
             sb.append(a.getString(R.string.communication_ip_mismatch));
-            sb.append("\n\n");
-        }
-
-        if(isTIFBitSet(CommunicationHandler.TIF_BAD_ID_ASSOCIATION)) {
-            sb.append(a.getString(R.string.communication_bad_id_association));
-            sb.append("\n\n");
-        }
-
-        if(isTIFBitSet(CommunicationHandler.TIF_CLIENT_FAILURE)) {
-            sb.append(a.getString(R.string.communication_client_failure));
-            sb.append("\n\n");
-        }
-/*
-        if(isTIFBitSet(CommunicationHandler.TIF_COMMAND_FAILED)) {
-            sb.append(a.getString(R.string.communication_command_failed));
-            sb.append("\n\n");
-        }
-*/
-        if(isTIFBitSet(CommunicationHandler.TIF_FUNCTION_NOT_SUPPORTED)) {
+        } else if(
+            isTIFBitSet(CommunicationHandler.TIF_BAD_ID_ASSOCIATION) ||
+            isTIFBitSet(CommunicationHandler.TIF_CLIENT_FAILURE) ||
+            isTIFBitSet(CommunicationHandler.TIF_COMMAND_FAILED)
+        ) {
+            sb.append(a.getString(R.string.error_message_login_failed));
+        } else if(isTIFBitSet(CommunicationHandler.TIF_FUNCTION_NOT_SUPPORTED)) {
             sb.append(a.getString(R.string.communication_function_not_supported));
-            sb.append("\n\n");
-        }
-
-        if(isTIFBitSet(CommunicationHandler.TIF_TRANSIENT_ERROR)) {
-            sb.append(a.getString(R.string.communication_transient_error));
-            sb.append("\n\n");
+        } else if(isTIFBitSet(CommunicationHandler.TIF_TRANSIENT_ERROR)) {
+            sb.append(a.getString(R.string.error_message_stale_page));
         }
         return sb.toString();
     }
-
-    public boolean hasStateChangeMessage() {
-        return lastResponse.containsKey("tif") &&
-            isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED);
-    }
-
-    public String getStageChangeMessage(Activity a) {
-        StringBuilder sb = new StringBuilder();
-        if(!lastResponse.containsKey("tif")) {
-            return a.getString(R.string.communication_incorrect_response);
-        }
-
-        if(isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)) {
-            sb.append(a.getString(R.string.communication_sqrl_disabled));
-            sb.append("\n\n");
-        }
-
-        return sb.toString();
-    }
-
 
     public static void main(String[] args) {
 

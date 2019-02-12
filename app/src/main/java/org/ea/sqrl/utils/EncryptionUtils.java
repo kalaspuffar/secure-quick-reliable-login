@@ -129,13 +129,13 @@ public class EncryptionUtils {
         return reverse(largeBytes);
     }
 
-    public static boolean validateBase56(String cleanTextIdentity) {
+    public static int validateBase56(String cleanTextIdentity) {
         MessageDigest md;
         try {
             md = MessageDigest.getInstance("SHA-256");
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
-            return false;
+            return -1;
         }
         int i = 0;
         int n = 0;
@@ -148,7 +148,7 @@ public class EncryptionUtils {
                 byte[] checksum = reverse(md.digest());
                 BigInteger reminder = new BigInteger(1, checksum).mod(BASE);
                 if (s.getBytes()[0] != BASE56_ENCODE[reminder.intValue()]) {
-                    return false;
+                    return line;
                 }
                 md.reset();
                 line++;
@@ -159,7 +159,7 @@ public class EncryptionUtils {
                 n++;
             }
         }
-        return true;
+        return -1;
     }
 
     public static byte[] hex2Byte(String str) {

@@ -34,6 +34,7 @@ public class TextImportActivity extends BaseActivity {
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
+        final TextView txtErrorInput = findViewById(R.id.txtErrorInput);
         final EditText txtTextIdentityInput = findViewById(R.id.txtTextIdentityInput);
         txtTextIdentityInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -44,10 +45,12 @@ public class TextImportActivity extends BaseActivity {
             public void onTextChanged(CharSequence textIdentity, int start, int before, int count) {
                 String cleanTextIdentity = textIdentity.toString().replaceAll("[^2-9a-zA-Z]+", "");
                 if(cleanTextIdentity.length() % 20 == 0) {
-                    if(EncryptionUtils.validateBase56(cleanTextIdentity)) {
-                        txtTextIdentityInput.setError(null);
+                    int incorrectRow = EncryptionUtils.validateBase56(cleanTextIdentity);
+                    if(incorrectRow == -1) {
+                        txtErrorInput.setText("");
                     } else {
-                        txtTextIdentityInput.setError(getString(R.string.text_input_incorrect));
+                        txtErrorInput.setText(R.string.text_input_incorrect);
+                        txtErrorInput.setText(txtErrorInput.getText() + "\n\n" + getString(R.string.text_input_incorrect_on_line) + " " + incorrectRow);
                     }
                 }
             }
@@ -80,7 +83,8 @@ public class TextImportActivity extends BaseActivity {
                     handler.post(() -> {
                         int line = Utils.getInteger(e.getMessage());
                         if(line > 0) {
-                            txtTextIdentityInput.setError(getString(R.string.text_input_incorrect_on_line) + line);
+                            txtErrorInput.setText(R.string.text_input_incorrect);
+                            txtErrorInput.setText(txtErrorInput.getText() + "\n\n" + getString(R.string.text_input_incorrect_on_line) + " " + line);
                         } else {
                             showErrorMessage(e.getMessage());
                         }

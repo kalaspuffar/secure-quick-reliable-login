@@ -97,15 +97,11 @@
 <string name="button_enable_account_enable">Lås upp</string>
 <string name="remove_account_title">Remove account</string>
 <string name="button_remove_account_remove">Remove</string>
-<string name="export_title">Exportera</string>
 <string name="button_export_show_identity">Visa identitet</string>
 <string name="button_export_save_identity">Spara identitet</string>
 <string name="button_print_identity">Skriv ut identitet</string>
 <string name="title_activity_url_login">SQRL - Logga in</string>
 <string name="change_password_close">Stäng ändra lösenord ruta</string>
-<string name="decrypt_close">Stäng importera identitets ruta</string>
-<string name="disable_account_close">Stäng lås konto ruta</string>
-<string name="enable_account_close">Stäng lås upp ruta</string>
 <string name="export_options_close">Stäng exportera ruta</string>
 <string name="login_close">Stäng logga in ruta</string>
 <string name="login_optional_close">Stäng extra funktioner ruta</string>
@@ -208,7 +204,6 @@
 <string name="progress_interrupted_text">Ni växlade mellan vågrätt och lodrätt läge när applikationen jobbade. Den senaste funktionen kanske inte avslutades korrekt, försök igen.</string>
 <string name="action_language">Språk</string>
 <string name="title_language">Väl språk</string>
-<string name="btn_language_close">Stäng</string>
 <string name="language_default">Standard</string>
 <string name="language_arabic">Arabiska</string>
 <string name="language_dutch">Hollänska</string>
@@ -225,4 +220,6 @@
 <string name="language_slovenian">Slovenska</string>
 <string name="language_czech">Tjeckiska</string>
 <string name="actionbar_menu">Meny</string>
+<string name="error_message_stale_page">Sessionen för SQRL login har gått ut. Var vänlig ladda om sidan och försök sedan på nytt.</string>
+<string name="error_message_login_failed">SQRL misslyckades att logga in på sidan. Ladda om sidan och försök igen. Om problemet inte löser sig, var god använd en annan inloggningsmetod.</string>
 </resources>

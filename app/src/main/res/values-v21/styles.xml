@@ -7,14 +7,12 @@
         <item name="android:navigationBarColor">@color/colorPrimary</item>
         <item name="android:windowEnterTransition">@android:transition/slide_right</item>
         <item name="android:windowExitTransition">@android:transition/slide_left</item>
-
         <item name="actionButtonStyle">@style/myActionButtonStyle</item>
     </style>
 
-
     <style name="myActionButtonStyle" parent="Widget.AppCompat.ActionButton">
-        <item name="android:minWidth">48dp</item>
-        <item name="android:minHeight">48dp</item>
+        <item name="android:width">48dp</item>
+        <item name="android:height">48dp</item>
         <item name="android:contentDescription">@string/actionbar_menu</item>
     </style>
 

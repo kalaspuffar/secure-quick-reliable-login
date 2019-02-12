@@ -108,7 +108,9 @@ public class BaseActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         if(outState == null) return;
         super.onSaveInstanceState(outState);
-        outState.putBoolean("progressWindowOpen", progressPopupWindow.isShowing());
+        if(progressPopupWindow != null) {
+            outState.putBoolean("progressWindowOpen", progressPopupWindow.isShowing());
+        }
     }
 
     @Override
@@ -279,7 +281,7 @@ public class BaseActivity extends AppCompatActivity {
             if(errorPopupWindow.getContentView() != null) {
                 txtErrorMessage.setText(message);
                 handler.post(() ->
-                        errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
+                    errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
                 );
                 return;
             }

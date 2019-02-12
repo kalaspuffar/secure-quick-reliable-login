@@ -97,15 +97,11 @@
 <string name="button_enable_account_enable">Feloldás</string>
 <string name="remove_account_title">Fiók eltávolítása</string>
 <string name="button_remove_account_remove">Eltávolítás</string>
-<string name="export_title">Export</string>
 <string name="button_export_show_identity">Azonosító megjelenítése</string>
 <string name="button_export_save_identity">Azonosító mentése</string>
 <string name="button_print_identity">Azonosító nyomtatása</string>
 <string name="title_activity_url_login">SQRL: Bejelentkezés</string>
 <string name="change_password_close">Jelszóváltoztatás ablak bezárása</string>
-<string name="decrypt_close">Close import identity window</string>
-<string name="disable_account_close">Close lock account window</string>
-<string name="enable_account_close">Close unlock account window</string>
 <string name="export_options_close">Close export options window</string>
 <string name="login_close">Bejelentkező ablak bezárása</string>
 <string name="login_optional_close">Close login options window</string>
@@ -208,7 +204,6 @@
 <string name="progress_interrupted_text">You changed orientation or moved around in the application during operation. The current operation might not be completed correctly, please try again.</string>
 <string name="action_language">Nyelv</string>
 <string name="title_language">Válassz nyelvet</string>
-<string name="btn_language_close">Bezárás</string>
 <string name="language_default">Alapértelmezett</string>
 <string name="language_arabic">Arab</string>
 <string name="language_dutch">Holland</string>
@@ -225,4 +220,6 @@
 <string name="language_slovenian">Slovenian</string>
 <string name="language_czech">Czech</string>
 <string name="actionbar_menu">Menu</string>
+<string name="error_message_stale_page">The SQRL login page has expired. Please refresh the page, then log in with SQRL.</string>
+<string name="error_message_login_failed">SQRL was unable to login to this site. Please refresh the page and try again. If the problem persists please use another login method.</string>
 </resources>
