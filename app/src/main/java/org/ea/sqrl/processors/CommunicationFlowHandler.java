@@ -257,8 +257,8 @@ public class CommunicationFlowHandler {
             ) && commHandler.getTif() != lastTIF
         ) {
             actionStack.push(a);
-            commHandler.clearLastResponse();
             lastTIF = commHandler.getTif();
+            commHandler.clearLastResponse();
         }
 
         /*

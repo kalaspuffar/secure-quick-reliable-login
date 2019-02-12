@@ -277,7 +277,7 @@ public class BaseActivity extends AppCompatActivity {
             if(errorPopupWindow.getContentView() != null) {
                 txtErrorMessage.setText(message);
                 handler.post(() ->
-                        errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
+                    errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
                 );
                 return;
             }

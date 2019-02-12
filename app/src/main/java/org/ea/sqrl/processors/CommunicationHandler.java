@@ -367,6 +367,7 @@ public class CommunicationHandler {
     }
 
     public int getTif() {
+        if(!lastResponse.containsKey("tif")) return -1;
         return Integer.parseInt(lastResponse.get("tif"), 16);
     }
 
