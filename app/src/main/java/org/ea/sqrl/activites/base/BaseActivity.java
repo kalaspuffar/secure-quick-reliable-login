@@ -105,7 +105,9 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean("progressWindowOpen", progressPopupWindow.isShowing());
+        if(progressPopupWindow != null) {
+            outState.putBoolean("progressWindowOpen", progressPopupWindow.isShowing());
+        }
     }
 
     @Override
