@@ -209,39 +209,39 @@ public class CommunicationFlowHandler {
                 break;
             case LOGIN:
                 if (commHandler.isIdentityKnown(false)) {
-                    postLogin(commHandler, false);
+                    postLogin(commHandler, true, false);
                 } else if (!commHandler.isIdentityKnown(false)) {
-                    postCreateAccount(commHandler, false);
+                    postCreateAccount(commHandler, true, false);
                 }
                 break;
             case LOGIN_CPS:
                 if (commHandler.isIdentityKnown(false)) {
-                    postLogin(commHandler, true);
+                    postLogin(commHandler, false, true);
                 } else if (!commHandler.isIdentityKnown(false)) {
-                    postCreateAccount(commHandler, true);
+                    postCreateAccount(commHandler, false,true);
                 }
                 break;
             case REMOVE_ACCOUNT:
-                postRemoveAccount(commHandler, false);
+                postRemoveAccount(commHandler, true, false);
                 break;
             case REMOVE_ACCOUNT_CPS:
-                postRemoveAccount(commHandler, true);
+                postRemoveAccount(commHandler, false, true);
                 break;
             case LOCK_ACCOUNT:
                 if(commHandler.isIdentityKnown(false)) {
-                    postDisableAccount(commHandler, false);
+                    postDisableAccount(commHandler, true, false);
                 }
                 break;
             case LOCK_ACCOUNT_CPS:
                 if(commHandler.isIdentityKnown(false)) {
-                    postDisableAccount(commHandler, true);
+                    postDisableAccount(commHandler, false, true);
                 }
                 break;
             case UNLOCK_ACCOUNT:
-                postEnableAccount(commHandler, false);
+                postEnableAccount(commHandler, true, false);
                 break;
             case UNLOCK_ACCOUNT_CPS:
-                postEnableAccount(commHandler, true);
+                postEnableAccount(commHandler, false, true);
                 break;
         }
 
@@ -349,9 +349,9 @@ public class CommunicationFlowHandler {
         commHandler.printParams();
     }
 
-    protected void postCreateAccount(CommunicationHandler commHandler, boolean clientProvidedSession) throws Exception {
+    protected void postCreateAccount(CommunicationHandler commHandler, boolean noiptest, boolean clientProvidedSession) throws Exception {
         String postData = commHandler.createPostParams(
-                commHandler.createClientCreateAccount(entropyHarvester, clientProvidedSession),
+                commHandler.createClientCreateAccount(entropyHarvester, noiptest, clientProvidedSession),
                 serverData
         );
         commHandler.postRequest(queryLink, postData);
@@ -360,32 +360,32 @@ public class CommunicationFlowHandler {
         commHandler.printParams();
     }
 
-    protected void postLogin(CommunicationHandler commHandler, boolean clientProvidedSession) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientLogin(clientProvidedSession), serverData);
+    protected void postLogin(CommunicationHandler commHandler, boolean noiptest, boolean clientProvidedSession) throws Exception {
+        String postData = commHandler.createPostParams(commHandler.createClientLogin(noiptest, clientProvidedSession), serverData);
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
         commHandler.printParams();
     }
 
-    protected void postDisableAccount(CommunicationHandler commHandler, boolean clientProvidedSession) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientDisable(clientProvidedSession), serverData);
+    protected void postDisableAccount(CommunicationHandler commHandler, boolean noiptest, boolean clientProvidedSession) throws Exception {
+        String postData = commHandler.createPostParams(commHandler.createClientDisable(noiptest, clientProvidedSession), serverData);
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
         commHandler.printParams();
     }
 
-    protected void postEnableAccount(CommunicationHandler commHandler, boolean clientProvidedSession) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientEnable(clientProvidedSession), serverData, true);
+    protected void postEnableAccount(CommunicationHandler commHandler, boolean noiptest, boolean clientProvidedSession) throws Exception {
+        String postData = commHandler.createPostParams(commHandler.createClientEnable(noiptest, clientProvidedSession), serverData, true);
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
         commHandler.printParams();
     }
 
-    protected void postRemoveAccount(CommunicationHandler commHandler, boolean clientProvidedSession) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientRemove(clientProvidedSession), serverData, true);
+    protected void postRemoveAccount(CommunicationHandler commHandler, boolean noiptest, boolean clientProvidedSession) throws Exception {
+        String postData = commHandler.createPostParams(commHandler.createClientRemove(noiptest, clientProvidedSession), serverData, true);
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();

@@ -17,11 +17,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 /**
  * This handler creates different queries to servers and parses the response so we can talk over
@@ -61,6 +70,42 @@ public class CommunicationHandler {
         if(instance == null) {
             instance = new CommunicationHandler();
         }
+
+        try {
+            TrustManager[] victimizedManager = new TrustManager[]{
+
+                    new X509TrustManager() {
+
+                        public X509Certificate[] getAcceptedIssuers() {
+
+                            X509Certificate[] myTrustedAnchors = new X509Certificate[0];
+
+                            return myTrustedAnchors;
+                        }
+
+                        @Override
+                        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                        }
+
+                        @Override
+                        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                        }
+                    }
+            };
+
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, victimizedManager, new SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String s, SSLSession sslSession) {
+                    return true;
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return instance;
     }
 
@@ -131,13 +176,13 @@ public class CommunicationHandler {
         return sb.toString();
     }
 
-    public String createClientDisable(boolean clientProvidedSession) throws Exception {
+    public String createClientDisable(boolean noiptest, boolean clientProvidedSession) throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=disable\r\n");
         sb.append(getAskButtonAnswer());
-        sb.append(storage.getOptions(false, false, clientProvidedSession));
+        sb.append(storage.getOptions(noiptest, false, clientProvidedSession));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         if(storage.hasPreviousKeys()) {
@@ -146,13 +191,13 @@ public class CommunicationHandler {
         return sb.toString();
     }
 
-    public String createClientEnable(boolean clientProvidedSession) throws Exception {
+    public String createClientEnable(boolean noiptest, boolean clientProvidedSession) throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=enable\r\n");
         sb.append(getAskButtonAnswer());
-        sb.append(storage.getOptions(false, false, clientProvidedSession));
+        sb.append(storage.getOptions(noiptest, false, clientProvidedSession));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         if(storage.hasPreviousKeys()) {
@@ -161,13 +206,13 @@ public class CommunicationHandler {
         return sb.toString();
     }
 
-    public String createClientRemove(boolean clientProvidedSession) throws Exception {
+    public String createClientRemove(boolean noiptest, boolean clientProvidedSession) throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=remove\r\n");
         sb.append(getAskButtonAnswer());
-        sb.append(storage.getOptions(false, false, clientProvidedSession));
+        sb.append(storage.getOptions(noiptest, false, clientProvidedSession));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         if(storage.hasPreviousKeys()) {
@@ -177,13 +222,13 @@ public class CommunicationHandler {
     }
 
 
-    public String createClientCreateAccount(EntropyHarvester entropyHarvester, boolean clientProvidedSession) throws Exception {
+    public String createClientCreateAccount(EntropyHarvester entropyHarvester, boolean noiptest, boolean clientProvidedSession) throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=ident\r\n");
         sb.append(getAskButtonAnswer());
-        sb.append(storage.getOptions(false, false, clientProvidedSession));
+        sb.append(storage.getOptions(noiptest, false, clientProvidedSession));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append(storage.getServerUnlockKey(entropyHarvester));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
@@ -193,13 +238,13 @@ public class CommunicationHandler {
         return sb.toString();
     }
 
-    public String createClientLogin(boolean clientProvidedSession) throws Exception {
+    public String createClientLogin(boolean noiptest, boolean clientProvidedSession) throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance();
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=ident\r\n");
         sb.append(getAskButtonAnswer());
-        sb.append(storage.getOptions(false, false, clientProvidedSession));
+        sb.append(storage.getOptions(noiptest, false, clientProvidedSession));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
         if(storage.hasPreviousKeys()) {
@@ -281,6 +326,7 @@ public class CommunicationHandler {
         try {
             URL myurl = new URL(loginURL);
             con = (HttpURLConnection) myurl.openConnection();
+
             con.setRequestMethod("POST");
 
             con.setRequestProperty("Content-Length", String.valueOf(data.length()));
@@ -458,17 +504,17 @@ public class CommunicationHandler {
                         commHandler.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
                         !commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)
                 ) {
-                String postData2 = commHandler.createPostParams(commHandler.createClientDisable(false), serverData);
+                String postData2 = commHandler.createPostParams(commHandler.createClientDisable(true,false), serverData);
                 commHandler.postRequest(queryLink, postData2);
 
                 serverData = commHandler.getResponse();
                 queryLink = commHandler.getQueryLink();
 
-                String postData3 = commHandler.createPostParams(commHandler.createClientRemove(false), serverData, true);
+                String postData3 = commHandler.createPostParams(commHandler.createClientRemove(true,false), serverData, true);
                 commHandler.postRequest(queryLink, postData3);
 
             } else {
-                String postData2 = commHandler.createPostParams(commHandler.createClientEnable(false), serverData, true);
+                String postData2 = commHandler.createPostParams(commHandler.createClientEnable(true,false), serverData, true);
                 commHandler.postRequest(queryLink, postData2);
             }
             commHandler.printParams();

@@ -44,7 +44,7 @@ public class ResetPasswordActivity extends BaseActivity {
             if(!checkRescueCode(txtRecoverCode5)) return;
             if(!checkRescueCode(txtRecoverCode6)) return;
 
-            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+            showProgressPopup();
 
             new Thread(() -> {
                 String rescueCode = txtRecoverCode1.getText().toString();
@@ -56,7 +56,7 @@ public class ResetPasswordActivity extends BaseActivity {
 
                 boolean decryptionOk = storage.decryptUnlockKey(rescueCode);
                 if (!decryptionOk) {
-                    handler.post(() -> progressPopupWindow.dismiss());
+                    handler.post(() -> hideProgressPopup());
                     showErrorMessage(R.string.decrypt_identity_fail);
                     return;
                 }
@@ -65,7 +65,7 @@ public class ResetPasswordActivity extends BaseActivity {
 
                 boolean encryptStatus = storage.encryptIdentityKey(txtResetPasswordNewPassword.getText().toString(), entropyHarvester);
                 if (!encryptStatus) {
-                    handler.post(() -> progressPopupWindow.dismiss());
+                    handler.post(() -> hideProgressPopup());
                     showErrorMessage(R.string.encrypt_identity_fail);
                     return;
                 }
@@ -78,7 +78,7 @@ public class ResetPasswordActivity extends BaseActivity {
 
                 storage.clear();
                 handler.post(() -> {
-                    progressPopupWindow.dismiss();
+                    hideProgressPopup();
                     txtResetPasswordNewPassword.setText("");
                     txtRecoverCode1.setText("");
                     txtRecoverCode2.setText("");

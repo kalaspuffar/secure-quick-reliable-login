@@ -50,7 +50,7 @@ public class RekeyVerifyActivity extends LoginBaseActivity {
         final Button btnRekeyIdentityStart = findViewById(R.id.btnRekeyIdentityStart);
         btnRekeyIdentityStart.setOnClickListener(
                 v -> {
-                    handler.post(() -> progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0));
+                    handler.post(() -> showProgressPopup());
 
                     new Thread(() -> {
                         String rescueCode = "";
@@ -65,7 +65,7 @@ public class RekeyVerifyActivity extends LoginBaseActivity {
                         if (!decryptRescueCode) {
                             Log.e(TAG, "Incorrect decryptRescue");
                             showErrorMessage(R.string.decrypt_identity_fail);
-                            handler.post(() -> progressPopupWindow.dismiss());
+                            handler.post(() -> hideProgressPopup());
                             return;
                         }
                         this.finish();

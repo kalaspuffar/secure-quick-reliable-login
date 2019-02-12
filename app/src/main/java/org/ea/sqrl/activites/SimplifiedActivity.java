@@ -70,7 +70,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
         integrator.setOrientationLocked(false);
         integrator.setBarcodeImageEnabled(false);
 
-        setupLoginPopupWindow(getLayoutInflater());
+        setupLoginPopupWindow(getLayoutInflater(), SimplifiedActivity.this);
         setupErrorPopupWindow(getLayoutInflater());
         setupBasePopups(getLayoutInflater(), false);
 
@@ -88,136 +88,6 @@ public class SimplifiedActivity extends LoginBaseActivity {
             startActivity(new Intent(this, MainActivity.class))
         );
     }
-
-
-    public void setupLoginPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_login, null);
-
-        loginPopupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                true);
-
-        final SQRLStorage storage = SQRLStorage.getInstance();
-
-        loginPopupWindow.setTouchable(true);
-        final EditText txtLoginPassword = popupView.findViewById(R.id.txtLoginPassword);
-
-        txtLoginPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence password, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence password, int start, int before, int count) {
-                if (!storage.hasQuickPass()) return;
-                if ((start + count) >= storage.getHintLength()) {
-                    loginPopupWindow.dismiss();
-                    progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                    closeKeyboard();
-
-                    new Thread(() -> {
-                        boolean decryptionOk = storage.decryptIdentityKey(password.toString(), entropyHarvester, true);
-                        if(!decryptionOk) {
-                            showErrorMessage(R.string.decrypt_identity_fail);
-                            handler.post(() -> {
-                                txtLoginPassword.setHint(R.string.login_identity_password);
-                                txtLoginPassword.setText("");
-                                progressPopupWindow.dismiss();
-                                loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                            });
-                            storage.clear();
-                            storage.clearQuickPass(SimplifiedActivity.this);
-                            return;
-                        }
-                        showClearNotification();
-
-                        handler.post(() -> txtLoginPassword.setText(""));
-
-                        communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK_QRCODE);
-                        communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN);
-
-                        communicationFlowHandler.setDoneAction(() -> {
-                            storage.clear();
-                            handler.post(() -> {
-                                progressPopupWindow.dismiss();
-                                closeActivity();
-                            });
-                        });
-
-                        communicationFlowHandler.setErrorAction(() -> {
-                            storage.clear();
-                            storage.clearQuickPass(SimplifiedActivity.this);
-                            handler.post(() -> progressPopupWindow.dismiss());
-                        });
-
-                        communicationFlowHandler.handleNextAction();
-
-                    }).start();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
-        popupView.findViewById(R.id.btnCloseLogin).setOnClickListener(v -> loginPopupWindow.dismiss());
-        popupView.findViewById(R.id.btnLoginOptions).setOnClickListener(v -> {
-            loginPopupWindow.dismiss();
-            startActivity(new Intent(this, AccountOptionsActivity.class));
-        });
-
-        popupView.findViewById(R.id.btnLogin).setOnClickListener(v -> {
-            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                    APPS_PREFERENCES,
-                    Context.MODE_PRIVATE
-            );
-            long currentId = sharedPref.getLong(CURRENT_ID, 0);
-
-            if(currentId != 0) {
-                loginPopupWindow.dismiss();
-                progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-                closeKeyboard();
-
-                new Thread(() -> {
-                    boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, false);
-                    if(!decryptionOk) {
-                        showErrorMessage(R.string.decrypt_identity_fail);
-                        handler.post(() -> {
-                            txtLoginPassword.setText("");
-                            progressPopupWindow.dismiss();
-                        });
-                        storage.clear();
-                        return;
-                    }
-                    showClearNotification();
-
-                    handler.post(() -> txtLoginPassword.setText(""));
-
-                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK_QRCODE);
-                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN);
-
-                    communicationFlowHandler.setDoneAction(() -> {
-                        storage.clear();
-                        handler.post(() -> {
-                            progressPopupWindow.dismiss();
-                            closeActivity();
-                        });
-                    });
-
-                    communicationFlowHandler.setErrorAction(() -> {
-                        storage.clear();
-                        storage.clearQuickPass(SimplifiedActivity.this);
-                        handler.post(() -> progressPopupWindow.dismiss());
-                    });
-
-                    communicationFlowHandler.handleNextAction();
-
-                }).start();
-            }
-        });
-    }
-
 
     @Override
     protected void onResume() {
@@ -292,15 +162,15 @@ public class SimplifiedActivity extends LoginBaseActivity {
                         txtLoginPassword.setHint(R.string.login_identity_password);
                     }
 
-                    loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                    showLoginPopup();
 
                     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && storage.hasBiometric()) {
 
                         BioAuthenticationCallback biometricCallback =
                                 new BioAuthenticationCallback(() -> {
                                     handler.post(() -> {
-                                        loginPopupWindow.dismiss();
-                                        progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                                        hideLoginPopup();
+                                        showProgressPopup();
                                     });
                                     communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK_QRCODE);
                                     communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN);
@@ -308,7 +178,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
                                     communicationFlowHandler.setDoneAction(() -> {
                                         storage.clear();
                                         handler.post(() -> {
-                                            progressPopupWindow.dismiss();
+                                            hideProgressPopup();
                                             closeActivity();
                                         });
                                     });
@@ -316,7 +186,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
                                     communicationFlowHandler.setErrorAction(() -> {
                                         storage.clear();
                                         storage.clearQuickPass(SimplifiedActivity.this);
-                                        handler.post(() -> progressPopupWindow.dismiss());
+                                        handler.post(() -> hideProgressPopup());
                                     });
 
                                     communicationFlowHandler.handleNextAction();

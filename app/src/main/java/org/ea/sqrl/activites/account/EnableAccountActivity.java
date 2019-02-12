@@ -47,9 +47,7 @@ public class EnableAccountActivity extends BaseActivity {
             if(!checkRescueCode(txtRecoverCode5)) return;
             if(!checkRescueCode(txtRecoverCode6)) return;
 
-            handler.post(() ->
-                progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
-            );
+            handler.post(() -> showProgressPopup());
 
             new Thread(() -> {
                 try {
@@ -94,14 +92,14 @@ public class EnableAccountActivity extends BaseActivity {
                 communicationFlowHandler.setDoneAction(() -> {
                     storage.clear();
                     handler.post(() -> {
-                        progressPopupWindow.dismiss();
+                        hideProgressPopup();
                         closeActivity();
                     });
                 });
 
                 communicationFlowHandler.setErrorAction(() -> {
                     storage.clear();
-                    handler.post(() -> progressPopupWindow.dismiss());
+                    handler.post(() -> hideProgressPopup());
                 });
 
                 communicationFlowHandler.handleNextAction();

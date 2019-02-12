@@ -13,7 +13,9 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -104,6 +106,7 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        if(outState == null) return;
         super.onSaveInstanceState(outState);
         if(progressPopupWindow != null) {
             outState.putBoolean("progressWindowOpen", progressPopupWindow.isShowing());
@@ -112,6 +115,7 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        if(savedInstanceState == null) return;
         super.onRestoreInstanceState(savedInstanceState);
 
         boolean progressWindowOpen = savedInstanceState.getBoolean("progressWindowOpen", false);
@@ -296,7 +300,30 @@ public class BaseActivity extends AppCompatActivity {
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show()
         );
+    }
 
+    public void showProgressPopup() {
+        progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+        lockRotation();
+    }
+
+    public void hideProgressPopup() {
+        progressPopupWindow.dismiss();
+        unlockRotation();
+    }
+
+    public void lockRotation() {
+        int currentOrientation = getResources().getConfiguration().orientation;
+        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+        }
+        else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+        }
+    }
+
+    public void unlockRotation() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
     }
 
 

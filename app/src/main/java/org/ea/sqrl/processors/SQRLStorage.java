@@ -364,7 +364,6 @@ public class SQRLStorage {
         return ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(input).array();
     }
 
-
     public boolean decryptIdentityKeyBiometric(Cipher cypher) throws Exception {
         byte[] key = cypher.doFinal(this.biometricKeyEncrypted);
         return decryptIdentityKeyInternal(key);
@@ -770,17 +769,17 @@ public class SQRLStorage {
             try {
                 KeyPairGenerator keyPairGenerator =
                         KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore");
-                keyPairGenerator.initialize(new KeyGenParameterSpec.Builder("quickPass",
-                        KeyProperties.PURPOSE_ENCRYPT
-                                | KeyProperties.PURPOSE_DECRYPT).setAlgorithmParameterSpec(
-                        new RSAKeyGenParameterSpec(2048, F4))
-                        .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-                        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
-                        .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA384,
+                keyPairGenerator.initialize(new KeyGenParameterSpec.Builder(
+                        "quickPass",
+                        KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT
+                    )
+                    .setAlgorithmParameterSpec(new RSAKeyGenParameterSpec(2048, F4))
+                    .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
+                    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
+                    .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA384,
                                 KeyProperties.DIGEST_SHA512)
-                        .setUserAuthenticationValidityDurationSeconds(timeInSecondsToRunPWEnScryptOnPassword)
-                        .setUserAuthenticationRequired(true)
-                        .build());
+                    .setUserAuthenticationRequired(true)
+                    .build());
 
                 KeyPair keyPair = keyPairGenerator.generateKeyPair();
 

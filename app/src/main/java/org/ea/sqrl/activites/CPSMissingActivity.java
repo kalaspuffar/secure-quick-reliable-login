@@ -32,7 +32,7 @@ public class CPSMissingActivity  extends LoginBaseActivity {
         communicationFlowHandler.setDoneAction(() -> {
             storage.clear();
             handler.post(() -> {
-                progressPopupWindow.dismiss();
+                hideProgressPopup();
                 closeActivity();
             });
         });
@@ -40,12 +40,12 @@ public class CPSMissingActivity  extends LoginBaseActivity {
         communicationFlowHandler.setErrorAction(() -> {
             storage.clear();
             storage.clearQuickPass(CPSMissingActivity.this);
-            handler.post(() -> progressPopupWindow.dismiss());
+            handler.post(() -> hideProgressPopup());
         });
 
         final Button btnCPSContinue = findViewById(R.id.btnCPSContinue);
         btnCPSContinue.setOnClickListener(v -> {
-            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+            showProgressPopup();
             new Thread(() -> {
                 communicationFlowHandler.setNoCPSServer();
                 communicationFlowHandler.handleNextAction();

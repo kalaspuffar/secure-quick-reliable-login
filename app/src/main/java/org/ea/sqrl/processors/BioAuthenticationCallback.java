@@ -3,12 +3,9 @@ package org.ea.sqrl.processors;
 
 import android.annotation.TargetApi;
 import android.hardware.biometrics.BiometricPrompt;
-import android.os.Handler;
-import android.widget.PopupWindow;
 
 @TargetApi(value=28)
 public class BioAuthenticationCallback extends BiometricPrompt.AuthenticationCallback {
-
     private final Runnable doneCallback;
 
     public BioAuthenticationCallback(Runnable doneCallback) {

@@ -28,7 +28,7 @@ public class DisableAccountActivity extends BaseActivity {
 
         final EditText txtDisablePassword = findViewById(R.id.txtDisablePassword);
         findViewById(R.id.btnDisableAccount).setOnClickListener(v -> {
-            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+            showProgressPopup();
 
             new Thread(() -> {
                 boolean decryptionOk = storage.decryptIdentityKey(txtDisablePassword.getText().toString(), entropyHarvester, false);
@@ -36,10 +36,11 @@ public class DisableAccountActivity extends BaseActivity {
                     showClearNotification();
                 } else {
                     showErrorMessage(R.string.decrypt_identity_fail);
+                    storage.clearQuickPass(this);
                     storage.clear();
                     handler.post(() -> {
                         txtDisablePassword.setText("");
-                        progressPopupWindow.dismiss();
+                        hideProgressPopup();
                     });
                     return;
                 }
@@ -56,14 +57,14 @@ public class DisableAccountActivity extends BaseActivity {
                 communicationFlowHandler.setDoneAction(() -> {
                     storage.clear();
                     handler.post(() -> {
-                        progressPopupWindow.dismiss();
+                        hideProgressPopup();
                         closeActivity();
                     });
                 });
 
                 communicationFlowHandler.setErrorAction(() -> {
                     storage.clear();
-                    handler.post(() -> progressPopupWindow.dismiss());
+                    handler.post(() -> hideProgressPopup());
                 });
 
                 communicationFlowHandler.handleNextAction();

@@ -36,7 +36,7 @@ public class ChangePasswordActivity extends BaseActivity {
                 return;
             }
 
-            progressPopupWindow.showAtLocation(progressPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+            showProgressPopup();
 
             new Thread(() -> {
                 boolean decryptStatus = storage.decryptIdentityKey(txtCurrentPassword.getText().toString(), entropyHarvester, false);
@@ -44,11 +44,14 @@ public class ChangePasswordActivity extends BaseActivity {
                     showErrorMessage(R.string.decrypt_identity_fail);
 
                     handler.post(() -> {
-                        progressPopupWindow.dismiss();
+                        hideProgressPopup();
                         txtCurrentPassword.setText("");
                         txtNewPassword.setText("");
                         txtRetypePassword.setText("");
                     });
+                    storage.clearQuickPass(this);
+                    storage.clear();
+
                     return;
                 }
                 showClearNotification();
@@ -58,7 +61,7 @@ public class ChangePasswordActivity extends BaseActivity {
                     showErrorMessage(R.string.encrypt_identity_fail);
 
                     handler.post(() -> {
-                        progressPopupWindow.dismiss();
+                        hideProgressPopup();
                         txtCurrentPassword.setText("");
                         txtNewPassword.setText("");
                         txtRetypePassword.setText("");
@@ -79,7 +82,7 @@ public class ChangePasswordActivity extends BaseActivity {
                     txtCurrentPassword.setText("");
                     txtNewPassword.setText("");
                     txtRetypePassword.setText("");
-                    progressPopupWindow.dismiss();
+                    hideProgressPopup();
                     ChangePasswordActivity.this.finish();
                 });
             }).start();
