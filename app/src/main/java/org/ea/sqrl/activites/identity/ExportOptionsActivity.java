@@ -44,8 +44,6 @@ public class ExportOptionsActivity extends BaseActivity {
             File directory = new File(getCacheDir(), "sqrltmp");
             if(!directory.exists()) directory.mkdir();
 
-            System.out.println(directory.getAbsolutePath());
-
             if(!directory.exists()) {
                 showErrorMessage(R.string.main_activity_could_not_create_dir);
                 return;

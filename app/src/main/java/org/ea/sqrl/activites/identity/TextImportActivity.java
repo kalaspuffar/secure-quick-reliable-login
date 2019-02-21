@@ -46,11 +46,13 @@ public class TextImportActivity extends BaseActivity {
                 String cleanTextIdentity = textIdentity.toString().replaceAll("[^2-9a-zA-Z]+", "");
                 if(cleanTextIdentity.length() % 20 == 0) {
                     int incorrectRow = EncryptionUtils.validateBase56(cleanTextIdentity);
-                    if(incorrectRow == -1) {
-                        txtErrorInput.setText("");
-                    } else {
-                        txtErrorInput.setText(R.string.text_input_incorrect);
-                        txtErrorInput.setText(txtErrorInput.getText() + "\n\n" + getString(R.string.text_input_incorrect_on_line) + " " + incorrectRow);
+                    if(txtErrorInput != null) {
+                        if (incorrectRow == -1) {
+                            txtErrorInput.setText("");
+                        } else {
+                            txtErrorInput.setText(R.string.text_input_incorrect);
+                            txtErrorInput.setText(txtErrorInput.getText() + "\n\n" + getString(R.string.text_input_incorrect_on_line) + " " + incorrectRow);
+                        }
                     }
                 }
             }

@@ -277,15 +277,17 @@ public class BaseActivity extends AppCompatActivity {
 
         AlertDialog.Builder builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-
-            if(errorPopupWindow.getContentView() != null) {
+            if(
+                errorPopupWindow != null &&
+                errorPopupWindow.getContentView() != null &&
+                !isFinishing()
+            ) {
                 txtErrorMessage.setText(message);
                 handler.post(() ->
                     errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
                 );
                 return;
             }
-
             builder = new AlertDialog.Builder(BaseActivity.this, android.R.style.Theme_Material_Dialog_Alert);
         } else {
             builder = new AlertDialog.Builder(BaseActivity.this);
