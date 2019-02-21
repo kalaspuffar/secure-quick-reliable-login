@@ -42,10 +42,11 @@ public class ExportOptionsActivity extends BaseActivity {
         findViewById(R.id.btnSaveIdentity).setOnClickListener(v -> {
             String uriString = "content://org.ea.sqrl.fileprovider/sqrltmp/";
             File directory = new File(getCacheDir(), "sqrltmp");
+            if(!directory.exists()) directory.mkdir();
 
             System.out.println(directory.getAbsolutePath());
 
-            if(!directory.mkdir()) {
+            if(!directory.exists()) {
                 showErrorMessage(R.string.main_activity_could_not_create_dir);
                 return;
             }
