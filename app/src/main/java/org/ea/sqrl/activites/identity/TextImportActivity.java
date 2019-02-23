@@ -70,7 +70,12 @@ public class TextImportActivity extends BaseActivity {
                     identityData = EncryptionUtils.combine(SQRLStorage.STORAGE_HEADER.getBytes(), identityData);
                     storage.read(identityData);
 
-                    handler.post(() -> startActivity(new Intent(this, ResetPasswordActivity.class)));
+                    handler.post(() -> {
+                        TextImportActivity.this.finish();
+                        Intent resetPasswordIntent = new Intent(this, ResetPasswordActivity.class);
+                        resetPasswordIntent.putExtra(SQRLStorage.NEW_IDENTITY, true);
+                        startActivity(resetPasswordIntent);
+                    });
                 } catch (Exception e) {
                     handler.post(() -> {
                         int line = Utils.getInteger(e.getMessage());

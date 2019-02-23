@@ -20,6 +20,8 @@ public class ResetPasswordActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
 
+        final boolean newIdentity = getIntent().getBooleanExtra(SQRLStorage.NEW_IDENTITY, false);
+
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
@@ -88,7 +90,7 @@ public class ResetPasswordActivity extends BaseActivity {
                     txtRecoverCode6.setText("");
                 });
 
-                if(mDbHelper.hasIdentities()) {
+                if(mDbHelper.hasIdentities() && !newIdentity) {
                     long currentId = sharedPref.getLong(CURRENT_ID, 0);
                     if(currentId != 0) {
                         mDbHelper.updateIdentityData(currentId, storage.createSaveData());
@@ -99,10 +101,17 @@ public class ResetPasswordActivity extends BaseActivity {
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putLong(CURRENT_ID, newIdentityId);
                     editor.apply();
-                    handler.post(() -> {
-                        ResetPasswordActivity.this.finish();
-                        startActivity(new Intent(this, SimplifiedActivity.class));
-                    });
+                    if(newIdentity) {
+                        handler.post(() -> {
+                            ResetPasswordActivity.this.finish();
+                            startActivity(new Intent(this, RenameActivity.class));
+                        });
+                    } else {
+                        handler.post(() -> {
+                            ResetPasswordActivity.this.finish();
+                            startActivity(new Intent(this, SimplifiedActivity.class));
+                        });
+                    }
                 }
 
             }).start();

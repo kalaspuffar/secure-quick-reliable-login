@@ -48,6 +48,7 @@ import static java.security.spec.RSAKeyGenParameterSpec.F4;
 public class SQRLStorage {
     private static final String TAG = "SQRLStorage";
     public static final String STORAGE_HEADER = "sqrldata";
+    public static final String NEW_IDENTITY = "new_identity";
     private static final int PASSWORD_PBKDF = 1;
     private static final int RESCUECODE_PBKDF = 2;
     private static final int PREVIOUS_IDENTITY_KEYS = 3;

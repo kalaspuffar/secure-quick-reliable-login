@@ -18,11 +18,12 @@
         android:layout_marginBottom="8dp"
         android:fontFamily="monospace"
         android:hint="@string/text_input_hint"
+        android:inputType="textLongMessage|textMultiLine|textNoSuggestions"
         app:layout_constraintBottom_toTopOf="@+id/btnImportIdentityDo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtErrorInput" />
+        app:layout_constraintTop_toBottomOf="@+id/txtTextIdentityInputError" />
 
     <Button
         android:id="@+id/btnImportIdentityDo"
