@@ -95,6 +95,8 @@ public class SimplifiedActivity extends LoginBaseActivity {
                     Log.e(TAG, e.getMessage(), e);
                 }
             }
+
+            setupBasePopups(getLayoutInflater(), false);
         }
     }
 

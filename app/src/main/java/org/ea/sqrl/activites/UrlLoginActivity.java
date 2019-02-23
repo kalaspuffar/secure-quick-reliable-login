@@ -286,6 +286,8 @@ public class UrlLoginActivity extends LoginBaseActivity {
             if(currentId != 0) {
                 updateSpinnerData(currentId);
             }
+
+            setupBasePopups(getLayoutInflater(), true);
         }
     }
 

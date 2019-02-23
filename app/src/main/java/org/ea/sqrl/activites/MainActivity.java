@@ -203,6 +203,7 @@ public class MainActivity extends LoginBaseActivity {
             if(currentId != 0) {
                 updateSpinnerData(currentId);
             }
+            setupBasePopups(getLayoutInflater(), false);
         }
     }
 
