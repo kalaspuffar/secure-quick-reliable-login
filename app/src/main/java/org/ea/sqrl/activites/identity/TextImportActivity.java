@@ -2,23 +2,15 @@ package org.ea.sqrl.activites.identity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.PopupWindow;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
-import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.EncryptionUtils;
 import org.ea.sqrl.utils.Utils;
@@ -34,7 +26,7 @@ public class TextImportActivity extends BaseActivity {
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
-        final TextView txtErrorInput = findViewById(R.id.txtErrorInput);
+        final TextView txtErrorInput = findViewById(R.id.txtTextIdentityInputError);
         final EditText txtTextIdentityInput = findViewById(R.id.txtTextIdentityInput);
         txtTextIdentityInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -46,13 +38,11 @@ public class TextImportActivity extends BaseActivity {
                 String cleanTextIdentity = textIdentity.toString().replaceAll("[^2-9a-zA-Z]+", "");
                 if(cleanTextIdentity.length() % 20 == 0) {
                     int incorrectRow = EncryptionUtils.validateBase56(cleanTextIdentity);
-                    if(txtErrorInput != null) {
-                        if (incorrectRow == -1) {
-                            txtErrorInput.setText("");
-                        } else {
-                            txtErrorInput.setText(R.string.text_input_incorrect);
-                            txtErrorInput.setText(txtErrorInput.getText() + "\n\n" + getString(R.string.text_input_incorrect_on_line) + " " + incorrectRow);
-                        }
+                    if (incorrectRow == -1) {
+                        txtErrorInput.setText("");
+                    } else {
+                        txtErrorInput.setText(R.string.text_input_incorrect);
+                        txtErrorInput.setText(txtErrorInput.getText() + "\n\n" + getString(R.string.text_input_incorrect_on_line) + " " + incorrectRow);
                     }
                 }
             }

@@ -1,35 +1,22 @@
 package org.ea.sqrl.activites;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.biometrics.BiometricPrompt;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
-import android.security.keystore.KeyGenParameterSpec;
-import android.security.keystore.KeyProperties;
 import android.support.design.widget.Snackbar;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Base64;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import org.ea.sqrl.R;
-import org.ea.sqrl.activites.account.AccountOptionsActivity;
 import org.ea.sqrl.activites.base.LoginBaseActivity;
 import org.ea.sqrl.processors.BioAuthenticationCallback;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
@@ -37,16 +24,10 @@ import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.Utils;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.KeyStore;
-import java.security.spec.RSAKeyGenParameterSpec;
 import java.util.regex.Matcher;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-
-import static java.security.spec.RSAKeyGenParameterSpec.F4;
 
 /**
  *
