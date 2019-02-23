@@ -44,8 +44,10 @@ public class ImportActivity extends BaseActivity {
 
         findViewById(R.id.btnForgotPassword).setOnClickListener(
                 v -> {
-                    startActivity(new Intent(this, ResetPasswordActivity.class));
                     ImportActivity.this.finish();
+                    Intent resetPasswordIntent = new Intent(this, ResetPasswordActivity.class);
+                    resetPasswordIntent.putExtra(SQRLStorage.NEW_IDENTITY, true);
+                    startActivity(resetPasswordIntent);
                 }
         );
 

@@ -113,9 +113,9 @@ public class IdentityDBHelper extends SQLiteOpenHelper {
         );
     }
 
-    public boolean checkUnique(String name) {
+    public boolean checkUnique(long id, String name) {
         for(Map.Entry<Long, String> entry : getIdentitys().entrySet()) {
-            if(entry.getValue().equals(name)) {
+            if(entry.getKey() != id && entry.getValue().equals(name)) {
                 return false;
             }
         }
@@ -127,7 +127,7 @@ public class IdentityDBHelper extends SQLiteOpenHelper {
 
         String newName = name;
         int i = 1;
-        while(!checkUnique(newName)) {
+        while(!checkUnique(id, newName)) {
             newName = name + " (" + i + ")";
             i++;
         }
