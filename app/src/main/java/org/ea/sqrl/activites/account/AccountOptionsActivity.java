@@ -3,9 +3,16 @@ package org.ea.sqrl.activites.account;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
+import org.ea.sqrl.processors.SQRLStorage;
 
 public class AccountOptionsActivity extends BaseActivity {
 
@@ -24,6 +31,11 @@ public class AccountOptionsActivity extends BaseActivity {
 
         findViewById(R.id.btnUnlockAccount).setOnClickListener(v -> {
             startActivity(new Intent(this, EnableAccountActivity.class));
+        });
+
+        findViewById(R.id.btnAlternativeIdentity).setOnClickListener(v -> {
+            AccountOptionsActivity.this.finish();
+            startActivity(new Intent(this, AlternativeLoginActivity.class));
         });
     }
 }

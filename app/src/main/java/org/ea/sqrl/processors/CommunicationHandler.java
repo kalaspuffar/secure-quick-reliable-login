@@ -578,4 +578,9 @@ public class CommunicationHandler {
     public String getDomain() {
         return this.cryptDomain;
     }
+
+    public void setAlternativeId(String alternativeId) {
+        if(alternativeId == null || alternativeId.isEmpty()) return;
+        this.cryptDomain += alternativeId.replaceAll("[^A-Za-z0-9]", "");
+    }
 }

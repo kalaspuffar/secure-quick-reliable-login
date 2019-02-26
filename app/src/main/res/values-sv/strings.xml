@@ -222,4 +222,7 @@
 <string name="actionbar_menu">Meny</string>
 <string name="error_message_stale_page">Sessionen för SQRL login har gått ut. Var vänlig ladda om sidan och försök sedan på nytt.</string>
 <string name="error_message_login_failed">SQRL misslyckades att logga in på sidan. Ladda om sidan och försök igen. Om problemet inte löser sig, var god använd en annan inloggningsmetod.</string>
+<string name="account_options_alternative_id">Alternativt ID</string>
+<string name="title_alternative_identity">Alternativ identitiet</string>
+<string name="button_alternative_identity">Alternativ identitiet</string>
 </resources>

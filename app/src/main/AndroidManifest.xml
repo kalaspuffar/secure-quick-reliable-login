@@ -132,6 +132,10 @@
             android:label="@string/title_language"
             />
 
+        <activity android:name=".activites.account.AlternativeLoginActivity"
+            android:label="@string/title_alternative_identity"
+            />
+
         <activity
             android:name=".activites.UrlLoginActivity"
             android:label="@string/title_activity_url_login"

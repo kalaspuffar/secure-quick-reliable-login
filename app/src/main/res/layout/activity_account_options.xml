@@ -7,6 +7,20 @@
     tools:context="org.ea.sqrl.activites.account.AccountOptionsActivity">
 
     <Button
+        android:id="@+id/btnAlternativeIdentity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:duplicateParentState="true"
+        android:text="@string/button_alternative_identity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnRemoveAccount" />
+
+    <Button
         android:id="@+id/btnLockAccount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

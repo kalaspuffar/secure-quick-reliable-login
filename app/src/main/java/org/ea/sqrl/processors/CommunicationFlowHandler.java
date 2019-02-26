@@ -121,6 +121,10 @@ public class CommunicationFlowHandler {
         this.commHandler.setDomain(domain, queryLink);
     }
 
+    public void setAlternativeId(String alternativeId) {
+        this.commHandler.setAlternativeId(alternativeId);
+    }
+
     public void waitForCPS(boolean afterConversation) {
         int time = 0;
         while (cpsThread.isAlive() && time < 10 && (!sentImage || afterConversation)) {

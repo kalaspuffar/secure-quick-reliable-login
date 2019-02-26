@@ -220,6 +220,9 @@
 <string name="language_slovenian">Slowenisch</string>
 <string name="language_czech">Tschechisch</string>
 <string name="actionbar_menu">Menü</string>
-<string name="error_message_stale_page">The SQRL login page has expired. Please refresh the page, then log in with SQRL.</string>
-<string name="error_message_login_failed">SQRL was unable to login to this site. Please refresh the page and try again. If the problem persists please use another login method.</string>
+<string name="error_message_stale_page">Die SQRL Anmeldeseite ist abgelaufen. Bitte laden Sie die Seite neu, um danach die Anmeldung zu wiederholen.</string>
+<string name="error_message_login_failed">SQRL war nicht in der Lage sich auf dieser Seite anzumelden. Bitte laden Sie die Seite neu und versuchen Sie es erneut. Falls das Problem bestehen bleibt, benutzen Sie bitte eine andere Anmeldemethode.</string>
+<string name="account_options_alternative_id">Alternative ID</string>
+<string name="title_alternative_identity">Alternative identity</string>
+<string name="button_alternative_identity">Alternative identity</string>
 </resources>

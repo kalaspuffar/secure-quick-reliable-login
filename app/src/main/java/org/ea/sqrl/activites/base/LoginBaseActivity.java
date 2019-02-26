@@ -124,7 +124,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
     private int getPosition(long currentId) {
         int i = 0;
-        for(Long l : identities.keySet()) {
+        for(long l : identities.keySet()) {
             if (l == currentId) return i;
             i++;
         }
@@ -148,7 +148,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 identities.values().toArray(new String[identities.size()])
         );
         cboxIdentity.setAdapter(adapter);
-        cboxIdentity.setSelection(getPosition(currentId));
+        cboxIdentity.setSelection(getPosition(currentId), false);
     }
 
     public void showLoginPopup() {
