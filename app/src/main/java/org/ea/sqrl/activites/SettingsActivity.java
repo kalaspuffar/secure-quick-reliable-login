@@ -1,10 +1,13 @@
 package org.ea.sqrl.activites;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +17,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
@@ -85,6 +89,31 @@ public class SettingsActivity extends BaseActivity {
         savePopupWindow.setFocusable(true);
 
         final EditText txtPassword = popupView.findViewById(R.id.txtPassword);
+        final Context activityContext = this;
+
+        txtPassword.setOnLongClickListener(view -> {
+            StringBuilder longClickResultMessage = new StringBuilder("Password paste failed.");
+            ClipboardManager cm = (ClipboardManager)getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            Log.v(TAG, "long click detected with " + cm.getPrimaryClip().getItemCount() + " items.");
+            if (cm.getPrimaryClip().getItemCount() > 0) {
+                ClipData.Item clipItem  = cm.getPrimaryClip().getItemAt(0);
+                CharSequence clipItemText = clipItem.getText();
+                if (clipItemText.length() < 3) {
+                    longClickResultMessage.append(" The clipboard item was too short to be a password.");
+                } else {
+                    txtPassword.setText(clipItem.getText());
+                    Log.v(TAG, "Successfully pasted password.");
+                    Toast.makeText(activityContext, "Pasted clipboard contents", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            } else {
+                longClickResultMessage.append(" The clipboard was empty.");
+            }
+            Log.v(TAG, longClickResultMessage.toString());
+            return false;
+        });
+
+
         final TextView progressText = popupView.findViewById(R.id.lblProgressText);
 
         SQRLStorage storage = SQRLStorage.getInstance();
