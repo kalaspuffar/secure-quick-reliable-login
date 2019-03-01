@@ -114,23 +114,23 @@
         app:layout_constraintTop_toBottomOf="@+id/cbSettingsSQRLOnly" />
 
     <Button
-        android:id="@+id/btnSettingsSave"
+        android:id="@+id/btnSettingsCancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="@string/settings_save"
+        android:text="@string/settings_cancel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cbSettingsNoBypass"
         android:layout_marginLeft="16dp" />
 
     <Button
-        android:id="@+id/btnSettingsCancel"
+        android:id="@+id/btnSettingsSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
-        android:text="@string/settings_cancel"
+        android:text="@string/settings_save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cbSettingsNoBypass"
         android:layout_marginRight="16dp" />
