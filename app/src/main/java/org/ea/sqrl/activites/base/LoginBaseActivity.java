@@ -1,6 +1,8 @@
 package org.ea.sqrl.activites.base;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,6 +24,7 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.account.AccountOptionsActivity;
@@ -230,6 +233,28 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
             @Override
             public void afterTextChanged(Editable s) {
             }
+        });
+
+        txtLoginPassword.setOnLongClickListener(view -> {
+            StringBuilder longClickResultMessage = new StringBuilder("Password paste failed.");
+            ClipboardManager cm = (ClipboardManager)getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            Log.v(TAG, "long click detected with " + cm.getPrimaryClip().getItemCount() + " items.");
+            if (cm.getPrimaryClip().getItemCount() > 0) {
+                ClipData.Item clipItem  = cm.getPrimaryClip().getItemAt(0);
+                CharSequence clipItemText = clipItem.getText();
+                if (clipItemText.length() < 3) {
+                    longClickResultMessage.append(" The clipboard item was too short to be a password.");
+                } else {
+                    txtLoginPassword.setText(clipItem.getText());
+                    Log.v(TAG, "Successfully pasted password.");
+                    Toast.makeText(quickPassContext, "Pasted clipboard contents", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            } else {
+                longClickResultMessage.append(" The clipboard was empty.");
+            }
+            Log.v(TAG, longClickResultMessage.toString());
+            return false;
         });
 
         popupView.findViewById(R.id.btnCloseLogin).setOnClickListener(v -> hideLoginPopup());
