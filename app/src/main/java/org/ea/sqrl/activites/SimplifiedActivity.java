@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -40,6 +41,17 @@ public class SimplifiedActivity extends LoginBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simplified);
+
+        final SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
+                APPS_PREFERENCES,
+                Context.MODE_PRIVATE
+        );
+        final long currentId = sharedPref.getLong(CURRENT_ID, 0);
+        final String identityName = mDbHelper.getIdentityName(currentId);
+        final ActionBar actionBar = getSupportActionBar();
+        if ( actionBar != null ){
+            actionBar.setTitle(identityName);
+        }
 
         rootView = findViewById(R.id.simplifiedActivityView);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
