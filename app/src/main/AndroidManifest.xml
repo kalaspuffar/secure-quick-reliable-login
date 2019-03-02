@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:icon="@drawable/ic_sqrl_icon_vector_outline"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/ic_sqrl_icon_vector_outline"
+        android:roundIcon="@drawable/ic_sqrl_icon_circle_vector_outline"
         android:fullBackupContent="@xml/my_backup_rules"
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup">
