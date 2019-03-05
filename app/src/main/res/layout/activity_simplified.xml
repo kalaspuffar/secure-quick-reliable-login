@@ -27,11 +27,12 @@
         android:layout_height="200dp"
         android:background="@android:color/transparent"
         android:contentDescription="@string/button_use_identity"
+        android:elevation="2dp"
         android:focusable="true"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/ic_sqrl_icon_vector_outline"
         app:layout_constraintBottom_toTopOf="@+id/btnAdvancedFunctions"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_sqrl_icon_vector_outline" />
 </android.support.constraint.ConstraintLayout>
