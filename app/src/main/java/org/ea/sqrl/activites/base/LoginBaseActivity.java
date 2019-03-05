@@ -26,6 +26,7 @@ import android.widget.TextView;
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.account.AccountOptionsActivity;
 import org.ea.sqrl.activites.base.BaseActivity;
+import org.ea.sqrl.adapter.IdentityAdapter;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.processors.SQRLStorage;
@@ -51,19 +52,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     protected void setupBasePopups(LayoutInflater layoutInflater, boolean urlBasedLogin) {
         boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
         if(runningTest) return;
-
-        if(cboxIdentity != null) {
-            identities = mDbHelper.getIdentitys();
-
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                    this,
-                    R.layout.simple_spinner_item,
-                    identities.values().toArray(new String[identities.size()])
-            );
-            adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-            cboxIdentity.setAdapter(adapter);
-            cboxIdentity.setOnItemSelectedListener(this);
-        }
 
         communicationFlowHandler.setupAskPopupWindow(layoutInflater, handler);
         communicationFlowHandler.setupErrorPopupWindow(layoutInflater);
@@ -141,13 +129,8 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
     protected void updateSpinnerData(long currentId) {
         identities = mDbHelper.getIdentitys();
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                R.layout.simple_spinner_item,
-                identities.values().toArray(new String[identities.size()])
-        );
-        cboxIdentity.setAdapter(adapter);
+        cboxIdentity.setOnItemSelectedListener(this);
+        cboxIdentity.setAdapter(new IdentityAdapter(identities));
         cboxIdentity.setSelection(getPosition(currentId), false);
     }
 

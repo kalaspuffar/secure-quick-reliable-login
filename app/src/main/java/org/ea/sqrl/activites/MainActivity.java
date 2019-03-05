@@ -195,6 +195,8 @@ public class MainActivity extends LoginBaseActivity {
         if(!mDbHelper.hasIdentities()) {
             MainActivity.this.finish();
         } else {
+            setupBasePopups(getLayoutInflater(), false);
+
             SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
                     APPS_PREFERENCES,
                     Context.MODE_PRIVATE
@@ -203,7 +205,6 @@ public class MainActivity extends LoginBaseActivity {
             if(currentId != 0) {
                 updateSpinnerData(currentId);
             }
-            setupBasePopups(getLayoutInflater(), false);
         }
     }
 
