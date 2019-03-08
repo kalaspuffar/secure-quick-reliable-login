@@ -8,7 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -48,9 +47,10 @@ public class SimplifiedActivity extends LoginBaseActivity {
         );
         final long currentId = sharedPref.getLong(CURRENT_ID, 0);
         final String identityName = mDbHelper.getIdentityName(currentId);
-        final ActionBar actionBar = getSupportActionBar();
-        if ( actionBar != null ){
-            actionBar.setTitle(identityName);
+        final TextView identityLabel = findViewById(R.id.btnUseIdentityText);
+
+        if ( identityLabel != null ){
+            identityLabel.setText( "Logon with: " + identityName);
         }
 
         rootView = findViewById(R.id.simplifiedActivityView);

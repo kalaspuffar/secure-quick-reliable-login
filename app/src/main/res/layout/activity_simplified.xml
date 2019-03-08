@@ -21,6 +21,63 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <FrameLayout android:id="@+id/btnUseIdentityContainer"
+        android:layout_width="200dp"
+        android:layout_height="230dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnAdvancedFunctions"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <ImageButton
+            android:id="@+id/btnUseIdentity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            android:background="@drawable/rounded_background"
+            android:contentDescription="@string/button_use_identity"
+            android:focusable="true"
+            android:scaleType="fitEnd"
+            app:srcCompat="@drawable/ic_sqrl_icon_vector_outline" />
+
+        <TextView
+            android:id="@+id/btnUseIdentityText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="10dp"
+            android:textStyle="bold"
+            android:textSize="15dp"
+            android:clickable="false"
+            android:text="Log in using: Janne Dev"
+            android:textColor="@android:color/white"
+            >
+        </TextView>
+    </FrameLayout>
+</android.support.constraint.ConstraintLayout>
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/simplifiedActivityView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context="org.ea.sqrl.activites.SimplifiedActivity">
+
+    <Button
+        android:id="@+id/btnAdvancedFunctions"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:focusable="true"
+        android:text="@string/button_advanced_functions"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <ImageButton
         android:id="@+id/btnUseIdentity"
         android:layout_width="200dp"
