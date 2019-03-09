@@ -30,7 +30,7 @@
     android:elevation="2dp"
     android:focusable="true"
     android:scaleType="fitCenter"
-    app:layout_constraintBottom_toTopOf="@+id/btnScanQrCode"
+    app:layout_constraintBottom_toTopOf="@id/btnScanQrCode"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
