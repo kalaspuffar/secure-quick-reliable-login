@@ -63,6 +63,13 @@ public class SimplifiedActivity extends LoginBaseActivity {
             }
         );
 
+        final Button btnScanQrCode = findViewById(R.id.btnScanQrCode);
+        btnScanQrCode.setOnClickListener(
+                v -> {
+                    integrator.setPrompt(this.getString(R.string.scan_site_code));
+                    integrator.initiateScan();
+                }
+        );
 
         final Button btnAdvancedFunctions = findViewById(R.id.btnAdvancedFunctions);
         btnAdvancedFunctions.setOnClickListener((v) ->
