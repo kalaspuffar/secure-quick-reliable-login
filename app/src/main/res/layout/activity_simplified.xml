@@ -36,22 +36,18 @@
     app:layout_constraintTop_toTopOf="parent"
     app:srcCompat="@drawable/ic_sqrl_icon_vector_outline" />
 
-    <Button
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/btnScanQrCode"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingRight="96dp"
         android:paddingEnd="96dp"
         app:layout_constraintBottom_toTopOf="@id/btnAdvancedFunctions"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:text="Scan QR Code to Authenticate"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:gravity="center"
-        android:drawableLeft="@drawable/ic_scan_qr_black_24dp"
-        android:drawableStart="@drawable/ic_scan_qr_black_24dp"
         />
 
     </android.support.constraint.ConstraintLayout>
