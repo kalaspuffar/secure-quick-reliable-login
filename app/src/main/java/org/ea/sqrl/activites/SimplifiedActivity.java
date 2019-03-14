@@ -51,7 +51,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
         final TextView identityLabel = findViewById(R.id.btnUseIdentityText);
 
         if ( identityLabel != null ){
-            identityLabel.setText( "Logon with: " + identityName);
+            identityLabel.setText( getString(R.string.login_title) + ": " + identityName);
         }
 
         rootView = findViewById(R.id.simplifiedActivityView);

@@ -50,7 +50,7 @@
             android:textSize="15dp"
             android:clickable="false"
             android:text="Log in using: Janne Dev"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             >
         </TextView>
     </FrameLayout>
