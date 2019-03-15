@@ -278,6 +278,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
         if(!mDbHelper.hasIdentities()) {
             startActivity(new Intent(this, StartActivity.class));
         } else {
+            setupBasePopups(getLayoutInflater(), true);
             SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
                     APPS_PREFERENCES,
                     Context.MODE_PRIVATE
@@ -286,8 +287,6 @@ public class UrlLoginActivity extends LoginBaseActivity {
             if(currentId != 0) {
                 updateSpinnerData(currentId);
             }
-
-            setupBasePopups(getLayoutInflater(), true);
         }
     }
 
