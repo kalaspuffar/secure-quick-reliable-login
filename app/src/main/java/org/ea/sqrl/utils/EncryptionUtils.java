@@ -77,8 +77,8 @@ public class EncryptionUtils {
             if(i == 19) {
                 md.update(line);
                 byte[] checksum = reverse(md.digest());
-                BigInteger reminder = new BigInteger(1, checksum).mod(BASE);
-                resultStr += (char)BASE56_ENCODE[reminder.intValue()];
+                BigInteger remainder = new BigInteger(1, checksum).mod(BASE);
+                resultStr += (char)BASE56_ENCODE[remainder.intValue()];
                 md.reset();
                 line++;
                 i = 0;
@@ -91,8 +91,8 @@ public class EncryptionUtils {
         }
         md.update(line);
         byte[] checksum = reverse(md.digest());
-        BigInteger reminder = new BigInteger(1, checksum).mod(BASE);
-        resultStr += (char)BASE56_ENCODE[reminder.intValue()];
+        BigInteger remainder = new BigInteger(1, checksum).mod(BASE);
+        resultStr += (char)BASE56_ENCODE[remainder.intValue()];
 
         return resultStr;
     }
@@ -109,8 +109,8 @@ public class EncryptionUtils {
             if(i == 19 || encodedStringLen - 1 == n + line) {
                 md.update(line);
                 byte[] checksum = reverse(md.digest());
-                BigInteger reminder = new BigInteger(1, checksum).mod(BASE);
-                if(s.getBytes()[0] != BASE56_ENCODE[reminder.intValue()]) {
+                BigInteger remainder = new BigInteger(1, checksum).mod(BASE);
+                if(s.getBytes()[0] != BASE56_ENCODE[remainder.intValue()]) {
                     throw new Exception("" + line + 1);
                 }
                 md.reset();
@@ -146,8 +146,8 @@ public class EncryptionUtils {
             if (i == 19 || encodedStringLen - 1 == n + line) {
                 md.update(line);
                 byte[] checksum = reverse(md.digest());
-                BigInteger reminder = new BigInteger(1, checksum).mod(BASE);
-                if (s.getBytes()[0] != BASE56_ENCODE[reminder.intValue()]) {
+                BigInteger remainder = new BigInteger(1, checksum).mod(BASE);
+                if (s.getBytes()[0] != BASE56_ENCODE[remainder.intValue()]) {
                     return line;
                 }
                 md.reset();
