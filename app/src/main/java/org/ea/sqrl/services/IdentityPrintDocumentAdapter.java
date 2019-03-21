@@ -203,6 +203,7 @@ public class IdentityPrintDocumentAdapter extends PrintDocumentAdapter {
         int i = 0;
         try {
             paint.setTypeface(Typeface.MONOSPACE);
+            storage.refreshStorageFromDb(activity);
             for (String s : storage.getVerifyingRecoveryBlock().split("\n")) {
                 drawCenteredText(canvas, paint, s, lastBlockY + bodyText + (i * bodyText), bodyText);
                 i++;
