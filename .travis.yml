@@ -46,12 +46,12 @@ before_install:
   - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
   - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
   - touch ~/.android/repositories.cfg
-  - yes | sdkmanager --update
-  - yes | sdkmanager --licenses
+  - echo yes | sdkmanager --update
+  - echo yes | sdkmanager --licenses
 
 script:
   - android list targets
-  - echo no | android create avd --force -n test -t "android-"$ANDROID_EMULATOR_LEVEL --abi $ANDROID_ABI --tag $ANDROID_TAG
+  - echo no | android create avd --force -n test -k "system-images;android-$ANDROID_EMULATOR_LEVEL;$ANDROID_TAG;$ANDROID_ABI"
 #  - ./gradlew dependencyCheckAnalyze
   - ./gradlew assembleDebugAndroidTest -PdisablePreDex --continue --stacktrace
   - emulator -avd test -no-window &
