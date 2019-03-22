@@ -1,63 +1,45 @@
-language: android
-jdk: oraclejdk8
-sudo: false
+sudo: required
+dist: trusty
+os: linux
+language: generic
 
 env:
-  global:
-    - ANDROID_API_LEVEL=28
-    - ANDROID_EMULATOR_LEVEL=18
-    - ANDROID_BUILD_TOOLS_VERSION=28.0.3
-    - ADB_INSTALL_TIMEOUT=20
-    - ANDROID_ABI=armeabi-v7a
-    - ANDROID_TAG=google_apis
-    - QEMU_AUDIO_DRV=none
-
-android:
-  components:
-    - tools
-    - platform-tools
-    - tools
-    - build-tools-$ANDROID_BUILD_TOOLS_VERSION
-    - android-$ANDROID_API_LEVEL
-    - android-$ANDROID_EMULATOR_LEVEL
-    - extra-android-support
-    - extra-google-m2repository
-    - extra-android-m2repository
-    - sys-img-$ANDROID_ABI-google_apis-$ANDROID_EMULATOR_LEVEL
-
-licenses:
-  - android-sdk-preview-license-.+
-  - android-sdk-license-.+
-  - google-gdk-license-.+
-
-cache:
-  directories:
-  - "$HOME/.gradle/caches/"
-  - "$HOME/.gradle/wrapper/"
-  - "$HOME/.android/build-cache"
+  - SYS=18 ABI="google_apis;armeabi-v7a"
+  - ANDROID_BUILD_TOOLS_VERSION=28.0.3
+  - ADB_INSTALL_TIMEOUT=20
+  - QEMU_AUDIO_DRV=none
 
 before_install:
-  - yes | sdkmanager "cmake;3.10.2.4988404"
-  - wget https://dl.google.com/android/repository/android-ndk-r18b-linux-x86_64.zip
-  - unzip android-ndk-r18b-linux-x86_64.zip -d $HOME > /dev/null
-  - export ANDROID_NDK_HOME=$HOME/android-ndk-r18b
-  - export PATH=$PATH:$ANDROID_NDK_HOME
-  - mkdir "$ANDROID_HOME/licenses" || true
-  - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
-  - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
+  - export ANDROID_HOME=~/android-sdk-linux
+  - wget -q "https://dl.google.com/android/repository/sdk-tools-darwin-4333796.zip" -O android-sdk-tools.zip; else wget -q "https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip" -O android-sdk-tools.zip
+  - unzip -q android-sdk-tools.zip -d ${ANDROID_HOME}
+  - rm android-sdk-tools.zip
+  - PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools
+  - mkdir -p ~/.android
   - touch ~/.android/repositories.cfg
-  - echo yes | sdkmanager --update
-  - echo yes | sdkmanager --licenses
+  - yes | sdkmanager --licenses
+  - sdkmanager "emulator" "tools" "platform-tools" > /dev/null
+  - sdkmanager --list | head -15
+  - sdkmanager "build-tools;$ANDROID_BUILD_TOOLS_VERSION" "platforms;android-25" > /dev/null
+  - sdkmanager "system-images;android-$SYS;$ABI" > /dev/null
+  - sdkmanager --list | head -15
+  - yes | sdkmanager "cmake;3.10.2.4988404"
+  - wget https://dl.google.com/android/repository/android-ndk-r18b-linux-x86_64.zip
+  - unzip android-ndk-r18b-linux-x86_64.zip -d $HOME > /dev/null
+  - export ANDROID_NDK_HOME=$HOME/android-ndk-r18b
+  - export PATH=$PATH:$ANDROID_NDK_HOME
+  - mkdir "$ANDROID_HOME/licenses" || true
+  - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
+  - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
+  - echo no | avdmanager create avd --force -n test -k "system-images;android-$SYS;$ABI"
 
 script:
-  - android list targets
-  - echo no | android create avd --force -n test -k "system-images;android-$ANDROID_EMULATOR_LEVEL;$ANDROID_TAG;$ANDROID_ABI"
-#  - ./gradlew dependencyCheckAnalyze
+  - $ANDROID_HOME/emulator/emulator -avd test -no-audio -no-window -gpu swiftshader &
   - ./gradlew assembleDebugAndroidTest -PdisablePreDex --continue --stacktrace
   - emulator -avd test -no-window &
   - mkdir -p build/reports
-  - android-wait-for-emulator
-#  - adb shell input keyevent 82 &
+  - ./scripts/android-wait-for-emulator.sh
+  - adb shell input keyevent 82
   - ./gradlew connectedDebugAndroidTest -PdisablePreDex --continue --stacktrace
 
 after_failure:
