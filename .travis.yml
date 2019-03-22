@@ -4,12 +4,7 @@ os: linux
 language: generic
 
 env:
-  - EMULATOR_VERSION=18
-  - TARGET_VERSION=28
-  - ABI="google_apis;armeabi-v7a"
-  - ANDROID_BUILD_TOOLS_VERSION=28.0.3
-  - ADB_INSTALL_TIMEOUT=20
-  - QEMU_AUDIO_DRV=none
+  - EMULATOR_VERSION=18 TARGET_VERSION=28 ABI="google_apis;armeabi-v7a" ANDROID_BUILD_TOOLS_VERSION=28.0.3 ADB_INSTALL_TIMEOUT=20 QEMU_AUDIO_DRV=none
 
 before_install:
   - export ANDROID_HOME=~/android-sdk-linux
