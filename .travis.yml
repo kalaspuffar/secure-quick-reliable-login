@@ -34,5 +34,6 @@ script:
   - ./gradlew assembleDebugAndroidTest -PdisablePreDex --continue --stacktrace
   - $ANDROID_HOME/emulator/emulator -avd test -no-audio -no-window -gpu swiftshader &
 #  - android-wait-for-emulator
+  - adb wait-for-device
   - adb shell input keyevent 82
   - ./gradlew connectedDebugAndroidTest -PdisablePreDex --continue --stacktrace
