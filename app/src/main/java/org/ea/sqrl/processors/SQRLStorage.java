@@ -1,9 +1,7 @@
 package org.ea.sqrl.processors;
 
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
 import android.security.keystore.KeyGenParameterSpec;
@@ -14,7 +12,6 @@ import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
-import org.ea.sqrl.database.IdentityDBHelper;
 import org.ea.sqrl.jni.Grc_aesgcm;
 import org.ea.sqrl.utils.EncryptionUtils;
 import org.libsodium.jni.NaCl;
@@ -141,18 +138,6 @@ public class SQRLStorage {
         }
         byte[] oldData = this.createSaveData();
         return !Arrays.equals(identityData, oldData);
-    }
-
-    public void refreshStorageFromDb(Activity activity) throws Exception {
-        SharedPreferences sharedPref = activity.getApplication().getSharedPreferences(
-                "org.ea.sqrl.preferences",
-                Context.MODE_PRIVATE
-        );
-        long currentId = sharedPref.getLong("current_id", 0);
-        IdentityDBHelper aDbHelper = new IdentityDBHelper(activity);
-        byte[] identityData = aDbHelper.getIdentityData(currentId);
-        SQRLStorage sqrlStorage = SQRLStorage.getInstance();
-        sqrlStorage.read(identityData);
     }
 
     public void read(byte[] input) throws Exception {
