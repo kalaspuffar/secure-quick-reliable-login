@@ -129,6 +129,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
     protected void updateSpinnerData(long currentId) {
         identities = mDbHelper.getIdentitys();
+        if (identities.size() == 0) return;
         cboxIdentity.setOnItemSelectedListener(this);
         cboxIdentity.setAdapter(new IdentityAdapter(identities));
         cboxIdentity.setSelection(getPosition(currentId), false);
