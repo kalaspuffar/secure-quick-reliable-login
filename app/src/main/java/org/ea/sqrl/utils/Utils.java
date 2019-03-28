@@ -1,5 +1,6 @@
 package org.ea.sqrl.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +11,9 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.google.zxing.FormatException;
+
+import org.ea.sqrl.database.IdentityDBHelper;
+import org.ea.sqrl.processors.SQRLStorage;
 
 import java.util.Locale;
 
@@ -60,5 +64,17 @@ public class Utils {
             conf.setLocale(new Locale(lang));
             res.updateConfiguration(conf, res.getDisplayMetrics());
         }
+    }
+
+    public static void refreshStorageFromDb(Activity activity) throws Exception {
+        SharedPreferences sharedPref = activity.getApplication().getSharedPreferences(
+                "org.ea.sqrl.preferences",
+                Context.MODE_PRIVATE
+        );
+        long currentId = sharedPref.getLong("current_id", 0);
+        IdentityDBHelper aDbHelper = new IdentityDBHelper(activity);
+        byte[] identityData = aDbHelper.getIdentityData(currentId);
+        SQRLStorage sqrlStorage = SQRLStorage.getInstance();
+        sqrlStorage.read(identityData);
     }
 }
