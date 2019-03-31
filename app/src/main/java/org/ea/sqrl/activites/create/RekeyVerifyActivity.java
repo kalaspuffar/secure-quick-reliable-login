@@ -26,7 +26,7 @@ public class RekeyVerifyActivity extends LoginBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rekey_verify);
 
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(RekeyVerifyActivity.this.getApplicationContext());
         storage.clear();
 
         setupProgressPopupWindow(getLayoutInflater());

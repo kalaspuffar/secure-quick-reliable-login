@@ -37,7 +37,7 @@ public class ResetPasswordActivity extends BaseActivity {
 
         findViewById(R.id.btnResetPassword).setOnClickListener(v -> {
 
-            SQRLStorage storage = SQRLStorage.getInstance();
+            SQRLStorage storage = SQRLStorage.getInstance(ResetPasswordActivity.this.getApplicationContext());
 
             if(!checkRescueCode(txtRecoverCode1)) return;
             if(!checkRescueCode(txtRecoverCode2)) return;

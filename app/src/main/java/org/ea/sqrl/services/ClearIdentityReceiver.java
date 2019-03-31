@@ -14,6 +14,6 @@ import org.ea.sqrl.processors.SQRLStorage;
 public class ClearIdentityReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        SQRLStorage.getInstance().clearQuickPass(context);
+        SQRLStorage.getInstance(context).clearQuickPass();
     }
 }

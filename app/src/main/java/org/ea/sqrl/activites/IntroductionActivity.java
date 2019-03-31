@@ -139,6 +139,6 @@ public class IntroductionActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        SQRLStorage.getInstance().clear();
+        SQRLStorage.getInstance(IntroductionActivity.this.getApplicationContext()).clear();
     }
 }

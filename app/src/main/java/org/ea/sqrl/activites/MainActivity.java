@@ -74,7 +74,7 @@ public class MainActivity extends LoginBaseActivity {
             }
         });
 
-        setupLoginPopupWindow(getLayoutInflater(), MainActivity.this);
+        setupLoginPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
         setupBasePopups(getLayoutInflater(), false);
@@ -245,7 +245,7 @@ public class MainActivity extends LoginBaseActivity {
                         final TextView txtSite = loginPopupWindow.getContentView().findViewById(R.id.txtSite);
                         txtSite.setText(domain);
 
-                        SQRLStorage storage = SQRLStorage.getInstance();
+                        SQRLStorage storage = SQRLStorage.getInstance(MainActivity.this.getApplicationContext());
                         final TextView txtLoginPassword = loginPopupWindow.getContentView().findViewById(R.id.txtLoginPassword);
                         if(storage.hasQuickPass()) {
                             txtLoginPassword.setHint(getString(R.string.login_identity_quickpass, "" + storage.getHintLength()));

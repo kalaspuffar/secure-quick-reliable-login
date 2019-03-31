@@ -54,7 +54,7 @@ public class RescueCodeEnterActivity extends AppCompatActivity {
         boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
         if(runningTest) return;
 
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(RescueCodeEnterActivity.this.getApplicationContext());
         List<String> rescueList = storage.getTempShowableRescueCode();
 
         setListener(txtRecoverCode1, rescueList);

@@ -38,7 +38,7 @@ public class EnableAccountActivity extends BaseActivity {
         txtRecoverCode1.requestFocus();
 
         findViewById(R.id.btnEnableAccountEnable).setOnClickListener((View v) -> {
-            SQRLStorage storage = SQRLStorage.getInstance();
+            SQRLStorage storage = SQRLStorage.getInstance(EnableAccountActivity.this.getApplicationContext());
 
             if(!checkRescueCode(txtRecoverCode1)) return;
             if(!checkRescueCode(txtRecoverCode2)) return;

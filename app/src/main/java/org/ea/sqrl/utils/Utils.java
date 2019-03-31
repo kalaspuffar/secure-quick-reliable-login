@@ -14,6 +14,7 @@ import com.google.zxing.FormatException;
 
 import org.ea.sqrl.database.IdentityDBHelper;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.services.ClearIdentityService;
 
 import java.util.Locale;
 
@@ -74,7 +75,7 @@ public class Utils {
         long currentId = sharedPref.getLong("current_id", 0);
         IdentityDBHelper aDbHelper = new IdentityDBHelper(activity);
         byte[] identityData = aDbHelper.getIdentityData(currentId);
-        SQRLStorage sqrlStorage = SQRLStorage.getInstance();
+        SQRLStorage sqrlStorage = SQRLStorage.getInstance(activity);
         sqrlStorage.read(identityData);
     }
 }

@@ -43,7 +43,7 @@ public class SettingsActivity extends BaseActivity {
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(SettingsActivity.this.getApplicationContext());
 
         txtSettingsHintLength = findViewById(R.id.txtSettingsHintLength);
         txtSettingsHintLength.setText(Integer.toString(storage.getHintLength()));
@@ -85,9 +85,8 @@ public class SettingsActivity extends BaseActivity {
         savePopupWindow.setFocusable(true);
 
         final EditText txtPassword = popupView.findViewById(R.id.txtPassword);
-        final TextView progressText = popupView.findViewById(R.id.lblProgressText);
 
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(SettingsActivity.this.getApplicationContext());
 
         popupView.findViewById(R.id.btnCloseSaveSettings).setOnClickListener(v -> savePopupWindow.dismiss());
         final Button btnSaveSettings = popupView.findViewById(R.id.btnSaveSettings);
@@ -96,11 +95,11 @@ public class SettingsActivity extends BaseActivity {
                 savePopupWindow.dismiss();
                 showProgressPopup();
             });
-            storage.clearQuickPass(this);
+            storage.clearQuickPass();
             boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString(), entropyHarvester, false);
             if(!decryptStatus) {
                 showErrorMessage(R.string.decrypt_identity_fail);
-                storage.clearQuickPass(this);
+                storage.clearQuickPass();
                 storage.clear();
                 handler.post(() -> {
                     hideProgressPopup();

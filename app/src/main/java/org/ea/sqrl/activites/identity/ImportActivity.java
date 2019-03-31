@@ -55,7 +55,7 @@ public class ImportActivity extends BaseActivity {
             showProgressPopup();
 
             new Thread(() -> {
-                SQRLStorage storage = SQRLStorage.getInstance();
+                SQRLStorage storage = SQRLStorage.getInstance(ImportActivity.this.getApplicationContext());
                 try {
                     boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString(), entropyHarvester, false);
                     if(!decryptStatus) {
@@ -64,11 +64,11 @@ public class ImportActivity extends BaseActivity {
                             txtPassword.setText("");
                             hideProgressPopup();
                         });
-                        storage.clearQuickPass(this);
+                        storage.clearQuickPass();
                         storage.clear();
                         return;
                     }
-                    storage.clearQuickPass(this);
+                    storage.clearQuickPass();
 
                     boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
                     if (!encryptStatus) {
@@ -141,7 +141,7 @@ public class ImportActivity extends BaseActivity {
                 Snackbar.make(rootView, R.string.scan_cancel, Snackbar.LENGTH_LONG).show();
                 ImportActivity.this.finish();
             } else {
-                SQRLStorage storage = SQRLStorage.getInstance();
+                SQRLStorage storage = SQRLStorage.getInstance(ImportActivity.this.getApplicationContext());
                 try {
                     byte[] qrCodeData = Utils.readSQRLQRCode(data);
                     if(qrCodeData.length == 0) {

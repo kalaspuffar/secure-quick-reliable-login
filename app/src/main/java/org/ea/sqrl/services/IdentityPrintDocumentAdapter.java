@@ -167,7 +167,7 @@ public class IdentityPrintDocumentAdapter extends PrintDocumentAdapter {
     }
 
     private void drawPage(PdfDocument.Page page) {
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(activity);
         Canvas canvas = page.getCanvas();
 
         int titleBaseLine = 72;
@@ -182,9 +182,9 @@ public class IdentityPrintDocumentAdapter extends PrintDocumentAdapter {
 
         byte[] saveData;
         if(this.withoutPassword) {
-            saveData = SQRLStorage.getInstance().createSaveDataWithoutPassword();
+            saveData = storage.createSaveDataWithoutPassword();
         } else {
-            saveData = SQRLStorage.getInstance().createSaveData();
+            saveData = storage.createSaveData();
         }
 
         int canvasMiddle = canvas.getWidth() / 2;

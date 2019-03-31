@@ -36,7 +36,7 @@ public class RemoveAccountActivity extends BaseActivity {
 
         findViewById(R.id.btnRemoveAccountRemove).setOnClickListener(v -> {
 
-            SQRLStorage storage = SQRLStorage.getInstance();
+            SQRLStorage storage = SQRLStorage.getInstance(RemoveAccountActivity.this.getApplicationContext());
 
             if(!checkRescueCode(txtRecoverCode1)) return;
             if(!checkRescueCode(txtRecoverCode2)) return;

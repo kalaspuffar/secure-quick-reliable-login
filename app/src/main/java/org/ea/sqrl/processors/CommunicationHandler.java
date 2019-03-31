@@ -1,6 +1,7 @@
 package org.ea.sqrl.processors;
 
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 import org.ea.sqrl.R;
@@ -45,6 +46,7 @@ public class CommunicationHandler {
 
 
     private static CommunicationHandler instance = null;
+    private final Context context;
     private String communicationDomain;
     private String cryptDomain;
     private Map<String, String> lastResponse = new HashMap<>();
@@ -64,11 +66,13 @@ public class CommunicationHandler {
     public static final int TIF_CLIENT_FAILURE = 7;
     public static final int TIF_BAD_ID_ASSOCIATION = 8;
 
-    private CommunicationHandler() {}
+    private CommunicationHandler(Context context) {
+        this.context = context;
+    }
 
-    public static CommunicationHandler getInstance() {
+    public static CommunicationHandler getInstance(Context context) {
         if(instance == null) {
-            instance = new CommunicationHandler();
+            instance = new CommunicationHandler(context);
         }
 
         try {
@@ -162,7 +166,7 @@ public class CommunicationHandler {
     }
 
     public String createClientQuery(boolean noiptest, boolean requestServerUnlockKey) throws Exception {
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(context);
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=query\r\n");
@@ -177,7 +181,7 @@ public class CommunicationHandler {
     }
 
     public String createClientDisable(boolean noiptest, boolean clientProvidedSession) throws Exception {
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(context);
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=disable\r\n");
@@ -192,7 +196,7 @@ public class CommunicationHandler {
     }
 
     public String createClientEnable(boolean noiptest, boolean clientProvidedSession) throws Exception {
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(context);
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=enable\r\n");
@@ -207,7 +211,7 @@ public class CommunicationHandler {
     }
 
     public String createClientRemove(boolean noiptest, boolean clientProvidedSession) throws Exception {
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(context);
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=remove\r\n");
@@ -223,7 +227,7 @@ public class CommunicationHandler {
 
 
     public String createClientCreateAccount(EntropyHarvester entropyHarvester, boolean noiptest, boolean clientProvidedSession) throws Exception {
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(context);
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=ident\r\n");
@@ -239,7 +243,7 @@ public class CommunicationHandler {
     }
 
     public String createClientLogin(boolean noiptest, boolean clientProvidedSession) throws Exception {
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(context);
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
         sb.append("cmd=ident\r\n");
@@ -258,7 +262,7 @@ public class CommunicationHandler {
     }
 
     public String createPostParams(String client, String server, boolean unlockServerKey) throws Exception {
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(context);
         storage.setProgressState(R.string.progress_state_prepare_query);
 
         StringBuilder sb = new StringBuilder();
@@ -315,7 +319,7 @@ public class CommunicationHandler {
     public void postRequest(String link, String data) throws Exception {
         StringBuilder result = new StringBuilder();
 
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(context);
         storage.setProgressState(R.string.progresstate_contact_server);
 
         String loginURL = (useSSL ? "https://" : "http://") + communicationDomain + link;
@@ -477,14 +481,14 @@ public class CommunicationHandler {
 */
             byte[] bytesArray = EncryptionUtils.hex2Byte("7371726c646174617d0001002d00b51fd99559b887d106a8d877c70133bb20a12fa1a7c829b194db94f309c5000000f30104050f000d174cc6e7b70baa158aa4ce75e2f2b99a02a40e4beb2e5d16c2f03442bd3e932035419a63885a663125a600e5486c42b38f708c1094ced1ab0b0050137f6df449caf78581fec678408a804caf74f91c490002005528fc85e3e36866a85574146fe7776d09cf0000004a4e12277dd48366fc1f335dd37188bbcba02bc32a12aef0188f5e83593665518483d638b80051c2b4b013491eb06835");
 
-            SQRLStorage storage = SQRLStorage.getInstance();
+            SQRLStorage storage = SQRLStorage.getInstance(null);
             storage.setProgressionUpdater(new ProgressionUpdater());
             storage.read(bytesArray);
             storage.decryptIdentityKey("Testing1234", EntropyHarvester.getInstance(), false);
             boolean didIt = storage.decryptUnlockKey("7276-0587-2230-1119-8559-3839");
             System.out.println(didIt);
 
-            CommunicationHandler commHandler = CommunicationHandler.getInstance();
+            CommunicationHandler commHandler = CommunicationHandler.getInstance(null);
             String sqrlLink = "sqrl://www.grc.com/sqrl?nut=Na2MOglf7NyyupQ8-dtj1g";
 
             Matcher sqrlMatcher = CommunicationHandler.sqrlPattern.matcher(sqrlLink);

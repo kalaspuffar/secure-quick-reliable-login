@@ -80,12 +80,12 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         editor.putLong(CURRENT_ID, keyArray[pos]);
         editor.apply();
 
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(LoginBaseActivity.this.getApplicationContext());
 
         byte[] identityData = mDbHelper.getIdentityData(keyArray[pos]);
 
         if(storage.needsReload(identityData)) {
-            storage.clearQuickPass(this);
+            storage.clearQuickPass();
             try {
                 storage.read(identityData);
             } catch (Exception e) {
@@ -145,14 +145,14 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         unlockRotation();
     }
 
-    public void setupLoginPopupWindow(LayoutInflater layoutInflater, Context quickPassContext) {
+    public void setupLoginPopupWindow(LayoutInflater layoutInflater) {
         View popupView = layoutInflater.inflate(R.layout.fragment_login, null);
 
         loginPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
                 true);
 
-        final SQRLStorage storage = SQRLStorage.getInstance();
+        final SQRLStorage storage = SQRLStorage.getInstance(LoginBaseActivity.this.getApplicationContext());
 
         loginPopupWindow.setTouchable(true);
         final EditText txtLoginPassword = popupView.findViewById(R.id.txtLoginPassword);
@@ -173,20 +173,14 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     new Thread(() -> {
                         boolean decryptionOk = storage.decryptIdentityKey(password.toString(), entropyHarvester, true);
                         if(!decryptionOk) {
-                            final Runnable nextAction = new Runnable() {
-                                @Override
-                                public void run() {
-                                    showLoginPopup();
-                                }
-                            };
-                            showErrorMessage(R.string.decrypt_identity_fail, nextAction);
+                            showErrorMessage(R.string.decrypt_identity_fail, () -> showLoginPopup());
                             handler.post(() -> {
                                 txtLoginPassword.setHint(R.string.login_identity_password);
                                 txtLoginPassword.setText("");
                                 hideProgressPopup();
                             });
                             storage.clear();
-                            storage.clearQuickPass(quickPassContext);
+                            storage.clearQuickPass();
                             return;
                         }
                         showClearNotification();
@@ -206,7 +200,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
                         communicationFlowHandler.setErrorAction(() -> {
                             storage.clear();
-                            storage.clearQuickPass(quickPassContext);
+                            storage.clearQuickPass();
                             handler.post(() -> hideProgressPopup());
                         });
 
@@ -247,7 +241,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                             txtLoginPassword.setText("");
                             hideProgressPopup();
                         });
-                        storage.clearQuickPass(quickPassContext);
+                        storage.clearQuickPass();
                         storage.clear();
                         return;
                     }
@@ -268,7 +262,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
                     communicationFlowHandler.setErrorAction(() -> {
                         storage.clear();
-                        storage.clearQuickPass(quickPassContext);
+                        storage.clearQuickPass();
                         handler.post(() -> hideProgressPopup());
                     });
 

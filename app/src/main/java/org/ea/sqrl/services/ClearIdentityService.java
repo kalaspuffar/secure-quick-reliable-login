@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 
+import org.ea.sqrl.activites.identity.ClearIdentityActivity;
 import org.ea.sqrl.processors.SQRLStorage;
 
 /**
@@ -16,12 +17,12 @@ public class ClearIdentityService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters params) {
-        SQRLStorage.getInstance().clearQuickPass(this);
+        SQRLStorage.getInstance(this).clearQuickPass();
         return false;
     }
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        return SQRLStorage.getInstance().hasQuickPass();
+        return SQRLStorage.getInstance(this).hasQuickPass();
     }
 }

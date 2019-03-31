@@ -24,7 +24,7 @@ public class DisableAccountActivity extends BaseActivity {
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(DisableAccountActivity.this.getApplicationContext());
 
         final EditText txtDisablePassword = findViewById(R.id.txtDisablePassword);
         findViewById(R.id.btnDisableAccount).setOnClickListener(v -> {
@@ -36,7 +36,7 @@ public class DisableAccountActivity extends BaseActivity {
                     showClearNotification();
                 } else {
                     showErrorMessage(R.string.decrypt_identity_fail);
-                    storage.clearQuickPass(this);
+                    storage.clearQuickPass();
                     storage.clear();
                     handler.post(() -> {
                         txtDisablePassword.setText("");

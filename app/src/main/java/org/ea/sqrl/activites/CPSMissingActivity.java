@@ -27,7 +27,7 @@ public class CPSMissingActivity  extends LoginBaseActivity {
         final TextView txtSite = findViewById(R.id.txtSite);
         txtSite.setText(communicationFlowHandler.getDomain());
 
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(CPSMissingActivity.this.getApplicationContext());
 
         communicationFlowHandler.setDoneAction(() -> {
             storage.clear();
@@ -39,7 +39,7 @@ public class CPSMissingActivity  extends LoginBaseActivity {
 
         communicationFlowHandler.setErrorAction(() -> {
             storage.clear();
-            storage.clearQuickPass(CPSMissingActivity.this);
+            storage.clearQuickPass();
             handler.post(() -> hideProgressPopup());
         });
 

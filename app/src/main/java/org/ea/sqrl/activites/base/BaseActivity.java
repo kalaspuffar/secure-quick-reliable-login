@@ -195,7 +195,7 @@ public class BaseActivity extends AppCompatActivity {
         final TextView lblProgressTitle = popupView.findViewById(R.id.lblProgressTitle);
         final TextView lblProgressText = popupView.findViewById(R.id.lblProgressText);
 
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(BaseActivity.this.getApplicationContext());
         storage.setProgressionUpdater(new ProgressionUpdater(handler, lblProgressTitle, progressBar, lblProgressText));
     }
 
@@ -394,7 +394,7 @@ public class BaseActivity extends AppCompatActivity {
             mNotificationManager.notify(NOTIFICATION_IDENTITY_UNLOCKED, mBuilder.build());
         }
 
-        long delayMillis = SQRLStorage.getInstance().getIdleTimeout() * 60000;
+        long delayMillis = SQRLStorage.getInstance(BaseActivity.this.getApplicationContext()).getIdleTimeout() * 60000;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             JobInfo jobInfo = new JobInfo.Builder(ClearIdentityService.JOB_NUMBER, new ComponentName(this, ClearIdentityService.class))

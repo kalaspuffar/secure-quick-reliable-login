@@ -33,7 +33,7 @@ public class SaveIdentityActivity extends LoginBaseActivity {
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(SaveIdentityActivity.this.getApplicationContext());
 
         final EditText txtIdentityName = findViewById(R.id.txtIdentityName);
         final EditText txtNewPassword = findViewById(R.id.txtNewPassword);

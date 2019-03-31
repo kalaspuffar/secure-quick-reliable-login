@@ -30,7 +30,7 @@ public class CreateIdentityActivity extends AppCompatActivity {
 
         Utils.setLanguage(this);
 
-        SQRLStorage.getInstance().cleanIdentity();
+        SQRLStorage.getInstance(CreateIdentityActivity.this.getApplicationContext()).cleanIdentity();
 
         final TextView txtCreateIdentityMessage = findViewById(R.id.txtCreateIdentityMessage);
         txtCreateIdentityMessage.setMovementMethod(LinkMovementMethod.getInstance());

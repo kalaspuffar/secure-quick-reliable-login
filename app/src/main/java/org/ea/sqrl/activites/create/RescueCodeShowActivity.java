@@ -38,7 +38,7 @@ public class RescueCodeShowActivity extends AppCompatActivity {
 
         try {
             final EntropyHarvester entropyHarvester = EntropyHarvester.getInstance();
-            SQRLStorage storage = SQRLStorage.getInstance();
+            SQRLStorage storage = SQRLStorage.getInstance(RescueCodeShowActivity.this.getApplicationContext());
             storage.newRescueCode(entropyHarvester);
 
             List<String> rescueArr = storage.getTempShowableRescueCode();
