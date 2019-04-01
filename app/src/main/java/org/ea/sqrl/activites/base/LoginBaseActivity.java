@@ -1,6 +1,7 @@
 package org.ea.sqrl.activites.base;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,9 +11,11 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,6 +27,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.UrlLoginActivity;
 import org.ea.sqrl.activites.account.AccountOptionsActivity;
 import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.adapter.IdentityAdapter;
@@ -156,6 +160,14 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         loginPopupWindow.setTouchable(true);
         final EditText txtLoginPassword = popupView.findViewById(R.id.txtLoginPassword);
 
+        txtLoginPassword.setOnEditorActionListener((v, actionId, event) -> {
+            if(actionId == EditorInfo.IME_ACTION_DONE){
+                doLogin(storage, txtLoginPassword, false, false, null, LoginBaseActivity.this);
+                return true;
+            }
+            return false;
+        });
+
         txtLoginPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence password, int start, int count, int after) {
@@ -165,48 +177,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
             public void onTextChanged(CharSequence password, int start, int before, int count) {
                 if (!storage.hasQuickPass()) return;
                 if ((start + count) >= storage.getHintLength()) {
-                    hideLoginPopup();
-                    showProgressPopup();
-                    closeKeyboard();
-
-                    new Thread(() -> {
-                        boolean decryptionOk = storage.decryptIdentityKey(password.toString(), entropyHarvester, true);
-                        if(!decryptionOk) {
-                            showErrorMessage(R.string.decrypt_identity_fail);
-                            handler.post(() -> {
-                                txtLoginPassword.setHint(R.string.login_identity_password);
-                                txtLoginPassword.setText("");
-                                hideProgressPopup();
-                                showLoginPopup();
-                            });
-                            storage.clear();
-                            storage.clearQuickPass(quickPassContext);
-                            return;
-                        }
-                        showClearNotification();
-
-                        handler.post(() -> txtLoginPassword.setText(""));
-
-                        communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK_QRCODE);
-                        communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN);
-
-                        communicationFlowHandler.setDoneAction(() -> {
-                            storage.clear();
-                            handler.post(() -> {
-                                hideProgressPopup();
-                                closeActivity();
-                            });
-                        });
-
-                        communicationFlowHandler.setErrorAction(() -> {
-                            storage.clear();
-                            storage.clearQuickPass(quickPassContext);
-                            handler.post(() -> hideProgressPopup());
-                        });
-
-                        communicationFlowHandler.handleNextAction();
-
-                    }).start();
+                    doLogin(storage, txtLoginPassword, true, false, null, LoginBaseActivity.this);
                 }
             }
 
@@ -229,47 +200,58 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
             long currentId = sharedPref.getLong(CURRENT_ID, 0);
 
             if(currentId != 0) {
-                hideLoginPopup();
-                showProgressPopup();
-                closeKeyboard();
-
-                new Thread(() -> {
-                    boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, false);
-                    if(!decryptionOk) {
-                        showErrorMessage(R.string.decrypt_identity_fail);
-                        handler.post(() -> {
-                            txtLoginPassword.setText("");
-                            hideProgressPopup();
-                        });
-                        storage.clearQuickPass(quickPassContext);
-                        storage.clear();
-                        return;
-                    }
-                    showClearNotification();
-
-                    handler.post(() -> txtLoginPassword.setText(""));
-
-                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK_QRCODE);
-                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN);
-
-                    communicationFlowHandler.setDoneAction(() -> {
-                        storage.clear();
-                        handler.post(() -> {
-                            hideProgressPopup();
-                            closeActivity();
-                        });
-                    });
-
-                    communicationFlowHandler.setErrorAction(() -> {
-                        storage.clear();
-                        storage.clearQuickPass(quickPassContext);
-                        handler.post(() -> hideProgressPopup());
-                    });
-
-                    communicationFlowHandler.handleNextAction();
-
-                }).start();
+                doLogin(storage, txtLoginPassword, false, true, null, quickPassContext);
             }
         });
+    }
+
+    public void doLogin(SQRLStorage storage, EditText txtLoginPassword, boolean usedQuickpass, boolean usedCps, Activity activityToFinish, Context context) {
+        if (!usedCps) hideLoginPopup();
+        showProgressPopup();
+        closeKeyboard();
+
+        new Thread(() -> {
+            boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, usedQuickpass);
+            if(!decryptionOk) {
+                showErrorMessage(R.string.decrypt_identity_fail);
+                handler.post(() -> {
+                    txtLoginPassword.setHint(R.string.login_identity_password); // Should be in both?
+                    txtLoginPassword.setText("");
+                    hideProgressPopup();
+                    if (!usedCps) showLoginPopup();
+                });
+                storage.clear();
+                storage.clearQuickPass(context);
+                return;
+            }
+            if(!usedQuickpass) showClearNotification(); // RUN ONLY IF FULL PASSWORD TYPED
+
+            handler.post(() -> txtLoginPassword.setText(""));
+
+            if (usedCps) {
+                communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
+                communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN_CPS);
+            } else {
+                communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK_QRCODE);
+                communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN);
+            }
+
+            communicationFlowHandler.setDoneAction(() -> {
+                storage.clear();
+                handler.post(() -> {
+                    hideProgressPopup();
+                    closeActivity();
+                });
+                if (activityToFinish != null) activityToFinish.finish();
+            });
+
+            communicationFlowHandler.setErrorAction(() -> {
+                storage.clear();
+                storage.clearQuickPass(context);
+                handler.post(() -> hideProgressPopup());
+            });
+
+            communicationFlowHandler.handleNextAction();
+        }).start();
     }
 }

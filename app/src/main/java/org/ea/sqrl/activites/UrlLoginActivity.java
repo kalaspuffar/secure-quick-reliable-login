@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -95,6 +96,14 @@ public class UrlLoginActivity extends LoginBaseActivity {
             txtLoginPassword.setHint(R.string.login_identity_password);
         }
 
+        txtLoginPassword.setOnEditorActionListener((v, actionId, event) -> {
+            if(actionId == EditorInfo.IME_ACTION_DONE){
+                doLogin(storage, txtLoginPassword, false, true, null,UrlLoginActivity.this);
+                return true;
+            }
+            return false;
+        });
+
         txtLoginPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence password, int start, int count, int after) {
@@ -104,45 +113,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
             public void onTextChanged(CharSequence password, int start, int before, int count) {
                 if (!storage.hasQuickPass()) return;
                 if ((start + count) >= storage.getHintLength()) {
-                    showProgressPopup();
-                    closeKeyboard();
-
-                    new Thread(() -> {
-                        boolean decryptionOk = storage.decryptIdentityKey(password.toString(), entropyHarvester, true);
-                        if(!decryptionOk) {
-                            showErrorMessage(R.string.decrypt_identity_fail);
-                            handler.post(() -> {
-                                txtLoginPassword.setHint(R.string.login_identity_password);
-                                txtLoginPassword.setText("");
-                                hideProgressPopup();
-                            });
-                            storage.clear();
-                            storage.clearQuickPass(UrlLoginActivity.this);
-                            return;
-                        }
-
-                        handler.post(() -> txtLoginPassword.setText(""));
-
-                        communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
-                        communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN_CPS);
-
-                        communicationFlowHandler.setDoneAction(() -> {
-                            storage.clear();
-                            handler.post(() -> {
-                                hideProgressPopup();
-                                closeActivity();
-                            });
-                        });
-
-                        communicationFlowHandler.setErrorAction(() -> {
-                            storage.clear();
-                            storage.clearQuickPass(UrlLoginActivity.this);
-                            handler.post(() -> hideProgressPopup());
-                        });
-
-                        communicationFlowHandler.handleNextAction();
-
-                    }).start();
+                    doLogin(storage, txtLoginPassword, true, true, null, UrlLoginActivity.this);
                 }
             }
 
@@ -163,45 +134,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
             long currentId = sharedPref.getLong(CURRENT_ID, 0);
 
             if(currentId != 0) {
-                showProgressPopup();
-                closeKeyboard();
-
-                new Thread(() -> {
-                    boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, false);
-                    if(!decryptionOk) {
-                        showErrorMessage(R.string.decrypt_identity_fail);
-                        handler.post(() -> {
-                            txtLoginPassword.setText("");
-                            hideProgressPopup();
-                        });
-                        storage.clear();
-                        storage.clearQuickPass(this);
-                        return;
-                    }
-                    showClearNotification();
-
-                    handler.post(() -> txtLoginPassword.setText(""));
-
-                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
-                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN_CPS);
-
-                    communicationFlowHandler.setDoneAction(() -> {
-                        storage.clear();
-                        handler.post(() -> {
-                            hideProgressPopup();
-                            closeActivity();
-                        });
-                    });
-
-                    communicationFlowHandler.setErrorAction(() -> {
-                        storage.clear();
-                        storage.clearQuickPass(UrlLoginActivity.this);
-                        handler.post(() -> hideProgressPopup());
-                    });
-
-                    communicationFlowHandler.handleNextAction();
-
-                }).start();
+                doLogin(storage, txtLoginPassword, false, false, null,this);
             }
         });
 
@@ -254,6 +187,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
             }
         }
     }
+
 
     @Override
     protected void closeActivity() {

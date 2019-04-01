@@ -42,44 +42,7 @@ public class AlternativeLoginActivity extends LoginBaseActivity {
             long currentId = sharedPref.getLong(CURRENT_ID, 0);
 
             if(currentId != 0) {
-                hideLoginPopup();
-                showProgressPopup();
-                closeKeyboard();
-
-                new Thread(() -> {
-                    boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, false);
-                    if(!decryptionOk) {
-                        showErrorMessage(R.string.decrypt_identity_fail);
-                        handler.post(() -> {
-                            txtLoginPassword.setText("");
-                            hideProgressPopup();
-                        });
-                        storage.clear();
-                        return;
-                    }
-                    showClearNotification();
-
-                    handler.post(() -> txtLoginPassword.setText(""));
-
-                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK_QRCODE);
-                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN);
-
-                    communicationFlowHandler.setDoneAction(() -> {
-                        storage.clear();
-                        handler.post(() -> {
-                            hideProgressPopup();
-                            closeActivity();
-                        });
-                        AlternativeLoginActivity.this.finish();
-                    });
-
-                    communicationFlowHandler.setErrorAction(() -> {
-                        storage.clear();
-                        handler.post(() -> hideProgressPopup());
-                    });
-
-                    communicationFlowHandler.handleNextAction();
-                }).start();
+                doLogin(storage, txtLoginPassword, false, false, AlternativeLoginActivity.this, this);
             }
         });
     }
