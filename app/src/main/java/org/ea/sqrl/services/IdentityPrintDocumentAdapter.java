@@ -32,6 +32,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.Utils;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -203,6 +204,7 @@ public class IdentityPrintDocumentAdapter extends PrintDocumentAdapter {
         int i = 0;
         try {
             paint.setTypeface(Typeface.MONOSPACE);
+            Utils.refreshStorageFromDb(activity);
             for (String s : storage.getVerifyingRecoveryBlock().split("\n")) {
                 drawCenteredText(canvas, paint, s, lastBlockY + bodyText + (i * bodyText), bodyText);
                 i++;

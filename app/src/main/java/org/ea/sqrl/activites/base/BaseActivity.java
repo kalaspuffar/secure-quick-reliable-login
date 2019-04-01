@@ -269,11 +269,19 @@ public class BaseActivity extends AppCompatActivity {
         showErrorMessageInternal(getString(id));
     }
 
+    public void showErrorMessage(int id, Runnable nextAction) {
+        showErrorMessageInternal(getString(id), nextAction);
+    }
+
     public void showErrorMessage(String message) {
         showErrorMessageInternal(message);
     }
 
     public void showErrorMessageInternal(String message) {
+        showErrorMessageInternal(message, null);
+    }
+
+    public void showErrorMessageInternal(String message, Runnable nextAction) {
 
         AlertDialog.Builder builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -282,6 +290,14 @@ public class BaseActivity extends AppCompatActivity {
                 errorPopupWindow.getContentView() != null &&
                 !isFinishing()
             ) {
+                if (nextAction != null) {
+                    errorPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                        @Override
+                        public void onDismiss() {
+                            nextAction.run();
+                        }
+                    });
+                }
                 txtErrorMessage.setText(message);
                 handler.post(() ->
                     errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
@@ -298,6 +314,9 @@ public class BaseActivity extends AppCompatActivity {
                     .setMessage(message)
                     .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                         dialog.dismiss();
+                        if (nextAction != null) {
+                            nextAction.run();
+                        }
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show()
