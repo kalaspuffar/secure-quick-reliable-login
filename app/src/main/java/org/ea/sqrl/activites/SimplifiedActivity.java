@@ -7,8 +7,11 @@ import android.hardware.biometrics.BiometricPrompt;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -56,8 +59,30 @@ public class SimplifiedActivity extends LoginBaseActivity {
         setupBasePopups(getLayoutInflater(), false);
 
         final ImageButton btnUseIdentity = findViewById(R.id.btnUseIdentity);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(SimplifiedActivity.this.getApplicationContext());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        if (!sharedPreferences.contains("hasUsedSimpleButton")) {
+            final Animation myAnim = AnimationUtils.loadAnimation(this, R.anim.bounce);
+            MyBounceInterpolator interpolator = new MyBounceInterpolator(0.2, 20);
+            myAnim.setInterpolator(interpolator);
+
+            final Runnable bounceAnim = () -> {
+                btnUseIdentity.startAnimation(myAnim);
+            };
+
+            handler.postDelayed(bounceAnim, 1000);
+            handler.postDelayed(bounceAnim, 2000);
+            handler.postDelayed(bounceAnim, 3000);
+            handler.postDelayed(bounceAnim, 4000);
+            handler.postDelayed(bounceAnim, 5000);
+        }
+
         btnUseIdentity.setOnClickListener(
             v -> {
+                editor.putBoolean("hasUsedSimpleButton", true);
+                editor.apply();
                 integrator.setPrompt(this.getString(R.string.scan_site_code));
                 integrator.initiateScan();
             }
@@ -68,6 +93,21 @@ public class SimplifiedActivity extends LoginBaseActivity {
         btnAdvancedFunctions.setOnClickListener((v) ->
             startActivity(new Intent(this, MainActivity.class))
         );
+    }
+
+    class MyBounceInterpolator implements android.view.animation.Interpolator {
+        private double mAmplitude;
+        private double mFrequency;
+
+        MyBounceInterpolator(double amplitude, double frequency) {
+            mAmplitude = amplitude;
+            mFrequency = frequency;
+        }
+
+        public float getInterpolation(float time) {
+            return (float) (-1 * Math.pow(Math.E, -time/ mAmplitude) *
+                    Math.cos(mFrequency * time) + 1);
+        }
     }
 
     @Override
