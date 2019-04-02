@@ -3,8 +3,6 @@ package org.ea.sqrl.activites.identity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.Gravity;
 import android.widget.EditText;
 
 import org.ea.sqrl.R;
@@ -25,7 +23,7 @@ public class ChangePasswordActivity extends BaseActivity {
         final EditText txtNewPassword = findViewById(R.id.txtNewPassword);
         final EditText txtRetypePassword = findViewById(R.id.txtRetypePassword);
 
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(ChangePasswordActivity.this.getApplicationContext());
 
         findViewById(R.id.btnDoChangePassword).setOnClickListener(v -> {
             if(!txtNewPassword.getText().toString().equals(txtRetypePassword.getText().toString())) {
@@ -49,7 +47,7 @@ public class ChangePasswordActivity extends BaseActivity {
                         txtNewPassword.setText("");
                         txtRetypePassword.setText("");
                     });
-                    storage.clearQuickPass(this);
+                    storage.clearQuickPass();
                     storage.clear();
 
                     return;

@@ -7,18 +7,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -26,7 +19,6 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import org.ea.sqrl.R;
-import org.ea.sqrl.activites.account.AccountOptionsActivity;
 import org.ea.sqrl.activites.base.LoginBaseActivity;
 import org.ea.sqrl.activites.create.CreateIdentityActivity;
 import org.ea.sqrl.activites.create.RekeyIdentityActivity;
@@ -74,7 +66,7 @@ public class MainActivity extends LoginBaseActivity {
             }
         });
 
-        setupLoginPopupWindow(getLayoutInflater(), MainActivity.this);
+        setupLoginPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
         setupBasePopups(getLayoutInflater(), false);
@@ -245,7 +237,7 @@ public class MainActivity extends LoginBaseActivity {
                         final TextView txtSite = loginPopupWindow.getContentView().findViewById(R.id.txtSite);
                         txtSite.setText(domain);
 
-                        SQRLStorage storage = SQRLStorage.getInstance();
+                        SQRLStorage storage = SQRLStorage.getInstance(MainActivity.this.getApplicationContext());
                         final TextView txtLoginPassword = loginPopupWindow.getContentView().findViewById(R.id.txtLoginPassword);
                         if(storage.hasQuickPass()) {
                             txtLoginPassword.setHint(getString(R.string.login_identity_quickpass, "" + storage.getHintLength()));

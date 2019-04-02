@@ -60,7 +60,7 @@ public class TextImportActivity extends BaseActivity {
             showProgressPopup();
 
             new Thread(() -> {
-                SQRLStorage storage = SQRLStorage.getInstance();
+                SQRLStorage storage = SQRLStorage.getInstance(TextImportActivity.this.getApplicationContext());
                 String textIdentity = txtTextIdentityInput.getText().toString();
 
                 textIdentity = textIdentity.replaceAll("[^2-9a-zA-Z]", "");

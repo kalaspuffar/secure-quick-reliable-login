@@ -2,13 +2,12 @@ package org.ea.sqrl.processors;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
-import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Log;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
@@ -54,15 +53,10 @@ public class SQRLStorage {
     private static final int PREVIOUS_IDENTITY_KEYS = 3;
     private static final int HEADER_LENGTH = 8;
     private static final int BLOCK_LENGTH_SIZE = 2;
+    private final Context context;
     private ProgressionUpdater progressionUpdater;
     private int passwordBlockLength = 0;
     private static SQRLStorage instance = null;
-
-    private byte[] quickPassKeyEncrypted;
-    private byte[] quickPassRandomSalt;
-    private byte[] quickPassVerificationTag;
-    private int quickPassIterationCount;
-    private byte[] quickPassInitializationVector;
 
     private byte[] tempRescueCode;
 
@@ -72,14 +66,15 @@ public class SQRLStorage {
     private int previousKeyIndex = 0;
     private byte[] biometricKeyEncrypted;
 
-    private SQRLStorage() {
+    private SQRLStorage(Context context) {
+        this.context = context;
         Grc_aesgcm.gcm_initialize();
         NaCl.sodium();
     }
 
-    public static SQRLStorage getInstance() {
+    public static SQRLStorage getInstance(Context context) {
         if(instance == null) {
-            instance = new SQRLStorage();
+            instance = new SQRLStorage(context);
         }
         return instance;
     }
@@ -371,6 +366,17 @@ public class SQRLStorage {
     }
 
     private byte[] decryptIdentityKeyQuickPass(String password) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String quickPassStringData = sharedPreferences.getString("quickpass", null);
+        if(quickPassStringData == null) return null;
+
+        byte[] quickPassData = EncryptionUtils.hex2Byte(quickPassStringData);
+        int quickPassIterationCount = getIntFromFourBytes(quickPassData, 0);
+        byte[] quickPassRandomSalt = Arrays.copyOfRange(quickPassData, 4, 20);
+        byte[] quickPassInitializationVector = Arrays.copyOfRange(quickPassData, 20, 32);
+        byte[] quickPassKeyEncrypted = Arrays.copyOfRange(quickPassData, 32, 64);
+        byte[] quickPassVerificationTag = Arrays.copyOfRange(quickPassData, 64, 80);
+
         this.progressionUpdater.setState(R.string.progress_state_descrypting_identity);
         this.progressionUpdater.setMax(quickPassIterationCount);
 
@@ -685,22 +691,21 @@ public class SQRLStorage {
     }
 
     public boolean hasQuickPass() {
-        return this.quickPassKeyEncrypted != null;
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.contains("quickpass");
     }
 
     public boolean hasBiometric() {
         return this.biometricKeyEncrypted != null;
     }
 
-    public void clearQuickPass(Context context) {
+    public void clearQuickPass() {
         this.previousKeyIndex = 0;
-        try {
-            if(this.quickPassKeyEncrypted != null) {
-                clearBytes(this.quickPassKeyEncrypted);
-            }
-        } finally {
-            this.quickPassKeyEncrypted = null;
-        }
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("quickpass");
+        editor.apply();
 
         try {
             if(this.biometricKeyEncrypted != null) {
@@ -809,38 +814,39 @@ public class SQRLStorage {
             password = password.substring(0, this.getHintLength());
         }
 
-        this.quickPassRandomSalt = new byte[16];
-        this.quickPassInitializationVector = new byte[12];
-        this.quickPassKeyEncrypted = new byte[32];
-        this.quickPassVerificationTag = new byte[16];
+        int quickPassIterationCount;
+        byte[] quickPassRandomSalt = new byte[16];
+        byte[] quickPassInitializationVector = new byte[12];
+        byte[] quickPassKeyEncrypted = new byte[32];
+        byte[] quickPassVerificationTag = new byte[16];
 
         try {
-            entropyHarvester.fetchRandom(this.quickPassRandomSalt);
+            entropyHarvester.fetchRandom(quickPassRandomSalt);
 
-            byte[] encResult = EncryptionUtils.enSCryptTime(password, this.quickPassRandomSalt, logNFactor, 32, (byte) 1, this.progressionUpdater);
-            this.quickPassIterationCount = getIntFromFourBytes(encResult, 0);
+            byte[] encResult = EncryptionUtils.enSCryptTime(password, quickPassRandomSalt, logNFactor, 32, (byte) 1, this.progressionUpdater);
+            quickPassIterationCount = getIntFromFourBytes(encResult, 0);
             byte[] key = Arrays.copyOfRange(encResult, 4, 36);
 
-            entropyHarvester.fetchRandom(this.quickPassInitializationVector);
+            entropyHarvester.fetchRandom(quickPassInitializationVector);
 
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Key keySpec = new SecretKeySpec(key, "AES");
                 Cipher cipher = Cipher.getInstance("AES_256/GCM/NoPadding");
-                GCMParameterSpec params = new GCMParameterSpec(128, this.quickPassInitializationVector);
+                GCMParameterSpec params = new GCMParameterSpec(128, quickPassInitializationVector);
                 cipher.init(Cipher.ENCRYPT_MODE, keySpec, params);
                 cipher.update(encKey);
                 byte[] encryptionResult = cipher.doFinal();
 
-                this.quickPassKeyEncrypted = Arrays.copyOfRange(encryptionResult, 0, 32);
-                this.quickPassVerificationTag = Arrays.copyOfRange(encryptionResult, 32, 48);
+                quickPassKeyEncrypted = Arrays.copyOfRange(encryptionResult, 0, 32);
+                quickPassVerificationTag = Arrays.copyOfRange(encryptionResult, 32, 48);
             } else {
                 byte[] emptyPlainText = new byte[0];
                 Grc_aesgcm.gcm_setkey(key, key.length);
                 int res = Grc_aesgcm.gcm_encrypt_and_tag(
-                        this.quickPassInitializationVector, this.quickPassInitializationVector.length,
+                        quickPassInitializationVector, quickPassInitializationVector.length,
                         emptyPlainText, emptyPlainText.length,
-                        encKey, this.quickPassKeyEncrypted, encKey.length,
-                        this.quickPassVerificationTag, this.quickPassVerificationTag.length
+                        encKey, quickPassKeyEncrypted, encKey.length,
+                        quickPassVerificationTag, quickPassVerificationTag.length
                 );
                 Grc_aesgcm.gcm_zero_ctx();
                 if (res == 0x55555555) return false;
@@ -849,6 +855,17 @@ public class SQRLStorage {
             Log.e(TAG, e.getMessage(), e);
             return false;
         }
+
+        byte[] quickPassData = EncryptionUtils.combine(getIntToFourBytes(quickPassIterationCount), quickPassRandomSalt);
+        quickPassData = EncryptionUtils.combine(quickPassData, quickPassInitializationVector);
+        quickPassData = EncryptionUtils.combine(quickPassData, quickPassKeyEncrypted);
+        quickPassData = EncryptionUtils.combine(quickPassData, quickPassVerificationTag);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("quickpass", EncryptionUtils.byte2hex(quickPassData));
+        editor.apply();
+
         return true;
     }
 

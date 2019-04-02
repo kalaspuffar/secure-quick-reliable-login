@@ -2,8 +2,6 @@ package org.ea.sqrl.activites;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Handler;
-import android.support.constraint.ConstraintLayout;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -13,7 +11,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
@@ -43,7 +40,7 @@ public class SettingsActivity extends BaseActivity {
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(SettingsActivity.this.getApplicationContext());
 
         txtSettingsHintLength = findViewById(R.id.txtSettingsHintLength);
         txtSettingsHintLength.setText(Integer.toString(storage.getHintLength()));
@@ -85,9 +82,8 @@ public class SettingsActivity extends BaseActivity {
         savePopupWindow.setFocusable(true);
 
         final EditText txtPassword = popupView.findViewById(R.id.txtPassword);
-        final TextView progressText = popupView.findViewById(R.id.lblProgressText);
 
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(SettingsActivity.this.getApplicationContext());
 
         popupView.findViewById(R.id.btnCloseSaveSettings).setOnClickListener(v -> savePopupWindow.dismiss());
         final Button btnSaveSettings = popupView.findViewById(R.id.btnSaveSettings);
@@ -96,11 +92,11 @@ public class SettingsActivity extends BaseActivity {
                 savePopupWindow.dismiss();
                 showProgressPopup();
             });
-            storage.clearQuickPass(this);
+            storage.clearQuickPass();
             boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString(), entropyHarvester, false);
             if(!decryptStatus) {
                 showErrorMessage(R.string.decrypt_identity_fail);
-                storage.clearQuickPass(this);
+                storage.clearQuickPass();
                 storage.clear();
                 handler.post(() -> {
                     hideProgressPopup();

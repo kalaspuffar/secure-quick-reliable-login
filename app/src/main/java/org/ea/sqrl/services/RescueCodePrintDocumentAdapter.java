@@ -95,7 +95,7 @@ public class RescueCodePrintDocumentAdapter extends PrintDocumentAdapter {
         Canvas canvas = page.getCanvas();
         Paint paint = new Paint();
 
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(activity);
         List<String> rescueCode = storage.getTempShowableRescueCode();
 
         StringBuilder sb = new StringBuilder();
