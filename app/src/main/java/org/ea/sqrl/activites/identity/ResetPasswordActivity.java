@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.Gravity;
 import android.widget.EditText;
 
 import org.ea.sqrl.R;

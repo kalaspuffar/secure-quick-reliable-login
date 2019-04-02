@@ -22,14 +22,6 @@ import android.print.pdf.PrintedPdfDocument;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
-import com.journeyapps.barcodescanner.BarcodeEncoder;
-
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.Utils;
@@ -38,8 +30,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import io.nayuki.qrcodegen.QrCode;
 

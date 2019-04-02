@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,20 +14,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.account.AccountOptionsActivity;
-import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.adapter.IdentityAdapter;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
-import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.processors.SQRLStorage;
 import java.util.Map;
 

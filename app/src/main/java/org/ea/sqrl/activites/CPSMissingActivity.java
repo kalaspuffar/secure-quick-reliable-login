@@ -3,7 +3,6 @@ package org.ea.sqrl.activites;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.widget.Button;
 import android.widget.TextView;
 

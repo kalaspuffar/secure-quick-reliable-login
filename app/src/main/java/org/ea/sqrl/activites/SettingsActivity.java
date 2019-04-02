@@ -2,8 +2,6 @@ package org.ea.sqrl.activites;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Handler;
-import android.support.constraint.ConstraintLayout;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -13,7 +11,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;

@@ -58,14 +58,6 @@ public class SQRLStorage {
     private int passwordBlockLength = 0;
     private static SQRLStorage instance = null;
 
-    /*
-    private byte[] quickPassKeyEncrypted;
-    private byte[] quickPassRandomSalt;
-    private byte[] quickPassVerificationTag;
-    private int quickPassIterationCount;
-    private byte[] quickPassInitializationVector;
-    */
-
     private byte[] tempRescueCode;
 
     private boolean hasIdentityBlock = false;

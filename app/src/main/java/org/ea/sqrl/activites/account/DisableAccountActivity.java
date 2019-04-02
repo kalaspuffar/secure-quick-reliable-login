@@ -2,8 +2,6 @@ package org.ea.sqrl.activites.account;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.Gravity;
 import android.widget.EditText;
 
 import org.ea.sqrl.R;

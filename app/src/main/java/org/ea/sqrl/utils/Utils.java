@@ -7,14 +7,12 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.google.zxing.FormatException;
 
 import org.ea.sqrl.database.IdentityDBHelper;
 import org.ea.sqrl.processors.SQRLStorage;
-import org.ea.sqrl.services.ClearIdentityService;
 
 import java.util.Locale;
 
