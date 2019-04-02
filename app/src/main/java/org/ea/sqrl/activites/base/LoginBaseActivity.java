@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,20 +14,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.account.AccountOptionsActivity;
-import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.adapter.IdentityAdapter;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
-import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.processors.SQRLStorage;
 import java.util.Map;
 
@@ -80,12 +74,12 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         editor.putLong(CURRENT_ID, keyArray[pos]);
         editor.apply();
 
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(LoginBaseActivity.this.getApplicationContext());
 
         byte[] identityData = mDbHelper.getIdentityData(keyArray[pos]);
 
         if(storage.needsReload(identityData)) {
-            storage.clearQuickPass(this);
+            storage.clearQuickPass();
             try {
                 storage.read(identityData);
             } catch (Exception e) {
@@ -145,14 +139,14 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         unlockRotation();
     }
 
-    public void setupLoginPopupWindow(LayoutInflater layoutInflater, Context quickPassContext) {
+    public void setupLoginPopupWindow(LayoutInflater layoutInflater) {
         View popupView = layoutInflater.inflate(R.layout.fragment_login, null);
 
         loginPopupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
                 true);
 
-        final SQRLStorage storage = SQRLStorage.getInstance();
+        final SQRLStorage storage = SQRLStorage.getInstance(LoginBaseActivity.this.getApplicationContext());
 
         loginPopupWindow.setTouchable(true);
         final EditText txtLoginPassword = popupView.findViewById(R.id.txtLoginPassword);
@@ -173,20 +167,14 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                     new Thread(() -> {
                         boolean decryptionOk = storage.decryptIdentityKey(password.toString(), entropyHarvester, true);
                         if(!decryptionOk) {
-                            final Runnable nextAction = new Runnable() {
-                                @Override
-                                public void run() {
-                                    showLoginPopup();
-                                }
-                            };
-                            showErrorMessage(R.string.decrypt_identity_fail, nextAction);
+                            showErrorMessage(R.string.decrypt_identity_fail, () -> showLoginPopup());
                             handler.post(() -> {
                                 txtLoginPassword.setHint(R.string.login_identity_password);
                                 txtLoginPassword.setText("");
                                 hideProgressPopup();
                             });
                             storage.clear();
-                            storage.clearQuickPass(quickPassContext);
+                            storage.clearQuickPass();
                             return;
                         }
                         showClearNotification();
@@ -206,7 +194,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
                         communicationFlowHandler.setErrorAction(() -> {
                             storage.clear();
-                            storage.clearQuickPass(quickPassContext);
+                            storage.clearQuickPass();
                             handler.post(() -> hideProgressPopup());
                         });
 
@@ -247,7 +235,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                             txtLoginPassword.setText("");
                             hideProgressPopup();
                         });
-                        storage.clearQuickPass(quickPassContext);
+                        storage.clearQuickPass();
                         storage.clear();
                         return;
                     }
@@ -268,7 +256,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
                     communicationFlowHandler.setErrorAction(() -> {
                         storage.clear();
-                        storage.clearQuickPass(quickPassContext);
+                        storage.clearQuickPass();
                         handler.post(() -> hideProgressPopup());
                     });
 

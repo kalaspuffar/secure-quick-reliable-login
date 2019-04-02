@@ -22,11 +22,11 @@ public class AlternativeLoginActivity extends LoginBaseActivity {
         rootView = findViewById(R.id.alternativeIdentityActivityView);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
-        setupLoginPopupWindow(getLayoutInflater(), AlternativeLoginActivity.this);
+        setupLoginPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
         setupBasePopups(getLayoutInflater(), false);
 
-        final SQRLStorage storage = SQRLStorage.getInstance();
+        final SQRLStorage storage = SQRLStorage.getInstance(AlternativeLoginActivity.this.getApplicationContext());
 
         final EditText txtLoginPassword = findViewById(R.id.txtLoginPassword);
         final EditText txtAlternativeId = findViewById(R.id.txtAlternativeId);

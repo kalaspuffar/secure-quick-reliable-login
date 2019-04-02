@@ -2,9 +2,7 @@ package org.ea.sqrl.activites.account;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-import android.view.Gravity;
 import android.widget.EditText;
 
 import org.ea.sqrl.R;
@@ -36,7 +34,7 @@ public class RemoveAccountActivity extends BaseActivity {
 
         findViewById(R.id.btnRemoveAccountRemove).setOnClickListener(v -> {
 
-            SQRLStorage storage = SQRLStorage.getInstance();
+            SQRLStorage storage = SQRLStorage.getInstance(RemoveAccountActivity.this.getApplicationContext());
 
             if(!checkRescueCode(txtRecoverCode1)) return;
             if(!checkRescueCode(txtRecoverCode2)) return;

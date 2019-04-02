@@ -27,7 +27,7 @@ public class RekeyIdentityActivity extends AppCompatActivity {
 
         Utils.setLanguage(this);
 
-        SQRLStorage.getInstance().clear();
+        SQRLStorage.getInstance(RekeyIdentityActivity.this.getApplicationContext()).clear();
 
         final TextView txtRekeyIdentityMessage = findViewById(R.id.txtRekeyIdentityMessage);
         txtRekeyIdentityMessage.setMovementMethod(LinkMovementMethod.getInstance());

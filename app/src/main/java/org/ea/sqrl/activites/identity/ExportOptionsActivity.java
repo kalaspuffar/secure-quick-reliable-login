@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.print.PrintAttributes;
 import android.print.PrintManager;
 import android.util.Log;
@@ -49,14 +48,16 @@ public class ExportOptionsActivity extends BaseActivity {
                 return;
             }
 
+            SQRLStorage storage = SQRLStorage.getInstance(ExportOptionsActivity.this.getApplicationContext());
+
             try {
                 File file = File.createTempFile("identity", ".sqrl", directory);
 
                 byte[] saveData;
                 if(cbWithoutPassword.isChecked()) {
-                    saveData = SQRLStorage.getInstance().createSaveDataWithoutPassword();
+                    saveData = storage.createSaveDataWithoutPassword();
                 } else {
-                    saveData = SQRLStorage.getInstance().createSaveData();
+                    saveData = storage.createSaveData();
                 }
 
                 FileOutputStream FileOutputStream = new FileOutputStream(file);

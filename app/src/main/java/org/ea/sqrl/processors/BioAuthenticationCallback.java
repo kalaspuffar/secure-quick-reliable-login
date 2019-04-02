@@ -2,13 +2,16 @@ package org.ea.sqrl.processors;
 
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.hardware.biometrics.BiometricPrompt;
 
 @TargetApi(value=28)
 public class BioAuthenticationCallback extends BiometricPrompt.AuthenticationCallback {
     private final Runnable doneCallback;
+    private final Context context;
 
-    public BioAuthenticationCallback(Runnable doneCallback) {
+    public BioAuthenticationCallback(Context context, Runnable doneCallback) {
+        this.context = context;
         this.doneCallback = doneCallback;
     }
 
@@ -27,7 +30,7 @@ public class BioAuthenticationCallback extends BiometricPrompt.AuthenticationCal
         super.onAuthenticationSucceeded(result);
         try {
             BiometricPrompt.CryptoObject co = result.getCryptoObject();
-            SQRLStorage.getInstance().decryptIdentityKeyBiometric(co.getCipher());
+            SQRLStorage.getInstance(context).decryptIdentityKeyBiometric(co.getCipher());
 
             new Thread(doneCallback).start();
         } catch (Exception e) {

@@ -2,9 +2,7 @@ package org.ea.sqrl.activites.account;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 
@@ -38,7 +36,7 @@ public class EnableAccountActivity extends BaseActivity {
         txtRecoverCode1.requestFocus();
 
         findViewById(R.id.btnEnableAccountEnable).setOnClickListener((View v) -> {
-            SQRLStorage storage = SQRLStorage.getInstance();
+            SQRLStorage storage = SQRLStorage.getInstance(EnableAccountActivity.this.getApplicationContext());
 
             if(!checkRescueCode(txtRecoverCode1)) return;
             if(!checkRescueCode(txtRecoverCode2)) return;

@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.SimplifiedActivity;
-import org.ea.sqrl.activites.UrlLoginActivity;
 import org.ea.sqrl.activites.identity.ExportOptionsActivity;
 import org.ea.sqrl.activites.MainActivity;
 import org.ea.sqrl.activites.base.LoginBaseActivity;
@@ -28,7 +27,7 @@ public class NewIdentityDoneActivity extends LoginBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_identity_done);
 
-        SQRLStorage.getInstance().clear();
+        SQRLStorage.getInstance(NewIdentityDoneActivity.this.getApplicationContext()).clear();
 
         setupErrorPopupWindow(getLayoutInflater());
 

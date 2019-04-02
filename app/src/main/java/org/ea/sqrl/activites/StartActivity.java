@@ -3,15 +3,8 @@ package org.ea.sqrl.activites;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.constraint.ConstraintLayout;
 import android.text.method.LinkMovementMethod;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.PopupWindow;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
@@ -19,8 +12,6 @@ import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.activites.create.CreateIdentityActivity;
 import org.ea.sqrl.activites.identity.ImportActivity;
 import org.ea.sqrl.activites.identity.TextImportActivity;
-import org.ea.sqrl.processors.ProgressionUpdater;
-import org.ea.sqrl.processors.SQRLStorage;
 
 /**
  * Start activity should be a base for the user so we bring them into the application and they know
