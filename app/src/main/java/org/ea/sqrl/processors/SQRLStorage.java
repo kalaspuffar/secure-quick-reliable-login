@@ -64,7 +64,7 @@ public class SQRLStorage {
     private boolean hasRescueBlock = false;
     private boolean hasPreviousBlock = false;
     private int previousKeyIndex = 0;
-    private byte[] biometricKeyEncrypted;
+    //private byte[] biometricKeyEncrypted;
 
     private SQRLStorage(Context context) {
         this.context = context;
@@ -361,7 +361,13 @@ public class SQRLStorage {
     }
 
     public boolean decryptIdentityKeyBiometric(Cipher cypher) throws Exception {
-        byte[] key = cypher.doFinal(this.biometricKeyEncrypted);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String biometricKeyStringData = sharedPreferences.getString("biometricKey", null);
+        if(biometricKeyStringData == null) return false;
+
+        byte[] biometricKeyEncrypted = EncryptionUtils.hex2Byte(biometricKeyStringData);
+
+        byte[] key = cypher.doFinal(biometricKeyEncrypted);
         return decryptIdentityKeyInternal(key);
     }
 
@@ -696,7 +702,8 @@ public class SQRLStorage {
     }
 
     public boolean hasBiometric() {
-        return this.biometricKeyEncrypted != null;
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.contains("biometricKey");
     }
 
     public void clearQuickPass() {
@@ -705,15 +712,8 @@ public class SQRLStorage {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("quickpass");
+        editor.remove("biometricKey");
         editor.apply();
-
-        try {
-            if(this.biometricKeyEncrypted != null) {
-                clearBytes(this.biometricKeyEncrypted);
-            }
-        } finally {
-            this.biometricKeyEncrypted = null;
-        }
 
         NotificationManager notificationManager =
                 (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -791,7 +791,14 @@ public class SQRLStorage {
 
                 Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1PADDING"); //or try with "RSA"
                 cipher.init(Cipher.ENCRYPT_MODE, keyPair.getPublic());
-                this.biometricKeyEncrypted = cipher.doFinal(encKey);
+
+                byte[] biometricKeyEncrypted = cipher.doFinal(encKey);
+
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("biometricKey", EncryptionUtils.byte2hex(biometricKeyEncrypted));
+                editor.apply();
+
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage(), e);
             }
