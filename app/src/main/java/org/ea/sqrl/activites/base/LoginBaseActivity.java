@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.account.AccountOptionsActivity;
@@ -36,6 +37,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     protected ConstraintLayout rootView;
 
     protected Spinner cboxIdentity;
+    protected TextView txtOneIdentity;
     protected Map<Long, String> identities;
     protected Button btnUseIdentity;
 
@@ -124,9 +126,24 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     protected void updateSpinnerData(long currentId) {
         identities = mDbHelper.getIdentitys();
         if (identities.size() == 0) return;
+        if(currentId == -1) {
+            currentId = identities.keySet().iterator().next();
+        }
+
         cboxIdentity.setOnItemSelectedListener(this);
         cboxIdentity.setAdapter(new IdentityAdapter(identities));
         cboxIdentity.setSelection(getPosition(currentId), false);
+
+        String currentIdName = mDbHelper.getIdentityName(currentId);
+        txtOneIdentity.setText(currentIdName);
+
+        if (identities.size() > 1) {
+            cboxIdentity.setVisibility(View.VISIBLE);
+            txtOneIdentity.setVisibility(View.INVISIBLE);
+        } else {
+            cboxIdentity.setVisibility(View.INVISIBLE);
+            txtOneIdentity.setVisibility(View.VISIBLE);
+        }
     }
 
     public void showLoginPopup() {

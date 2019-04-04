@@ -40,6 +40,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
         setContentView(R.layout.activity_url_login);
 
         cboxIdentity = findViewById(R.id.cboxIdentity);
+        txtOneIdentity = findViewById(R.id.txtOneIdentity);
 
         rootView = findViewById(R.id.urlLoginActivityView);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);

@@ -255,4 +255,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/list_more_shape" />
 
+    <TextView
+        android:id="@+id/txtOneIdentity"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:maxLines="1"
+        android:padding="8dp"
+        android:text=""
+        android:textSize="18sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnCloseMain" />
+
 </android.support.constraint.ConstraintLayout>

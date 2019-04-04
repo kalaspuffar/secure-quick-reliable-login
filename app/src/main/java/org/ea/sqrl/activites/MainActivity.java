@@ -53,6 +53,7 @@ public class MainActivity extends LoginBaseActivity {
         setContentView(R.layout.activity_main);
 
         cboxIdentity = findViewById(R.id.cboxIdentity);
+        txtOneIdentity = findViewById(R.id.txtOneIdentity);
         rootView = findViewById(R.id.mainActivityView);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
@@ -113,7 +114,7 @@ public class MainActivity extends LoginBaseActivity {
                                 long currentId = sharedPref.getLong(CURRENT_ID, 0);
                                 if(currentId != 0) {
                                     mDbHelper.deleteIdentity(currentId);
-                                    updateSpinnerData(currentId);
+                                    updateSpinnerData(-1);
                                     Snackbar.make(rootView, getString(R.string.main_identity_removed), Snackbar.LENGTH_LONG).show();
 
                                     if(!mDbHelper.hasIdentities()) {
