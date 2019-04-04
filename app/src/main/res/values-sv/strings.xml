@@ -46,9 +46,9 @@
 <string name="notification_identity_unlocked_title">Din identitet är upplåst i minnet</string>
 <string name="login_verify_domain_text">Genom att använda detta protokol kan du logga in på den inlästa länken. Var god kontrollera att domänen är den samma som den plats du vill besöka innan du skriver in ditt lösenord</string>
 <string name="login_domain_title">Vill du logga in till:</string>
-<string name="change_password_retype">Skriv in lösenord igen för att verifiera</string>
+<string name="change_password_retype">Skriv lösenord igen</string>
 <string name="change_password_current">Nuvarande lösenord</string>
-<string name="change_password_new_password">Var god välj ett nytt lösenord</string>
+<string name="change_password_new_password">Skapa nytt lösenord</string>
 <string name="change_password_retyped_password_do_not_match">Det nya lösenordet är inte samma som sin återupprepning</string>
 <string name="title_activity_settings">SQRL - Inställningar</string>
 <string name="settings_hint_length">QuickPass längd (antal tecken)</string>
@@ -225,4 +225,6 @@
 <string name="account_options_alternative_id">Alternativt ID</string>
 <string name="title_alternative_identity">Alternativ identitiet</string>
 <string name="button_alternative_identity">Alternativ identitiet</string>
+<string name="startpage_login_with">Logga in med:</string>
+<string name="language_catalan">Catalan</string>
 </resources>

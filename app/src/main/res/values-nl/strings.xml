@@ -223,6 +223,8 @@
 <string name="error_message_stale_page">De SQRL aanmeldpagina is verlopen. Vernieuw de pagina en meld u opnieuw aan met SQRL.</string>
 <string name="error_message_login_failed">SQRL was niet in staat aan te melden bij deze website. Vernieuw de pagina en meld u opnieuw aan. Als het probleem blijft optreden gebruik dan een andere manier om aan te melden.</string>
 <string name="account_options_alternative_id">Alternative ID</string>
-<string name="title_alternative_identity">Alternative identity</string>
-<string name="button_alternative_identity">Alternative identity</string>
+<string name="title_alternative_identity">Alternatieve identiteit</string>
+<string name="button_alternative_identity">\nAlternatieve identiteit</string>
+<string name="startpage_login_with">Aanmelden met:</string>
+<string name="language_catalan">Catalan</string>
 </resources>

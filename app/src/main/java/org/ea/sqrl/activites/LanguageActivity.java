@@ -37,6 +37,7 @@ public class LanguageActivity extends AppCompatActivity {
         List<Language> languages = new ArrayList<>();
         languages.add(new Language(R.string.language_default, ""));
         languages.add(new Language(R.string.language_arabic, "ar"));
+        languages.add(new Language(R.string.language_catalan, "ca"));
         languages.add(new Language(R.string.language_czech, "cs"));
         languages.add(new Language(R.string.language_dutch, "nl"));
         languages.add(new Language(R.string.language_english, "en"));
