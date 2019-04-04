@@ -12,6 +12,13 @@
         android:orderInCategory="90"
         android:title="@string/action_language"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_advanced_options"
+        android:orderInCategory="90"
+        android:title="@string/button_advanced_functions"
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/action_about"
         android:orderInCategory="100"

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.support.design.widget.Snackbar;
 import android.support.v7.content.res.AppCompatResources;
+import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -63,27 +64,6 @@ public class SimplifiedActivity extends LoginBaseActivity {
                 integrator.setPrompt(this.getString(R.string.scan_site_code));
                 integrator.initiateScan();
             }
-        );
-
-        final Button btnScanQrCode = findViewById(R.id.btnScanQrCode);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            // layout android:drawbleLeft crashes on older Android version
-            Drawable drawable = AppCompatResources.getDrawable(this, R.drawable.ic_scan_qr_black_24dp);
-            btnScanQrCode.setCompoundDrawablesRelativeWithIntrinsicBounds(drawable, null, null, null);
-        } else {
-            // no icon, so center text
-            btnScanQrCode.setPadding(btnScanQrCode.getPaddingRight(), btnScanQrCode.getPaddingTop(), btnScanQrCode.getPaddingRight(), btnScanQrCode.getPaddingBottom());
-        }
-        btnScanQrCode.setOnClickListener(
-                v -> {
-                    integrator.setPrompt(this.getString(R.string.scan_site_code));
-                    integrator.initiateScan();
-                }
-        );
-
-        final Button btnAdvancedFunctions = findViewById(R.id.btnAdvancedFunctions);
-        btnAdvancedFunctions.setOnClickListener((v) ->
-            startActivity(new Intent(this, MainActivity.class))
         );
     }
 
