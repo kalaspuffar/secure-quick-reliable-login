@@ -175,6 +175,8 @@ public class CommunicationFlowHandler {
     }
 
     private void runAction(Action a) throws Exception {
+        commHandler.clearLastResponse();
+
         switch (a) {
             case LOGIN:
             case LOGIN_CPS:
