@@ -2,7 +2,19 @@
 
 [![Build Status](https://travis-ci.org/kalaspuffar/secure-quick-reliable-login.svg?branch=master)](https://travis-ci.org/kalaspuffar/secure-quick-reliable-login)
 
-This repository is an implementation for SQRL (Secure Quick Reliable Login) on android.
+This repository is an implementation for SQRL (Secure Quick Reliable Login) on Android.
+
+## Governance
+
+This is an open source project with an open attitude. The application is meant to be free and
+available to anyone. I want this project to be successful. I've put in some of my time, and we
+have contributors to this project, but all releases to Google Play are done by me (Daniel Persson).
+This is a labor of love for me, so I'm trying to keep this project clean and working.
+I recognize that using a product requires trust so for you to understand me perhaps better
+and if you are a developer you might find something interesting. Please take a look at my
+youtube channel for more of me.
+
+[https://www.youtube.com/c/DanielPersson](https://www.youtube.com/c/DanielPersson)
 
 ## Help wanted / appreciated
 
