@@ -1,13 +1,8 @@
 package org.ea.sqrl.processors;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Handler;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,9 +15,6 @@ import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.CPSMissingActivity;
-import org.ea.sqrl.activites.MainActivity;
-import org.ea.sqrl.activites.StartActivity;
-import org.ea.sqrl.activites.identity.ExportOptionsActivity;
 import org.ea.sqrl.services.AskDialogService;
 import org.ea.sqrl.utils.EncryptionUtils;
 
@@ -72,7 +64,7 @@ public class CommunicationFlowHandler {
 
     private static CommunicationFlowHandler instance = null;
     private EntropyHarvester entropyHarvester;
-    private final CommunicationHandler commHandler = CommunicationHandler.getInstance();
+    private final CommunicationHandler commHandler;
     private String serverData = null;
     private String queryLink = null;
     private boolean shouldRunServer = false;
@@ -80,20 +72,23 @@ public class CommunicationFlowHandler {
     private boolean cancelCPS = false;
     private Activity currentActivity;
 
-    private CommunicationFlowHandler() {}
-
-    public static CommunicationFlowHandler getInstance(Activity currentActivity, Handler handler) {
-        if(instance == null) {
-            instance = new CommunicationFlowHandler();
-        }
+    private CommunicationFlowHandler(Activity currentActivity, Handler handler) {
         try {
-            instance.entropyHarvester = EntropyHarvester.getInstance();
+            this.entropyHarvester = EntropyHarvester.getInstance();
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
         }
-        instance.currentActivity = currentActivity;
-        instance.handler = handler;
-        instance.lastTIF = 0;
+        this.commHandler = CommunicationHandler.getInstance(currentActivity);
+        this.currentActivity = currentActivity;
+        this.handler = handler;
+        this.lastTIF = 0;
+    }
+
+    public static CommunicationFlowHandler getInstance(Activity currentActivity, Handler handler) {
+        if(instance == null) {
+            instance = new CommunicationFlowHandler(currentActivity, handler);
+        }
+
         return instance;
     }
 
@@ -180,6 +175,8 @@ public class CommunicationFlowHandler {
     }
 
     private void runAction(Action a) throws Exception {
+        commHandler.clearLastResponse();
+
         switch (a) {
             case LOGIN:
             case LOGIN_CPS:
@@ -327,7 +324,7 @@ public class CommunicationFlowHandler {
     }
 
     protected void postQuery(CommunicationHandler commHandler, boolean noiptest, boolean requestServerUnlockKey) throws Exception {
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(currentActivity);
 
         if (!storage.hasMorePreviousKeys()) {
             postQueryInternal(commHandler, noiptest, requestServerUnlockKey);

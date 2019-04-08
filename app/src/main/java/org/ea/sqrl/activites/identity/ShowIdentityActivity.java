@@ -43,7 +43,7 @@ public class ShowIdentityActivity extends BaseActivity {
 
 
         final TextView txtIdentityText = findViewById(R.id.txtIdentityText);
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(ShowIdentityActivity.this.getApplicationContext());
         try {
             storage.read(qrCodeData);
             txtIdentityText.setText(storage.getVerifyingRecoveryBlock());
@@ -63,9 +63,9 @@ public class ShowIdentityActivity extends BaseActivity {
 
         byte[] saveData;
         if(exportWithoutPassword) {
-            saveData = SQRLStorage.getInstance().createSaveDataWithoutPassword();
+            saveData = storage.createSaveDataWithoutPassword();
         } else {
-            saveData = SQRLStorage.getInstance().createSaveData();
+            saveData = storage.createSaveData();
         }
 
         ImageView imageView = findViewById(R.id.imgQRCode);

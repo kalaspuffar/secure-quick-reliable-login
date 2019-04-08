@@ -2,7 +2,6 @@ package org.ea.sqrl.activites;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,6 +37,7 @@ public class LanguageActivity extends AppCompatActivity {
         List<Language> languages = new ArrayList<>();
         languages.add(new Language(R.string.language_default, ""));
         languages.add(new Language(R.string.language_arabic, "ar"));
+        languages.add(new Language(R.string.language_catalan, "ca"));
         languages.add(new Language(R.string.language_czech, "cs"));
         languages.add(new Language(R.string.language_dutch, "nl"));
         languages.add(new Language(R.string.language_english, "en"));

@@ -7,12 +7,10 @@ import android.hardware.biometrics.BiometricPrompt;
 import android.net.Uri;
 import android.os.Build;
 import android.os.CancellationSignal;
-import android.os.Handler;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -42,6 +40,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
         setContentView(R.layout.activity_url_login);
 
         cboxIdentity = findViewById(R.id.cboxIdentity);
+        txtOneIdentity = findViewById(R.id.txtOneIdentity);
 
         rootView = findViewById(R.id.urlLoginActivityView);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
@@ -86,7 +85,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
         setupBasePopups(getLayoutInflater(), true);
         setupErrorPopupWindow(getLayoutInflater());
 
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(UrlLoginActivity.this.getApplicationContext());
 
         final EditText txtLoginPassword = findViewById(R.id.txtLoginPassword);
         if(storage.hasQuickPass()) {
@@ -117,7 +116,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                                 hideProgressPopup();
                             });
                             storage.clear();
-                            storage.clearQuickPass(UrlLoginActivity.this);
+                            storage.clearQuickPass();
                             return;
                         }
 
@@ -136,7 +135,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
                         communicationFlowHandler.setErrorAction(() -> {
                             storage.clear();
-                            storage.clearQuickPass(UrlLoginActivity.this);
+                            storage.clearQuickPass();
                             handler.post(() -> hideProgressPopup());
                         });
 
@@ -175,7 +174,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                             hideProgressPopup();
                         });
                         storage.clear();
-                        storage.clearQuickPass(this);
+                        storage.clearQuickPass();
                         return;
                     }
                     showClearNotification();
@@ -195,7 +194,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
                     communicationFlowHandler.setErrorAction(() -> {
                         storage.clear();
-                        storage.clearQuickPass(UrlLoginActivity.this);
+                        storage.clearQuickPass();
                         handler.post(() -> hideProgressPopup());
                     });
 
@@ -207,7 +206,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && storage.hasBiometric()) {
             BioAuthenticationCallback biometricCallback =
-                    new BioAuthenticationCallback(() -> {
+                    new BioAuthenticationCallback(UrlLoginActivity.this.getApplicationContext(), () -> {
                         handler.post(() -> showProgressPopup());
                         communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
                         communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN_CPS);
@@ -222,7 +221,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
                         communicationFlowHandler.setErrorAction(() -> {
                             storage.clear();
-                            storage.clearQuickPass(UrlLoginActivity.this);
+                            storage.clearQuickPass();
                             handler.post(() -> hideProgressPopup());
                         });
 

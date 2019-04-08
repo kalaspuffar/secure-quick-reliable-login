@@ -43,8 +43,8 @@ public class ClearIdentityActivity extends AppCompatActivity {
             return;
         }
 
-        SQRLStorage storage = SQRLStorage.getInstance();
-        storage.clearQuickPass(this);
+        SQRLStorage storage = SQRLStorage.getInstance(ClearIdentityActivity.this.getApplicationContext());
+        storage.clearQuickPass();
 
         try {
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");

@@ -202,20 +202,20 @@
 <string name="communication_ip_mismatch"><b>Détection d\'une possible attaque de connexion détectée </b>\n\nConnexion empêchée\n\nLe site Web auquel vous tentiez de vous connecter avec SQRL a peut-être \"usurpé\" l\'identité du site Web réel dans le but de capturer votre identité SQRL et de l\'utiliser pour vous connecter au site Web réel en tant que vous-même.</string>
 <string name="progress_interrupted_title">Progress interrupted</string>
 <string name="progress_interrupted_text">You changed orientation or moved around in the application during operation. The current operation might not be completed correctly, please try again.</string>
-<string name="action_language">Language</string>
+<string name="action_language">Langue</string>
 <string name="title_language">Select language</string>
 <string name="language_default">Default</string>
 <string name="language_arabic">Arabic</string>
 <string name="language_dutch">Dutch</string>
-<string name="language_english">English</string>
-<string name="language_german">German</string>
+<string name="language_english">Anglais</string>
+<string name="language_german">Allemand</string>
 <string name="language_hebrew">Hebrew</string>
-<string name="language_french">French</string>
+<string name="language_french">Français</string>
 <string name="language_japanese">Japanese</string>
 <string name="language_norwegian">Norwegian</string>
 <string name="language_swedish">Swedish</string>
-<string name="language_spanish">Spanish</string>
-<string name="language_russian">Russian</string>
+<string name="language_spanish">Espagnol</string>
+<string name="language_russian">Russe</string>
 <string name="language_hungarian">Hungarian</string>
 <string name="language_slovenian">Slovenian</string>
 <string name="language_czech">Czech</string>
@@ -225,4 +225,6 @@
 <string name="account_options_alternative_id">Alternative ID</string>
 <string name="title_alternative_identity">Alternative identity</string>
 <string name="button_alternative_identity">Alternative identity</string>
+<string name="startpage_login_with">Login with:</string>
+<string name="language_catalan">Catalan</string>
 </resources>

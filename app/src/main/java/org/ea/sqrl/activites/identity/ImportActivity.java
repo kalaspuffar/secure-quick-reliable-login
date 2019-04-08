@@ -4,12 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.view.Gravity;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -55,7 +53,7 @@ public class ImportActivity extends BaseActivity {
             showProgressPopup();
 
             new Thread(() -> {
-                SQRLStorage storage = SQRLStorage.getInstance();
+                SQRLStorage storage = SQRLStorage.getInstance(ImportActivity.this.getApplicationContext());
                 try {
                     boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString(), entropyHarvester, false);
                     if(!decryptStatus) {
@@ -64,11 +62,11 @@ public class ImportActivity extends BaseActivity {
                             txtPassword.setText("");
                             hideProgressPopup();
                         });
-                        storage.clearQuickPass(this);
+                        storage.clearQuickPass();
                         storage.clear();
                         return;
                     }
-                    storage.clearQuickPass(this);
+                    storage.clearQuickPass();
 
                     boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
                     if (!encryptStatus) {
@@ -141,7 +139,7 @@ public class ImportActivity extends BaseActivity {
                 Snackbar.make(rootView, R.string.scan_cancel, Snackbar.LENGTH_LONG).show();
                 ImportActivity.this.finish();
             } else {
-                SQRLStorage storage = SQRLStorage.getInstance();
+                SQRLStorage storage = SQRLStorage.getInstance(ImportActivity.this.getApplicationContext());
                 try {
                     byte[] qrCodeData = Utils.readSQRLQRCode(data);
                     if(qrCodeData.length == 0) {

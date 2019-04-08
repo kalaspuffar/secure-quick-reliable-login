@@ -3,11 +3,14 @@ package org.ea.sqrl.activites;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.hardware.biometrics.BiometricPrompt;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.support.design.widget.Snackbar;
+import android.support.v7.content.res.AppCompatResources;
+import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -51,7 +54,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
         integrator.setOrientationLocked(false);
         integrator.setBarcodeImageEnabled(false);
 
-        setupLoginPopupWindow(getLayoutInflater(), SimplifiedActivity.this);
+        setupLoginPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
         setupBasePopups(getLayoutInflater(), false);
 
@@ -61,12 +64,6 @@ public class SimplifiedActivity extends LoginBaseActivity {
                 integrator.setPrompt(this.getString(R.string.scan_site_code));
                 integrator.initiateScan();
             }
-        );
-
-
-        final Button btnAdvancedFunctions = findViewById(R.id.btnAdvancedFunctions);
-        btnAdvancedFunctions.setOnClickListener((v) ->
-            startActivity(new Intent(this, MainActivity.class))
         );
     }
 
@@ -87,7 +84,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
             long currentId = sharedPref.getLong(CURRENT_ID, 0);
             if(currentId != 0) {
                 byte[] identityData = mDbHelper.getIdentityData(currentId);
-                SQRLStorage storage = SQRLStorage.getInstance();
+                SQRLStorage storage = SQRLStorage.getInstance(SimplifiedActivity.this.getApplicationContext());
                 try {
                     storage.read(identityData);
                 } catch (Exception e) {
@@ -137,7 +134,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
                     final TextView txtSite = loginPopupWindow.getContentView().findViewById(R.id.txtSite);
                     txtSite.setText(domain);
 
-                    SQRLStorage storage = SQRLStorage.getInstance();
+                    SQRLStorage storage = SQRLStorage.getInstance(SimplifiedActivity.this.getApplicationContext());
                     final TextView txtLoginPassword = loginPopupWindow.getContentView().findViewById(R.id.txtLoginPassword);
                     if(storage.hasQuickPass()) {
                         txtLoginPassword.setHint(getString(R.string.login_identity_quickpass, "" + storage.getHintLength()));
@@ -150,7 +147,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
                     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && storage.hasBiometric()) {
 
                         BioAuthenticationCallback biometricCallback =
-                                new BioAuthenticationCallback(() -> {
+                                new BioAuthenticationCallback(SimplifiedActivity.this.getApplicationContext(), () -> {
                                     handler.post(() -> {
                                         hideLoginPopup();
                                         showProgressPopup();
@@ -168,7 +165,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
 
                                     communicationFlowHandler.setErrorAction(() -> {
                                         storage.clear();
-                                        storage.clearQuickPass(SimplifiedActivity.this);
+                                        storage.clearQuickPass();
                                         handler.post(() -> hideProgressPopup());
                                     });
 

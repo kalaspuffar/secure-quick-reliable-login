@@ -24,7 +24,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -40,6 +39,7 @@ import android.widget.TextView;
 import org.ea.sqrl.BuildConfig;
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.LanguageActivity;
+import org.ea.sqrl.activites.MainActivity;
 import org.ea.sqrl.activites.identity.ClearIdentityActivity;
 import org.ea.sqrl.activites.IntroductionActivity;
 import org.ea.sqrl.database.IdentityDBHelper;
@@ -163,6 +163,9 @@ public class BaseActivity extends AppCompatActivity {
                 openedLanguageDialog = true;
                 startActivity(new Intent(this, LanguageActivity.class));
                 return true;
+            case R.id.action_advanced_options:
+                startActivity(new Intent(this, MainActivity.class));
+                return true;
             case R.id.action_about:
                 AlertDialog.Builder builder;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -195,7 +198,7 @@ public class BaseActivity extends AppCompatActivity {
         final TextView lblProgressTitle = popupView.findViewById(R.id.lblProgressTitle);
         final TextView lblProgressText = popupView.findViewById(R.id.lblProgressText);
 
-        SQRLStorage storage = SQRLStorage.getInstance();
+        SQRLStorage storage = SQRLStorage.getInstance(BaseActivity.this.getApplicationContext());
         storage.setProgressionUpdater(new ProgressionUpdater(handler, lblProgressTitle, progressBar, lblProgressText));
     }
 
@@ -394,7 +397,7 @@ public class BaseActivity extends AppCompatActivity {
             mNotificationManager.notify(NOTIFICATION_IDENTITY_UNLOCKED, mBuilder.build());
         }
 
-        long delayMillis = SQRLStorage.getInstance().getIdleTimeout() * 60000;
+        long delayMillis = SQRLStorage.getInstance(BaseActivity.this.getApplicationContext()).getIdleTimeout() * 60000;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             JobInfo jobInfo = new JobInfo.Builder(ClearIdentityService.JOB_NUMBER, new ComponentName(this, ClearIdentityService.class))

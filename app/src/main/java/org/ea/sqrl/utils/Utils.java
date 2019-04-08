@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.google.zxing.FormatException;
@@ -74,7 +73,7 @@ public class Utils {
         long currentId = sharedPref.getLong("current_id", 0);
         IdentityDBHelper aDbHelper = new IdentityDBHelper(activity);
         byte[] identityData = aDbHelper.getIdentityData(currentId);
-        SQRLStorage sqrlStorage = SQRLStorage.getInstance();
+        SQRLStorage sqrlStorage = SQRLStorage.getInstance(activity);
         sqrlStorage.read(identityData);
     }
 }

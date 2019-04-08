@@ -225,4 +225,6 @@
 <string name="account_options_alternative_id">Alternative ID</string>
 <string name="title_alternative_identity">Alternative identity</string>
 <string name="button_alternative_identity">Alternative identity</string>
+<string name="startpage_login_with">Login with:</string>
+<string name="language_catalan">Catalan</string>
 </resources>
