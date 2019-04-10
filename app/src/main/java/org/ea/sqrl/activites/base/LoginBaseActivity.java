@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -168,6 +169,13 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
         loginPopupWindow.setTouchable(true);
         final EditText txtLoginPassword = popupView.findViewById(R.id.txtLoginPassword);
+        txtLoginPassword.setOnEditorActionListener((v, actionId, event) -> {
+            if(actionId == EditorInfo.IME_ACTION_DONE){
+                doLogin(storage, txtLoginPassword, false, false, null, LoginBaseActivity.this);
+                return true;
+            }
+            return false;
+        });
 
         txtLoginPassword.addTextChangedListener(new TextWatcher() {
             @Override

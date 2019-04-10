@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -93,6 +94,14 @@ public class UrlLoginActivity extends LoginBaseActivity {
         } else {
             txtLoginPassword.setHint(R.string.login_identity_password);
         }
+
+        txtLoginPassword.setOnEditorActionListener((v, actionId, event) -> {
+            if(actionId == EditorInfo.IME_ACTION_DONE){
+                doLogin(storage, txtLoginPassword, false, true, null,UrlLoginActivity.this);
+                return true;
+            }
+            return false;
+        });
 
         txtLoginPassword.addTextChangedListener(new TextWatcher() {
             @Override
