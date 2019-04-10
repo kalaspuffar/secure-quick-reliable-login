@@ -225,7 +225,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 storage.clearQuickPass();
                 return;
             }
-            if(!usedCps) showClearNotification();
+            showClearNotification();
 
             handler.post(() -> txtLoginPassword.setText(""));
 
