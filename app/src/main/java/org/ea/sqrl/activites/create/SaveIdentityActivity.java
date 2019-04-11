@@ -6,12 +6,14 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.LoginBaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.PasswordStrengthMeter;
 
 /**
  *
@@ -35,6 +37,10 @@ public class SaveIdentityActivity extends LoginBaseActivity {
         final EditText txtIdentityName = findViewById(R.id.txtIdentityName);
         final EditText txtNewPassword = findViewById(R.id.txtNewPassword);
         final EditText txtRetypePassword = findViewById(R.id.txtRetypePassword);
+        final ViewGroup pwStrengthMeter = findViewById(R.id.passwordStrengthMeter);
+
+        final PasswordStrengthMeter passwordStrengthMeter = new PasswordStrengthMeter(
+                this, txtNewPassword, pwStrengthMeter);
 
 
         final Button btnSaveIdentity = findViewById(R.id.btnSaveIdentity);
