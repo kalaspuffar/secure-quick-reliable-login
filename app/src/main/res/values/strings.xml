@@ -234,8 +234,9 @@
 <string name="password_uppercase">Uppercase</string>
 <string name="password_symbols">Symbols</string>
 <string name="password_digits">Digits</string>
-<string name="imgPasswordContainsLowercase">Indicates whether the password contains lowercase letters</string>
-<string name="imgPasswordContainsUppercase">Indicates whether the password contains uppercase letters</string>
-<string name="imgPasswordContainsDigits">Indicates whether the password contains digits</string>
-<string name="imgPasswordContainsSymbols">Indicates whether the password contains symbols</string>
+<string name="img_password_contains_lowercase">Indicates whether the password contains lowercase letters</string>
+<string name="img_password_contains_uppercase">Indicates whether the password contains uppercase letters</string>
+<string name="img_password_contains_digits">Indicates whether the password contains digits</string>
+<string name="img_password_contains_symbols">Indicates whether the password contains symbols</string>
+<string name="common_password_warning">You are using a very common and easy to guess password. This is highly insecure and should absolutely be avoided!</string>
 </resources>
