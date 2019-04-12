@@ -21,7 +21,6 @@ import com.google.zxing.integration.android.IntentResult;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.LoginBaseActivity;
-import org.ea.sqrl.activites.create.SaveIdentityActivity;
 import org.ea.sqrl.processors.BioAuthenticationCallback;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.CommunicationHandler;
@@ -62,9 +61,8 @@ public class SimplifiedActivity extends LoginBaseActivity {
         final ImageButton btnUseIdentity = findViewById(R.id.btnUseIdentity);
         btnUseIdentity.setOnClickListener(
             v -> {
-                startActivity(new Intent(this, SaveIdentityActivity.class));
-                //integrator.setPrompt(this.getString(R.string.scan_site_code));
-                //integrator.initiateScan();
+                integrator.setPrompt(this.getString(R.string.scan_site_code));
+                integrator.initiateScan();
             }
         );
     }
