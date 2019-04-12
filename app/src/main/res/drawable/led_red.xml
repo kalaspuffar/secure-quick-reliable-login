@@ -4,7 +4,7 @@
     android:shape="oval">
 
     <solid
-        android:color="@color/password_strength_bad"/>
+        android:color="@color/password_strength_poor"/>
 
     <size
         android:width="15dp"

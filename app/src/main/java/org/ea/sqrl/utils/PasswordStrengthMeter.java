@@ -23,15 +23,30 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+/**
+ * Calculates and displays a password strength rating. Optionally, it also compares
+ * the password against a list of common and thus unsafe passwords.
+ * All expensive operations are executed on a background thread.
+ *
+ * It expects the password_strength_meter.xml to be present in the calling layout
+ *
+ * @author Alexander Hauser (alexhauser)
+ */
 public class PasswordStrengthMeter {
 
     private final Context mContext;
     private final boolean mUsePasswordList;
+    private final HashSet<String> mPasswordList = new HashSet<>(10000);
     private EditText mPasswordField;
     private ViewGroup mPassStrengthLayout;
-    private final HashSet<String> mPasswordList = new HashSet<>(10000);
 
 
+    /**
+     * Creates a PasswordStrengthMeter object and optionally loads the common password list to memory.
+     *
+     * @param context The context of the caller.
+     * @param usePasswordList Should be true if a check against a list of common passwords is desired, or false otherwise.
+     */
     public PasswordStrengthMeter(Context context, boolean usePasswordList) {
 
         mContext = context;
@@ -43,6 +58,13 @@ public class PasswordStrengthMeter {
         }
     }
 
+    /**
+     * Registers a TextChangedListener for the given password field and calculates
+     * and displays the password strength each time the listener fires.
+     *
+     * @param passwordField The password field to be observed.
+     * @param passStrengthLayout A ViewGroup containing the password_strength_meter.xml layout.
+     */
     public void register(EditText passwordField, ViewGroup passStrengthLayout) {
 
         mPasswordField = passwordField;
@@ -59,13 +81,14 @@ public class PasswordStrengthMeter {
         });
     }
 
-    class StrengthResult {
+    class PasswordStrengthResult {
 
         public Map<CharacterClass, Integer> CharClassCounts;
         public int StrengthPoints = 0;
         public boolean IsCommonPassword = false;
+        public PasswordRating Rating = PasswordRating.Poor;
 
-        public StrengthResult() {
+        public PasswordStrengthResult() {
 
             CharClassCounts = new HashMap<>();
 
@@ -81,6 +104,13 @@ public class PasswordStrengthMeter {
         Uppercase,
         Digit,
         Symbol
+    }
+
+    protected enum PasswordRating {
+
+        Poor,
+        Medium,
+        Good
     }
 
 
@@ -129,7 +159,7 @@ public class PasswordStrengthMeter {
     }
 
 
-    class CalcPasswordStrengthAsyncTask extends AsyncTask<String, Void, StrengthResult> {
+    class CalcPasswordStrengthAsyncTask extends AsyncTask<String, Void, PasswordStrengthResult> {
 
         private final Context mContext;
 
@@ -139,22 +169,13 @@ public class PasswordStrengthMeter {
         }
 
         @Override
-        protected StrengthResult doInBackground(String... args) {
+        protected PasswordStrengthResult doInBackground(String... args) {
 
             CharacterClass characterClass;
-            StrengthResult result = new StrengthResult();
+            PasswordStrengthResult result = new PasswordStrengthResult();
             String password = args[0];
-
-            // Check common passwords list
-            if (mUsePasswordList) {
-                if (mPasswordList.contains(password)) {
-                    result.IsCommonPassword = true;
-                    return result;
-                }
-            }
-
-            // Start counting
             int passwordLength = password.length();
+
             if (passwordLength <= 7) result.StrengthPoints = 0;
             else if (passwordLength <= 10) result.StrengthPoints = 2;
             else if (passwordLength <= 15) result.StrengthPoints = 3;
@@ -172,59 +193,72 @@ public class PasswordStrengthMeter {
                 Integer count = result.CharClassCounts.get(characterClass);
                 if (count == null) count = 0;
 
-                if (count == 0) result.StrengthPoints++; // increase only for the first of each class
+                if (count == 0) result.StrengthPoints++; // increase only once per class
                 result.CharClassCounts.put(characterClass, count + 1);
             }
+
+            // Check common passwords list
+            if (mUsePasswordList) {
+                if (mPasswordList.contains(password)) {
+                    result.IsCommonPassword = true;
+                    result.StrengthPoints = 0;
+                }
+            }
+
+            if (result.StrengthPoints <= 3) result.Rating = PasswordRating.Poor;
+            else if (result.StrengthPoints <= 6) result.Rating = PasswordRating.Medium;
+            else if (result.StrengthPoints <= 9) result.Rating = PasswordRating.Good;
 
             return result;
 
         }
 
         @Override
-        protected void onPostExecute(StrengthResult result) {
-
-            Map<ImageView, Integer> countMap = new HashMap<>();
-            TextView txtPasswordStrength;
-            TextView txtCommonPasswordWarning;
+        protected void onPostExecute(PasswordStrengthResult result) {
 
             try {
-                txtPasswordStrength = mPassStrengthLayout.findViewById(R.id.txtPasswordStrength);
-                txtCommonPasswordWarning = mPassStrengthLayout.findViewById(R.id.txtCommonPasswordWarning);
-
-                if (result.StrengthPoints <= 3)
-                {
-                    txtPasswordStrength.setText(mContext.getText(R.string.password_strength_bad));
-                    txtPasswordStrength.setBackgroundColor(
-                            ContextCompat.getColor(mContext, R.color.password_strength_bad));
-                }
-                else if (result.StrengthPoints <= 6) {
-                    txtPasswordStrength.setText(mContext.getText(R.string.password_strength_medium));
-                    txtPasswordStrength.setBackgroundColor(
-                            ContextCompat.getColor(mContext, R.color.password_strength_medium));
-                }
-                else if (result.StrengthPoints <= 9){
-                    txtPasswordStrength.setText(mContext.getText(R.string.password_strength_good));
-                    txtPasswordStrength.setBackgroundColor(
-                            ContextCompat.getColor(mContext, R.color.password_strength_good));
-                }
-
+                TextView txtPasswordStrength = mPassStrengthLayout.findViewById(R.id.txtPasswordStrength);
+                TextView txtCommonPasswordWarning = mPassStrengthLayout.findViewById(R.id.txtCommonPasswordWarning);
                 ImageView imgUppercase = mPassStrengthLayout.findViewById(R.id.imgPasswordContainsUppercase);
                 ImageView imgLowercase = mPassStrengthLayout.findViewById(R.id.imgPasswordContainsLowercase);
                 ImageView imgDigits = mPassStrengthLayout.findViewById(R.id.imgPasswordContainsDigits);
                 ImageView imgSymbols = mPassStrengthLayout.findViewById(R.id.imgSymbols);
 
-                countMap.put(imgUppercase, result.CharClassCounts.get(CharacterClass.Uppercase));
-                countMap.put(imgLowercase, result.CharClassCounts.get(CharacterClass.Lowercase));
-                countMap.put(imgDigits, result.CharClassCounts.get(CharacterClass.Digit));
-                countMap.put(imgSymbols, result.CharClassCounts.get(CharacterClass.Symbol));
+                switch (result.Rating) {
 
-                for (ImageView iv : countMap.keySet()) {
+                    case Poor:
+                        txtPasswordStrength.setText(mContext.getText(R.string.password_strength_poor));
+                        txtPasswordStrength.setBackgroundColor(
+                                ContextCompat.getColor(mContext, R.color.password_strength_poor));
+                        break;
 
-                    int count = countMap.get(iv);
+                    case Medium:
+                        txtPasswordStrength.setText(mContext.getText(R.string.password_strength_medium));
+                        txtPasswordStrength.setBackgroundColor(
+                                ContextCompat.getColor(mContext, R.color.password_strength_medium));
+                        break;
+
+                    case Good:
+                        txtPasswordStrength.setText(mContext.getText(R.string.password_strength_good));
+                        txtPasswordStrength.setBackgroundColor(
+                                ContextCompat.getColor(mContext, R.color.password_strength_good));
+                        break;
+                }
+
+                ImageView iv = null;
+                for (CharacterClass cc : result.CharClassCounts.keySet()) {
+                    if (cc == CharacterClass.Lowercase) iv = imgLowercase;
+                    if (cc == CharacterClass.Uppercase) iv = imgUppercase;
+                    if (cc == CharacterClass.Digit) iv = imgDigits;
+                    if (cc == CharacterClass.Symbol) iv = imgSymbols;
+
+                    int count = result.CharClassCounts.get(cc);
+
                     Drawable drawable = count > 0 ?
                             ContextCompat.getDrawable(mContext, R.drawable.led_green) :
                             ContextCompat.getDrawable(mContext, R.drawable.led_red);
-                    iv.setImageDrawable(drawable);
+
+                    if (iv != null) iv.setImageDrawable(drawable);
                 }
 
                 if (result.IsCommonPassword)
