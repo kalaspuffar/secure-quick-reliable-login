@@ -21,7 +21,6 @@ import org.ea.sqrl.utils.PasswordStrengthMeter;
  */
 public class SaveIdentityActivity extends LoginBaseActivity {
     private static final String TAG = "SaveIdentityActivity";
-    private PasswordStrengthMeter mPasswordStrengthMeter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +39,8 @@ public class SaveIdentityActivity extends LoginBaseActivity {
         final EditText txtRetypePassword = findViewById(R.id.txtRetypePassword);
         final ViewGroup pwStrengthMeter = findViewById(R.id.passwordStrengthMeter);
 
-        mPasswordStrengthMeter = new PasswordStrengthMeter(this, true);
-        mPasswordStrengthMeter.register(txtNewPassword, pwStrengthMeter);
-
+        new PasswordStrengthMeter(this, true)
+                .register(txtNewPassword, pwStrengthMeter);
 
         final Button btnSaveIdentity = findViewById(R.id.btnSaveIdentity);
         btnSaveIdentity.setOnClickListener(v -> {
