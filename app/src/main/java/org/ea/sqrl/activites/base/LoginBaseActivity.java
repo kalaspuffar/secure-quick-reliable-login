@@ -258,7 +258,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
 
             communicationFlowHandler.setErrorAction(() -> {
                 storage.clear();
-                storage.clearQuickPass();
                 handler.post(() -> hideProgressPopup());
             });
 
