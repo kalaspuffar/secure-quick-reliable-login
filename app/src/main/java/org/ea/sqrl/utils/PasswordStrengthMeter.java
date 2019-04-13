@@ -119,7 +119,7 @@ public class PasswordStrengthMeter {
                 reader = new BufferedReader(new InputStreamReader(fileInputStream));
                 String line = reader.readLine();
                 while (line != null) {
-                    mCommonPasswordList.add(line);
+                    mCommonPasswordList.add(line.toLowerCase());
                     if (isCancelled()) return null;
                     line = reader.readLine();
                 }
@@ -184,7 +184,7 @@ public class PasswordStrengthMeter {
 
             // Check common passwords list
             if (mCheckForCommonPasswords) {
-                if (mCommonPasswordList.contains(password)) {
+                if (mCommonPasswordList.contains(password.toLowerCase())) {
                     result.IsCommonPassword = true;
                     result.StrengthPoints = 0;
                 }
