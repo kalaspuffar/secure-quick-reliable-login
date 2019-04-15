@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.ea.sqrl.R;
 
@@ -22,6 +23,8 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * Calculates and displays a password strength rating. Optionally, it also compares
@@ -33,11 +36,12 @@ import java.util.Map;
  */
 public class PasswordStrengthMeter {
 
+    private final int PW_MIN_LENGTH = 8;
     private final int STRENGTH_POINTS_MIN_MEDIUM = 5;
     private final int STRENGTH_POINTS_MIN_GOOD = 9;
     private final Context mContext;
     private final boolean mCheckForCommonPasswords;
-    private final HashSet<String> mCommonPasswordList = new HashSet<>(10000);
+    private final HashSet<String> mCommonPasswordList = new HashSet<>(77036);
     private ViewGroup mPassStrengthLayout;
     private CalcPasswordStrengthAsyncTask mLastCalcTask;
 
@@ -84,23 +88,6 @@ public class PasswordStrengthMeter {
         });
     }
 
-    class PasswordStrengthResult {
-
-        public Map<CharacterClass, Integer> CharClassCounts;
-        public int StrengthPoints = 0;
-        public boolean IsCommonPassword = false;
-        public PasswordRating Rating = PasswordRating.Poor;
-
-        public PasswordStrengthResult() {
-
-            CharClassCounts = new HashMap<>();
-
-            for (CharacterClass cc : CharacterClass.values()) {
-                CharClassCounts.put(cc, 0);
-            }
-        }
-    }
-
 
     class LoadPasswordListAsyncTask extends AsyncTask<Void, Void, Void> {
 
@@ -114,16 +101,25 @@ public class PasswordStrengthMeter {
                 mCommonPasswordList.clear();
 
                 fileInputStream = mContext.getResources().openRawResource(
-                        mContext.getResources().getIdentifier("most_common_passwords_10k",
+                        mContext.getResources().getIdentifier("common_passwords", //most_common_passwords_10k
                                 "raw", mContext.getPackageName()));
-                reader = new BufferedReader(new InputStreamReader(fileInputStream));
-                String line = reader.readLine();
-                while (line != null) {
-                    mCommonPasswordList.add(line.toLowerCase());
-                    if (isCancelled()) return null;
-                    line = reader.readLine();
+
+                ZipInputStream zis = new ZipInputStream(fileInputStream);
+                ZipEntry zipEntry = zis.getNextEntry();
+                if (zipEntry != null) {
+
+                    reader = new BufferedReader(new InputStreamReader(zis));
+                    String line = reader.readLine();
+                    while (line != null) {
+                        mCommonPasswordList.add(line.toLowerCase());
+                        if (isCancelled()) return null;
+                        line = reader.readLine();
+                    }
+                    reader.close();
                 }
-                reader.close();
+                zis.closeEntry();
+                zis.close();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -133,6 +129,7 @@ public class PasswordStrengthMeter {
 
         @Override
         protected void onPostExecute(Void result) {
+
             /*
             Toast.makeText(mContext, "Password list imported! Elements: " + mCommonPasswordList.size(),
                 Toast.LENGTH_SHORT).show();
@@ -155,16 +152,16 @@ public class PasswordStrengthMeter {
             CharacterClass characterClass;
             PasswordStrengthResult result = new PasswordStrengthResult();
             String password = args[0];
-            int passwordLength = password.length();
+            result.PasswordLength = password.length();
 
-            if (passwordLength <= 5) result.StrengthPoints = 0;
-            else if (passwordLength <= 8) result.StrengthPoints = 1;
-            else if (passwordLength <= 10) result.StrengthPoints = 2;
-            else if (passwordLength <= 13) result.StrengthPoints = 5;
-            else if (passwordLength <= 16) result.StrengthPoints = 10;
+            if (result.PasswordLength <= 5) result.StrengthPoints = 0;
+            else if (result.PasswordLength <= 8) result.StrengthPoints = 1;
+            else if (result.PasswordLength <= 10) result.StrengthPoints = 2;
+            else if (result.PasswordLength <= 13) result.StrengthPoints = 5;
+            else if (result.PasswordLength <= 16) result.StrengthPoints = 10;
             else result.StrengthPoints = 30;
 
-            for (int i=0; i<passwordLength; i++) {
+            for (int i=0; i < result.PasswordLength; i++) {
 
                 char c = password.charAt(i);
 
@@ -190,14 +187,14 @@ public class PasswordStrengthMeter {
                 }
             }
 
-            if (isCancelled()) return null;
-
             if (result.StrengthPoints < STRENGTH_POINTS_MIN_MEDIUM) result.Rating = PasswordRating.Poor;
             else if (result.StrengthPoints < STRENGTH_POINTS_MIN_GOOD) result.Rating = PasswordRating.Medium;
             else result.Rating = PasswordRating.Good;
 
-            return result;
+            // Last chance to detect cancellation
+            if (isCancelled()) return null;
 
+            return result;
         }
 
         @Override
@@ -207,7 +204,7 @@ public class PasswordStrengthMeter {
 
             try {
                 TextView txtPasswordStrength = mPassStrengthLayout.findViewById(R.id.txtPasswordStrength);
-                TextView txtCommonPasswordWarning = mPassStrengthLayout.findViewById(R.id.txtCommonPasswordWarning);
+                TextView txtPasswordWarning = mPassStrengthLayout.findViewById(R.id.txtPasswordWarning);
                 ImageView imgUppercase = mPassStrengthLayout.findViewById(R.id.imgPasswordContainsUppercase);
                 ImageView imgLowercase = mPassStrengthLayout.findViewById(R.id.imgPasswordContainsLowercase);
                 ImageView imgDigits = mPassStrengthLayout.findViewById(R.id.imgPasswordContainsDigits);
@@ -254,9 +251,17 @@ public class PasswordStrengthMeter {
                     if (iv != null) iv.setImageDrawable(drawable);
                 }
 
-                if (mCheckForCommonPasswords && result.IsCommonPassword)
-                    txtCommonPasswordWarning.setVisibility(View.VISIBLE);
-                else txtCommonPasswordWarning.setVisibility(View.GONE);
+                if (result.PasswordLength > 0 && result.PasswordLength < PW_MIN_LENGTH) {
+                    txtPasswordWarning.setText(R.string.short_password_warning);
+                    txtPasswordWarning.setVisibility(View.VISIBLE);
+                }
+                else {
+                    if (mCheckForCommonPasswords && result.IsCommonPassword) {
+                        txtPasswordWarning.setText(R.string.common_password_warning);
+                        txtPasswordWarning.setVisibility(View.VISIBLE);
+                    }
+                    else txtPasswordWarning.setVisibility(View.GONE);
+                }
 
                 /*
                 Toast.makeText(mContext, "Score: " + result.StrengthPoints,
@@ -269,6 +274,24 @@ public class PasswordStrengthMeter {
         }
     }
 
+
+    class PasswordStrengthResult {
+
+        public int StrengthPoints = 0;
+        public int PasswordLength = 0;
+        public Map<CharacterClass, Integer> CharClassCounts;
+        public boolean IsCommonPassword = false;
+        public PasswordRating Rating = PasswordRating.Poor;
+
+        public PasswordStrengthResult() {
+
+            CharClassCounts = new HashMap<>();
+
+            for (CharacterClass cc : CharacterClass.values()) {
+                CharClassCounts.put(cc, 0);
+            }
+        }
+    }
 
     protected enum CharacterClass {
 
