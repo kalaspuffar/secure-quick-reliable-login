@@ -62,7 +62,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         setupProgressPopupWindow(getLayoutInflater());
     }
 
-    protected void closeActivity() {}
+    public void closeActivity() {}
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
