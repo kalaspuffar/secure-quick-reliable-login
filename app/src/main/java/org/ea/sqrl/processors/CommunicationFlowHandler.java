@@ -565,4 +565,6 @@ public class CommunicationFlowHandler {
     public void setNoCPSServer() {
         this.cpsServerStarted = true;
     }
+
+    public Handler getHandler() { return handler; }
 }

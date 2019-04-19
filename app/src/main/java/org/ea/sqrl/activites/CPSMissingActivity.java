@@ -58,7 +58,7 @@ public class CPSMissingActivity  extends LoginBaseActivity {
     }
 
     @Override
-    protected void closeActivity() {
+    public void closeActivity() {
         CPSMissingActivity.this.finishAffinity();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             CPSMissingActivity.this.finishAndRemoveTask();
