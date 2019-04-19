@@ -188,7 +188,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
     }
 
     @Override
-    protected void closeActivity() {
+    public void closeActivity() {
         UrlLoginActivity.this.finishAffinity();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             UrlLoginActivity.this.finishAndRemoveTask();
