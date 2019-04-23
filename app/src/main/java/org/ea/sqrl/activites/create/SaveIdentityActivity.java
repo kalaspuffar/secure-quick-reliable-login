@@ -39,7 +39,7 @@ public class SaveIdentityActivity extends LoginBaseActivity {
         final EditText txtRetypePassword = findViewById(R.id.txtRetypePassword);
         final ViewGroup pwStrengthMeter = findViewById(R.id.passwordStrengthMeter);
 
-        new PasswordStrengthMeter(this, true)
+        new PasswordStrengthMeter(this)
                 .register(txtNewPassword, pwStrengthMeter);
 
         final Button btnSaveIdentity = findViewById(R.id.btnSaveIdentity);

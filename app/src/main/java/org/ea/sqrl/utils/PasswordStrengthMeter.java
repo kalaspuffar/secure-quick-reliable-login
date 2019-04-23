@@ -27,10 +27,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
- * Calculates and displays a password strength rating. Optionally, it also compares
- * the password against a list of common and thus unsafe passwords.
- *
- * It expects the password_strength_meter.xml to be present in the calling layout
+ * Calculates and displays a password strength rating.
+ * Expects the password_strength_meter.xml to be present in the calling layout
  *
  * @author Alexander Hauser (alexhauser)
  */
@@ -40,27 +38,18 @@ public class PasswordStrengthMeter {
     private final int STRENGTH_POINTS_MIN_MEDIUM = 5;
     private final int STRENGTH_POINTS_MIN_GOOD = 9;
     private final Context mContext;
-    private final boolean mCheckForCommonPasswords;
-    private final HashSet<String> mCommonPasswordList = new HashSet<>(77036);
     private ViewGroup mPassStrengthLayout;
     private CalcPasswordStrengthAsyncTask mLastCalcTask;
 
 
     /**
-     * Creates a PasswordStrengthMeter object and optionally loads the common password list to memory.
+     * Creates a PasswordStrengthMeter object.
      *
      * @param context The context of the caller.
-     * @param checkForCommonPasswords Should be true if a check against a list of common passwords is desired, or false otherwise.
      */
-    public PasswordStrengthMeter(Context context, boolean checkForCommonPasswords) {
+    public PasswordStrengthMeter(Context context) {
 
         mContext = context;
-        mCheckForCommonPasswords = checkForCommonPasswords;
-
-        if (checkForCommonPasswords) {
-            new LoadPasswordListAsyncTask()
-                    .execute();
-        }
     }
 
     /**
@@ -89,55 +78,6 @@ public class PasswordStrengthMeter {
     }
 
 
-    class LoadPasswordListAsyncTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            BufferedReader reader;
-            InputStream fileInputStream;
-
-            try {
-                mCommonPasswordList.clear();
-
-                fileInputStream = mContext.getResources().openRawResource(
-                        mContext.getResources().getIdentifier("common_passwords", //most_common_passwords_10k
-                                "raw", mContext.getPackageName()));
-
-                ZipInputStream zis = new ZipInputStream(fileInputStream);
-                ZipEntry zipEntry = zis.getNextEntry();
-                if (zipEntry != null) {
-
-                    reader = new BufferedReader(new InputStreamReader(zis));
-                    String line = reader.readLine();
-                    while (line != null) {
-                        mCommonPasswordList.add(line.toLowerCase());
-                        if (isCancelled()) return null;
-                        line = reader.readLine();
-                    }
-                    reader.close();
-                }
-                zis.closeEntry();
-                zis.close();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-
-            /*
-            Toast.makeText(mContext, "Password list imported! Elements: " + mCommonPasswordList.size(),
-                Toast.LENGTH_SHORT).show();
-            */
-        }
-    }
-
-
     class CalcPasswordStrengthAsyncTask extends AsyncTask<String, Void, PasswordStrengthResult> {
 
         @Override
@@ -149,11 +89,11 @@ public class PasswordStrengthMeter {
                 if (isCancelled()) return null;
             }
 
-            CharacterClass characterClass;
             PasswordStrengthResult result = new PasswordStrengthResult();
+            CharacterClass characterClass;
             String password = args[0];
-            result.PasswordLength = password.length();
 
+            result.PasswordLength = password.length();
             if (result.PasswordLength <= 5) result.StrengthPoints = 0;
             else if (result.PasswordLength <= 8) result.StrengthPoints = 1;
             else if (result.PasswordLength <= 10) result.StrengthPoints = 2;
@@ -177,14 +117,6 @@ public class PasswordStrengthMeter {
                 result.CharClassCounts.put(characterClass, count + 1);
 
                 if (isCancelled()) return null;
-            }
-
-            // Check common passwords list
-            if (mCheckForCommonPasswords) {
-                if (mCommonPasswordList.contains(password.toLowerCase())) {
-                    result.IsCommonPassword = true;
-                    result.StrengthPoints = 0;
-                }
             }
 
             if (result.StrengthPoints < STRENGTH_POINTS_MIN_MEDIUM) result.Rating = PasswordRating.Poor;
@@ -255,18 +187,7 @@ public class PasswordStrengthMeter {
                     txtPasswordWarning.setText(R.string.short_password_warning);
                     txtPasswordWarning.setVisibility(View.VISIBLE);
                 }
-                else {
-                    if (mCheckForCommonPasswords && result.IsCommonPassword) {
-                        txtPasswordWarning.setText(R.string.common_password_warning);
-                        txtPasswordWarning.setVisibility(View.VISIBLE);
-                    }
-                    else txtPasswordWarning.setVisibility(View.GONE);
-                }
-
-                /*
-                Toast.makeText(mContext, "Score: " + result.StrengthPoints,
-                        Toast.LENGTH_SHORT).show();
-                */
+                else txtPasswordWarning.setVisibility(View.GONE);
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -280,7 +201,6 @@ public class PasswordStrengthMeter {
         public int StrengthPoints = 0;
         public int PasswordLength = 0;
         public Map<CharacterClass, Integer> CharClassCounts;
-        public boolean IsCommonPassword = false;
         public PasswordRating Rating = PasswordRating.Poor;
 
         public PasswordStrengthResult() {
