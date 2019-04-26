@@ -227,9 +227,9 @@
 <string name="button_alternative_identity">Alternative identity</string>
 <string name="startpage_login_with">Login with:</string>
 <string name="language_catalan">Catalan</string>
-<string name="password_strength_poor">PASSWORD STRENGTH: POOR</string>
-<string name="password_strength_medium">PASSWORD STRENGTH: MEDIUM</string>
-<string name="password_strength_good">PASSWORD STRENGTH: GOOD</string>
+<string name="password_strength_poor">Password strength: poor</string>
+<string name="password_strength_medium">Password strength: medium</string>
+<string name="password_strength_good">Password strength: good</string>
 <string name="password_lowercase">Lowercase</string>
 <string name="password_uppercase">Uppercase</string>
 <string name="password_symbols">Symbols</string>
