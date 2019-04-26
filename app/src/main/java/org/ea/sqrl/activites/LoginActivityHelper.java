@@ -38,7 +38,6 @@ public class LoginActivityHelper {
 
                     communicationFlowHandler.setErrorAction(() -> {
                         storage.clear();
-                        storage.clearQuickPass();
                         communicationFlowHandler.getHandler().post(() -> activity.hideProgressPopup());
                     });
 
