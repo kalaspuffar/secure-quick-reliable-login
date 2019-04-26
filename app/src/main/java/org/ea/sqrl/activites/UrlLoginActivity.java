@@ -154,7 +154,6 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
                         communicationFlowHandler.setErrorAction(() -> {
                             storage.clear();
-                            storage.clearQuickPass();
                             handler.post(() -> hideProgressPopup());
                         });
 

@@ -38,7 +38,6 @@ public class CPSMissingActivity  extends LoginBaseActivity {
 
         communicationFlowHandler.setErrorAction(() -> {
             storage.clear();
-            storage.clearQuickPass();
             handler.post(() -> hideProgressPopup());
         });
 
