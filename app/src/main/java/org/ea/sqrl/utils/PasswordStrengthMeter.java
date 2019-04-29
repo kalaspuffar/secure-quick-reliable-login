@@ -83,8 +83,11 @@ public class PasswordStrengthMeter {
             String password = args[0];
 
             result.passwordLength = password.length();
-            if (result.passwordLength > PW_MIN_LENGTH) result.strengthPoints = result.passwordLength;
-            else result.strengthPoints = (int)(result.passwordLength/2);
+            if (result.passwordLength > PW_MIN_LENGTH) {
+                result.strengthPoints = result.passwordLength;
+            } else {
+                result.strengthPoints = (int)(result.passwordLength/2);
+            }
 
             for (int i = 0; i < password.length(); i++) {
 
@@ -95,19 +98,16 @@ public class PasswordStrengthMeter {
                         result.strengthPoints += 2;
                         result.uppercaseUsed = true;
                     }
-                }
-                else if (c >= 97 && c <= 122) { // Lowercase
+                } else if (c >= 97 && c <= 122) { // Lowercase
                     if (!result.lowercaseUsed) {
                         result.lowercaseUsed = true;
                     }
-                }
-                else if (c >= 48 && c <= 57) {  // Digit
+                } else if (c >= 48 && c <= 57) {  // Digit
                     if (!result.digitsUsed) {
                         result.strengthPoints += 2;
                         result.digitsUsed = true;
                     }
-                }
-                else {                          // Symbol
+                } else {                          // Symbol
                     if (!result.symbolsUsed) {
                         result.strengthPoints += 2;
                         result.symbolsUsed = true;
@@ -118,9 +118,11 @@ public class PasswordStrengthMeter {
                 if (isCancelled()) return null;
             }
 
-            if (result.strengthPoints < STRENGTH_POINTS_MIN_MEDIUM) result.rating = PasswordRating.POOR;
-            else if (result.strengthPoints < STRENGTH_POINTS_MIN_GOOD) result.rating = PasswordRating.MEDIUM;
-            else result.rating = PasswordRating.GOOD;
+            if (result.strengthPoints < STRENGTH_POINTS_MIN_MEDIUM) {
+                result.rating = PasswordRating.POOR;
+            } else if (result.strengthPoints < STRENGTH_POINTS_MIN_GOOD) {
+                result.rating = PasswordRating.MEDIUM;
+            } else result.rating = PasswordRating.GOOD;
 
             // Last chance to detect cancellation
             if (isCancelled()) return null;
@@ -151,35 +153,27 @@ public class PasswordStrengthMeter {
                     txtPasswordStrength.setText(mContext.getText(R.string.password_strength_poor));
                     txtPasswordStrength.setBackgroundColor(
                             ContextCompat.getColor(mContext, R.color.password_strength_poor));
-                }
-                else if (result.rating == PasswordRating.MEDIUM) {
+                } else if (result.rating == PasswordRating.MEDIUM) {
                     txtPasswordStrength.setText(mContext.getText(R.string.password_strength_medium));
                     txtPasswordStrength.setBackgroundColor(
                             ContextCompat.getColor(mContext, R.color.password_strength_medium));
-                }
-                else if (result.rating == PasswordRating.GOOD) {
+                } else if (result.rating == PasswordRating.GOOD) {
                     txtPasswordStrength.setText(mContext.getText(R.string.password_strength_good));
                     txtPasswordStrength.setBackgroundColor(
                             ContextCompat.getColor(mContext, R.color.password_strength_good));
                 }
 
-                if (result.lowercaseUsed) imgLowercase.setImageDrawable(ledGreen);
-                else imgLowercase.setImageDrawable(ledRed);
-
-                if (result.uppercaseUsed) imgUppercase.setImageDrawable(ledGreen);
-                else imgUppercase.setImageDrawable(ledRed);
-
-                if (result.digitsUsed) imgDigits.setImageDrawable(ledGreen);
-                else imgDigits.setImageDrawable(ledRed);
-
-                if (result.symbolsUsed) imgSymbols.setImageDrawable(ledGreen);
-                else imgSymbols.setImageDrawable(ledRed);
+                imgLowercase.setImageDrawable(result.lowercaseUsed ? ledGreen : ledRed);
+                imgUppercase.setImageDrawable(result.uppercaseUsed ? ledGreen : ledRed);
+                imgDigits.setImageDrawable(result.digitsUsed ? ledGreen : ledRed);
+                imgSymbols.setImageDrawable(result.symbolsUsed ? ledGreen : ledRed);
 
                 if (result.passwordLength > 0 && result.passwordLength < PW_MIN_LENGTH) {
                     txtPasswordWarning.setText(R.string.short_password_warning);
                     txtPasswordWarning.setVisibility(View.VISIBLE);
+                } else {
+                    txtPasswordWarning.setVisibility(View.GONE);
                 }
-                else txtPasswordWarning.setVisibility(View.GONE);
             }
             catch (Exception e) {
                 e.printStackTrace();
