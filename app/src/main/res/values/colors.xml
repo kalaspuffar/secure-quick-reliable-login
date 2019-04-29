@@ -9,4 +9,8 @@
     <color name="primary_text_default_material_light">#000000</color>
     <color name="secondary_text_disabled_material_light">#607d8b</color>
     <color name="secondary_text_default_material_light">#424242</color>
+
+    <color name="password_strength_poor">#F08080</color>
+    <color name="password_strength_medium">#FFFACD</color>
+    <color name="password_strength_good">#32CD32</color>
 </resources>
