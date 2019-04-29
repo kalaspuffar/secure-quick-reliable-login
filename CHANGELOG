@@ -1,0 +1,10 @@
+Version 0.14.1
+
+Bug
+* Don't delete quickpass on network errors.
+* Login popup issue
+* Simply login code and fix some inconsistencies
+* Landscape bugfix
+
+Feature
+* Password strength meter
