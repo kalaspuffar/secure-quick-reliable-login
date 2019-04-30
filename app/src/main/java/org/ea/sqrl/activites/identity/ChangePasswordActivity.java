@@ -3,11 +3,13 @@ package org.ea.sqrl.activites.identity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.PasswordStrengthMeter;
 
 public class ChangePasswordActivity extends BaseActivity {
 
@@ -22,6 +24,10 @@ public class ChangePasswordActivity extends BaseActivity {
         final EditText txtCurrentPassword = findViewById(R.id.txtCurrentPassword);
         final EditText txtNewPassword = findViewById(R.id.txtNewPassword);
         final EditText txtRetypePassword = findViewById(R.id.txtRetypePassword);
+        final ViewGroup pwStrengthMeter = findViewById(R.id.passwordStrengthMeter);
+
+        new PasswordStrengthMeter(this)
+                .register(txtNewPassword, pwStrengthMeter);
 
         SQRLStorage storage = SQRLStorage.getInstance(ChangePasswordActivity.this.getApplicationContext());
 
