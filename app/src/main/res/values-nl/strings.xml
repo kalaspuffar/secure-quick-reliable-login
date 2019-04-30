@@ -227,4 +227,16 @@
 <string name="button_alternative_identity">\nAlternatieve identiteit</string>
 <string name="startpage_login_with">Aanmelden met:</string>
 <string name="language_catalan">Catalan</string>
+<string name="password_strength_poor">Password strength: poor</string>
+<string name="password_strength_medium">Password strength: medium</string>
+<string name="password_strength_good">Password strength: good</string>
+<string name="password_lowercase">Lowercase</string>
+<string name="password_uppercase">Uppercase</string>
+<string name="password_symbols">Symbols</string>
+<string name="password_digits">Digits</string>
+<string name="img_password_contains_lowercase">Indicates whether the password contains lowercase letters</string>
+<string name="img_password_contains_uppercase">Indicates whether the password contains uppercase letters</string>
+<string name="img_password_contains_digits">Indicates whether the password contains digits</string>
+<string name="img_password_contains_symbols">Indicates whether the password contains symbols</string>
+<string name="short_password_warning">You are using a very short password. This is highly insecure and should absolutely be avoided!</string>
 </resources>

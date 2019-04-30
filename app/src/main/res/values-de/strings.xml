@@ -223,8 +223,20 @@
 <string name="error_message_stale_page">Die SQRL Anmeldeseite ist abgelaufen. Bitte laden Sie die Seite neu, um danach die Anmeldung zu wiederholen.</string>
 <string name="error_message_login_failed">SQRL war nicht in der Lage sich auf dieser Seite anzumelden. Bitte laden Sie die Seite neu und versuchen Sie es erneut. Falls das Problem bestehen bleibt, benutzen Sie bitte eine andere Anmeldemethode.</string>
 <string name="account_options_alternative_id">Alternative ID</string>
-<string name="title_alternative_identity">Alternative identity</string>
-<string name="button_alternative_identity">Alternative identity</string>
-<string name="startpage_login_with">Login with:</string>
-<string name="language_catalan">Catalan</string>
+<string name="title_alternative_identity">Alternative Identität</string>
+<string name="button_alternative_identity">Alternative Identität</string>
+<string name="startpage_login_with">Anmelden mit:</string>
+<string name="language_catalan">Katalanisch</string>
+<string name="password_strength_poor">Passwort-Stärke: gering</string>
+<string name="password_strength_medium">Passwort-Stärke: mittel</string>
+<string name="password_strength_good">Passwort-Stärke: gut</string>
+<string name="password_lowercase">Kleinbuchstaben</string>
+<string name="password_uppercase">Großbuchstaben</string>
+<string name="password_symbols">Symbole</string>
+<string name="password_digits">Zahlen</string>
+<string name="img_password_contains_lowercase">Zeigt an, ob das Passwort Kleinbuchstaben enthält</string>
+<string name="img_password_contains_uppercase">Zeigt an, ob das Passwort Großbuchstaben enthält</string>
+<string name="img_password_contains_digits">Zeigt an, ob das Passwort Zahlen enthält</string>
+<string name="img_password_contains_symbols">Zeigt an, ob das Passwort Symbole enthält</string>
+<string name="short_password_warning">Sie verwenden ein sehr kurzes Passwort. Dies ist äußerst unsicher und sollte unbedingt vermieden werden!</string>
 </resources>

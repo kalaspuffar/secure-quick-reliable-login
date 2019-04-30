@@ -227,4 +227,16 @@
 <string name="button_alternative_identity">Alternativ identitiet</string>
 <string name="startpage_login_with">Logga in med:</string>
 <string name="language_catalan">Catalan</string>
+<string name="password_strength_poor">Lösenords styrka: svag</string>
+<string name="password_strength_medium">Lösenords styrka: medel</string>
+<string name="password_strength_good">Lösenords styrka: stark</string>
+<string name="password_lowercase">Små bokstäver</string>
+<string name="password_uppercase">Stora bokstäver</string>
+<string name="password_symbols">Symboler</string>
+<string name="password_digits">Siffror</string>
+<string name="img_password_contains_lowercase">Visar om lösenordet har några små bokstäver</string>
+<string name="img_password_contains_uppercase">Visar om lösenordet har några stora bokstäver</string>
+<string name="img_password_contains_digits">Visar om lösenordet har några siffror</string>
+<string name="img_password_contains_symbols">Visar om lösenordet har några symboler</string>
+<string name="short_password_warning">Ditt lösenord är väldigt kort. Detta är inte säkert och borde undvikas.</string>
 </resources>
