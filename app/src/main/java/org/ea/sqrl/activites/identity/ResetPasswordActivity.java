@@ -4,12 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.SimplifiedActivity;
 import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.PasswordStrengthMeter;
 
 public class ResetPasswordActivity extends BaseActivity {
 
@@ -30,7 +34,15 @@ public class ResetPasswordActivity extends BaseActivity {
         final EditText txtRecoverCode5 = findViewById(R.id.txtRecoverCode5);
         final EditText txtRecoverCode6 = findViewById(R.id.txtRecoverCode6);
         final EditText txtResetPasswordNewPassword = findViewById(R.id.txtResetPasswordNewPassword);
+        final TextView txtResetPasswordDescription = findViewById(R.id.txtResetPasswordDescription);
+        final ViewGroup pwStrengthMeter = findViewById(R.id.passwordStrengthMeter);
 
+        new PasswordStrengthMeter(this)
+                .register(txtResetPasswordNewPassword, pwStrengthMeter);
+
+        txtResetPasswordNewPassword.setOnFocusChangeListener((v, hasFocus) -> {
+            txtResetPasswordDescription.setVisibility(hasFocus ? View.GONE : View.VISIBLE);
+        });
         txtRecoverCode1.requestFocus();
 
         findViewById(R.id.btnResetPassword).setOnClickListener(v -> {
