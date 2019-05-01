@@ -4,12 +4,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.RescueCodeInputHelper;
 
 public class EnableAccountActivity extends BaseActivity {
     private static final String TAG = "EnableAccountActivity";
@@ -26,35 +29,26 @@ public class EnableAccountActivity extends BaseActivity {
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
-        final EditText txtRecoverCode1 = findViewById(R.id.txtRecoverCode1);
-        final EditText txtRecoverCode2 = findViewById(R.id.txtRecoverCode2);
-        final EditText txtRecoverCode3 = findViewById(R.id.txtRecoverCode3);
-        final EditText txtRecoverCode4 = findViewById(R.id.txtRecoverCode4);
-        final EditText txtRecoverCode5 = findViewById(R.id.txtRecoverCode5);
-        final EditText txtRecoverCode6 = findViewById(R.id.txtRecoverCode6);
+        ViewGroup rootLayout = findViewById(R.id.enableAccountActivityView);
+        Button btnEnableAccount = findViewById(R.id.btnEnableAccountEnable);
 
-        txtRecoverCode1.requestFocus();
+        RescueCodeInputHelper rescueCodeInputHelper = new RescueCodeInputHelper(
+                this, rootLayout, btnEnableAccount, false);
+        rescueCodeInputHelper.setStatusChangedListener(successfullyCompleted -> {
+            btnEnableAccount.setEnabled(successfullyCompleted);
+        });
+        rescueCodeInputHelper.requestFocus();
 
-        findViewById(R.id.btnEnableAccountEnable).setOnClickListener((View v) -> {
+        btnEnableAccount.setEnabled(false);
+
+        btnEnableAccount.setOnClickListener((View v) -> {
             SQRLStorage storage = SQRLStorage.getInstance(EnableAccountActivity.this.getApplicationContext());
-
-            if(!checkRescueCode(txtRecoverCode1)) return;
-            if(!checkRescueCode(txtRecoverCode2)) return;
-            if(!checkRescueCode(txtRecoverCode3)) return;
-            if(!checkRescueCode(txtRecoverCode4)) return;
-            if(!checkRescueCode(txtRecoverCode5)) return;
-            if(!checkRescueCode(txtRecoverCode6)) return;
 
             handler.post(() -> showProgressPopup());
 
             new Thread(() -> {
                 try {
-                    String rescueCode = txtRecoverCode1.getText().toString();
-                    rescueCode += txtRecoverCode2.getText().toString();
-                    rescueCode += txtRecoverCode3.getText().toString();
-                    rescueCode += txtRecoverCode4.getText().toString();
-                    rescueCode += txtRecoverCode5.getText().toString();
-                    rescueCode += txtRecoverCode6.getText().toString();
+                    String rescueCode = rescueCodeInputHelper.getRescueCodeInput();
 
                     boolean decryptionOk = storage.decryptUnlockKey(rescueCode);
                     if (!decryptionOk) {
@@ -70,12 +64,7 @@ public class EnableAccountActivity extends BaseActivity {
                     return;
                 } finally {
                     handler.post(() -> {
-                        txtRecoverCode1.setText("");
-                        txtRecoverCode2.setText("");
-                        txtRecoverCode3.setText("");
-                        txtRecoverCode4.setText("");
-                        txtRecoverCode5.setText("");
-                        txtRecoverCode6.setText("");
+                        rescueCodeInputHelper.clearForm();
                     });
                 }
 
@@ -103,23 +92,6 @@ public class EnableAccountActivity extends BaseActivity {
                 communicationFlowHandler.handleNextAction();
             }).start();
         });
-    }
-
-    protected boolean checkRescueCode(EditText code) {
-        if(code.length() != 4) {
-            showErrorMessage(R.string.rescue_code_incorrect_input);
-            code.requestFocus();
-            return false;
-        }
-
-        try {
-            Integer.parseInt(code.getText().toString());
-        } catch (NumberFormatException nfe) {
-            showErrorMessage(R.string.rescue_code_incorrect_input);
-            code.requestFocus();
-            return false;
-        }
-        return true;
     }
 
     protected void closeActivity() {

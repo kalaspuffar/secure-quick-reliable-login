@@ -36,33 +36,31 @@ public class RescueCodeInputHelper {
     private EditText mTxtRecoverCode6;
     private SQRLStorage mSqrlStorage;
     private List<String> mRescueList;
-    private boolean mDisplayErrors = false;
+    private boolean mValidateInput = false;
     private boolean mLastStatus = false;
     private StatusChangedListener mStatusChangedListener;
 
 
     /**
-     * Creates a RescueCodeInputHelper object.
+     * Creates a new RescueCodeInputHelper object and registers event listeners
+     * on the rescue code input form.
      *
-     * @param context The context of the caller.
+     * @param context       The context of the caller.
+     * @param rootLayout    The root layout containing the rescue_code_input layout
+     *                      as well as the nextFocusDown view.
+     * @param nextFocusDown The View that should receive focus after the last
+     *                      rescue code field has been filled out.
+     * @param validateInput Must be true only if the rescue code was just created and is now being
+     *                      verified. In this mode, input is being compared to the actual rescue code
+     *                      and errors are being displayed while typing. Should be set to false in
+     *                      every other case.
      */
-    public RescueCodeInputHelper (Context context) {
+    public RescueCodeInputHelper (Context context, ViewGroup rootLayout,
+                                  @Nullable View nextFocusDown, boolean validateInput) {
 
         mContext = context;
-        mSqrlStorage = SQRLStorage.getInstance(mContext);
-        mRescueList = mSqrlStorage.getTempShowableRescueCode();
-    }
-
-    /**
-     * Registers the RescueCodeInputHelper to set event handlers on the rescue code input form
-     * and enables the corresponding events.
-     *
-     * @param rootLayout The root layout containing the rescue_code_input layout as well as the nextFocusDown view.
-     * @param nextFocusDown The View that should receive focus after the last rescue code field has been filled out.
-     */
-    public void register(ViewGroup rootLayout, @Nullable View nextFocusDown) {
-
         mLayoutRoot = rootLayout;
+        mValidateInput = validateInput;
 
         mTxtRecoverCode1 = mLayoutRoot.findViewById(R.id.txtRecoverCode1);
         mTxtRecoverCode2 = mLayoutRoot.findViewById(R.id.txtRecoverCode2);
@@ -75,22 +73,17 @@ public class RescueCodeInputHelper {
             mTxtRecoverCode6.setNextFocusDownId(nextFocusDown.getId());
         }
 
+        if (mValidateInput) {
+            mSqrlStorage = SQRLStorage.getInstance(mContext);
+            mRescueList = mSqrlStorage.getTempShowableRescueCode();
+        }
+
         setListener(mTxtRecoverCode1);
         setListener(mTxtRecoverCode2);
         setListener(mTxtRecoverCode3);
         setListener(mTxtRecoverCode4);
         setListener(mTxtRecoverCode5);
         setListener(mTxtRecoverCode6);
-    }
-
-    /**
-     * Enables or disables showing input errors in the input form's UI.
-     *
-     * @param displayErrors Set to true if input errors should be displayed, otherwise to false.
-     */
-    public void setDisplayErrors(boolean displayErrors) {
-
-        mDisplayErrors = displayErrors;
     }
 
     /**
@@ -105,17 +98,56 @@ public class RescueCodeInputHelper {
 
     /**
      * Checks if the rescue code input is complete and correct.
+     * If "verify" was set to true in the constructor, this checks
      *
      * @return True if the rescue code input is complete and correct, false otherwise.
      */
     public boolean getStatus() {
 
-        return checkEditText(mTxtRecoverCode1, mRescueList.get(0)) &&
-            checkEditText(mTxtRecoverCode2, mRescueList.get(1)) &&
-            checkEditText(mTxtRecoverCode3, mRescueList.get(2)) &&
-            checkEditText(mTxtRecoverCode4, mRescueList.get(3)) &&
-            checkEditText(mTxtRecoverCode5, mRescueList.get(4)) &&
-            checkEditText(mTxtRecoverCode6, mRescueList.get(5));
+        return checkEditText(mTxtRecoverCode1, mValidateInput ? mRescueList.get(0) : null) &&
+                checkEditText(mTxtRecoverCode2, mValidateInput ? mRescueList.get(1) : null) &&
+                checkEditText(mTxtRecoverCode3, mValidateInput ? mRescueList.get(2) : null) &&
+                checkEditText(mTxtRecoverCode4, mValidateInput ? mRescueList.get(3) : null) &&
+                checkEditText(mTxtRecoverCode5, mValidateInput ? mRescueList.get(4) : null) &&
+                checkEditText(mTxtRecoverCode6, mValidateInput ? mRescueList.get(5) : null);
+    }
+
+    /**
+     * Requests focus for the first rescue code input field.
+     */
+    public void requestFocus() {
+
+        mTxtRecoverCode1.requestFocus();
+    }
+
+    /**
+     * Retrieves the entered rescue code as a String.
+     *
+     * @return The entered rescue code as a String.
+     */
+    public String getRescueCodeInput() {
+
+        StringBuilder rescueCode = new StringBuilder();
+        rescueCode.append(mTxtRecoverCode1.getText().toString());
+        rescueCode.append(mTxtRecoverCode2.getText().toString());
+        rescueCode.append(mTxtRecoverCode3.getText().toString());
+        rescueCode.append(mTxtRecoverCode4.getText().toString());
+        rescueCode.append(mTxtRecoverCode5.getText().toString());
+        rescueCode.append(mTxtRecoverCode6.getText().toString());
+        return rescueCode.toString();
+    }
+
+    /**
+     * Clears the rescue code input form
+     */
+    public void clearForm() {
+
+        mTxtRecoverCode1.setText("");
+        mTxtRecoverCode2.setText("");
+        mTxtRecoverCode3.setText("");
+        mTxtRecoverCode4.setText("");
+        mTxtRecoverCode5.setText("");
+        mTxtRecoverCode6.setText("");
     }
 
     private void setListener(EditText code) {
@@ -145,19 +177,32 @@ public class RescueCodeInputHelper {
     private boolean checkEditText(EditText code, String verify) {
 
         String check = code.getText().toString();
+
         if(check.length() != 4) return false;
 
-        if (check.equals(verify)) {
-            code.setError(null);
-            View nextFocusDown = mLayoutRoot.findViewById(code.getNextFocusDownId());
-            if (nextFocusDown != null) nextFocusDown.requestFocus();
-            return true;
-        } else {
-            if(mDisplayErrors) {
-                code.setError(mContext.getResources().getString(
-                        R.string.rescue_code_incorrect));
+        boolean correct = true;
+
+        if (verify != null) {
+            if (!check.equals(verify)) {
+                correct = false;
             }
+        }
+
+        try {
+            Integer.parseInt(check);
+        } catch (NumberFormatException nfe) {
+            correct = false;
+        }
+
+        if (!correct) {
+            code.setError(mContext.getResources().getString(
+                    R.string.rescue_code_incorrect));
             return false;
         }
+
+        code.setError(null);
+        View nextFocusDown = mLayoutRoot.findViewById(code.getNextFocusDownId());
+        if (nextFocusDown != null) nextFocusDown.requestFocus();
+        return true;
     }
 }

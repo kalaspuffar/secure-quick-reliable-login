@@ -29,12 +29,11 @@ public class RescueCodeEnterActivity extends AppCompatActivity {
         ViewGroup rootLayout = findViewById(R.id.rescueCodeEntryActivityView);
         Button btnRescueCodeEnterNext = findViewById(R.id.btnRescueCodeEnterNext);
 
-        RescueCodeInputHelper rescueCodeInputHelper = new RescueCodeInputHelper(this);
-        rescueCodeInputHelper.setDisplayErrors(true);
+        RescueCodeInputHelper rescueCodeInputHelper = new RescueCodeInputHelper(
+                this, rootLayout, btnRescueCodeEnterNext, true);
         rescueCodeInputHelper.setStatusChangedListener(successfullyCompleted -> {
             btnRescueCodeEnterNext.setEnabled(successfullyCompleted);
         });
-        rescueCodeInputHelper.register(rootLayout, btnRescueCodeEnterNext);
 
         btnRescueCodeEnterNext.setEnabled(false);
         btnRescueCodeEnterNext.setOnClickListener(v -> {
