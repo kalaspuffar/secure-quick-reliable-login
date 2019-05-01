@@ -615,15 +615,15 @@ public class SQRLStorage {
         this.progressionUpdater = progressionUpdater;
     }
 
-    public byte[] getKeySeed(String domain) throws Exception {
+    public byte[] getKeySeed(byte[] domain) throws Exception {
         byte[] masterKey = this.identityMasterKey;
         final Mac HMacSha256 = Mac.getInstance("HmacSHA256");
         final SecretKeySpec key = new SecretKeySpec(masterKey, "HmacSHA256");
         HMacSha256.init(key);
-        return HMacSha256.doFinal(domain.getBytes());
+        return HMacSha256.doFinal(domain);
     }
 
-    public byte[] getPrivateKey(String domain) throws Exception {
+    public byte[] getPrivateKey(byte[] domain) throws Exception {
         byte[] publicKey = new byte[32];
         byte[] privateKey = new byte[64];
 
@@ -631,7 +631,7 @@ public class SQRLStorage {
         return privateKey;
     }
 
-    public byte[] getPublicKey(String domain) throws Exception {
+    public byte[] getPublicKey(byte[] domain) throws Exception {
         byte[] publicKey = new byte[32];
         byte[] privateKey = new byte[64];
 
@@ -639,7 +639,7 @@ public class SQRLStorage {
         return publicKey;
     }
 
-    public byte[] getPreviousKeySeed(String domain) throws Exception {
+    public byte[] getPreviousKeySeed(byte[] domain) throws Exception {
         byte[] currentPreviousUnlockKey;
 
         switch (this.previousKeyIndex) {
@@ -663,10 +663,10 @@ public class SQRLStorage {
         final Mac HMacSha256 = Mac.getInstance("HmacSHA256");
         final SecretKeySpec key = new SecretKeySpec(currentPreviousKey, "HmacSHA256");
         HMacSha256.init(key);
-        return HMacSha256.doFinal(domain.getBytes());
+        return HMacSha256.doFinal(domain);
     }
 
-    public byte[] getPreviousPublicKey(String domain) throws Exception {
+    public byte[] getPreviousPublicKey(byte[] domain) throws Exception {
         byte[] publicKey = new byte[32];
         byte[] privateKey = new byte[64];
 
@@ -678,7 +678,7 @@ public class SQRLStorage {
         return hasPreviousBlock;
     }
 
-    public byte[] getPreviousPrivateKey(String domain) throws Exception {
+    public byte[] getPreviousPrivateKey(byte[] domain) throws Exception {
         byte[] publicKey = new byte[32];
         byte[] privateKey = new byte[64];
 
@@ -1407,7 +1407,7 @@ public class SQRLStorage {
         return HMacSha256.doFinal(secretIndex);
     }
 
-    public String getSecretIndex(String domain, String secretIndex) throws Exception {
+    public String getSecretIndex(byte[] domain, String secretIndex) throws Exception {
         if(secretIndex == null) return "";
         StringBuilder sb = new StringBuilder();
         byte[] secIndexKey = EncryptionUtils.enHash(this.getKeySeed(domain));

@@ -558,7 +558,7 @@ public class CommunicationFlowHandler {
         return true;
     }
 
-    public String getDomain() {
+    public byte[] getDomain() {
         return commHandler.getDomain();
     }
 
