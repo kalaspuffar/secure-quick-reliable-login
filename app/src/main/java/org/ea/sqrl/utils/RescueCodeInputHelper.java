@@ -150,6 +150,36 @@ public class RescueCodeInputHelper {
         mTxtRecoverCode6.setText("");
     }
 
+    /**
+     * Fills the given rescue code into the input form.
+     *
+     * @param rescueArr A list containing the six parts of the rescue code.
+     */
+    public void setRescueCodeInput(List<String> rescueArr) {
+
+        mTxtRecoverCode1.setText(rescueArr.get(0));
+        mTxtRecoverCode2.setText(rescueArr.get(1));
+        mTxtRecoverCode3.setText(rescueArr.get(2));
+        mTxtRecoverCode4.setText(rescueArr.get(3));
+        mTxtRecoverCode5.setText(rescueArr.get(4));
+        mTxtRecoverCode6.setText(rescueArr.get(5));
+    }
+
+    /**
+     * Enable or disable form input.
+     *
+     * @param enabled Set to true if form input should be enabled, otherwise set to false.
+     */
+    public void setInputEnabled(boolean enabled) {
+
+        mTxtRecoverCode1.setEnabled(enabled);
+        mTxtRecoverCode2.setEnabled(enabled);
+        mTxtRecoverCode3.setEnabled(enabled);
+        mTxtRecoverCode4.setEnabled(enabled);
+        mTxtRecoverCode5.setEnabled(enabled);
+        mTxtRecoverCode6.setEnabled(enabled);
+    }
+
     private void setListener(EditText code) {
 
         code.addTextChangedListener(new TextWatcher() {
