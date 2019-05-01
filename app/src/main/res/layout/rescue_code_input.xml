@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rescueCodeInputContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/rescueCodeInputRow1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layoutDirection="ltr"
+        android:focusable="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/txtRecoverCode1"
+            android:layout_width="72dp"
+            android:layout_height="48dp"
+            android:ems="10"
+            android:hint="@string/reset_password_rescuecode_1"
+            android:inputType="phone"
+            android:maxLength="4"
+            android:nextFocusDown="@+id/txtRecoverCode2"
+            tools:layout_conversion_absoluteHeight="46dp"
+            tools:layout_conversion_absoluteWidth="327dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/txtRecoverCode2"
+            android:layout_width="72dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:ems="10"
+            android:hint="@string/reset_password_rescuecode_2"
+            android:inputType="phone"
+            android:maxLength="4"
+            android:nextFocusDown="@+id/txtRecoverCode3"
+            tools:layout_conversion_absoluteHeight="46dp"
+            tools:layout_conversion_absoluteWidth="327dp"
+            app:layout_constraintStart_toEndOf="@+id/txtRecoverCode1"
+            app:layout_constraintTop_toTopOf="@+id/txtRecoverCode1"/>
+
+        <EditText
+            android:id="@+id/txtRecoverCode3"
+            android:layout_width="72dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:ems="10"
+            android:hint="@string/reset_password_rescuecode_3"
+            android:inputType="phone"
+            android:maxLength="4"
+            android:nextFocusDown="@+id/txtRecoverCode4"
+            tools:layout_conversion_absoluteHeight="46dp"
+            tools:layout_conversion_absoluteWidth="327dp"
+            app:layout_constraintStart_toEndOf="@+id/txtRecoverCode2"
+            app:layout_constraintTop_toTopOf="@+id/txtRecoverCode2"/>
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/rescueCodeInputRow2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:focusable="false"
+        android:layoutDirection="ltr"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rescueCodeInputRow1">
+
+        <EditText
+            android:id="@+id/txtRecoverCode4"
+            android:layout_width="72dp"
+            android:layout_height="48dp"
+            android:ems="10"
+            android:hint="@string/reset_password_rescuecode_4"
+            android:inputType="phone"
+            android:maxLength="4"
+            android:nextFocusDown="@+id/txtRecoverCode5"
+            tools:layout_conversion_absoluteHeight="46dp"
+            tools:layout_conversion_absoluteWidth="327dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <EditText
+            android:id="@+id/txtRecoverCode5"
+            android:layout_width="72dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:ems="10"
+            android:hint="@string/reset_password_rescuecode_5"
+            android:inputType="phone"
+            android:maxLength="4"
+            android:nextFocusDown="@+id/txtRecoverCode6"
+            tools:layout_conversion_absoluteHeight="46dp"
+            tools:layout_conversion_absoluteWidth="327dp"
+            app:layout_constraintStart_toEndOf="@+id/txtRecoverCode4"
+            app:layout_constraintTop_toTopOf="@+id/txtRecoverCode4" />
+
+        <EditText
+            android:id="@+id/txtRecoverCode6"
+            android:layout_width="72dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:ems="10"
+            android:hint="@string/reset_password_rescuecode_6"
+            android:inputType="phone"
+            android:maxLength="4"
+            tools:layout_conversion_absoluteHeight="46dp"
+            tools:layout_conversion_absoluteWidth="327dp"
+            app:layout_constraintStart_toEndOf="@+id/txtRecoverCode5"
+            app:layout_constraintTop_toTopOf="@+id/txtRecoverCode5" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>
