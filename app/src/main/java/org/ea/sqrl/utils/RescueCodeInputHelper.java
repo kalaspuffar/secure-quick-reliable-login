@@ -35,7 +35,9 @@ public class RescueCodeInputHelper {
     private EditText mTxtRecoverCode5;
     private EditText mTxtRecoverCode6;
     private SQRLStorage mSqrlStorage;
+    private List<String> mRescueList;
     private boolean mDisplayErrors = false;
+    private boolean mLastStatus = false;
     private StatusChangedListener mStatusChangedListener;
 
 
@@ -48,6 +50,7 @@ public class RescueCodeInputHelper {
 
         mContext = context;
         mSqrlStorage = SQRLStorage.getInstance(mContext);
+        mRescueList = mSqrlStorage.getTempShowableRescueCode();
     }
 
     /**
@@ -72,14 +75,12 @@ public class RescueCodeInputHelper {
             mTxtRecoverCode6.setNextFocusDownId(nextFocusDown.getId());
         }
 
-        List<String> rescueList = mSqrlStorage.getTempShowableRescueCode();
-
-        setEditTextListener(mTxtRecoverCode1, rescueList);
-        setEditTextListener(mTxtRecoverCode2, rescueList);
-        setEditTextListener(mTxtRecoverCode3, rescueList);
-        setEditTextListener(mTxtRecoverCode4, rescueList);
-        setEditTextListener(mTxtRecoverCode5, rescueList);
-        setEditTextListener(mTxtRecoverCode6, rescueList);
+        setListener(mTxtRecoverCode1);
+        setListener(mTxtRecoverCode2);
+        setListener(mTxtRecoverCode3);
+        setListener(mTxtRecoverCode4);
+        setListener(mTxtRecoverCode5);
+        setListener(mTxtRecoverCode6);
     }
 
     /**
@@ -102,7 +103,22 @@ public class RescueCodeInputHelper {
         mStatusChangedListener = listener;
     }
 
-    private void setEditTextListener(EditText code, List<String> rescueList) {
+    /**
+     * Checks if the rescue code input is complete and correct.
+     *
+     * @return True if the rescue code input is complete and correct, false otherwise.
+     */
+    public boolean getStatus() {
+
+        return checkEditText(mTxtRecoverCode1, mRescueList.get(0)) &&
+            checkEditText(mTxtRecoverCode2, mRescueList.get(1)) &&
+            checkEditText(mTxtRecoverCode3, mRescueList.get(2)) &&
+            checkEditText(mTxtRecoverCode4, mRescueList.get(3)) &&
+            checkEditText(mTxtRecoverCode5, mRescueList.get(4)) &&
+            checkEditText(mTxtRecoverCode6, mRescueList.get(5));
+    }
+
+    private void setListener(EditText code) {
 
         code.addTextChangedListener(new TextWatcher() {
 
@@ -114,15 +130,13 @@ public class RescueCodeInputHelper {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                boolean correct =
-                        checkEditText(mTxtRecoverCode1, rescueList.get(0)) &&
-                        checkEditText(mTxtRecoverCode2, rescueList.get(1)) &&
-                        checkEditText(mTxtRecoverCode3, rescueList.get(2)) &&
-                        checkEditText(mTxtRecoverCode4, rescueList.get(3)) &&
-                        checkEditText(mTxtRecoverCode5, rescueList.get(4)) &&
-                        checkEditText(mTxtRecoverCode6, rescueList.get(5));
-                if(mStatusChangedListener != null) {
-                    mStatusChangedListener.onEvent(correct);
+                boolean status = getStatus();
+
+                if (status != mLastStatus) {
+                    if(mStatusChangedListener != null) {
+                        mStatusChangedListener.onEvent(status);
+                    }
+                    mLastStatus = status;
                 }
             }
         });
