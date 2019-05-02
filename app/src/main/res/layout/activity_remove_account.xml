@@ -6,62 +6,16 @@
     android:id="@+id/removeAccountActivityView"
     tools:context="org.ea.sqrl.activites.account.RemoveAccountActivity">
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/inputRow1"
-        android:layout_width="wrap_content"
+    <include layout="@layout/rescue_code_input"
+        android:id="@+id/rescueCodeInput"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:focusable="false"
-        android:layoutDirection="ltr"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <EditText
-            android:id="@+id/txtRecoverCode1"
-            android:layout_width="72dp"
-            android:layout_height="48dp"
-            android:ems="10"
-            android:hint="@string/reset_password_rescuecode_1"
-            android:inputType="phone"
-            android:maxLength="4"
-            android:nextFocusDown="@+id/txtRecoverCode2"
-            tools:layout_conversion_absoluteHeight="46dp"
-            tools:layout_conversion_absoluteWidth="327dp" />
-
-        <EditText
-            android:id="@+id/txtRecoverCode2"
-            android:layout_width="72dp"
-            android:layout_height="48dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:ems="10"
-            android:hint="@string/reset_password_rescuecode_2"
-            android:inputType="phone"
-            android:maxLength="4"
-            android:nextFocusDown="@+id/txtRecoverCode3"
-            app:layout_constraintStart_toEndOf="@+id/txtRecoverCode1"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_conversion_absoluteHeight="46dp"
-            tools:layout_conversion_absoluteWidth="327dp" />
-
-        <EditText
-            android:id="@+id/txtRecoverCode3"
-            android:layout_width="72dp"
-            android:layout_height="48dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:ems="10"
-            android:hint="@string/reset_password_rescuecode_3"
-            android:inputType="phone"
-            android:maxLength="4"
-            android:nextFocusDown="@+id/txtRecoverCode4"
-            app:layout_constraintStart_toEndOf="@+id/txtRecoverCode2"
-            tools:layout_conversion_absoluteHeight="46dp"
-            tools:layout_conversion_absoluteWidth="327dp" />
-    </android.support.constraint.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btnRemoveAccountRemove"
@@ -77,61 +31,5 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_conversion_absoluteHeight="48dp"
         tools:layout_conversion_absoluteWidth="88dp" />
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/inputRow2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:focusable="false"
-        android:layoutDirection="ltr"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputRow1">
-
-        <EditText
-            android:id="@+id/txtRecoverCode4"
-            android:layout_width="72dp"
-            android:layout_height="48dp"
-            android:ems="10"
-            android:hint="@string/reset_password_rescuecode_4"
-            android:inputType="phone"
-            android:maxLength="4"
-            android:nextFocusDown="@+id/txtRecoverCode5"
-            tools:layout_conversion_absoluteHeight="46dp"
-            tools:layout_conversion_absoluteWidth="327dp" />
-
-        <EditText
-            android:id="@+id/txtRecoverCode5"
-            android:layout_width="72dp"
-            android:layout_height="48dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:ems="10"
-            android:hint="@string/reset_password_rescuecode_5"
-            android:inputType="phone"
-            android:maxLength="4"
-            android:nextFocusDown="@+id/txtRecoverCode6"
-            app:layout_constraintStart_toEndOf="@+id/txtRecoverCode4"
-            tools:layout_conversion_absoluteHeight="46dp"
-            tools:layout_conversion_absoluteWidth="327dp" />
-
-        <EditText
-            android:id="@+id/txtRecoverCode6"
-            android:layout_width="72dp"
-            android:layout_height="48dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:ems="10"
-            android:hint="@string/reset_password_rescuecode_6"
-            android:inputType="phone"
-            android:maxLength="4"
-            android:nextFocusDown="@+id/btnRemoveAccountRemove"
-            app:layout_constraintStart_toEndOf="@+id/txtRecoverCode5"
-            tools:layout_conversion_absoluteHeight="46dp"
-            tools:layout_conversion_absoluteWidth="327dp" />
-    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

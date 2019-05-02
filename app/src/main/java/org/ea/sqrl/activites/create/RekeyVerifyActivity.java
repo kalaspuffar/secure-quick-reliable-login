@@ -12,13 +12,14 @@ import android.widget.TextView;
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.LoginBaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.RescueCodeInputHelper;
 
 /**
  *
  * @author Daniel Persson
  */
 public class RekeyVerifyActivity extends LoginBaseActivity {
-    private static final String TAG = "RekeyIdentityActivity";
+    private static final String TAG = "RekeyVerifyActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,34 +33,26 @@ public class RekeyVerifyActivity extends LoginBaseActivity {
         setupErrorPopupWindow(getLayoutInflater());
 
         rootView = findViewById(R.id.rekeyVerifyActivityView);
-
         final TextView txtTooManyRekey = findViewById(R.id.txtTooManyRekey);
+        final Button btnRekeyIdentityStart = findViewById(R.id.btnRekeyIdentityStart);
+
+        RescueCodeInputHelper rescueCodeInputHelper = new RescueCodeInputHelper(
+                this, rootView, btnRekeyIdentityStart, false);
+        rescueCodeInputHelper.setStatusChangedListener(successfullyCompleted -> {
+            btnRekeyIdentityStart.setEnabled(successfullyCompleted);
+        });
+
         if(storage.hasAllPreviousKeys()) {
             txtTooManyRekey.setVisibility(View.VISIBLE);
         }
 
-
-        final EditText txtRecoverCode1 = findViewById(R.id.txtRecoverCode1);
-        final EditText txtRecoverCode2 = findViewById(R.id.txtRecoverCode2);
-        final EditText txtRecoverCode3 = findViewById(R.id.txtRecoverCode3);
-        final EditText txtRecoverCode4 = findViewById(R.id.txtRecoverCode4);
-        final EditText txtRecoverCode5 = findViewById(R.id.txtRecoverCode5);
-        final EditText txtRecoverCode6 = findViewById(R.id.txtRecoverCode6);
-
-        final Button btnRekeyIdentityStart = findViewById(R.id.btnRekeyIdentityStart);
+        btnRekeyIdentityStart.setEnabled(false);
         btnRekeyIdentityStart.setOnClickListener(
                 v -> {
                     handler.post(() -> showProgressPopup());
 
                     new Thread(() -> {
-                        String rescueCode = "";
-                        rescueCode += txtRecoverCode1.getText().toString();
-                        rescueCode += txtRecoverCode2.getText().toString();
-                        rescueCode += txtRecoverCode3.getText().toString();
-                        rescueCode += txtRecoverCode4.getText().toString();
-                        rescueCode += txtRecoverCode5.getText().toString();
-                        rescueCode += txtRecoverCode6.getText().toString();
-
+                        String rescueCode = rescueCodeInputHelper.getRescueCodeInput();
                         boolean decryptRescueCode = storage.decryptUnlockKey(rescueCode);
                         if (!decryptRescueCode) {
                             Log.e(TAG, "Incorrect decryptRescue");
