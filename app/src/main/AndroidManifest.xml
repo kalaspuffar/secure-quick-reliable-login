@@ -59,7 +59,7 @@
 
         <activity android:name=".activites.create.RescueCodeShowActivity"
             android:label="@string/title_rescuecode_show"
-            android:windowSoftInputMode="stateHidden"
+            android:windowSoftInputMode="stateAlwaysHidden"
             />
 
         <activity android:name=".activites.create.RescueCodeEnterActivity"
