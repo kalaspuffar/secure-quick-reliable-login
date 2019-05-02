@@ -14,14 +14,17 @@ public class AccountOptionsActivity extends BaseActivity {
         setContentView(R.layout.activity_account_options);
 
         findViewById(R.id.btnRemoveAccount).setOnClickListener(v -> {
+            AccountOptionsActivity.this.finish();
             startActivity(new Intent(this, RemoveAccountActivity.class));
         });
 
         findViewById(R.id.btnLockAccount).setOnClickListener(v -> {
+            AccountOptionsActivity.this.finish();
             startActivity(new Intent(this, DisableAccountActivity.class));
         });
 
         findViewById(R.id.btnUnlockAccount).setOnClickListener(v -> {
+            AccountOptionsActivity.this.finish();
             startActivity(new Intent(this, EnableAccountActivity.class));
         });
 

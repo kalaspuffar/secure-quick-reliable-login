@@ -121,9 +121,10 @@ public class UrlLoginActivity extends LoginBaseActivity {
             }
         });
 
-        findViewById(R.id.btnLoginOptions).setOnClickListener(v ->
-                startActivity(new Intent(this, AccountOptionsActivity.class))
-        );
+        findViewById(R.id.btnLoginOptions).setOnClickListener(v -> {
+            UrlLoginActivity.this.finish();
+            startActivity(new Intent(this, AccountOptionsActivity.class));
+        });
 
         findViewById(R.id.btnLogin).setOnClickListener(v -> {
             SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
