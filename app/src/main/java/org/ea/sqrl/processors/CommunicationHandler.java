@@ -48,7 +48,7 @@ public class CommunicationHandler {
     private static CommunicationHandler instance = null;
     private final Context context;
     private String communicationDomain;
-    private String cryptDomain;
+    private byte[] cryptDomain;
     private Map<String, String> lastResponse = new HashMap<>();
     private String askButton;
     private AskDialogService askDialogService;
@@ -146,14 +146,17 @@ public class CommunicationHandler {
             throw new Exception("Incorrect cryptDomain " + domain);
         }
 
-        this.cryptDomain = domain;
+        this.cryptDomain = domain.getBytes();
 
         Matcher queryMatcher = sqrlQueryPattern.matcher(queryLink);
         if(queryMatcher.find()) {
             String path = queryMatcher.group(1);
             int sizeOfPath = Utils.getInteger(queryMatcher.group(2));
             if(sizeOfPath > 0 && sizeOfPath < path.length() + 1) {
-                this.cryptDomain += path.substring(0, sizeOfPath);
+                this.cryptDomain = EncryptionUtils.combine(
+                    this.cryptDomain,
+                    path.substring(0, sizeOfPath).getBytes()
+                );
             }
         }
     }
@@ -579,12 +582,17 @@ public class CommunicationHandler {
         return this.lastResponse.get("url");
     }
 
-    public String getDomain() {
+    public byte[] getDomain() {
         return this.cryptDomain;
     }
 
     public void setAlternativeId(String alternativeId) {
         if(alternativeId == null || alternativeId.isEmpty()) return;
-        this.cryptDomain += alternativeId.replaceAll("[^A-Za-z0-9]", "");
+
+        this.cryptDomain = EncryptionUtils.combine(this.cryptDomain, (byte)0);
+        this.cryptDomain = EncryptionUtils.combine(
+            this.cryptDomain,
+            alternativeId.replaceAll("[^A-Za-z0-9]", "").getBytes()
+        );
     }
 }

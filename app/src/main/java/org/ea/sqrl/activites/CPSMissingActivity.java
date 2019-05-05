@@ -24,7 +24,7 @@ public class CPSMissingActivity  extends LoginBaseActivity {
         setupBasePopups(getLayoutInflater(), true);
 
         final TextView txtSite = findViewById(R.id.txtSite);
-        txtSite.setText(communicationFlowHandler.getDomain());
+        txtSite.setText(new String(communicationFlowHandler.getDomain()));
 
         SQRLStorage storage = SQRLStorage.getInstance(CPSMissingActivity.this.getApplicationContext());
 
