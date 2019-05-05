@@ -28,8 +28,6 @@ public class CreateIdentityActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_identity);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
 
-        Utils.setLanguage(this);
-
         SQRLStorage.getInstance(CreateIdentityActivity.this.getApplicationContext()).cleanIdentity();
 
         final TextView txtCreateIdentityMessage = findViewById(R.id.txtCreateIdentityMessage);
@@ -42,5 +40,11 @@ public class CreateIdentityActivity extends AppCompatActivity {
                     startActivity(new Intent(this, EntropyGatherActivity.class));
                 }
         );
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Utils.setLanguage(this);
     }
 }

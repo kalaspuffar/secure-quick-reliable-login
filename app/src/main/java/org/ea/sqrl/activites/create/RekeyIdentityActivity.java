@@ -25,8 +25,6 @@ public class RekeyIdentityActivity extends AppCompatActivity {
         setContentView(R.layout.activity_rekey_identity);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
 
-        Utils.setLanguage(this);
-
         SQRLStorage.getInstance(RekeyIdentityActivity.this.getApplicationContext()).clear();
 
         final TextView txtRekeyIdentityMessage = findViewById(R.id.txtRekeyIdentityMessage);
@@ -39,5 +37,11 @@ public class RekeyIdentityActivity extends AppCompatActivity {
                     startActivity(new Intent(this, RekeyVerifyActivity.class));
                 }
         );
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Utils.setLanguage(this);
     }
 }

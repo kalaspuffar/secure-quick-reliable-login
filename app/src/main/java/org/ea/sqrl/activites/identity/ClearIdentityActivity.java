@@ -27,8 +27,6 @@ public class ClearIdentityActivity extends AppCompatActivity {
         setContentView(R.layout.activity_clear_identity);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
 
-        Utils.setLanguage(this);
-
         final ImageView imgClearIdentity = findViewById(R.id.imgClearIdentity);
         final TextView txtClearIdentity = findViewById(R.id.txtClearIdentity);
 
@@ -58,5 +56,11 @@ public class ClearIdentityActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Utils.setLanguage(this);
     }
 }

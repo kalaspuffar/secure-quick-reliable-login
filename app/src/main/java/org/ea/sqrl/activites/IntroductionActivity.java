@@ -35,8 +35,6 @@ public class IntroductionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_introduction);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
 
-        Utils.setLanguage(this);
-
         final SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
@@ -55,6 +53,12 @@ public class IntroductionActivity extends AppCompatActivity {
         btnClose.setOnClickListener(v -> new Thread(() -> {
             IntroductionActivity.this.finish();
         }).start());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Utils.setLanguage(this);
     }
 
     /**

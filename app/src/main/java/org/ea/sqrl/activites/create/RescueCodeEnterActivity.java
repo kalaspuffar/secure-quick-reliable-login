@@ -24,8 +24,6 @@ public class RescueCodeEnterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_rescuecode_enter);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
 
-        Utils.setLanguage(this);
-
         ViewGroup rootLayout = findViewById(R.id.rescueCodeEntryActivityView);
         Button btnRescueCodeEnterNext = findViewById(R.id.btnRescueCodeEnterNext);
 
@@ -43,5 +41,11 @@ public class RescueCodeEnterActivity extends AppCompatActivity {
 
         boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
         if(runningTest) return;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Utils.setLanguage(this);
     }
 }

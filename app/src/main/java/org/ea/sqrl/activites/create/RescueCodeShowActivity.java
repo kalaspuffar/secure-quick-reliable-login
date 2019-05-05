@@ -38,8 +38,6 @@ public class RescueCodeShowActivity extends AppCompatActivity {
         setContentView(R.layout.activity_rescuecode_show);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
 
-        Utils.setLanguage(this);
-
         try {
             final EntropyHarvester entropyHarvester = EntropyHarvester.getInstance();
             SQRLStorage storage = SQRLStorage.getInstance(RescueCodeShowActivity.this.getApplicationContext());
@@ -81,6 +79,12 @@ public class RescueCodeShowActivity extends AppCompatActivity {
                 showPrintingNotAvailableDialog();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Utils.setLanguage(this);
     }
 
     public void showPrintingNotAvailableDialog() {

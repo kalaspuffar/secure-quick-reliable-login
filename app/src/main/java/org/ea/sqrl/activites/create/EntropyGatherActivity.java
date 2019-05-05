@@ -43,9 +43,13 @@ public class EntropyGatherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_entropy_gather);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
 
-        Utils.setLanguage(this);
-
         showPhoneStatePermission();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Utils.setLanguage(this);
     }
 
     private void initCameraUsage() {
