@@ -396,8 +396,6 @@ public class BaseActivity extends AppCompatActivity {
         if (mNotificationManager != null) {
             mNotificationManager.notify(NOTIFICATION_IDENTITY_UNLOCKED, mBuilder.build());
         }
-
-        clearQuickPassDelayed();
     }
 
     public void clearQuickPassDelayed() {
