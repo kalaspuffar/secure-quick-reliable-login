@@ -361,7 +361,7 @@ public class BaseActivity extends AppCompatActivity {
             notificationChannel.enableLights(false);
             notificationChannel.setSound(null, null);
 
-            if(notificationManager != null) {
+            if (notificationManager != null) {
                 notificationManager.createNotificationChannel(notificationChannel);
             }
         }
@@ -393,10 +393,14 @@ public class BaseActivity extends AppCompatActivity {
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if(mNotificationManager != null) {
+        if (mNotificationManager != null) {
             mNotificationManager.notify(NOTIFICATION_IDENTITY_UNLOCKED, mBuilder.build());
         }
 
+        clearQuickPassDelayed();
+    }
+
+    public void clearQuickPassDelayed() {
         long delayMillis = SQRLStorage.getInstance(BaseActivity.this.getApplicationContext()).getIdleTimeout() * 60000;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
