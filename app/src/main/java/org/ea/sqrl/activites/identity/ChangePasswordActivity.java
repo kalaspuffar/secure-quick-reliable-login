@@ -58,7 +58,7 @@ public class ChangePasswordActivity extends BaseActivity {
 
                     return;
                 }
-                showClearNotification();
+                clearQuickPassDelayed();
 
                 boolean encryptStatus = storage.encryptIdentityKey(txtNewPassword.getText().toString(), entropyHarvester);
                 if (!encryptStatus) {
