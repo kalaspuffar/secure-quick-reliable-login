@@ -1,10 +1,15 @@
-Version 0.14.1
+Version 0.15.0
 
 Bug
 * Don't delete quickpass on network errors.
 * Login popup issue
 * Simply login code and fix some inconsistencies
 * Landscape bugfix
+* Fix Alt-ID to use null character
 
 Feature
 * Password strength meter
+* Easy rescue code entry moving between fields
+
+Deprecation
+* Removed quickpass notification
