@@ -239,4 +239,5 @@
 <string name="img_password_contains_digits">Zeigt an, ob das Passwort Zahlen enthält</string>
 <string name="img_password_contains_symbols">Zeigt an, ob das Passwort Symbole enthält</string>
 <string name="short_password_warning">Sie verwenden ein sehr kurzes Passwort. Dies ist äußerst unsicher und sollte unbedingt vermieden werden!</string>
+<string name="rescue_code_incorrect">Incorrect</string>
 </resources>

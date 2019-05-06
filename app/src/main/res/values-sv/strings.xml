@@ -239,4 +239,5 @@
 <string name="img_password_contains_digits">Visar om lösenordet har några siffror</string>
 <string name="img_password_contains_symbols">Visar om lösenordet har några symboler</string>
 <string name="short_password_warning">Ditt lösenord är väldigt kort. Detta är inte säkert och borde undvikas.</string>
+<string name="rescue_code_incorrect">Felaktig</string>
 </resources>
