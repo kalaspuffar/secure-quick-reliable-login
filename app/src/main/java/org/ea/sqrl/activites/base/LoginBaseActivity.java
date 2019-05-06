@@ -73,8 +73,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 Context.MODE_PRIVATE
         );
         SharedPreferences.Editor editor = sharedPref.edit();
-
-
         editor.putLong(CURRENT_ID, keyArray[pos]);
         editor.apply();
 
@@ -95,7 +93,11 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         if(btnUseIdentity != null) {
             btnUseIdentity.setEnabled(storage.hasIdentityBlock());
         }
+
+        this.selectionUpdated();
     }
+
+    protected void selectionUpdated() {}
 
     @Override
     protected void onPause() {

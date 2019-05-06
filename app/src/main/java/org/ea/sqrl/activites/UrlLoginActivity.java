@@ -35,6 +35,8 @@ import javax.crypto.Cipher;
 public class UrlLoginActivity extends LoginBaseActivity {
     private static final String TAG = "UrlLoginActivity";
 
+    private EditText txtLoginPassword;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +90,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
         SQRLStorage storage = SQRLStorage.getInstance(UrlLoginActivity.this.getApplicationContext());
 
-        final EditText txtLoginPassword = findViewById(R.id.txtLoginPassword);
+        txtLoginPassword = findViewById(R.id.txtLoginPassword);
         if(storage.hasQuickPass()) {
             txtLoginPassword.setHint(getString(R.string.login_identity_quickpass, "" + storage.getHintLength()));
         } else {
@@ -198,6 +200,16 @@ public class UrlLoginActivity extends LoginBaseActivity {
     @Override
     public void onBackPressed() {
         this.closeActivity();
+    }
+
+    @Override
+    protected void selectionUpdated() {
+        SQRLStorage storage = SQRLStorage.getInstance(UrlLoginActivity.this.getApplicationContext());
+        if (storage.hasQuickPass()) {
+            txtLoginPassword.setHint(getString(R.string.login_identity_quickpass, "" + storage.getHintLength()));
+        } else {
+            txtLoginPassword.setHint(R.string.login_identity_password);
+        }
     }
 
     @Override
