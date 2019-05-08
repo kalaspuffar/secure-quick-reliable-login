@@ -6,6 +6,7 @@ Bug
 * Simply login code and fix some inconsistencies
 * Landscape bugfix
 * Fix Alt-ID to use null character
+* Fixing Lastpass popup for verify field
 
 Feature
 * Password strength meter
