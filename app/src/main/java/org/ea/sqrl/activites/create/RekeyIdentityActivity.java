@@ -2,21 +2,20 @@ package org.ea.sqrl.activites.create;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.text.method.LinkMovementMethod;
 import android.widget.Button;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.base.CommonBaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
-import org.ea.sqrl.utils.Utils;
 
 /**
  *
  * @author Daniel Persson
  */
-public class RekeyIdentityActivity extends AppCompatActivity {
+public class RekeyIdentityActivity extends CommonBaseActivity {
     private static final String TAG = "RekeyIdentityActivity";
 
     @Override
@@ -37,12 +36,5 @@ public class RekeyIdentityActivity extends AppCompatActivity {
                     startActivity(new Intent(this, RekeyVerifyActivity.class));
                 }
         );
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Utils.setLanguage(this);
-        Utils.reloadActivityTitle(this);
     }
 }

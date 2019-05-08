@@ -1,8 +1,6 @@
 package org.ea.sqrl.activites;
 
-import android.content.res.Configuration;
 import android.support.design.widget.TabLayout;
-import android.support.v7.app.AppCompatActivity;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,8 +17,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.base.CommonBaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
-import org.ea.sqrl.utils.Utils;
 
 /**
  * This activity is used to inform the user about the different features, techniques use cases
@@ -29,7 +27,7 @@ import org.ea.sqrl.utils.Utils;
  *
  * @author Daniel Persson
  */
-public class IntroductionActivity extends AppCompatActivity {
+public class IntroductionActivity extends CommonBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,13 +52,6 @@ public class IntroductionActivity extends AppCompatActivity {
         btnClose.setOnClickListener(v -> new Thread(() -> {
             IntroductionActivity.this.finish();
         }).start());
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Utils.setLanguage(this);
-        Utils.reloadActivityTitle(this);
     }
 
     /**

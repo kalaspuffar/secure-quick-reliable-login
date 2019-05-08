@@ -2,20 +2,19 @@ package org.ea.sqrl.activites.create;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.base.CommonBaseActivity;
 import org.ea.sqrl.utils.RescueCodeInputHelper;
-import org.ea.sqrl.utils.Utils;
 
 /**
  *
  * @author Daniel Persson
  */
-public class RescueCodeEnterActivity extends AppCompatActivity {
+public class RescueCodeEnterActivity extends CommonBaseActivity {
     private static final String TAG = "RescueCodeEnterActivity";
 
     @Override
@@ -41,12 +40,5 @@ public class RescueCodeEnterActivity extends AppCompatActivity {
 
         boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
         if(runningTest) return;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Utils.setLanguage(this);
-        Utils.reloadActivityTitle(this);
     }
 }

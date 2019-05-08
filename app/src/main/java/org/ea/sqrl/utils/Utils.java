@@ -1,9 +1,6 @@
 package org.ea.sqrl.utils;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,8 +8,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.support.v4.content.IntentCompat;
-import android.util.AndroidException;
 import android.util.Log;
 
 import com.google.zxing.FormatException;
@@ -99,21 +94,5 @@ public class Utils {
         byte[] identityData = aDbHelper.getIdentityData(currentId);
         SQRLStorage sqrlStorage = SQRLStorage.getInstance(activity);
         sqrlStorage.read(identityData);
-    }
-
-    public static void restartApp(Context context) {
-        PackageManager pm = context.getPackageManager();
-        Intent intent = pm.getLaunchIntentForPackage(context.getPackageName());
-        if (intent == null) return;
-
-        ComponentName componentName = intent.getComponent();
-        Intent mainIntent = Intent.makeRestartActivityTask(componentName);
-        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        context.startActivity(mainIntent);
-
-        if (context instanceof Activity) {
-            ((Activity) context).finish();
-        }
-        Runtime.getRuntime().exit(0);
     }
 }
