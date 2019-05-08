@@ -50,6 +50,7 @@ public class EntropyGatherActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Utils.setLanguage(this);
+        Utils.reloadActivityTitle(this);
     }
 
     private void initCameraUsage() {

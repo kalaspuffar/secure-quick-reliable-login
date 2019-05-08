@@ -1,5 +1,6 @@
 package org.ea.sqrl.activites;
 
+import android.content.res.Configuration;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 
@@ -59,6 +60,7 @@ public class IntroductionActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Utils.setLanguage(this);
+        Utils.reloadActivityTitle(this);
     }
 
     /**

@@ -1,12 +1,18 @@
 package org.ea.sqrl.utils;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.v4.content.IntentCompat;
+import android.util.AndroidException;
 import android.util.Log;
 
 import com.google.zxing.FormatException;
@@ -15,6 +21,8 @@ import org.ea.sqrl.database.IdentityDBHelper;
 import org.ea.sqrl.processors.SQRLStorage;
 
 import java.util.Locale;
+
+import static android.content.pm.PackageManager.GET_META_DATA;
 
 /**
  *
@@ -51,17 +59,33 @@ public class Utils {
     }
 
     public static void setLanguage(Context context) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        String lang = sharedPreferences.getString("language", "");
-
-        lang = lang.isEmpty() ? Locale.getDefault().getLanguage() : lang;
+        String lang = getLanguage(context);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             Resources res = context.getResources();
-
             android.content.res.Configuration conf = res.getConfiguration();
-            conf.setLocale(new Locale(lang));
+            Locale locale = new Locale(lang);
+
+            conf.setLocale(locale);
             res.updateConfiguration(conf, res.getDisplayMetrics());
+        }
+    }
+
+    public static String getLanguage(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        String lang = sharedPreferences.getString("language", "");
+        return lang.isEmpty() ? Locale.getDefault().getLanguage() : lang;
+    }
+
+    public static void reloadActivityTitle(Activity activity) {
+        try {
+            int labelId = activity.getPackageManager().getActivityInfo(
+                    activity.getComponentName(), GET_META_DATA).labelRes;
+            if (labelId != 0) {
+                activity.setTitle(labelId);
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
@@ -75,5 +99,21 @@ public class Utils {
         byte[] identityData = aDbHelper.getIdentityData(currentId);
         SQRLStorage sqrlStorage = SQRLStorage.getInstance(activity);
         sqrlStorage.read(identityData);
+    }
+
+    public static void restartApp(Context context) {
+        PackageManager pm = context.getPackageManager();
+        Intent intent = pm.getLaunchIntentForPackage(context.getPackageName());
+        if (intent == null) return;
+
+        ComponentName componentName = intent.getComponent();
+        Intent mainIntent = Intent.makeRestartActivityTask(componentName);
+        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(mainIntent);
+
+        if (context instanceof Activity) {
+            ((Activity) context).finish();
+        }
+        Runtime.getRuntime().exit(0);
     }
 }

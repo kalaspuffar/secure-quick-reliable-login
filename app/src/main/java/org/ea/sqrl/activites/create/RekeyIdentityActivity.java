@@ -43,5 +43,6 @@ public class RekeyIdentityActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Utils.setLanguage(this);
+        Utils.reloadActivityTitle(this);
     }
 }

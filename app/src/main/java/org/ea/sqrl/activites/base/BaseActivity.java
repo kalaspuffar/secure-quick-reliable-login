@@ -36,6 +36,8 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.journeyapps.barcodescanner.Util;
+
 import org.ea.sqrl.BuildConfig;
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.LanguageActivity;
@@ -79,6 +81,7 @@ public class BaseActivity extends AppCompatActivity {
     protected EntropyHarvester entropyHarvester;
 
     private boolean openedLanguageDialog = false;
+    private String language;
 
     public BaseActivity() {
         mDbHelper = new IdentityDBHelper(this);
@@ -92,16 +95,31 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Utils.setLanguage(this);
+        Utils.reloadActivityTitle(this);
+        language = Utils.getLanguage(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Utils.setLanguage(this);
-        if(openedLanguageDialog) {
+
+        if(!language.equals(Utils.getLanguage(this))) {
             this.recreate();
-            openedLanguageDialog = false;
+            language = Utils.getLanguage(this);
         }
+//        if(openedLanguageDialog) {
+//            this.recreate();
+//            openedLanguageDialog = false;
+//        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Utils.setLanguage(this);
+        Utils.reloadActivityTitle(this);
     }
 
     @Override
