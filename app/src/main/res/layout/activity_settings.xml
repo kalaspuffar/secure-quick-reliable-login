@@ -18,6 +18,7 @@
         android:inputType="number"
         android:nextFocusDown="@+id/txtSettingsPasswordVerifyInSeconds"
         android:hint="@string/settings_hint_length"
+        android:importantForAutofill="no"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView10" />
@@ -33,6 +34,7 @@
         android:inputType="number"
         android:nextFocusDown="@+id/txtSettingsIdleTimeout"
         android:hint="@string/settings_password_verify"
+        android:importantForAutofill="no"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView11"
@@ -49,6 +51,7 @@
         android:inputType="number"
         android:nextFocusDown="@+id/cbSettingsSQRLOnly"
         android:hint="@string/settings_idle_timeout"
+        android:importantForAutofill="no"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView12" />
