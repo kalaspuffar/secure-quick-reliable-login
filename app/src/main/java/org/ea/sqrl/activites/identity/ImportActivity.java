@@ -130,9 +130,10 @@ public class ImportActivity extends BaseActivity {
             return;
         }
 
-        if (getIntent().getAction() != null && getIntent().getType() != null &&
-                getIntent().getAction().equals(Intent.ACTION_VIEW) &&
-                getIntent().getType().startsWith("text/")) {
+        Intent intent = getIntent();
+        if (intent.getAction() != null && intent.getType() != null &&
+                intent.getAction().equals(Intent.ACTION_VIEW) &&
+                (intent.getType().startsWith("text/") || intent.getType().startsWith("application/"))) {
             handleFileIntent();
             return;
         }
