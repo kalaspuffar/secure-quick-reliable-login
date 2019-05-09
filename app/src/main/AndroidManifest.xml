@@ -118,8 +118,19 @@
             />
 
         <activity android:name=".activites.identity.ImportActivity"
-            android:label="@string/title_import"
-            />
+            android:label="@string/title_import">
+            <intent-filter
+                android:icon="@drawable/ic_sqrl_icon_vector_outline"
+                android:label="@string/app_name"
+                android:priority="50" >
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
 
         <activity android:name=".activites.account.AccountOptionsActivity"
             android:label="@string/title_account_options"

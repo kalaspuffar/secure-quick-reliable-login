@@ -21,11 +21,17 @@ import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.Utils;
 
+import java.util.Arrays;
+
 public class ImportActivity extends BaseActivity {
     private static final String TAG = "ImportActivity";
 
     private boolean firstIdentity = false;
     private ConstraintLayout rootView = null;
+    private TextView txtImportMessage = null;
+    private Button btnImportIdentityDo = null;
+    private Button btnForgotPassword = null;
+    private EditText txtPassword = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +39,19 @@ public class ImportActivity extends BaseActivity {
         setContentView(R.layout.activity_import);
 
         rootView = findViewById(R.id.importActivityView);
+        txtImportMessage = findViewById(R.id.txtImportMessage);
+        btnImportIdentityDo = findViewById(R.id.btnImportIdentityDo);
+        btnForgotPassword = findViewById(R.id.btnForgotPassword);
+        txtPassword = findViewById(R.id.txtPassword);
+
+        txtPassword.setEnabled(true);
+        btnImportIdentityDo.setEnabled(true);
+        btnForgotPassword.setEnabled(true);
 
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
-        final EditText txtPassword = findViewById(R.id.txtPassword);
-        final Button btnImportIdentityDo = findViewById(R.id.btnImportIdentityDo);
-
-        findViewById(R.id.btnForgotPassword).setOnClickListener(
+        btnForgotPassword.setOnClickListener(
                 v -> {
                     ImportActivity.this.finish();
                     Intent resetPasswordIntent = new Intent(this, ResetPasswordActivity.class);
@@ -119,6 +130,13 @@ public class ImportActivity extends BaseActivity {
             return;
         }
 
+        if (getIntent().getAction() != null && getIntent().getType() != null &&
+                getIntent().getAction().equals(Intent.ACTION_VIEW) &&
+                getIntent().getType().startsWith("text/")) {
+            handleFileIntent();
+            return;
+        }
+
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
         integrator.setCameraId(0);
@@ -135,11 +153,10 @@ public class ImportActivity extends BaseActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result != null) {
             if(result.getContents() == null) {
-                Log.d("MainActivity", "Cancelled scan");
+                Log.d(TAG, "Cancelled scan");
                 Snackbar.make(rootView, R.string.scan_cancel, Snackbar.LENGTH_LONG).show();
                 ImportActivity.this.finish();
             } else {
-                SQRLStorage storage = SQRLStorage.getInstance(ImportActivity.this.getApplicationContext());
                 try {
                     byte[] qrCodeData = Utils.readSQRLQRCode(data);
                     if(qrCodeData.length == 0) {
@@ -147,20 +164,8 @@ public class ImportActivity extends BaseActivity {
                         return;
                     }
 
-                    storage.read(qrCodeData);
+                    readIdentityData(qrCodeData);
 
-                    if(!storage.hasEncryptedKeys()) {
-                        handler.postDelayed(() -> startActivity(new Intent(this, ResetPasswordActivity.class)), 100);
-                        return;
-                    }
-
-                    String recoveryBlock = storage.getVerifyingRecoveryBlock();
-
-                    handler.postDelayed(() -> {
-                        final TextView txtRecoveryKey = findViewById(R.id.txtRecoveryKey);
-                        txtRecoveryKey.setText(recoveryBlock);
-                        txtRecoveryKey.setMovementMethod(LinkMovementMethod.getInstance());
-                    }, 100);
                 } catch (Exception e) {
                     if(e.getMessage().equals("Incorrect header")) {
                         showErrorMessage(R.string.scan_incorrect);
@@ -171,5 +176,50 @@ public class ImportActivity extends BaseActivity {
                 }
             }
         }
+    }
+
+    private void handleFileIntent() {
+        int headerLength = SQRLStorage.STORAGE_HEADER.length();
+        byte[] identityData = Utils.getFileIntentContent(this, getIntent().getData());
+
+        if (identityData == null || identityData.length < headerLength ||
+                !(new String(Arrays.copyOfRange(identityData, 0, headerLength)))
+                        .equals(SQRLStorage.STORAGE_HEADER)) {
+            handleFileIntentError();
+            return;
+        }
+
+        try {
+            readIdentityData(identityData);
+        } catch (Exception e) {
+            handleFileIntentError();
+        }
+    }
+
+    private void handleFileIntentError() {
+        Log.d(TAG, "Invalid file provided by file intent.");
+        txtImportMessage.setText(R.string.invalid_sqrl_file);
+        txtPassword.setEnabled(false);
+        btnImportIdentityDo.setEnabled(false);
+        btnForgotPassword.setEnabled(false);
+    }
+
+    private void readIdentityData(byte[] identityData) throws Exception {
+        SQRLStorage storage = SQRLStorage.getInstance(ImportActivity.this.getApplicationContext());
+
+        storage.read(identityData);
+
+        if(!storage.hasEncryptedKeys()) {
+            handler.postDelayed(() -> startActivity(new Intent(this, ResetPasswordActivity.class)), 100);
+            return;
+        }
+
+        String recoveryBlock = storage.getVerifyingRecoveryBlock();
+
+        handler.postDelayed(() -> {
+            final TextView txtRecoveryKey = findViewById(R.id.txtRecoveryKey);
+            txtRecoveryKey.setText(recoveryBlock);
+            txtRecoveryKey.setMovementMethod(LinkMovementMethod.getInstance());
+        }, 100);
     }
 }

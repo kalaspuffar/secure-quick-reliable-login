@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -14,6 +15,8 @@ import com.google.zxing.FormatException;
 import org.ea.sqrl.database.IdentityDBHelper;
 import org.ea.sqrl.processors.SQRLStorage;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
 
 /**
@@ -75,5 +78,21 @@ public class Utils {
         byte[] identityData = aDbHelper.getIdentityData(currentId);
         SQRLStorage sqrlStorage = SQRLStorage.getInstance(activity);
         sqrlStorage.read(identityData);
+    }
+
+    public static byte[] getFileIntentContent(Context context, Uri contentUri) {
+        if (contentUri == null) return null;
+
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(contentUri);
+            byte[] data = new byte[inputStream.available()];
+            inputStream.read(data);
+            inputStream.close();
+            return data;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
