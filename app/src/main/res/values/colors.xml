@@ -13,4 +13,6 @@
     <color name="password_strength_poor">#F08080</color>
     <color name="password_strength_medium">#FFFACD</color>
     <color name="password_strength_good">#32CD32</color>
+    <color name="password_strength_text">#323232</color>
+
 </resources>
