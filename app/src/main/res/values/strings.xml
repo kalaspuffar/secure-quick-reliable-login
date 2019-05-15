@@ -241,4 +241,7 @@
 <string name="short_password_warning">You are using a very short password. This is highly insecure and should absolutely be avoided!</string>
 <string name="rescue_code_incorrect">Incorrect</string>
 <string name="invalid_sqrl_file">This file does not appear to be a valid SQRL identity file.</string>
+<string name="import_identity_file">Import identity file</string>
+<string name="title_import_options">SQRL - Import</string>
+<string name="install_file_manager_app">Please install a file manager app from the Google Play Store!</string>
 </resources>

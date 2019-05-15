@@ -82,7 +82,7 @@
                 tools:layout_conversion_absoluteWidth="304dp" />
 
             <Button
-                android:id="@+id/btnImportIdentity"
+                android:id="@+id/btnImport"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_marginEnd="16dp"
@@ -152,12 +152,14 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 android:duplicateParentState="true"
                 android:text="@string/button_create_identity"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btnRekey"
+                app:layout_constraintBottom_toBottomOf="parent"
                 tools:layout_conversion_absoluteHeight="48dp"
                 tools:layout_conversion_absoluteWidth="304dp" />
 
@@ -189,7 +191,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnImportIdentity"
+                app:layout_constraintTop_toBottomOf="@+id/btnImport"
                 tools:layout_conversion_absoluteHeight="48dp"
                 tools:layout_conversion_absoluteWidth="304dp" />
 
@@ -224,21 +226,6 @@
                 tools:layout_conversion_absoluteHeight="48dp"
                 tools:layout_conversion_absoluteWidth="304dp" />
 
-            <Button
-                android:id="@+id/btnTextImport"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/button_text_import"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnCreate" />
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 

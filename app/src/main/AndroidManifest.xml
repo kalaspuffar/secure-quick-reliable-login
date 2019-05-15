@@ -117,6 +117,10 @@
             android:label="@string/title_export_options"
             />
 
+        <activity android:name=".activites.identity.ImportOptionsActivity"
+            android:label="@string/title_import_options"
+            />
+
         <activity android:name=".activites.identity.ImportActivity"
             android:label="@string/title_import">
             <intent-filter

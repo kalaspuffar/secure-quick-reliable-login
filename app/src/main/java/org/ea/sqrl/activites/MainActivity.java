@@ -24,10 +24,9 @@ import org.ea.sqrl.activites.create.CreateIdentityActivity;
 import org.ea.sqrl.activites.create.RekeyIdentityActivity;
 import org.ea.sqrl.activites.identity.ChangePasswordActivity;
 import org.ea.sqrl.activites.identity.ExportOptionsActivity;
-import org.ea.sqrl.activites.identity.ImportActivity;
+import org.ea.sqrl.activites.identity.ImportOptionsActivity;
 import org.ea.sqrl.activites.identity.RenameActivity;
 import org.ea.sqrl.activites.identity.ResetPasswordActivity;
-import org.ea.sqrl.activites.identity.TextImportActivity;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
@@ -81,7 +80,7 @@ public class MainActivity extends LoginBaseActivity {
 
         final ImageButton btnCloseMain = findViewById(R.id.btnCloseMain);
         btnCloseMain.setOnClickListener(v -> MainActivity.this.finish());
-        
+
         btnUseIdentity = findViewById(R.id.btnUseIdentity);
         btnUseIdentity.setOnClickListener(
                 v -> {
@@ -91,9 +90,9 @@ public class MainActivity extends LoginBaseActivity {
                 }
         );
 
-        final Button btnImportIdentity = findViewById(R.id.btnImportIdentity);
-        btnImportIdentity.setOnClickListener(
-                v -> startActivity(new Intent(this, ImportActivity.class))
+        final Button btnImport = findViewById(R.id.btnImport);
+        btnImport.setOnClickListener(
+                v -> startActivity(new Intent(this, ImportOptionsActivity.class))
         );
 
         final Button btnSettings = findViewById(R.id.btnSettings);
@@ -155,12 +154,6 @@ public class MainActivity extends LoginBaseActivity {
         btnReset.setOnClickListener(
                 v -> startActivity(new Intent(this, ResetPasswordActivity.class))
         );
-
-        final Button btnTextImport = findViewById(R.id.btnTextImport);
-        btnTextImport.setOnClickListener(
-                v -> startActivity(new Intent(this, TextImportActivity.class))
-        );
-
 
         final Button btnCreate = findViewById(R.id.btnCreate);
         btnCreate.setOnClickListener(v -> startActivity(new Intent(this, CreateIdentityActivity.class)));

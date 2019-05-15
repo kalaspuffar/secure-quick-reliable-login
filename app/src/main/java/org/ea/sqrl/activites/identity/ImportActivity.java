@@ -3,6 +3,7 @@ package org.ea.sqrl.activites.identity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
@@ -25,6 +26,7 @@ import java.util.Arrays;
 
 public class ImportActivity extends BaseActivity {
     private static final String TAG = "ImportActivity";
+    private static final int PICK_FILE_REQUEST_CODE = 1;
 
     private boolean firstIdentity = false;
     private ConstraintLayout rootView = null;
@@ -134,23 +136,44 @@ public class ImportActivity extends BaseActivity {
         if (intent.getAction() != null && intent.getType() != null &&
                 intent.getAction().equals(Intent.ACTION_VIEW) &&
                 (intent.getType().startsWith("text/") || intent.getType().startsWith("application/"))) {
-            handleFileIntent();
+            handleFileIntent(intent.getData());
             return;
         }
 
-        final IntentIntegrator integrator = new IntentIntegrator(this);
-        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
-        integrator.setCameraId(0);
-        integrator.setBeepEnabled(false);
-        integrator.setOrientationLocked(false);
-        integrator.setBarcodeImageEnabled(false);
+        String importMethod = intent.getStringExtra(ImportOptionsActivity.EXTRA_IMPORT_METHOD);
+        if (importMethod == null) return;
 
-        integrator.setPrompt(this.getString(R.string.scan_identity));
-        integrator.initiateScan();
+        if (importMethod.equals(ImportOptionsActivity.IMPORT_METHOD_FILE)) {
+            chooseFile();
+            return;
+        }
+
+        if (importMethod.equals(ImportOptionsActivity.IMPORT_METHOD_QRCODE)) {
+            final IntentIntegrator integrator = new IntentIntegrator(this);
+            integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+            integrator.setCameraId(0);
+            integrator.setBeepEnabled(false);
+            integrator.setOrientationLocked(false);
+            integrator.setBarcodeImageEnabled(false);
+
+            integrator.setPrompt(this.getString(R.string.scan_identity));
+            integrator.initiateScan();
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == PICK_FILE_REQUEST_CODE) {
+            if (data == null) {
+                this.finish();
+                return;
+            }
+
+            handleFileIntent(data.getData());
+            return;
+        }
+
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result != null) {
             if(result.getContents() == null) {
@@ -179,9 +202,23 @@ public class ImportActivity extends BaseActivity {
         }
     }
 
-    private void handleFileIntent() {
+    private void chooseFile() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        try {
+            startActivityForResult(
+                    Intent.createChooser(intent, getResources().getString(R.string.import_identity_file)),
+                    PICK_FILE_REQUEST_CODE);
+
+        } catch (android.content.ActivityNotFoundException ex) {
+            showErrorMessage(R.string.install_file_manager_app);
+        }
+    }
+
+    private void handleFileIntent(Uri contentUri) {
         int headerLength = SQRLStorage.STORAGE_HEADER.length();
-        byte[] identityData = Utils.getFileIntentContent(this, getIntent().getData());
+        byte[] identityData = Utils.getFileIntentContent(this, contentUri);
 
         if (identityData == null || identityData.length < headerLength ||
                 !(new String(Arrays.copyOfRange(identityData, 0, headerLength)))
