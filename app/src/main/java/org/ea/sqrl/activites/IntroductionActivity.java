@@ -1,7 +1,6 @@
 package org.ea.sqrl.activites;
 
 import android.support.design.widget.TabLayout;
-import android.support.v7.app.AppCompatActivity;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -18,8 +17,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.base.CommonBaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
-import org.ea.sqrl.utils.Utils;
 
 /**
  * This activity is used to inform the user about the different features, techniques use cases
@@ -28,14 +27,12 @@ import org.ea.sqrl.utils.Utils;
  *
  * @author Daniel Persson
  */
-public class IntroductionActivity extends AppCompatActivity {
+public class IntroductionActivity extends CommonBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_introduction);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
-
-        Utils.setLanguage(this);
 
         final SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 

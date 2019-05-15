@@ -2,15 +2,14 @@ package org.ea.sqrl.activites.create;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.text.method.LinkMovementMethod;
 import android.widget.Button;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.base.CommonBaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
-import org.ea.sqrl.utils.Utils;
 
 /**
  * Start activity should be a base for the user so we bring them into the application and they know
@@ -19,7 +18,7 @@ import org.ea.sqrl.utils.Utils;
  *
  * @author Daniel Persson
  */
-public class CreateIdentityActivity extends AppCompatActivity {
+public class CreateIdentityActivity extends CommonBaseActivity {
     private static final String TAG = "CreateIdentityActivity";
 
     @Override
@@ -27,8 +26,6 @@ public class CreateIdentityActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_identity);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
-
-        Utils.setLanguage(this);
 
         SQRLStorage.getInstance(CreateIdentityActivity.this.getApplicationContext()).cleanIdentity();
 

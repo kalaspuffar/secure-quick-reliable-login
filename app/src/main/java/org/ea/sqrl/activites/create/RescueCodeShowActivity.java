@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.print.PrintAttributes;
 import android.print.PrintManager;
 
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -17,11 +16,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.base.CommonBaseActivity;
 import org.ea.sqrl.processors.EntropyHarvester;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.services.RescueCodePrintDocumentAdapter;
 import org.ea.sqrl.utils.RescueCodeInputHelper;
-import org.ea.sqrl.utils.Utils;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ import java.util.List;
  *
  * @author Daniel Persson
  */
-public class RescueCodeShowActivity extends AppCompatActivity {
+public class RescueCodeShowActivity extends CommonBaseActivity {
     private static final String TAG = "RescueCodeShowActivity";
 
     @Override
@@ -37,8 +36,6 @@ public class RescueCodeShowActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rescuecode_show);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
-
-        Utils.setLanguage(this);
 
         try {
             final EntropyHarvester entropyHarvester = EntropyHarvester.getInstance();

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -15,6 +16,8 @@ import org.ea.sqrl.database.IdentityDBHelper;
 import org.ea.sqrl.processors.SQRLStorage;
 
 import java.util.Locale;
+
+import static android.content.pm.PackageManager.GET_META_DATA;
 
 /**
  *
@@ -51,17 +54,33 @@ public class Utils {
     }
 
     public static void setLanguage(Context context) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        String lang = sharedPreferences.getString("language", "");
-
-        lang = lang.isEmpty() ? Locale.getDefault().getLanguage() : lang;
+        String lang = getLanguage(context);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             Resources res = context.getResources();
-
             android.content.res.Configuration conf = res.getConfiguration();
-            conf.setLocale(new Locale(lang));
+            Locale locale = new Locale(lang);
+
+            conf.setLocale(locale);
             res.updateConfiguration(conf, res.getDisplayMetrics());
+        }
+    }
+
+    public static String getLanguage(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        String lang = sharedPreferences.getString("language", "");
+        return lang.isEmpty() ? Locale.getDefault().getLanguage() : lang;
+    }
+
+    public static void reloadActivityTitle(Activity activity) {
+        try {
+            int labelId = activity.getPackageManager().getActivityInfo(
+                    activity.getComponentName(), GET_META_DATA).labelRes;
+            if (labelId != 0) {
+                activity.setTitle(labelId);
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
         }
     }
 

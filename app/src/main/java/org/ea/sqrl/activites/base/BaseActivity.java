@@ -23,7 +23,6 @@ import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -48,16 +47,15 @@ import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.services.ClearIdentityReceiver;
 import org.ea.sqrl.services.ClearIdentityService;
-import org.ea.sqrl.utils.Utils;
 
 /**
- * This base activity is inherited by all other activities. We place logic used for menus,
+ * This base activity is inherited by all other activities that need logic used for menus,
  * background processes and other things that are untied to the current context of the application.
  *
  * @author Daniel Persson
  */
 @SuppressLint("Registered")
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends CommonBaseActivity {
     private static final String TAG = "BaseActivity";
     protected static final String CURRENT_ID = "current_id";
     protected static final String APPS_PREFERENCES = "org.ea.sqrl.preferences";
@@ -78,8 +76,6 @@ public class BaseActivity extends AppCompatActivity {
     protected final IdentityDBHelper mDbHelper;
     protected EntropyHarvester entropyHarvester;
 
-    private boolean openedLanguageDialog = false;
-
     public BaseActivity() {
         mDbHelper = new IdentityDBHelper(this);
         try {
@@ -90,19 +86,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Utils.setLanguage(this);
-        if(openedLanguageDialog) {
-            this.recreate();
-            openedLanguageDialog = false;
-        }
-    }
+    protected void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -160,7 +144,6 @@ public class BaseActivity extends AppCompatActivity {
                 startActivity(new Intent(this, IntroductionActivity.class));
                 return true;
             case R.id.action_language:
-                openedLanguageDialog = true;
                 startActivity(new Intent(this, LanguageActivity.class));
                 return true;
             case R.id.action_advanced_options:

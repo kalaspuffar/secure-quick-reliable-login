@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
@@ -19,8 +18,8 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.base.CommonBaseActivity;
 import org.ea.sqrl.processors.EntropyHarvester;
-import org.ea.sqrl.utils.Utils;
 
 import java.io.IOException;
 
@@ -28,7 +27,7 @@ import java.io.IOException;
  *
  * @author Daniel Persson
  */
-public class EntropyGatherActivity extends AppCompatActivity {
+public class EntropyGatherActivity extends CommonBaseActivity {
     private static final String TAG = "EntropyGatherActivity";
 
     private final int REQUEST_PERMISSION_CAMERA = 1;
@@ -42,8 +41,6 @@ public class EntropyGatherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entropy_gather);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
-
-        Utils.setLanguage(this);
 
         showPhoneStatePermission();
     }

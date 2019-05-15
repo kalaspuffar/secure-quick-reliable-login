@@ -1,7 +1,6 @@
 package org.ea.sqrl.activites.identity;
 
 import android.graphics.drawable.Drawable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
@@ -9,8 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.base.CommonBaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
-import org.ea.sqrl.utils.Utils;
 
 import java.security.KeyStore;
 
@@ -18,7 +17,7 @@ import java.security.KeyStore;
  *
  * @author Daniel Persson
  */
-public class ClearIdentityActivity extends AppCompatActivity {
+public class ClearIdentityActivity extends CommonBaseActivity {
     private static final String TAG = "ClearIdentityActivity";
 
     @Override
@@ -26,8 +25,6 @@ public class ClearIdentityActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clear_identity);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
-
-        Utils.setLanguage(this);
 
         final ImageView imgClearIdentity = findViewById(R.id.imgClearIdentity);
         final TextView txtClearIdentity = findViewById(R.id.txtClearIdentity);
