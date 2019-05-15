@@ -15,6 +15,7 @@ import com.google.zxing.FormatException;
 import org.ea.sqrl.database.IdentityDBHelper;
 import org.ea.sqrl.processors.SQRLStorage;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
@@ -83,12 +84,19 @@ public class Utils {
     public static byte[] getFileIntentContent(Context context, Uri contentUri) {
         if (contentUri == null) return null;
 
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len;
+
         try {
             InputStream inputStream = context.getContentResolver().openInputStream(contentUri);
-            byte[] data = new byte[inputStream.available()];
-            inputStream.read(data);
+
+            while ((len = inputStream.read(buffer)) != -1) {
+                os.write(buffer, 0, len);
+            }
+
             inputStream.close();
-            return data;
+            return os.toByteArray();
 
         } catch (IOException e) {
             e.printStackTrace();
