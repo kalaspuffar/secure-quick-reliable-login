@@ -7,10 +7,12 @@ Bug
 * Landscape bugfix
 * Fix Alt-ID to use null character
 * Fixing Lastpass popup for verify field
+* Handle language change better.
 
 Feature
 * Password strength meter
 * Easy rescue code entry moving between fields
+* Share identity with application
 
 Deprecation
 * Removed quickpass notification
