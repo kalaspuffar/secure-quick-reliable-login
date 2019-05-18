@@ -240,4 +240,7 @@
 <string name="img_password_contains_symbols">Indicates whether the password contains symbols</string>
 <string name="short_password_warning">You are using a very short password. This is highly insecure and should absolutely be avoided!</string>
 <string name="rescue_code_incorrect">Incorrect</string>
+<string name="invalid_sqrl_file">This file does not appear to be a valid SQRL identity file.</string>
+<string name="button_export_share_identity">Share identity</string>
+<string name="share_identity_to">Share identity to</string>
 </resources>
