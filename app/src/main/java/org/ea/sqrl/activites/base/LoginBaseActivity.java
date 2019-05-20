@@ -128,7 +128,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     }
 
     protected void updateSpinnerData(long currentId) {
-        identities = mDbHelper.getIdentitys();
+        identities = mDbHelper.getIdentities();
         if (identities.size() == 0) return;
         if(currentId == -1) {
             currentId = identities.keySet().iterator().next();

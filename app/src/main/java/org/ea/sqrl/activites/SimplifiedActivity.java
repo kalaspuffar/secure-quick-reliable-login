@@ -3,16 +3,15 @@ package org.ea.sqrl.activites;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.hardware.biometrics.BiometricPrompt;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.support.design.widget.Snackbar;
-import android.support.v7.content.res.AppCompatResources;
-import android.support.v7.widget.AppCompatButton;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
-import android.widget.Button;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -39,6 +38,9 @@ import javax.crypto.Cipher;
 public class SimplifiedActivity extends LoginBaseActivity {
     private static final String TAG = "SimplifiedActivity";
 
+    private TextView txtSelectedIdentityHeadline = null;
+    private TextView txtSelectedIdentity = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +48,16 @@ public class SimplifiedActivity extends LoginBaseActivity {
 
         rootView = findViewById(R.id.simplifiedActivityView);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
+
+        txtSelectedIdentityHeadline = findViewById(R.id.txtSelectedIdentityHeadline);
+        txtSelectedIdentityHeadline.append(":");
+
+        txtSelectedIdentity = findViewById(R.id.txtSelectedIdentity);
+        txtSelectedIdentity.setOnClickListener(
+                v -> {
+                    startActivity(new Intent(this, MainActivity.class));
+                }
+        );
 
         final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
@@ -87,6 +99,22 @@ public class SimplifiedActivity extends LoginBaseActivity {
                 SQRLStorage storage = SQRLStorage.getInstance(SimplifiedActivity.this.getApplicationContext());
                 try {
                     storage.read(identityData);
+
+                    if (mDbHelper.getIdentities().size() > 1) {
+                        String identityName = mDbHelper.getIdentityName(currentId);
+                        if (identityName.length() > 20) {
+                            identityName = identityName.substring(0, 20) + "...";
+                        }
+                        SpannableString ssIdentityName = new SpannableString(identityName);
+                        ssIdentityName.setSpan(new UnderlineSpan(), 0, ssIdentityName.length(), 0);
+                        txtSelectedIdentity.setText(ssIdentityName);
+                        txtSelectedIdentity.setVisibility(View.VISIBLE);
+                        txtSelectedIdentityHeadline.setVisibility(View.VISIBLE);
+                    } else {
+                        txtSelectedIdentityHeadline.setVisibility(View.GONE);
+                        txtSelectedIdentity.setVisibility(View.GONE);
+                    }
+
                 } catch (Exception e) {
                     showErrorMessage(e.getMessage());
                     Log.e(TAG, e.getMessage(), e);
