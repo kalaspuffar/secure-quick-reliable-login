@@ -240,4 +240,10 @@
 <string name="img_password_contains_symbols">Geeft aan of het wachtwoord symbolen bevat </string>
 <string name="short_password_warning">U gebruikt een zeer kort wachtwoord. Dit is zeer onveilig en moet absoluut worden vermeden!</string>
 <string name="rescue_code_incorrect">Fout</string>
+<string name="invalid_sqrl_file">This file does not appear to be a valid SQRL identity file.</string>
+<string name="button_export_share_identity">Share identity</string>
+<string name="share_identity_to">Share identity to</string>
+<string name="import_identity_file">Import identity file</string>
+<string name="title_import_options">SQRL - Import</string>
+<string name="install_file_manager_app">Please install a file manager app from the Google Play Store.</string>
 </resources>

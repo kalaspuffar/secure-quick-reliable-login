@@ -221,7 +221,7 @@ public class ImportActivity extends BaseActivity {
         byte[] identityData = Utils.getFileIntentContent(this, contentUri);
 
         if (identityData == null || identityData.length < headerLength ||
-                !(new String(Arrays.copyOfRange(identityData, 0, headerLength)))
+                !(new String(Arrays.copyOfRange(identityData, 0, headerLength)).toLowerCase())
                         .equals(SQRLStorage.STORAGE_HEADER)) {
             handleFileIntentError();
             return;

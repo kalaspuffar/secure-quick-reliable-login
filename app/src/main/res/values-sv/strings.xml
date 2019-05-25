@@ -240,4 +240,10 @@
 <string name="img_password_contains_symbols">Visar om lösenordet har några symboler</string>
 <string name="short_password_warning">Ditt lösenord är väldigt kort. Detta är inte säkert och borde undvikas.</string>
 <string name="rescue_code_incorrect">Felaktig</string>
+<string name="invalid_sqrl_file">Den angivna filen verkar inte vara en SQRL identitet.</string>
+<string name="button_export_share_identity">Dela identitet</string>
+<string name="share_identity_to">Dela identitet till</string>
+<string name="import_identity_file">Importera identitets fil</string>
+<string name="title_import_options">SQRL - Import</string>
+<string name="install_file_manager_app">Var god installera en fil hanterare app från Google Play Butiken.</string>
 </resources>
