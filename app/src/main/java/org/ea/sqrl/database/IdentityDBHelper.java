@@ -81,7 +81,7 @@ public class IdentityDBHelper extends SQLiteOpenHelper {
         return returnVal;
     }
 
-    public Map<Long, String> getIdentitys() {
+    public Map<Long, String> getIdentities() {
         Cursor cursor = this.getWritableDatabase().query(
                 IdentityEntry.TABLE_NAME,
                 new String[] {
@@ -114,7 +114,7 @@ public class IdentityDBHelper extends SQLiteOpenHelper {
     }
 
     public boolean checkUnique(long id, String name) {
-        for(Map.Entry<Long, String> entry : getIdentitys().entrySet()) {
+        for(Map.Entry<Long, String> entry : getIdentities().entrySet()) {
             if(entry.getKey() != id && entry.getValue().equals(name)) {
                 return false;
             }
@@ -156,12 +156,12 @@ public class IdentityDBHelper extends SQLiteOpenHelper {
     }
 
     public boolean hasIdentities() {
-        Map<Long, String> identities = getIdentitys();
+        Map<Long, String> identities = getIdentities();
         return identities.size() > 0;
     }
 
     public String getIdentityName(long currentId) {
-        Map<Long, String> identities = this.getIdentitys();
+        Map<Long, String> identities = this.getIdentities();
         return identities.get(currentId);
     }
 }
