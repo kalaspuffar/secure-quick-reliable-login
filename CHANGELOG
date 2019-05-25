@@ -3,6 +3,7 @@ Version 0.16.0
 Feature
 * Enable import of base64-url encoded identities
 * Show identity name in SimplifiedActivity
+* Read identity from file
 
 Version 0.15.0
 
