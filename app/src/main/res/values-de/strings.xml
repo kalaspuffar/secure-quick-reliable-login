@@ -141,7 +141,7 @@
 <string name="camera_permission_request_title">Berechtigung erforderlich</string>
 <string name="camera_permission_request_desc">Um Identitäten zu erstellen oder zu importieren sowie für die Anmeldung benötigt diese App Zugriff auf die Kamera.\n\nBeim Erzeugen einer Identität wird die Kamera dazu verwendet, Zufallsdaten zu generieren, um die Sicherheit dieser Identität zu erhöhen.\n\nBeim Importieren von Identitäten sowie beim Anmelden wird es durch Benutzung der Kamera ermöglicht, QR-Codes einzuscannen, um manuelle Eingaben zu vermeiden.</string>
 <string name="introduction_startpage_title">Start</string>
-<string name="introduction_nutshell_title">Nutshell</string>
+<string name="introduction_nutshell_title">In aller Kürze</string>
 <string name="introduction_password_title">Passwort</string>
 <string name="introduction_rescue_code_title">Rettungs-Code</string>
 <string name="introduction_backup_title">Sicherung</string>
@@ -239,8 +239,11 @@
 <string name="img_password_contains_digits">Zeigt an, ob das Passwort Zahlen enthält</string>
 <string name="img_password_contains_symbols">Zeigt an, ob das Passwort Symbole enthält</string>
 <string name="short_password_warning">Sie verwenden ein sehr kurzes Passwort. Dies ist äußerst unsicher und sollte unbedingt vermieden werden!</string>
-<string name="rescue_code_incorrect">Incorrect</string>
-<string name="invalid_sqrl_file">This file does not appear to be a valid SQRL identity file.</string>
-<string name="button_export_share_identity">Share identity</string>
-<string name="share_identity_to">Share identity to</string>
+<string name="rescue_code_incorrect">Fehlerhaft</string>
+<string name="invalid_sqrl_file">Diese Datei scheint keine gültige SQRL-Identitäts-Datei zu sein.</string>
+<string name="button_export_share_identity">Identität teilen</string>
+<string name="share_identity_to">Identität teilen mit</string>
+<string name="import_identity_file">Import identity file</string>
+<string name="title_import_options">SQRL - Import</string>
+<string name="install_file_manager_app">Please install a file manager app from the Google Play Store.</string>
 </resources>
