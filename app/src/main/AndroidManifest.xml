@@ -29,7 +29,7 @@
             />
         <activity
             android:name=".activites.identity.IdentityManagementActivity"
-            android:label="@string/title_activity_advanced"
+            android:label="@string/title_identity_management"
             />
 
         <activity
