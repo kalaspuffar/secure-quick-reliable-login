@@ -246,4 +246,6 @@
 <string name="import_identity_file">Importera identitets fil</string>
 <string name="title_import_options">SQRL - Import</string>
 <string name="install_file_manager_app">Var god installera en fil hanterare app från Google Play Butiken.</string>
+<string name="identity_management">Identitet hanterare</string>
+<string name="title_identity_management">SQRL - Identitet hanterare</string>
 </resources>

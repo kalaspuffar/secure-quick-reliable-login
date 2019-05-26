@@ -246,4 +246,6 @@
 <string name="import_identity_file">Import identity file</string>
 <string name="title_import_options">SQRL - Import</string>
 <string name="install_file_manager_app">Please install a file manager app from the Google Play Store.</string>
+<string name="identity_management">Identity management</string>
+<string name="title_identity_management">SQRL - Identity Management</string>
 </resources>
