@@ -11,6 +11,7 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.activites.create.CreateIdentityActivity;
 import org.ea.sqrl.activites.identity.ImportActivity;
+import org.ea.sqrl.activites.identity.ImportOptionsActivity;
 import org.ea.sqrl.activites.identity.TextImportActivity;
 
 /**
@@ -59,7 +60,10 @@ public class StartActivity extends BaseActivity {
         if(createNewIdentity) {
             startActivity(new Intent(this, CreateIdentityActivity.class));
         } else {
-            startActivity(new Intent(this, ImportActivity.class));
+            Intent importIdentityIntent = new Intent(this, ImportActivity.class);
+            importIdentityIntent.putExtra(ImportOptionsActivity.EXTRA_IMPORT_METHOD,
+                    ImportOptionsActivity.IMPORT_METHOD_QRCODE);
+            startActivity(importIdentityIntent);
         }
     }
 
