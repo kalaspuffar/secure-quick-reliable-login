@@ -65,27 +65,10 @@ public class IdentityManagementActivity extends LoginBaseActivity {
 
         setupLoginPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
-
         setupBasePopups(getLayoutInflater(), false);
-
-        final IntentIntegrator integrator = new IntentIntegrator(this);
-        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
-        integrator.setCameraId(0);
-        integrator.setBeepEnabled(false);
-        integrator.setOrientationLocked(false);
-        integrator.setBarcodeImageEnabled(false);
 
         final ImageButton btnCloseMain = findViewById(R.id.btnCloseMain);
         btnCloseMain.setOnClickListener(v -> IdentityManagementActivity.this.finish());
-
-        btnUseIdentity = findViewById(R.id.btnUseIdentity);
-        btnUseIdentity.setOnClickListener(
-                v -> {
-                    importIdentity = false;
-                    integrator.setPrompt(this.getString(R.string.scan_site_code));
-                    integrator.initiateScan();
-                }
-        );
 
         final Button btnImport = findViewById(R.id.btnImport);
         btnImport.setOnClickListener(
@@ -190,57 +173,4 @@ public class IdentityManagementActivity extends LoginBaseActivity {
             }
         }
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if(result != null) {
-            if(result.getContents() == null) {
-                Log.d("IdentityManagementActivity", "Cancelled scan");
-                Snackbar.make(rootView, R.string.scan_cancel, Snackbar.LENGTH_LONG).show();
-                if(!mDbHelper.hasIdentities()) {
-                    IdentityManagementActivity.this.finish();
-                }
-            } else {
-                if(!importIdentity) {
-                    String serverData = Utils.readSQRLQRCodeAsString(data);
-                    communicationFlowHandler.setServerData(serverData);
-                    communicationFlowHandler.setUseSSL(serverData.startsWith("sqrl://"));
-
-                    Matcher sqrlMatcher = CommunicationHandler.sqrlPattern.matcher(serverData);
-                    if(!sqrlMatcher.matches()) {
-                        showErrorMessage(R.string.scan_incorrect);
-                        return;
-                    }
-
-                    final String domain = sqrlMatcher.group(1);
-                    final String queryLink = sqrlMatcher.group(2);
-                    try {
-                        communicationFlowHandler.setQueryLink(queryLink);
-                        communicationFlowHandler.setDomain(domain, queryLink);
-                    } catch (Exception e) {
-                        showErrorMessage(e.getMessage());
-                        Log.e(TAG, e.getMessage(), e);
-                        return;
-                    }
-
-                    handler.postDelayed(() -> {
-                        final TextView txtSite = loginPopupWindow.getContentView().findViewById(R.id.txtSite);
-                        txtSite.setText(domain);
-
-                        SQRLStorage storage = SQRLStorage.getInstance(IdentityManagementActivity.this.getApplicationContext());
-                        final TextView txtLoginPassword = loginPopupWindow.getContentView().findViewById(R.id.txtLoginPassword);
-                        if(storage.hasQuickPass()) {
-                            txtLoginPassword.setHint(getString(R.string.login_identity_quickpass, "" + storage.getHintLength()));
-                        } else {
-                            txtLoginPassword.setHint(R.string.login_identity_password);
-                        }
-
-                        showLoginPopup();
-                    }, 100);
-                }
-            }
-        }
-    }
-
 }
