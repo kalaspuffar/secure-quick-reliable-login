@@ -1,3 +1,13 @@
+Version 0.16.1
+
+Bug fix
+* QR code import not working on the startup screen
+
+Changes
+* Rename Advanced operations to Identity management
+* Remove Use identity in Identity management
+* Reorder buttons on Identity Management
+
 Version 0.16.0
 
 Feature
@@ -7,7 +17,7 @@ Feature
 
 Version 0.15.0
 
-Bug
+Bug fix
 * Don't delete quickpass on network errors.
 * Login popup issue
 * Simply login code and fix some inconsistencies
