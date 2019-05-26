@@ -1,4 +1,4 @@
-package org.ea.sqrl.activites;
+package org.ea.sqrl.activites.identity;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -19,14 +19,11 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.SettingsActivity;
+import org.ea.sqrl.activites.StartActivity;
 import org.ea.sqrl.activites.base.LoginBaseActivity;
 import org.ea.sqrl.activites.create.CreateIdentityActivity;
 import org.ea.sqrl.activites.create.RekeyIdentityActivity;
-import org.ea.sqrl.activites.identity.ChangePasswordActivity;
-import org.ea.sqrl.activites.identity.ExportOptionsActivity;
-import org.ea.sqrl.activites.identity.ImportOptionsActivity;
-import org.ea.sqrl.activites.identity.RenameActivity;
-import org.ea.sqrl.activites.identity.ResetPasswordActivity;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
@@ -41,19 +38,19 @@ import java.util.regex.Matcher;
  *
  * @author Daniel Persson
  */
-public class MainActivity extends LoginBaseActivity {
-    private static final String TAG = "MainActivity";
+public class IdentityManagementActivity extends LoginBaseActivity {
+    private static final String TAG = "IdentityManagementActivity";
 
     private boolean importIdentity = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_identity_management);
 
         cboxIdentity = findViewById(R.id.cboxIdentity);
         txtOneIdentity = findViewById(R.id.txtOneIdentity);
-        rootView = findViewById(R.id.mainActivityView);
+        rootView = findViewById(R.id.identityManagementActivityView);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
         ImageView moreIndicator = findViewById(R.id.more_indicator);
@@ -79,7 +76,7 @@ public class MainActivity extends LoginBaseActivity {
         integrator.setBarcodeImageEnabled(false);
 
         final ImageButton btnCloseMain = findViewById(R.id.btnCloseMain);
-        btnCloseMain.setOnClickListener(v -> MainActivity.this.finish());
+        btnCloseMain.setOnClickListener(v -> IdentityManagementActivity.this.finish());
 
         btnUseIdentity = findViewById(R.id.btnUseIdentity);
         btnUseIdentity.setOnClickListener(
@@ -106,7 +103,7 @@ public class MainActivity extends LoginBaseActivity {
                     DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
                         switch (which){
                             case DialogInterface.BUTTON_POSITIVE:
-                                SharedPreferences sharedPref = MainActivity.this.getApplication().getSharedPreferences(
+                                SharedPreferences sharedPref = IdentityManagementActivity.this.getApplication().getSharedPreferences(
                                         APPS_PREFERENCES,
                                         Context.MODE_PRIVATE
                                 );
@@ -117,7 +114,7 @@ public class MainActivity extends LoginBaseActivity {
                                     Snackbar.make(rootView, getString(R.string.main_identity_removed), Snackbar.LENGTH_LONG).show();
 
                                     if(!mDbHelper.hasIdentities()) {
-                                        startActivity(new Intent(MainActivity.this, StartActivity.class));
+                                        startActivity(new Intent(IdentityManagementActivity.this, StartActivity.class));
                                     }
                                 }
                                 break;
@@ -127,7 +124,7 @@ public class MainActivity extends LoginBaseActivity {
                         }
                     };
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(IdentityManagementActivity.this);
                     builder.setMessage(R.string.remove_identity_confirmation)
                             .setNegativeButton(R.string.remove_identity_confirmation_negative, dialogClickListener)
                             .setPositiveButton(R.string.remove_identity_confirmation_positive, dialogClickListener)
@@ -167,7 +164,7 @@ public class MainActivity extends LoginBaseActivity {
         if (loginPopupWindow != null && loginPopupWindow.isShowing()) {
             hideLoginPopup();
         } else {
-            MainActivity.this.finish();
+            IdentityManagementActivity.this.finish();
         }
     }
 
@@ -179,7 +176,7 @@ public class MainActivity extends LoginBaseActivity {
         if(runningTest || importIdentity) return;
 
         if(!mDbHelper.hasIdentities()) {
-            MainActivity.this.finish();
+            IdentityManagementActivity.this.finish();
         } else {
             setupBasePopups(getLayoutInflater(), false);
 
@@ -199,10 +196,10 @@ public class MainActivity extends LoginBaseActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result != null) {
             if(result.getContents() == null) {
-                Log.d("MainActivity", "Cancelled scan");
+                Log.d("IdentityManagementActivity", "Cancelled scan");
                 Snackbar.make(rootView, R.string.scan_cancel, Snackbar.LENGTH_LONG).show();
                 if(!mDbHelper.hasIdentities()) {
-                    MainActivity.this.finish();
+                    IdentityManagementActivity.this.finish();
                 }
             } else {
                 if(!importIdentity) {
@@ -231,7 +228,7 @@ public class MainActivity extends LoginBaseActivity {
                         final TextView txtSite = loginPopupWindow.getContentView().findViewById(R.id.txtSite);
                         txtSite.setText(domain);
 
-                        SQRLStorage storage = SQRLStorage.getInstance(MainActivity.this.getApplicationContext());
+                        SQRLStorage storage = SQRLStorage.getInstance(IdentityManagementActivity.this.getApplicationContext());
                         final TextView txtLoginPassword = loginPopupWindow.getContentView().findViewById(R.id.txtLoginPassword);
                         if(storage.hasQuickPass()) {
                             txtLoginPassword.setHint(getString(R.string.login_identity_quickpass, "" + storage.getHintLength()));

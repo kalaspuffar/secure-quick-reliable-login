@@ -37,8 +37,8 @@ import android.widget.TextView;
 
 import org.ea.sqrl.BuildConfig;
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.identity.IdentityManagementActivity;
 import org.ea.sqrl.activites.LanguageActivity;
-import org.ea.sqrl.activites.MainActivity;
 import org.ea.sqrl.activites.identity.ClearIdentityActivity;
 import org.ea.sqrl.activites.IntroductionActivity;
 import org.ea.sqrl.database.IdentityDBHelper;
@@ -147,7 +147,7 @@ public class BaseActivity extends CommonBaseActivity {
                 startActivity(new Intent(this, LanguageActivity.class));
                 return true;
             case R.id.action_advanced_options:
-                startActivity(new Intent(this, MainActivity.class));
+                startActivity(new Intent(this, IdentityManagementActivity.class));
                 return true;
             case R.id.action_about:
                 AlertDialog.Builder builder;

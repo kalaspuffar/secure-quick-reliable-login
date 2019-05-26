@@ -20,6 +20,7 @@ import com.google.zxing.integration.android.IntentResult;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.LoginBaseActivity;
+import org.ea.sqrl.activites.identity.IdentityManagementActivity;
 import org.ea.sqrl.processors.BioAuthenticationCallback;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.CommunicationHandler;
@@ -55,7 +56,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
         txtSelectedIdentity = findViewById(R.id.txtSelectedIdentity);
         txtSelectedIdentity.setOnClickListener(
                 v -> {
-                    startActivity(new Intent(this, MainActivity.class));
+                    startActivity(new Intent(this, IdentityManagementActivity.class));
                 }
         );
 
@@ -130,7 +131,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result != null) {
             if(result.getContents() == null) {
-                Log.d("MainActivity", "Cancelled scan");
+                Log.d("SimplifiedActivity", "Cancelled scan");
                 Snackbar.make(rootView, R.string.scan_cancel, Snackbar.LENGTH_LONG).show();
                 if(!mDbHelper.hasIdentities()) {
                     startActivity(new Intent(this, StartActivity.class));
