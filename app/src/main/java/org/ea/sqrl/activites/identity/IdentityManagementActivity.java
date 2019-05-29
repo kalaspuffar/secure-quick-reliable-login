@@ -7,13 +7,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.PopupMenu;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -70,64 +73,18 @@ public class IdentityManagementActivity extends LoginBaseActivity {
         final ImageButton btnCloseMain = findViewById(R.id.btnCloseMain);
         btnCloseMain.setOnClickListener(v -> IdentityManagementActivity.this.finish());
 
+        final Button btnCreate = findViewById(R.id.btnCreate);
+        btnCreate.setOnClickListener(v -> startActivity(new Intent(this, CreateIdentityActivity.class)));
+
         final Button btnImport = findViewById(R.id.btnImport);
         btnImport.setOnClickListener(
                 v -> startActivity(new Intent(this, ImportOptionsActivity.class))
         );
 
-        final Button btnSettings = findViewById(R.id.btnSettings);
-        btnSettings.setOnClickListener(
-                v -> startActivity(new Intent(this, SettingsActivity.class))
-        );
-
-        final Button btnRemove = findViewById(R.id.btnRemove);
-        btnRemove.setOnClickListener(
-                v -> {
-                    DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
-                        switch (which){
-                            case DialogInterface.BUTTON_POSITIVE:
-                                SharedPreferences sharedPref = IdentityManagementActivity.this.getApplication().getSharedPreferences(
-                                        APPS_PREFERENCES,
-                                        Context.MODE_PRIVATE
-                                );
-                                long currentId = sharedPref.getLong(CURRENT_ID, 0);
-                                if(currentId != 0) {
-                                    mDbHelper.deleteIdentity(currentId);
-                                    updateSpinnerData(-1);
-                                    Snackbar.make(rootView, getString(R.string.main_identity_removed), Snackbar.LENGTH_LONG).show();
-
-                                    if(!mDbHelper.hasIdentities()) {
-                                        startActivity(new Intent(IdentityManagementActivity.this, StartActivity.class));
-                                    }
-                                }
-                                break;
-
-                            case DialogInterface.BUTTON_NEGATIVE:
-                                break;
-                        }
-                    };
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(IdentityManagementActivity.this);
-                    builder.setMessage(R.string.remove_identity_confirmation)
-                            .setNegativeButton(R.string.remove_identity_confirmation_negative, dialogClickListener)
-                            .setPositiveButton(R.string.remove_identity_confirmation_positive, dialogClickListener)
-                            .show();
-                }
-        );
-
-        final Button btnRename = findViewById(R.id.btnRename);
-        btnRename.setOnClickListener(
-                v -> startActivity(new Intent(this, RenameActivity.class))
-        );
-
+        /*
         final Button btnChangePassword = findViewById(R.id.btnChangePassword);
         btnChangePassword.setOnClickListener(
                 v -> startActivity(new Intent(this, ChangePasswordActivity.class))
-        );
-
-        final Button btnExport = findViewById(R.id.btnExport);
-        btnExport.setOnClickListener(
-                v -> startActivity(new Intent(this, ExportOptionsActivity.class))
         );
 
         final Button btnReset = findViewById(R.id.btnReset);
@@ -135,11 +92,47 @@ public class IdentityManagementActivity extends LoginBaseActivity {
                 v -> startActivity(new Intent(this, ResetPasswordActivity.class))
         );
 
-        final Button btnCreate = findViewById(R.id.btnCreate);
-        btnCreate.setOnClickListener(v -> startActivity(new Intent(this, CreateIdentityActivity.class)));
-
         final Button btnRekey = findViewById(R.id.btnRekey);
         btnRekey.setOnClickListener(v -> startActivity(new Intent(this, RekeyIdentityActivity.class)));
+        */
+
+        final ImageButton btnOptions = findViewById(R.id.btnOptions);
+        btnOptions.setOnClickListener(v -> {
+            PopupMenu popup = new PopupMenu(IdentityManagementActivity.this, btnOptions);
+            popup.getMenuInflater()
+                    .inflate(R.menu.menu_id_management_options, popup.getMenu());
+
+            popup.setOnMenuItemClickListener(item -> {
+                switch (item.getItemId()) {
+
+                    case R.id.action_idm_settings:
+                        startActivity(new Intent(this, SettingsActivity.class));
+                        break;
+
+                    case R.id.action_idm_rename:
+                        startActivity(new Intent(this, RenameActivity.class));
+                        break;
+
+                    case R.id.action_idm_remove:
+                        removeIdentity();
+                        break;
+
+                    case R.id.action_idm_export:
+                        startActivity(new Intent(this, ExportOptionsActivity.class));
+                        break;
+
+                    case R.id.action_idm_password_options:
+                        //startActivity(new Intent(this, PasswordOptionsActivity.class));
+                        break;
+
+                    default:
+                        break;
+                }
+                return true;
+            });
+
+            popup.show();
+        });
     }
 
     @Override
@@ -172,5 +165,37 @@ public class IdentityManagementActivity extends LoginBaseActivity {
                 updateSpinnerData(currentId);
             }
         }
+    }
+
+    private void removeIdentity() {
+        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    SharedPreferences sharedPref = IdentityManagementActivity.this.getApplication().getSharedPreferences(
+                            APPS_PREFERENCES,
+                            Context.MODE_PRIVATE
+                    );
+                    long currentId = sharedPref.getLong(CURRENT_ID, 0);
+                    if(currentId != 0) {
+                        mDbHelper.deleteIdentity(currentId);
+                        updateSpinnerData(-1);
+                        Snackbar.make(rootView, getString(R.string.main_identity_removed), Snackbar.LENGTH_LONG).show();
+
+                        if(!mDbHelper.hasIdentities()) {
+                            startActivity(new Intent(IdentityManagementActivity.this, StartActivity.class));
+                        }
+                    }
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    break;
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(IdentityManagementActivity.this);
+        builder.setMessage(R.string.remove_identity_confirmation)
+                .setNegativeButton(R.string.remove_identity_confirmation_negative, dialogClickListener)
+                .setPositiveButton(R.string.remove_identity_confirmation_positive, dialogClickListener)
+                .show();
     }
 }
