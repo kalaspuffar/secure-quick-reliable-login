@@ -2,6 +2,7 @@ package org.ea.sqrl.activites;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatDelegate;
@@ -38,6 +39,7 @@ public class LanguageActivity extends CommonBaseActivity {
         languages.add(new Language(R.string.language_default, ""));
         languages.add(new Language(R.string.language_arabic, "ar"));
         languages.add(new Language(R.string.language_catalan, "ca"));
+        languages.add(new Language(R.string.language_chinese, "zh"));
         languages.add(new Language(R.string.language_czech, "cs"));
         languages.add(new Language(R.string.language_dutch, "nl"));
         languages.add(new Language(R.string.language_english, "en"));
@@ -51,6 +53,8 @@ public class LanguageActivity extends CommonBaseActivity {
         languages.add(new Language(R.string.language_slovenian, "sl"));
         languages.add(new Language(R.string.language_swedish, "sv"));
         languages.add(new Language(R.string.language_spanish, "es"));
+
+
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
         String prefLanguage = sharedPreferences.getString("language", "");
