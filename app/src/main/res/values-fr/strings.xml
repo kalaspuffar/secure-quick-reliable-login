@@ -249,4 +249,5 @@
 <string name="identity_management">Identity management</string>
 <string name="title_identity_management">SQRL - Identity Management</string>
 <string name="language_chinese">Chinese</string>
+<string name="action_password_options">Password options</string>
 </resources>

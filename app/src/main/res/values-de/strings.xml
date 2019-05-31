@@ -248,5 +248,6 @@
 <string name="install_file_manager_app">Bitte installieren Sie eine Dateimanager-App aus dem Google Play Store.</string>
 <string name="identity_management">Identitäts-Verwaltung</string>
 <string name="title_identity_management">SQRL - Identitäts-Verwaltung</string>
-<string name="language_chinese">Chinese</string>
+<string name="language_chinese">Chinesisch</string>
+<string name="action_password_options">Password options</string>
 </resources>

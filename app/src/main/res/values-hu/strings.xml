@@ -44,7 +44,7 @@
 <string name="decrypt_identity_fail">Az azonosító visszafejtése nem sikerült, próbáld meg más jelszóval!</string>
 <string name="encrypt_identity_fail">Encryption of your newly imported identity failed, please try again</string>
 <string name="notification_identity_unlocked_title">Your identity is unlocked in your device memory.</string>
-<string name="login_verify_domain_text">Using this protocol you may log in to the scanned URL. Please check that the scanned domain is the same as the place you want to visit before entering password</string>
+<string name="login_verify_domain_text">Using this protocol you may log in to the scanned URL. Please check that the scanned domain is the same as the place you want to visit before entering password.</string>
 <string name="login_domain_title">Do you want to login to:</string>
 <string name="change_password_retype">Re-type password</string>
 <string name="change_password_current">Jelenlegi jelszó</string>
@@ -249,4 +249,5 @@
 <string name="identity_management">Identity management</string>
 <string name="title_identity_management">SQRL - Identity Management</string>
 <string name="language_chinese">Chinese</string>
+<string name="action_password_options">Password options</string>
 </resources>
