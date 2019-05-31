@@ -224,7 +224,11 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         new Thread(() -> {
             boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, usedQuickpass);
             if(!decryptionOk) {
-                showErrorMessage(R.string.decrypt_identity_fail);
+                showErrorMessage(R.string.decrypt_identity_fail, () -> {
+                    if (!usedCps) {
+                        showLoginPopup();
+                    }
+                });
                 handler.post(() -> {
                     txtLoginPassword.setHint(R.string.login_identity_password);
                     txtLoginPassword.setText("");
