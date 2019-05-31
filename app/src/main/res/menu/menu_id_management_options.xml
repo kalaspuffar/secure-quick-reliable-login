@@ -28,7 +28,7 @@
     <item
         android:id="@+id/action_idm_password_options"
         android:orderInCategory="90"
-        android:title="Password options"
+        android:title="@string/action_password_options"
         app:showAsAction="never" />
 
 </menu>
