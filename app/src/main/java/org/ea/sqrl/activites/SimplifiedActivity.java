@@ -39,6 +39,9 @@ import javax.crypto.Cipher;
 public class SimplifiedActivity extends LoginBaseActivity {
     private static final String TAG = "SimplifiedActivity";
 
+    public static final String ACTION_QUICK_SCAN = "org.ea.sqrl.activites.QUICK_SCAN";
+    public static final String ACTION_LOGON = "org.ea.sqrl.activites.LOGON";
+
     private TextView txtSelectedIdentityHeadline = null;
     private TextView txtSelectedIdentity = null;
 
@@ -78,6 +81,13 @@ public class SimplifiedActivity extends LoginBaseActivity {
                 integrator.initiateScan();
             }
         );
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (ACTION_QUICK_SCAN.equals(getIntent().getAction())) {
+                integrator.setPrompt(this.getString(R.string.scan_site_code));
+                integrator.initiateScan();
+            }
+        }
     }
 
     @Override

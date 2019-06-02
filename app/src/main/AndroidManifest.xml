@@ -15,6 +15,7 @@
         android:supportsRtl="true"
         android:icon="@drawable/ic_sqrl_icon_vector_outline"
         android:label="@string/app_name"
+        android:name=".utils.SqrlApplication"
         android:roundIcon="@drawable/ic_sqrl_icon_circle_vector_outline"
         android:fullBackupContent="@xml/my_backup_rules"
         android:theme="@style/AppTheme"
@@ -172,6 +173,14 @@
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
             tools:replace="screenOrientation"
+            />
+
+        <activity android:name=".activites.account.ClearQuickPassActivity"
+            android:label="@string/title_activity_clear_identity"
+            />
+
+        <activity android:name=".activites.account.EnableQuickPassActivity"
+            android:label="SQRL - Enable QuickPass"
             />
 
         <provider

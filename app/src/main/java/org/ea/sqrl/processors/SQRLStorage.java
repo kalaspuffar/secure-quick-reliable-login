@@ -14,6 +14,7 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.jni.Grc_aesgcm;
 import org.ea.sqrl.utils.EncryptionUtils;
+import org.ea.sqrl.utils.SqrlApplication;
 import org.libsodium.jni.NaCl;
 import org.libsodium.jni.Sodium;
 
@@ -770,6 +771,8 @@ public class SQRLStorage {
         if(notificationManager != null) {
             notificationManager.cancel(BaseActivity.NOTIFICATION_IDENTITY_UNLOCKED);
         }
+
+        SqrlApplication.setApplicationShortcuts(context);
     }
 
     public void clear() {

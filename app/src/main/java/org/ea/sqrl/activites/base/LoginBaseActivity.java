@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.account.AccountOptionsActivity;
+import org.ea.sqrl.activites.account.EnableQuickPassActivity;
 import org.ea.sqrl.adapter.IdentityAdapter;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.SQRLStorage;
@@ -172,6 +173,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         loginPopupWindow.setTouchable(true);
         final EditText txtLoginPassword = popupView.findViewById(R.id.txtLoginPassword);
         txtLoginPassword.setOnEditorActionListener((v, actionId, event) -> {
+            Log.v(TAG, "action id " + actionId);
             if(actionId == EditorInfo.IME_ACTION_DONE){
                 doLogin(storage, txtLoginPassword, false, false, null, LoginBaseActivity.this);
                 return true;
@@ -179,23 +181,24 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
             return false;
         });
 
-        txtLoginPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence password, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence password, int start, int before, int count) {
-                if (!storage.hasQuickPass()) return;
-                if ((start + count) >= storage.getHintLength()) {
-                    doLogin(storage, txtLoginPassword, true, false, null, LoginBaseActivity.this);
+        if (storage.hasQuickPass()) {
+            txtLoginPassword.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence password, int start, int count, int after) {
                 }
-            }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
+                @Override
+                public void onTextChanged(CharSequence password, int start, int before, int count) {
+                    if ((start + count) >= storage.getHintLength()) {
+                        doLogin(storage, txtLoginPassword, true, false, null, LoginBaseActivity.this);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
+        }
 
         popupView.findViewById(R.id.btnCloseLogin).setOnClickListener(v -> hideLoginPopup());
         popupView.findViewById(R.id.btnLoginOptions).setOnClickListener(v -> {
@@ -211,9 +214,23 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
             long currentId = sharedPref.getLong(CURRENT_ID, 0);
 
             if(currentId != 0) {
+                if(LoginBaseActivity.this instanceof EnableQuickPassActivity) {
+                    ((EnableQuickPassActivity)LoginBaseActivity.this).isDoingLogin();
+                }
                 doLogin(storage, txtLoginPassword, false, false, null, this);
             }
         });
+
+        if (this instanceof EnableQuickPassActivity) {
+
+            loginPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                @Override
+                public void onDismiss() {
+                    Log.v(TAG, "dismiss pressed");
+                    //enableQuickPassActivity.finish();
+                }
+            });
+        }
     }
 
     public void doLogin(SQRLStorage storage, EditText txtLoginPassword, boolean usedQuickpass, boolean usedCps, Activity activityToFinish, Context context) {
@@ -235,11 +252,25 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 });
                 storage.clear();
                 storage.clearQuickPass();
+                if(LoginBaseActivity.this instanceof EnableQuickPassActivity) {
+                    ((EnableQuickPassActivity)LoginBaseActivity.this).failedLogin();
+                }
                 return;
             }
             clearQuickPassDelayed();
 
             handler.post(() -> txtLoginPassword.setText(""));
+
+            if (context instanceof EnableQuickPassActivity) {
+                storage.clear();
+                handler.post(() -> {
+                    hideProgressPopup();
+                    closeActivity();
+                    Activity enableQuickPassActivity = (Activity)context;
+                    enableQuickPassActivity.finish();
+                });
+                return;
+            }
 
             if (usedCps) {
                 communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);

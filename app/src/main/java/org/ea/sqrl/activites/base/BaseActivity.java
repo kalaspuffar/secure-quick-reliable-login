@@ -47,6 +47,7 @@ import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.services.ClearIdentityReceiver;
 import org.ea.sqrl.services.ClearIdentityService;
+import org.ea.sqrl.utils.SqrlApplication;
 
 /**
  * This base activity is inherited by all other activities that need logic used for menus,
@@ -57,8 +58,8 @@ import org.ea.sqrl.services.ClearIdentityService;
 @SuppressLint("Registered")
 public class BaseActivity extends CommonBaseActivity {
     private static final String TAG = "BaseActivity";
-    protected static final String CURRENT_ID = "current_id";
-    protected static final String APPS_PREFERENCES = "org.ea.sqrl.preferences";
+    protected static final String CURRENT_ID = SqrlApplication.CURRENT_ID;
+    protected static final String APPS_PREFERENCES = SqrlApplication.APPS_PREFERENCES;
     protected static final String EXPORT_WITHOUT_PASSWORD = "export_without_password";
 
     private final int REQUEST_PERMISSION_CAMERA = 1;
@@ -77,7 +78,7 @@ public class BaseActivity extends CommonBaseActivity {
     protected EntropyHarvester entropyHarvester;
 
     public BaseActivity() {
-        mDbHelper = new IdentityDBHelper(this);
+        mDbHelper = IdentityDBHelper.getInstance(this);
         try {
             entropyHarvester = EntropyHarvester.getInstance();
         } catch (Exception e) {
@@ -383,6 +384,8 @@ public class BaseActivity extends CommonBaseActivity {
 
     public void clearQuickPassDelayed() {
         long delayMillis = SQRLStorage.getInstance(BaseActivity.this.getApplicationContext()).getIdleTimeout() * 60000;
+
+        SqrlApplication.setApplicationShortcuts(getApplicationContext());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             JobInfo jobInfo = new JobInfo.Builder(ClearIdentityService.JOB_NUMBER, new ComponentName(this, ClearIdentityService.class))

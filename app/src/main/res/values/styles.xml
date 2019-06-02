@@ -26,4 +26,13 @@
 
     <style name="spinnerItemStyle" parent="android:Widget.TextView.SpinnerItem" />
     <style name="spinnerDropDownItemStyle" parent="android:TextAppearance.Widget.TextView.SpinnerItem" />
+
+    <style name="TransparentCompat" parent="@style/CommonTheme">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
+        <item name="android:windowCloseOnTouchOutside">false</item>
+    </style>
 </resources>
