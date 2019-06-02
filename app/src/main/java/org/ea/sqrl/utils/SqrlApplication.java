@@ -8,11 +8,14 @@ import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
 import android.os.Build;
+import android.util.Log;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.SimplifiedActivity;
 import org.ea.sqrl.activites.account.ClearQuickPassActivity;
 import org.ea.sqrl.activites.account.EnableQuickPassActivity;
+import org.ea.sqrl.database.IdentityDBHelper;
+import org.ea.sqrl.processors.EntropyHarvester;
 import org.ea.sqrl.processors.SQRLStorage;
 
 import java.util.Arrays;
@@ -32,6 +35,15 @@ public class SqrlApplication extends Application {
         super.onCreate();
         configureShortcuts(getApplicationContext());
         setApplicationShortcuts(getApplicationContext());
+        try {
+            long currentId = getCurrentId(getApplicationContext());
+            if (currentId > 0) {
+                SQRLStorage.getInstance(getApplicationContext()).read(IdentityDBHelper.getInstance(getApplicationContext()).getIdentityData(currentId));
+            }
+            EntropyHarvester.getInstance();
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to get initiate EntropyHarvester or SQRLStorage.");
+        }
     }
 
     public static void setApplicationShortcuts(Context context) {
@@ -55,10 +67,7 @@ public class SqrlApplication extends Application {
                     .setAction("android.intent.action.MAIN");
 
             Intent intentQuickScan = new Intent(context, SimplifiedActivity.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     .setAction(SimplifiedActivity.ACTION_QUICK_SCAN);
             scanShortcut = new ShortcutInfo.Builder(context, "scanQrWeb")
                     .setShortLabel("Scan QR Code")

@@ -220,17 +220,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 doLogin(storage, txtLoginPassword, false, false, null, this);
             }
         });
-
-        if (this instanceof EnableQuickPassActivity) {
-
-            loginPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-                @Override
-                public void onDismiss() {
-                    Log.v(TAG, "dismiss pressed");
-                    //enableQuickPassActivity.finish();
-                }
-            });
-        }
     }
 
     public void doLogin(SQRLStorage storage, EditText txtLoginPassword, boolean usedQuickpass, boolean usedCps, Activity activityToFinish, Context context) {
