@@ -249,4 +249,5 @@
 <string name="identity_management">Identitet hanterare</string>
 <string name="title_identity_management">SQRL - Identitet hanterare</string>
 <string name="language_chinese">Kinesiska</string>
+<string name="action_password_options">Lösenordsalternativ</string>
 </resources>

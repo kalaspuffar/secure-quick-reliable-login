@@ -249,4 +249,5 @@
 <string name="identity_management">身份管理</string>
 <string name="title_identity_management">SQRL-身份管理</string>
 <string name="language_chinese">中文</string>
+<string name="action_password_options">Password options</string>
 </resources>
