@@ -3,6 +3,9 @@ package org.ea.sqrl.activites;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +25,7 @@ import org.ea.sqrl.processors.SQRLStorage;
  */
 public class SettingsActivity extends BaseActivity {
     private static final String TAG = "SettingsActivity";
+    private static final int ONE_WEEK_IN_MINUTES = 60 * 24 * 7;
 
     private PopupWindow savePopupWindow;
 
@@ -60,6 +64,29 @@ public class SettingsActivity extends BaseActivity {
         btnSettingsSave.setOnClickListener(v ->
             savePopupWindow.showAtLocation(savePopupWindow.getContentView(), Gravity.CENTER, 0, 0)
         );
+
+        txtSettingsIdleTimeout.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() > 2) {
+                    Log.v("sengsational", "after " + editable.length());
+                    int minutes = -1;
+                    try {minutes = Integer.parseInt(editable.toString());} catch (Throwable t) {}
+                    if (minutes > ONE_WEEK_IN_MINUTES) {
+                        showErrorMessageInternal(getString(R.string.idle_timeout_guidance, ONE_WEEK_IN_MINUTES + ""), null, getString(R.string.guidance_heading));
+                        txtSettingsIdleTimeout.setText(String.valueOf(ONE_WEEK_IN_MINUTES));
+                    }
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+        });
+
     }
 
     public int getIntValue(EditText txt, int errorMessage) {

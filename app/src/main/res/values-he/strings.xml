@@ -250,4 +250,6 @@
 <string name="title_identity_management">SQRL - Identity Management</string>
 <string name="language_chinese">Chinese</string>
 <string name="action_password_options">Password options</string>
+    <string name="idle_timeout_guidance">So you\'ll be able to remind yourself periodically of your SQRL master password, we only let you go one week ( %1$s minutes), then you\'ll have to type it again.</string>
+    <string name="guidance_heading">Guidance</string>
 </resources>

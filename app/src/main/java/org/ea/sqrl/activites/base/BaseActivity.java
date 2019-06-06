@@ -268,6 +268,10 @@ public class BaseActivity extends CommonBaseActivity {
     }
 
     public void showErrorMessageInternal(String message, Runnable nextAction) {
+        showErrorMessageInternal(message, nextAction, getResources().getString(R.string.error_dialog_title));
+    }
+
+    public void showErrorMessageInternal(String message, Runnable nextAction, String messageTitle) {
 
         AlertDialog.Builder builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -285,9 +289,13 @@ public class BaseActivity extends CommonBaseActivity {
                     });
                 }
                 txtErrorMessage.setText(message);
-                handler.post(() ->
-                    errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
-                );
+                handler.post(() -> {
+                    if (messageTitle != null) {
+                        TextView heading = errorPopupWindow.getContentView().findViewById(R.id.textView7);
+                        heading.setText(messageTitle);
+                    }
+                    errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                });
                 return;
             }
             builder = new AlertDialog.Builder(BaseActivity.this, android.R.style.Theme_Material_Dialog_Alert);
