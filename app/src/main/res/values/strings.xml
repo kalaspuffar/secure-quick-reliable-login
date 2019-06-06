@@ -254,7 +254,8 @@
 <string name="quickpass_already_active">QuickPass was already active, and still is</string>
 <string name="quickpass_cancelled">Cancelled QuickPass Initiation</string>
 <string name="quickpass_enable_prompt">Type your SQRL password here to enable QuickPass for `%1$s`.</string>
-<string name="quickpass_enable_heading">Enabling QuickPass</string>
+<string name="quickpass_enable_message">Enabling QuickPass</string>
+<string name="quickpass_enable_heading">SQRL - Enable QuickPass</string>
 <string name="enable_text">Enable</string>
 <string name="scan_qr_code">Scan QR Code</string>
 <string name="scan_qr_code_long">Scan Web QR Code for Login</string>

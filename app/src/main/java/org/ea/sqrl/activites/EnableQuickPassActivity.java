@@ -61,7 +61,7 @@ public class EnableQuickPassActivity extends LoginBaseActivity {
                     Toast.makeText(this, R.string.quickpass_cancelled, Toast.LENGTH_LONG).show();
                     finishAffinity();
                 } else {
-                    Toast.makeText(this, R.string.quickpass_enable_heading, Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.quickpass_enable_message, Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -75,7 +75,7 @@ public class EnableQuickPassActivity extends LoginBaseActivity {
         instructions.setText(getString(R.string.quickpass_enable_prompt, identityName));
 
         TextView heading = view.findViewById(R.id.textView15);
-        heading.setText(R.string.quickpass_enable_heading);
+        heading.setText(R.string.quickpass_enable_message);
 
         TextView domainPrompt = view.findViewById(R.id.textView3);
         domainPrompt.setText("");
