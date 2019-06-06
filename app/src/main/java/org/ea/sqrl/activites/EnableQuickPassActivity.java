@@ -1,8 +1,6 @@
-package org.ea.sqrl.activites.account;
+package org.ea.sqrl.activites;
 
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,10 +26,9 @@ public class EnableQuickPassActivity extends LoginBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        getWindow().setBackgroundDrawable(new ColorDrawable(0));
     }
 
-    public void isDoingLogin() {
+    public void doingLogin() {
         mDoingLogin = true;
     }
 
@@ -45,56 +42,53 @@ public class EnableQuickPassActivity extends LoginBaseActivity {
         if (hasFocus) {
             if (!mPopupShown) {
                 SQRLStorage storage = SQRLStorage.getInstance(EnableQuickPassActivity.this.getApplicationContext());
-                if (!storage.hasQuickPass()) {
+                String identityName = IdentityDBHelper.getInstance(this).getIdentityName(SqrlApplication.getCurrentId(this));
+                if ("".equals(identityName)) {
+                    Toast.makeText(this, R.string.identity_required, Toast.LENGTH_LONG).show(); // unexpected
+                    finishAffinity();
+                } else if (!storage.hasQuickPass()) {
                     final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) this.findViewById(android.R.id.content)).getChildAt(0);
                     setupLoginPopupWindow(getLayoutInflater());
                     PopupWindow loginOnlyPopupWindow = alterDialogOfLoginPopupWindow(loginPopupWindow);
                     loginOnlyPopupWindow.showAtLocation(viewGroup, Gravity.CENTER, 0, 0);
                     mPopupShown = true;
                 } else {
-                    Toast.makeText(this, "QuickPass was already active, and still is", Toast.LENGTH_LONG).show(); // unexpected
+                    Toast.makeText(this, R.string.quickpass_already_active, Toast.LENGTH_LONG).show(); // unexpected
                     finishAffinity();
                 }
             }  else {
-                Log.v(TAG, "popup already shown <<<<<<<<<<<<<<<<<<<<<< ");
                 if (!mDoingLogin) {
-                    Toast.makeText(this, "Cancelled QuickPass Initiation", Toast.LENGTH_LONG).show();
-                    Log.v(TAG, "Cancelled toast should show.");
+                    Toast.makeText(this, R.string.quickpass_cancelled, Toast.LENGTH_LONG).show();
                     finishAffinity();
                 } else {
-                    Toast.makeText(this, "Enabling QuickPass", Toast.LENGTH_LONG).show();
-                    Log.v(TAG, "Enabling toast should show.");
-
+                    Toast.makeText(this, R.string.quickpass_enable_heading, Toast.LENGTH_LONG).show();
                 }
             }
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Log.v(TAG, "onBackPressed() NOT CALLED?? ");
     }
 
     private PopupWindow alterDialogOfLoginPopupWindow(PopupWindow loginPopupWindow) {
         View view = loginPopupWindow.getContentView();
 
         String identityName = IdentityDBHelper.getInstance(this).getIdentityName(SqrlApplication.getCurrentId(this));
-        String quotedIdentityNamePhrase = (identityName == null?"":" for \"" + identityName + "\".");
         TextView instructions = view.findViewById(R.id.textView4);
-        instructions.setText("Type your SQRL password here to enable QuickPass" + quotedIdentityNamePhrase);
+        instructions.setText(getString(R.string.quickpass_enable_prompt, identityName));
 
         TextView heading = view.findViewById(R.id.textView15);
-        heading.setText("Enable QuickPass");
+        heading.setText(R.string.quickpass_enable_heading);
 
         TextView domainPrompt = view.findViewById(R.id.textView3);
         domainPrompt.setText("");
+
+        TextView domainText = view.findViewById(R.id.txtSite);
+        domainText.setText("");
+        domainText.setVisibility(GONE);
 
         Button buttonOptions = view.findViewById(R.id.btnLoginOptions);
         buttonOptions.setVisibility(GONE);
 
         Button buttonLogin = view.findViewById(R.id.btnLogin);
-        buttonLogin.setText("Enable");
+        buttonLogin.setText(R.string.enable_text);
 
         return loginPopupWindow;
     }

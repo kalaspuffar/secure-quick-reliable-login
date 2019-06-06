@@ -7,6 +7,7 @@ import android.widget.EditText;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
+import org.ea.sqrl.utils.SqrlApplication;
 
 public class RenameActivity extends BaseActivity {
     @Override
@@ -16,11 +17,8 @@ public class RenameActivity extends BaseActivity {
 
         final EditText txtIdentityName = findViewById(R.id.txtIdentityName);
 
-        SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                APPS_PREFERENCES,
-                Context.MODE_PRIVATE
-        );
-        final long currentId = sharedPref.getLong(CURRENT_ID, 0);
+        final long currentId = SqrlApplication.getCurrentId(this.getApplication());
+
         if(currentId != 0) {
             txtIdentityName.setText(mDbHelper.getIdentityName(currentId));
         }

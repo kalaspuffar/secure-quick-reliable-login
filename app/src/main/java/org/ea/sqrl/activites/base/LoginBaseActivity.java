@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.constraint.ConstraintLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,10 +23,12 @@ import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.account.AccountOptionsActivity;
-import org.ea.sqrl.activites.account.EnableQuickPassActivity;
+import org.ea.sqrl.activites.EnableQuickPassActivity;
 import org.ea.sqrl.adapter.IdentityAdapter;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.SqrlApplication;
+
 import java.util.Map;
 
 /**
@@ -69,13 +70,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         Long[] keyArray = identities.keySet().toArray(new Long[identities.size()]);
 
-        SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                APPS_PREFERENCES,
-                Context.MODE_PRIVATE
-        );
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putLong(CURRENT_ID, keyArray[pos]);
-        editor.apply();
+        SqrlApplication.saveCurrentId(this.getApplication(), keyArray[pos]);
 
         SQRLStorage storage = SQRLStorage.getInstance(LoginBaseActivity.this.getApplicationContext());
 
@@ -173,32 +168,38 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         loginPopupWindow.setTouchable(true);
         final EditText txtLoginPassword = popupView.findViewById(R.id.txtLoginPassword);
         txtLoginPassword.setOnEditorActionListener((v, actionId, event) -> {
-            Log.v(TAG, "action id " + actionId);
             if(actionId == EditorInfo.IME_ACTION_DONE){
+                if(LoginBaseActivity.this instanceof EnableQuickPassActivity) {
+                    ((EnableQuickPassActivity)LoginBaseActivity.this).doingLogin();
+                }
+
                 doLogin(storage, txtLoginPassword, false, false, null, LoginBaseActivity.this);
                 return true;
             }
             return false;
         });
 
-        if (storage.hasQuickPass()) {
-            txtLoginPassword.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence password, int start, int count, int after) {
-                }
+        txtLoginPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence password, int start, int count, int after) {
+            }
 
-                @Override
-                public void onTextChanged(CharSequence password, int start, int before, int count) {
-                    if ((start + count) >= storage.getHintLength()) {
-                        doLogin(storage, txtLoginPassword, true, false, null, LoginBaseActivity.this);
+            @Override
+            public void onTextChanged(CharSequence password, int start, int before, int count) {
+                if (!storage.hasQuickPass()) return;
+                if ((start + count) >= storage.getHintLength()) {
+                    if(LoginBaseActivity.this instanceof EnableQuickPassActivity) {
+                        ((EnableQuickPassActivity)LoginBaseActivity.this).doingLogin();
                     }
-                }
 
-                @Override
-                public void afterTextChanged(Editable s) {
+                    doLogin(storage, txtLoginPassword, true, false, null, LoginBaseActivity.this);
                 }
-            });
-        }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
 
         popupView.findViewById(R.id.btnCloseLogin).setOnClickListener(v -> hideLoginPopup());
         popupView.findViewById(R.id.btnLoginOptions).setOnClickListener(v -> {
@@ -207,15 +208,11 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         });
 
         popupView.findViewById(R.id.btnLogin).setOnClickListener(v -> {
-            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                    APPS_PREFERENCES,
-                    Context.MODE_PRIVATE
-            );
-            long currentId = sharedPref.getLong(CURRENT_ID, 0);
+            long currentId = SqrlApplication.getCurrentId(this.getApplication());
 
             if(currentId != 0) {
                 if(LoginBaseActivity.this instanceof EnableQuickPassActivity) {
-                    ((EnableQuickPassActivity)LoginBaseActivity.this).isDoingLogin();
+                    ((EnableQuickPassActivity)LoginBaseActivity.this).doingLogin();
                 }
                 doLogin(storage, txtLoginPassword, false, false, null, this);
             }
@@ -256,7 +253,7 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
                 handler.post(() -> {
                     hideProgressPopup();
                     closeActivity();
-                    Activity enableQuickPassActivity = (Activity)context;
+                    EnableQuickPassActivity enableQuickPassActivity = (EnableQuickPassActivity)context;
                     enableQuickPassActivity.finish();
                 });
                 return;

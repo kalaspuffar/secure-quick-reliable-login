@@ -175,11 +175,11 @@
             tools:replace="screenOrientation"
             />
 
-        <activity android:name=".activites.account.ClearQuickPassActivity"
+        <activity android:name=".activites.ClearQuickPassActivity"
             android:label="@string/title_activity_clear_identity"
             />
 
-        <activity android:name=".activites.account.EnableQuickPassActivity"
+        <activity android:name=".activites.EnableQuickPassActivity"
             android:label="SQRL - Enable QuickPass"
             />
 

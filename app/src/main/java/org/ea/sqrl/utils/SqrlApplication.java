@@ -12,8 +12,8 @@ import android.util.Log;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.SimplifiedActivity;
-import org.ea.sqrl.activites.account.ClearQuickPassActivity;
-import org.ea.sqrl.activites.account.EnableQuickPassActivity;
+import org.ea.sqrl.activites.ClearQuickPassActivity;
+import org.ea.sqrl.activites.EnableQuickPassActivity;
 import org.ea.sqrl.database.IdentityDBHelper;
 import org.ea.sqrl.processors.EntropyHarvester;
 import org.ea.sqrl.processors.SQRLStorage;
@@ -62,28 +62,27 @@ public class SqrlApplication extends Application {
 
     public static void configureShortcuts(Context context) {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Intent simplifiedActivity = new Intent(context, SimplifiedActivity.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                    .setAction("android.intent.action.MAIN");
-
             Intent intentQuickScan = new Intent(context, SimplifiedActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     .setAction(SimplifiedActivity.ACTION_QUICK_SCAN);
             scanShortcut = new ShortcutInfo.Builder(context, "scanQrWeb")
-                    .setShortLabel("Scan QR Code")
-                    .setLongLabel("Scan Web QR Code for Login")
+                    .setShortLabel(context.getString(R.string.scan_qr_code))
+                    .setLongLabel(context.getString(R.string.scan_qr_code_long))
                     .setIcon(Icon.createWithResource(context, R.drawable.ic_scan_qr_black_24dp))
                     .setIntent(intentQuickScan)
                     .build();
 
+            Intent simplifiedActivity = new Intent(context, SimplifiedActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    .setAction("android.intent.action.MAIN");
             Intent intentLogon = new Intent(context, EnableQuickPassActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     .setAction(SimplifiedActivity.ACTION_LOGON);
             Intent[] logonIntentList = {simplifiedActivity, intentLogon};
             logonShortcut = new ShortcutInfo.Builder(context, "setQuickpass")
-                    .setShortLabel("Set QuickPass")
-                    .setLongLabel("Enter SQRL password to engage QuickPass")
+                    .setShortLabel(context.getString(R.string.set_quickpass))
+                    .setLongLabel(context.getString(R.string.set_quickpass_long))
                     .setIcon(Icon.createWithResource(context, R.drawable.ic_sqrl_icon_outof_safe_vector_outline))
                     .setIntents(logonIntentList)
                     .build();
@@ -95,8 +94,8 @@ public class SqrlApplication extends Application {
                     .setAction(ClearQuickPassActivity.ACTION_CLEAR_QUICK_PASS);
             Intent[] clearQuickPassIntentList = {simplifiedActivity, intentClearQuickpass};
             clearQuickPassShortcut = new ShortcutInfo.Builder(context, "clearQuickpass")
-                    .setShortLabel("Clear QuickPass")
-                    .setLongLabel("Clear QuickPass State Immediately")
+                    .setShortLabel(context.getString(R.string.clear_quickpass))
+                    .setLongLabel(context.getString(R.string.clear_quickpass_long))
                     .setIcon(Icon.createWithResource(context, R.drawable.ic_sqrl_icon_into_safe_vector_outline))
                     .setIntents(clearQuickPassIntentList)
                     .build();
@@ -106,5 +105,12 @@ public class SqrlApplication extends Application {
     public static long getCurrentId(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences(APPS_PREFERENCES, Context.MODE_PRIVATE);
         return sharedPref.getLong(CURRENT_ID, 0);
+    }
+
+    public static void saveCurrentId(Application application, long newIdentityId) {
+        SharedPreferences sharedPref = application.getSharedPreferences(APPS_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putLong(CURRENT_ID, newIdentityId);
+        editor.apply();
     }
 }

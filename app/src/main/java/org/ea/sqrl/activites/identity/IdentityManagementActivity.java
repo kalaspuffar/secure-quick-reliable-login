@@ -21,6 +21,7 @@ import org.ea.sqrl.activites.base.LoginBaseActivity;
 import org.ea.sqrl.activites.create.CreateIdentityActivity;
 import org.ea.sqrl.activites.create.RekeyIdentityActivity;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
+import org.ea.sqrl.utils.SqrlApplication;
 
 /**
  * This activity is the central hub for all identity management functionality.
@@ -123,11 +124,7 @@ public class IdentityManagementActivity extends LoginBaseActivity {
         } else {
             setupBasePopups(getLayoutInflater(), false);
 
-            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                    APPS_PREFERENCES,
-                    Context.MODE_PRIVATE
-            );
-            long currentId = sharedPref.getLong(CURRENT_ID, 0);
+            long currentId = SqrlApplication.getCurrentId(this.getApplication());
             if(currentId != 0) {
                 updateSpinnerData(currentId);
             }
@@ -164,11 +161,8 @@ public class IdentityManagementActivity extends LoginBaseActivity {
         DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
             switch (which){
                 case DialogInterface.BUTTON_POSITIVE:
-                    SharedPreferences sharedPref = IdentityManagementActivity.this.getApplication().getSharedPreferences(
-                            APPS_PREFERENCES,
-                            Context.MODE_PRIVATE
-                    );
-                    long currentId = sharedPref.getLong(CURRENT_ID, 0);
+                    long currentId = SqrlApplication.getCurrentId(IdentityManagementActivity.this.getApplication());
+
                     if(currentId != 0) {
                         mDbHelper.deleteIdentity(currentId);
                         updateSpinnerData(-1);

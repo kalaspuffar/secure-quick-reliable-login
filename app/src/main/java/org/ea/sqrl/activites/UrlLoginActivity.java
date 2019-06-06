@@ -22,6 +22,7 @@ import org.ea.sqrl.processors.BioAuthenticationCallback;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.SqrlApplication;
 
 import java.security.KeyStore;
 import java.util.regex.Matcher;
@@ -129,11 +130,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
         });
 
         findViewById(R.id.btnLogin).setOnClickListener(v -> {
-            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                    APPS_PREFERENCES,
-                    Context.MODE_PRIVATE
-            );
-            long currentId = sharedPref.getLong(CURRENT_ID, 0);
+            long currentId = SqrlApplication.getCurrentId(this.getApplication());
 
             if(currentId != 0) {
                 doLogin(storage, txtLoginPassword, false, true, null,this);
@@ -223,11 +220,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
             startActivity(new Intent(this, StartActivity.class));
         } else {
             setupBasePopups(getLayoutInflater(), true);
-            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                    APPS_PREFERENCES,
-                    Context.MODE_PRIVATE
-            );
-            long currentId = sharedPref.getLong(CURRENT_ID, 0);
+            long currentId = SqrlApplication.getCurrentId(this.getApplication());
             if(currentId != 0) {
                 updateSpinnerData(currentId);
             }
