@@ -34,23 +34,12 @@
         android:layout_marginLeft="8dp" />
 
     <Button
-        android:id="@+id/btnTextImport"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/button_text_import"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnScanSecret" />
-
-    <Button
-        android:id="@+id/btnScanSecret"
+        android:id="@+id/btnImportIdentity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="@string/button_scan_secret"
+        android:text="@string/button_import_identity"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginRight="8dp" />
