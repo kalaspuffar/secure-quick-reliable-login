@@ -37,21 +37,15 @@ public class StartActivity extends BaseActivity {
         setupCameraAccessPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
-        final Button btnScanSecret = findViewById(R.id.btnScanSecret);
-        btnScanSecret.setOnClickListener(v -> {
-            createNewIdentity = false;
-            this.showPhoneStatePermission();
-        });
-
         final Button btnStartCreateIdentity = findViewById(R.id.btnStartCreateIdentity);
         btnStartCreateIdentity.setOnClickListener(v -> {
             createNewIdentity = true;
             this.showPhoneStatePermission();
         });
 
-        final Button btnTextImport = findViewById(R.id.btnTextImport);
-        btnTextImport.setOnClickListener(
-            v -> startActivity(new Intent(this, TextImportActivity.class))
+        final Button btnImportIdentity = findViewById(R.id.btnImportIdentity);
+        btnImportIdentity.setOnClickListener(
+            v -> startActivity(new Intent(this, ImportOptionsActivity.class))
         );
     }
 
