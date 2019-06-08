@@ -1,3 +1,17 @@
+Version 0.17.0
+
+Feature
+* Added application shortcuts
+
+Enhancements
+* Added file import to start activity
+* Better contrasting night colors
+* Improved domain verification
+* Identity Management v2
+
+Bugfix
+* Remove login popup after failed password
+
 Version 0.16.2
 
 Feature
