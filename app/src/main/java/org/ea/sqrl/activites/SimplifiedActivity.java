@@ -25,6 +25,7 @@ import org.ea.sqrl.processors.BioAuthenticationCallback;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.SqrlApplication;
 import org.ea.sqrl.utils.Utils;
 
 import java.security.KeyStore;
@@ -38,6 +39,9 @@ import javax.crypto.Cipher;
  */
 public class SimplifiedActivity extends LoginBaseActivity {
     private static final String TAG = "SimplifiedActivity";
+
+    public static final String ACTION_QUICK_SCAN = "org.ea.sqrl.activites.QUICK_SCAN";
+    public static final String ACTION_LOGON = "org.ea.sqrl.activites.LOGON";
 
     private TextView txtSelectedIdentityHeadline = null;
     private TextView txtSelectedIdentity = null;
@@ -78,6 +82,15 @@ public class SimplifiedActivity extends LoginBaseActivity {
                 integrator.initiateScan();
             }
         );
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (ACTION_QUICK_SCAN.equals(getIntent().getAction())) {
+                handler.postDelayed(() -> {
+                    integrator.setPrompt(SimplifiedActivity.this.getString(R.string.scan_site_code));
+                    integrator.initiateScan();
+                }, 100L);
+            }
+        }
     }
 
     @Override
@@ -90,11 +103,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
         if(!mDbHelper.hasIdentities()) {
             startActivity(new Intent(this, StartActivity.class));
         } else {
-            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                    APPS_PREFERENCES,
-                    Context.MODE_PRIVATE
-            );
-            long currentId = sharedPref.getLong(CURRENT_ID, 0);
+            long currentId = SqrlApplication.getCurrentId(this.getApplication());
             if(currentId != 0) {
                 byte[] identityData = mDbHelper.getIdentityData(currentId);
                 SQRLStorage storage = SQRLStorage.getInstance(SimplifiedActivity.this.getApplicationContext());

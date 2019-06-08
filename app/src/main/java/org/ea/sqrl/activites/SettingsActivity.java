@@ -15,6 +15,7 @@ import android.widget.PopupWindow;
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.SqrlApplication;
 
 /**
  *
@@ -137,11 +138,7 @@ public class SettingsActivity extends BaseActivity {
             }
             storage.clear();
 
-            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                    APPS_PREFERENCES,
-                    Context.MODE_PRIVATE
-            );
-            long currentId = sharedPref.getLong(CURRENT_ID, 0);
+            long currentId = SqrlApplication.getCurrentId(this.getApplication());
             mDbHelper.updateIdentityData(currentId, storage.createSaveData());
 
             handler.post(() -> {

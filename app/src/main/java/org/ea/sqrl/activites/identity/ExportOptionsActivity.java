@@ -16,6 +16,7 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.services.IdentityPrintDocumentAdapter;
+import org.ea.sqrl.utils.SqrlApplication;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -84,11 +85,8 @@ public class ExportOptionsActivity extends BaseActivity {
                         .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
                         .build();
 
-                SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                        APPS_PREFERENCES,
-                        Context.MODE_PRIVATE
-                );
-                long currentId = sharedPref.getLong(CURRENT_ID, 0);
+                long currentId = SqrlApplication.getCurrentId(this.getApplication());
+
                 String identityName = mDbHelper.getIdentityName(currentId);
 
                 printManager.print(jobName, new IdentityPrintDocumentAdapter(this, identityName, cbWithoutPassword.isChecked()), printAttributes);

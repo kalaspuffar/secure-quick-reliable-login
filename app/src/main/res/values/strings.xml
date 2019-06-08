@@ -250,4 +250,18 @@
 <string name="title_identity_management">SQRL - Identity Management</string>
 <string name="language_chinese">Chinese</string>
 <string name="action_password_options">Password options</string>
+<string name="quickpass_not_active">QuickPass was not and is not active</string>
+<string name="quickpass_already_active">QuickPass was already active, and still is</string>
+<string name="quickpass_cancelled">Cancelled QuickPass Initiation</string>
+<string name="quickpass_enable_prompt">Type your SQRL password here to enable QuickPass for `%1$s`.</string>
+<string name="quickpass_enable_message">Enabling QuickPass</string>
+<string name="quickpass_enable_heading">SQRL - Enable QuickPass</string>
+<string name="enable_text">Enable</string>
+<string name="scan_qr_code">Scan QR Code</string>
+<string name="scan_qr_code_long">Scan Web QR Code for Login</string>
+<string name="set_quickpass">Set QuickPass</string>
+<string name="set_quickpass_long">Enter SQRL password to engage QuickPass</string>
+<string name="clear_quickpass">Clear QuickPass</string>
+<string name="clear_quickpass_long">Clear QuickPass State Immediately</string>
+<string name="identity_required">An identity must be created before using this function</string>
 </resources>

@@ -20,6 +20,7 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.activites.SimplifiedActivity;
 import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.SqrlApplication;
 import org.ea.sqrl.utils.Utils;
 
 import java.util.Arrays;
@@ -102,13 +103,7 @@ public class ImportActivity extends BaseActivity {
 
                 long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
 
-                SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                        APPS_PREFERENCES,
-                        Context.MODE_PRIVATE
-                );
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putLong(CURRENT_ID, newIdentityId);
-                editor.apply();
+                SqrlApplication.saveCurrentId(this.getApplication(), newIdentityId);
 
                 handler.post(() -> {
                     txtPassword.setText("");

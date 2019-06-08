@@ -1,8 +1,6 @@
 package org.ea.sqrl.activites.create;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -14,6 +12,7 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.LoginBaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.PasswordStrengthMeter;
+import org.ea.sqrl.utils.SqrlApplication;
 
 /**
  *
@@ -77,13 +76,7 @@ public class SaveIdentityActivity extends LoginBaseActivity {
                 long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
                 mDbHelper.updateIdentityName(newIdentityId, txtIdentityName.getText().toString());
 
-                SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                        APPS_PREFERENCES,
-                        Context.MODE_PRIVATE
-                );
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putLong(CURRENT_ID, newIdentityId);
-                editor.apply();
+                SqrlApplication.saveCurrentId(this.getApplication(), newIdentityId);
 
                 handler.post(() -> {
                     txtIdentityName.setText("");

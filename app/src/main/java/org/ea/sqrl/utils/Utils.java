@@ -94,7 +94,7 @@ public class Utils {
                 Context.MODE_PRIVATE
         );
         long currentId = sharedPref.getLong("current_id", 0);
-        IdentityDBHelper aDbHelper = new IdentityDBHelper(activity);
+        IdentityDBHelper aDbHelper = IdentityDBHelper.getInstance(activity);
         byte[] identityData = aDbHelper.getIdentityData(currentId);
         SQRLStorage sqrlStorage = SQRLStorage.getInstance(activity);
         sqrlStorage.read(identityData);
