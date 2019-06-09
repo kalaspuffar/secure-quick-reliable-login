@@ -266,4 +266,5 @@
 <string name="quickpass_enable_heading">SQRL - Aktivera QuickPass</string>
 <string name="idle_timeout_guidance">Så att du inte glömmer ditt SQRL huvud lösenord, har maximum tiden för QuickPass satts till en vecka ( %1$s minuter), efter detta behöver du skriva in huvud lösenordet igen.</string>
 <string name="guidance_heading">Vägledning</string>
+<string name="button_identity_options">Identitets hantering</string>
 </resources>

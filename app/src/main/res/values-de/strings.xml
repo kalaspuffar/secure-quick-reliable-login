@@ -266,4 +266,5 @@
 <string name="quickpass_enable_heading">SQRL - QuickPass aktivieren</string>
 <string name="idle_timeout_guidance">Damit Sie Ihr SQRL Master-Passwort nicht vergessen, kann QuickPass maximal eine Woche (%1$s Minuten) aktiv bleiben. Danach müssen Sie ihr Master-Passwort erneut eingeben.</string>
 <string name="guidance_heading">Anleitung</string>
+<string name="button_identity_options">Identity options</string>
 </resources>
