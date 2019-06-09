@@ -83,13 +83,11 @@ public class SimplifiedActivity extends LoginBaseActivity {
             }
         );
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (ACTION_QUICK_SCAN.equals(getIntent().getAction())) {
-                handler.postDelayed(() -> {
-                    integrator.setPrompt(SimplifiedActivity.this.getString(R.string.scan_site_code));
-                    integrator.initiateScan();
-                }, 100L);
-            }
+        if (ACTION_QUICK_SCAN.equals(getIntent().getAction())) {
+            handler.postDelayed(() -> {
+                integrator.setPrompt(SimplifiedActivity.this.getString(R.string.scan_site_code));
+                integrator.initiateScan();
+            }, 100L);
         }
     }
 

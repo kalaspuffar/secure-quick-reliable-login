@@ -43,7 +43,7 @@ public class EnableQuickPassActivity extends LoginBaseActivity {
             if (!mPopupShown) {
                 SQRLStorage storage = SQRLStorage.getInstance(EnableQuickPassActivity.this.getApplicationContext());
                 String identityName = IdentityDBHelper.getInstance(this).getIdentityName(SqrlApplication.getCurrentId(this));
-                if ("".equals(identityName)) {
+                if (identityName == null) {
                     Toast.makeText(this, R.string.identity_required, Toast.LENGTH_LONG).show(); // unexpected
                     finishAffinity();
                 } else if (!storage.hasQuickPass()) {
