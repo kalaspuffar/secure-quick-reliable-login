@@ -23,7 +23,7 @@
 <string name="communication_sqrl_disabled">SQRL authentication for this identity has previously been locked. To use this identity it needs to be unlocked using rescue code.</string>
 <string name="communication_transient_error">Transient error: The server indicates that the signature(s) are correct, but something about the query prevented the command from completing.</string>
 <string name="title_activity_main">SQRL - Главный</string>
-<string name="button_import_identity">Import</string>
+<string name="button_import_identity">Import identity</string>
 <string name="button_settings">Настройка</string>
 <string name="button_create_identity">Create new</string>
 <string name="button_remove_identity">Remove</string>
@@ -250,6 +250,20 @@
 <string name="title_identity_management">SQRL - Identity Management</string>
 <string name="language_chinese">Chinese</string>
 <string name="action_password_options">Password options</string>
-    <string name="idle_timeout_guidance">So you\'ll be able to remind yourself periodically of your SQRL master password, we only let you go one week ( %1$s minutes), then you\'ll have to type it again.</string>
-    <string name="guidance_heading">Guidance</string>
+<string name="quickpass_not_active">Quickpass was not and is not active</string>
+<string name="quickpass_already_active">QuickPass was already active, and still is</string>
+<string name="quickpass_cancelled">Cancelled QuickPass Initiation</string>
+<string name="quickpass_enable_prompt">Type your SQRL password here to enable QuickPass for `%1$s`.</string>
+<string name="quickpass_enable_message">Enabling QuickPass</string>
+<string name="enable_text">Enable</string>
+<string name="clear_quickpass">Clear QuickPass</string>
+<string name="clear_quickpass_long">Clear QuickPass State Immediately</string>
+<string name="scan_qr_code">Scan QR Code</string>
+<string name="scan_qr_code_long">Scan Web QR Code for Login</string>
+<string name="set_quickpass">Set QuickPass</string>
+<string name="set_quickpass_long">Enter SQRL password to engage QuickPass</string>
+<string name="identity_required">An identity must be created before using this function</string>
+<string name="quickpass_enable_heading">SQRL - Enable QuickPass</string>
+<string name="idle_timeout_guidance">So you don\'t forget your SQRL master password, the maximum QuickPass timeout is one week ( %1$s minutes), after which you\\'ll have to type in the master password again.</string>
+<string name="guidance_heading">Guidance</string>
 </resources>

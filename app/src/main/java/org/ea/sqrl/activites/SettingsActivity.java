@@ -69,7 +69,6 @@ public class SettingsActivity extends BaseActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.length() > 2) {
-                    Log.v("sengsational", "after " + editable.length());
                     int minutes = -1;
                     try {minutes = Integer.parseInt(editable.toString());} catch (Throwable t) {}
                     if (minutes > ONE_WEEK_IN_MINUTES) {
