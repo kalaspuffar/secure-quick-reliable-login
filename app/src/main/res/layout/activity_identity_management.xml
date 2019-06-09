@@ -74,6 +74,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
+        android:contentDescription="@string/button_identity_options"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtCurrentIdentityHeadline"
         app:srcCompat="@drawable/ic_settings_accent_24dp" />

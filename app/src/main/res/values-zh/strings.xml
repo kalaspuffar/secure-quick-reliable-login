@@ -13,7 +13,7 @@
 <string name="action_help">帮助</string>
 <string name="action_about">关于</string>
 <string name="about_message_title">关于</string>
-<string name="about_message_text"><b>安全快速可靠的登录</b>\n版本:% s\nGithub库:\n<a href="https://github.com/kalaspuffar/secure-quick-reliable-login"> https://github.com/kalaspuffar/secure-quick-reliable-login </a>\n作者:\nDaniel Persson</string>
+<string name="about_message_text"><b>安全快速可靠的登录</b>\n版本:%s\nGithub库:\n<a href="https://github.com/kalaspuffar/secure-quick-reliable-login"> https://github.com/kalaspuffar/secure-quick-reliable-login </a>\n作者:\nDaniel Persson</string>
 <string name="decrypt_identity_message">您已经成功扫描了您的安全身份。请确认以下所提供的救援数据是否与您的主要页面上打印的数据相符。</string>
 <string name="communication_incorrect_response">不正确的响应，服务器没有响应错误代码。稍后再试。</string>
 <string name="communication_bad_id_association">不良ID关联:可能是与查询细节关联的SQRL标识与用于提交查询的SQRL ID不匹配。</string>
@@ -250,18 +250,21 @@
 <string name="title_identity_management">SQRL-身份管理</string>
 <string name="language_chinese">中文</string>
 <string name="action_password_options">Password options</string>
-    <string name="quickpass_not_active">Quickpass was not and is not active</string>
-    <string name="quickpass_already_active">QuickPass was already active, and still is</string>
-    <string name="quickpass_cancelled">Cancelled QuickPass Initiation</string>
-    <string name="quickpass_enable_prompt">Type your SQRL password here to enable QuickPass for `%1$s`.</string>
-    <string name="quickpass_enable_message">Enabling QuickPass</string>
-    <string name="enable_text">Enable</string>
-    <string name="clear_quickpass">Clear QuickPass</string>
-    <string name="clear_quickpass_long">Clear QuickPass State Immediately</string>
-    <string name="scan_qr_code">Scan QR Code</string>
-    <string name="scan_qr_code_long">Scan Web QR Code for Login</string>
-    <string name="set_quickpass">Set QuickPass</string>
-    <string name="set_quickpass_long">Enter SQRL password to engage QuickPass</string>
-    <string name="identity_required">An identity must be created before using this function</string>
-    <string name="quickpass_enable_heading">SQRL - Enable QuickPass</string>
+<string name="quickpass_not_active">Quickpass was not and is not active</string>
+<string name="quickpass_already_active">QuickPass was already active, and still is</string>
+<string name="quickpass_cancelled">Cancelled QuickPass Initiation</string>
+<string name="quickpass_enable_prompt">Type your SQRL password here to enable QuickPass for `%1$s`.</string>
+<string name="quickpass_enable_message">Enabling QuickPass</string>
+<string name="enable_text">Enable</string>
+<string name="clear_quickpass">Clear QuickPass</string>
+<string name="clear_quickpass_long">Clear QuickPass State Immediately</string>
+<string name="scan_qr_code">Scan QR Code</string>
+<string name="scan_qr_code_long">Scan Web QR Code for Login</string>
+<string name="set_quickpass">Set QuickPass</string>
+<string name="set_quickpass_long">Enter SQRL password to engage QuickPass</string>
+<string name="identity_required">An identity must be created before using this function</string>
+<string name="quickpass_enable_heading">SQRL - Enable QuickPass</string>
+<string name="idle_timeout_guidance">So you don\'t forget your SQRL master password, the maximum QuickPass timeout is one week ( %1$s minutes), after which you\'ll have to type in the master password again.</string>
+<string name="guidance_heading">Guidance</string>
+<string name="button_identity_options">Identity options</string>
 </resources>
