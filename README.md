@@ -2,7 +2,26 @@
 
 [![Build Status](https://travis-ci.org/kalaspuffar/secure-quick-reliable-login.svg?branch=master)](https://travis-ci.org/kalaspuffar/secure-quick-reliable-login)
 
-This repository is an implementation for SQRL (Secure Quick Reliable Login) on Android.
+# What
+
+This repository contains the SQRL (Secure Quick Reliable Login) Android app, that lets you login without passwords.
+
+# Where
+
+See this [List of SQRL-compatible services]()
+
+# How
+
+1. Install from [<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+     alt="Get it on Google Play"
+     height="80">](https://play.google.com/store/apps/details?id=org.ea.sqrl)
+or
+[<img src="https://f-droid.org/badge/get-it-on.png"
+    alt="Get it on F-Droid"
+    height="80">](https://f-droid.org/packages/org.ea.sqrl/)
+
+2. In the app, follow the instructions.
+3. Spread your knowledge, or [learn more about SQRL](https://www.grc.com/sqrl/sqrl.htm).
 
 ## Governance
 
