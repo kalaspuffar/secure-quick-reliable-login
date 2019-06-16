@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +44,8 @@ public class IdentitySelector {
     }
 
     private static final String TAG = "IdentitySelector";
+    private static final int ID_NAME_MAX_LEN = 30;
+
     private final Context mContext;
     private ViewGroup mIdentitySelectorLayout;
     private boolean mEnableIdentityChange;
@@ -105,8 +108,13 @@ public class IdentitySelector {
                 mTxtSelectedIdentityHeadline.getText() + ":"
         );
 
-        if (!mShowLayoutBorder) mIdentitySelectorLayout.setBackground(null);
-        if (mTwoLinesCentered) setTwoLinesCentered();
+        if (!mShowLayoutBorder) {
+            mIdentitySelectorLayout.setBackground(null);
+        }
+
+        if (mTwoLinesCentered) {
+            setTwoLinesCentered();
+        }
 
         update();
     }
@@ -122,6 +130,9 @@ public class IdentitySelector {
         long currentId = SqrlApplication.getCurrentId(mContext);
         String currentName = mDbHelper.getIdentityName(currentId);
 
+        if (currentName.length() > ID_NAME_MAX_LEN) {
+            currentName = currentName.substring(0, ID_NAME_MAX_LEN) + "...";
+        }
         SpannableString ssCurrentName = new SpannableString(currentName);
         ssCurrentName.setSpan(new UnderlineSpan(), 0, ssCurrentName.length(), 0);
         mTxtSelectedIdentity.setText(ssCurrentName);
@@ -211,6 +222,14 @@ public class IdentitySelector {
                 mTxtSelectedIdentityHeadline.getId(), ConstraintSet.BOTTOM,4);
 
         constraintSet.applyTo((ConstraintLayout)mIdentitySelectorLayout);
+
+        mTxtSelectedIdentityHeadline.setTextColor(
+                mContext.getResources().getColor(android.R.color.primary_text_dark));
+
+        mTxtSelectedIdentity.setTextColor(
+                mContext.getResources().getColor(android.R.color.primary_text_dark));
+
+        mTxtSelectedIdentity.setTextSize(16);
     }
 
     private void removeIdentity() {
