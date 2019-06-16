@@ -2,7 +2,6 @@ package org.ea.sqrl.utils;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
@@ -10,13 +9,11 @@ import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.SimplifiedActivity;
 import org.ea.sqrl.activites.ClearQuickPassActivity;
 import org.ea.sqrl.activites.EnableQuickPassActivity;
-import org.ea.sqrl.activites.StartActivity;
 import org.ea.sqrl.database.IdentityDBHelper;
 import org.ea.sqrl.processors.EntropyHarvester;
 import org.ea.sqrl.processors.SQRLStorage;
