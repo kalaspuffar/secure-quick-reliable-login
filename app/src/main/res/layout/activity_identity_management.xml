@@ -8,7 +8,7 @@
     tools:context="org.ea.sqrl.activites.identity.IdentityManagementActivity">
 
     <ImageButton
-        android:id="@+id/btnCloseMain"
+        android:id="@+id/btnClose"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
@@ -17,24 +17,6 @@
         app:srcCompat="@drawable/ic_close"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/txtOneIdentity"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:maxLines="1"
-        android:padding="8dp"
-        android:text=""
-        android:textSize="18sp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnCloseMain" />
 
     <TextView
         android:id="@+id/txtCurrentIdentityHeadline"
@@ -50,102 +32,53 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <Spinner
-        android:id="@+id/cboxIdentity"
+    <include layout="@layout/fragment_identity_selector"
+        android:id="@+id/identitySelector"
         android:layout_width="0dp"
-        android:layout_height="54dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="2dp"
-        android:layout_marginRight="2dp"
-        android:contentDescription="@string/main_selected_identity"
-        android:duplicateParentState="true"
-        android:minHeight="48dp"
-        app:layout_constraintEnd_toStartOf="@+id/btnIdentityOptions"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtCurrentIdentityHeadline" />
 
-    <ImageButton
-        android:id="@+id/btnIdentityOptions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+
+
+    <Button
+        android:id="@+id/btnCreate"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:contentDescription="@string/button_identity_options"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtCurrentIdentityHeadline"
-        app:srcCompat="@drawable/ic_settings_accent_24dp" />
-
-    <ScrollView
-        android:id="@+id/main_scroll"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        android:duplicateParentState="true"
+        android:text="@string/button_create_identity"
+        app:layout_constraintBottom_toTopOf="@+id/btnImport"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cboxIdentity"
-        app:layout_constraintVertical_bias="0.0">
+        tools:layout_conversion_absoluteHeight="48dp"
+        tools:layout_conversion_absoluteWidth="304dp" />
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/btnCreate"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:duplicateParentState="true"
-                android:text="@string/button_create_identity"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:layout_conversion_absoluteHeight="48dp"
-                tools:layout_conversion_absoluteWidth="304dp" />
-
-            <Button
-                android:id="@+id/btnImport"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:duplicateParentState="true"
-                android:text="@string/button_import_identity"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnCreate"
-                app:layout_constraintBottom_toBottomOf="parent"
-                tools:layout_conversion_absoluteHeight="48dp"
-                tools:layout_conversion_absoluteWidth="304dp" />
-
-        </android.support.constraint.ConstraintLayout>
-    </ScrollView>
-
-    <ImageView
-        android:id="@+id/more_indicator"
+    <Button
+        android:id="@+id/btnImport"
         android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:background="@android:color/transparent"
-        android:scaleType="fitXY"
-        android:contentDescription="null"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="48dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"
+        android:duplicateParentState="true"
+        android:text="@string/button_import_identity"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/list_more_shape" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_conversion_absoluteHeight="48dp"
+        tools:layout_conversion_absoluteWidth="304dp" />
+
 
 </android.support.constraint.ConstraintLayout>

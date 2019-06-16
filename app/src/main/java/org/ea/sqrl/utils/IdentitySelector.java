@@ -9,6 +9,8 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,10 +64,10 @@ public class IdentitySelector {
      *
      * @param context                The context of the caller.
      * @param enableIdentityChange   Set to true if selecting another identity should be enabled, or to false otherwise.
-     * @param enableIdentityOptions  Set to true if changing identity settings should be enabled, or to false otherwise.
-     *                               If enabled, a settings icon will be displayed in the identity selector layout.
-     * @param showLayoutBorder       Set to true if a border should be drawn around the identity selector layout, false othewise.
-     * @param twoLinesCentered       Set to true if the layout should use two lines and align its content centered, false othewise.
+     * @param enableIdentityOptions  Set to true if identity options should be enabled, or to false otherwise.
+     *                               If enabled, an options icon will be displayed in the identity selector layout.
+     * @param showLayoutBorder       Set to true if a border should be drawn around the identity selector layout, false otherwise.
+     * @param twoLinesCentered       Set to true if the layout should use two lines and align its contents centered, false otherwise.
      * @param hideOnSingleIdentity   Set to true if the identity selector layout should be hidden if only one identity exists.
      */
     public IdentitySelector(Context context, boolean enableIdentityChange, boolean enableIdentityOptions,
@@ -120,7 +122,9 @@ public class IdentitySelector {
         long currentId = SqrlApplication.getCurrentId(mContext);
         String currentName = mDbHelper.getIdentityName(currentId);
 
-        mTxtSelectedIdentity.setText(currentName);
+        SpannableString ssCurrentName = new SpannableString(currentName);
+        ssCurrentName.setSpan(new UnderlineSpan(), 0, ssCurrentName.length(), 0);
+        mTxtSelectedIdentity.setText(ssCurrentName);
         mLastId = currentId;
         mIdentities = mDbHelper.getIdentities();
 
