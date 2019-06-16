@@ -210,9 +210,6 @@ public class UrlLoginActivity extends LoginBaseActivity {
     }
 
     @Override
-    protected void selectionUpdated() {}
-
-    @Override
     protected void onResume() {
         super.onResume();
 
