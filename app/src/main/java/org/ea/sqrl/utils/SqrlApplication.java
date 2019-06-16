@@ -2,6 +2,7 @@ package org.ea.sqrl.utils;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
@@ -9,16 +10,19 @@ import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.SimplifiedActivity;
 import org.ea.sqrl.activites.ClearQuickPassActivity;
 import org.ea.sqrl.activites.EnableQuickPassActivity;
+import org.ea.sqrl.activites.StartActivity;
 import org.ea.sqrl.database.IdentityDBHelper;
 import org.ea.sqrl.processors.EntropyHarvester;
 import org.ea.sqrl.processors.SQRLStorage;
 
 import java.util.Arrays;
+import java.util.Map;
 
 
 public class SqrlApplication extends Application {
@@ -102,15 +106,61 @@ public class SqrlApplication extends Application {
         }
     }
 
+    /**
+     * Gets the currently active identity id from the app preferences.
+     *
+     * @param context    The context of the caller.
+     * @return           Returns the currently active identity id, or 0 if non is set.
+     */
     public static long getCurrentId(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences(APPS_PREFERENCES, Context.MODE_PRIVATE);
         return sharedPref.getLong(CURRENT_ID, 0);
     }
 
+    /**
+     * Saves the provided identity id as the currently active id in the app preferences.
+     *
+     * @param application The caller's application object.
+     */
     public static void saveCurrentId(Application application, long newIdentityId) {
         SharedPreferences sharedPref = application.getSharedPreferences(APPS_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putLong(CURRENT_ID, newIdentityId);
         editor.apply();
+    }
+
+    /**
+     * Reloads the sqrl storage with the provided identity and updates the currently active
+     * identity id in the app preferences accordingly.
+     *
+     * @param context   The context of the caller.
+     * @param id        The id of the identity which should be set as currently active.
+     *                  Set this to -1 to select the first available identity.
+     */
+    public static void setCurrentId(Context context, long id) {
+        IdentityDBHelper dbHelper = IdentityDBHelper.getInstance(context);
+
+        if (id == -1) {
+            Map<Long,String> identities = dbHelper.getIdentities();
+            if (identities.size() > 0) {
+                id = identities.keySet().iterator().next();
+            }
+        }
+
+        if (id == -1) return;
+
+        SqrlApplication.saveCurrentId((Application) context.getApplicationContext(), id);
+
+        SQRLStorage storage = SQRLStorage.getInstance(context.getApplicationContext());
+        byte[] identityData = dbHelper.getIdentityData(id);
+
+        if(storage.needsReload(identityData)) {
+            storage.clearQuickPass();
+            try {
+                storage.read(identityData);
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage(), e);
+            }
+        }
     }
 }

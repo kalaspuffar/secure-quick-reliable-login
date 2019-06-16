@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutIdentitySelectorBase"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="4dp"
+    android:paddingBottom="6dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:background="@drawable/identity_selector_layout_border">
+
+    <ImageView
+        android:id="@+id/imgListIdentities"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/imgIdentityOptions"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_list_accent_24dp"
+        android:contentDescription="@string/main_selected_identity" />
+
+    <ImageView
+        android:id="@+id/imgIdentityOptions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:contentDescription="@string/identity_management"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_settings_accent_24dp" />
+
+    <TextView
+        android:id="@+id/txtSelectedIdentityHeadline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="2dp"
+        android:text="@string/identity"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtSelectedIdentity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/main_selected_identity"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintEnd_toStartOf="@+id/imgListIdentities"
+        app:layout_constraintStart_toEndOf="@id/txtSelectedIdentityHeadline"
+        app:layout_constraintTop_toTopOf="@id/txtSelectedIdentityHeadline" />
+
+</android.support.constraint.ConstraintLayout>

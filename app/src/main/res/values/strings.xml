@@ -267,4 +267,5 @@
 <string name="idle_timeout_guidance">So you don\'t forget your SQRL master password, the maximum QuickPass timeout is one week ( %1$s minutes), after which you\'ll have to type in the master password again.</string>
 <string name="guidance_heading">Guidance</string>
 <string name="button_identity_options">Identity options</string>
+<string name="identity">Identity</string>
 </resources>
