@@ -4,14 +4,12 @@ package org.ea.sqrl.utils;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
-import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -129,6 +127,7 @@ public class IdentitySelector {
     public void update() {
         long currentId = SqrlApplication.getCurrentId(mContext);
         String currentName = mDbHelper.getIdentityName(currentId);
+        if (currentName == null) currentName = "";
 
         if (currentName.length() > ID_NAME_MAX_LEN) {
             currentName = currentName.substring(0, ID_NAME_MAX_LEN) + "...";
@@ -142,6 +141,8 @@ public class IdentitySelector {
         if (mHideOnSingleIdentity && mIdentities.size() < 2) {
             mIdentitySelectorLayout.setVisibility(View.GONE);
             return;
+        } else {
+            mIdentitySelectorLayout.setVisibility(View.VISIBLE);
         }
 
         if (!mEnableIdentityChange || mIdentities.size() < 2) {
