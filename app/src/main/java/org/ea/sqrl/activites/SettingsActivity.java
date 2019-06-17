@@ -163,6 +163,7 @@ public class SettingsActivity extends BaseActivity {
                 return;
             }
             storage.clear();
+            storage.clearQuickPass();
 
             long currentId = SqrlApplication.getCurrentId(this.getApplication());
             mDbHelper.updateIdentityData(currentId, storage.createSaveData());
