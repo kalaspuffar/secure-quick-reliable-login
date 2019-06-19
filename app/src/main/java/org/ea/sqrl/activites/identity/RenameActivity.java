@@ -1,7 +1,9 @@
 package org.ea.sqrl.activites.identity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import org.ea.sqrl.R;
@@ -24,6 +26,8 @@ public class RenameActivity extends BaseActivity {
             txtIdentityName.setText(mDbHelper.getIdentityName(currentId));
             txtIdentityName.setSelectAllOnFocus(true);
             txtIdentityName.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
         }
 
         txtIdentityName.setOnEditorActionListener((v, actionId, event) -> {
@@ -45,7 +49,9 @@ public class RenameActivity extends BaseActivity {
         if(currentId != 0) {
             mDbHelper.updateIdentityName(currentId, txtIdentityName.getText().toString());
         }
-        txtIdentityName.setText("");
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(txtIdentityName.getWindowToken(), 0);
 
         RenameActivity.this.finish();
     }
