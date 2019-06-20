@@ -37,16 +37,18 @@ public class Utils {
      * @return  The string without any extra information.
      */
     public static byte[] readSQRLQRCode(Intent data) throws FormatException {
-        return data.getByteArrayExtra("SCAN_RESULT_BYTE_SEGMENTS_0");
+        byte[] qrCode = new byte[0];
+        for(int i=0; i<10; i++) {
+            byte[] newSegment = data.getByteArrayExtra("SCAN_RESULT_BYTE_SEGMENTS_" + i);
+            if(newSegment == null) break;
+            qrCode = EncryptionUtils.combine(qrCode, newSegment);
+        }
+
+        return qrCode;
     }
 
     public static String readSQRLQRCodeAsString(Intent data) {
-        try {
-            return new String(readSQRLQRCode(data), "ASCII");
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
-        return "";
+        return data.getStringExtra("SCAN_RESULT");
     }
 
     public static int getInteger(String s) {
