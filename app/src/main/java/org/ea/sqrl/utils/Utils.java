@@ -38,7 +38,7 @@ public class Utils {
      */
     public static byte[] readSQRLQRCode(Intent data) throws FormatException {
         byte[] qrCode = new byte[0];
-        for(int i=0; i<10; i++) {
+        for(int i=0;; i++) {
             byte[] newSegment = data.getByteArrayExtra("SCAN_RESULT_BYTE_SEGMENTS_" + i);
             if(newSegment == null) break;
             qrCode = EncryptionUtils.combine(qrCode, newSegment);
