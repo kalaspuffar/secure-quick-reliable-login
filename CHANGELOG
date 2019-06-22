@@ -1,3 +1,18 @@
+Version 1.1.0
+
+Feature
+* Hindi and Chinese translations
+* Application shortcuts
+
+Enhancement
+* Improved rename GUI
+* Remove share feature with application
+* Improved selection of identities.
+
+Bugfix
+* Handle long URLs.
+* Fix "missing argument" error
+
 Version 1.0.0
 
 Feature

@@ -53,14 +53,14 @@
 <string name="title_activity_settings">SQRL - Einstellungen</string>
 <string name="settings_hint_length">QuickPass-Länge (Zeichen)</string>
 <string name="settings_password_verify">Passwort-Verifikation (Sekunden)</string>
-<string name="settings_idle_timeout">Idle-Timeout (Minuten)</string>
+<string name="settings_idle_timeout">Quickpass-Timeout (Minuten)</string>
 <string name="settings_sqrl_only">\"Nur SQRL\"-Anmeldung anfordern</string>
 <string name="settings_no_sqrl_bypass">\"Kein SQRL-Bypass\" anfordern</string>
 <string name="settings_save">Speichern</string>
 <string name="settings_cancel">Abbrechen</string>
 <string name="settings_fragment_save">Speichern</string>
 <string name="settings_hint_length_not_number">Eingabe für QuickPass ist keine Zahl</string>
-<string name="settings_idle_timeout_not_number">Eingabe für Idle-Timeout ist keine Zahl</string>
+<string name="settings_idle_timeout_not_number">Eingabe für Quickpass-Timeout ist keine Zahl</string>
 <string name="settings_password_verify_not_number">Eingabe für Passwort-Bestätigung ist keine Zahl</string>
 <string name="settings_hint_length_to_large">QuickPass ist zu lang. (0-255)</string>
 <string name="save_settings_password">Passwort</string>
@@ -266,5 +266,7 @@
 <string name="quickpass_enable_heading">SQRL - QuickPass aktivieren</string>
 <string name="idle_timeout_guidance">Damit Sie Ihr SQRL Master-Passwort nicht vergessen, kann QuickPass maximal eine Woche (%1$s Minuten) aktiv bleiben. Danach müssen Sie ihr Master-Passwort erneut eingeben.</string>
 <string name="guidance_heading">Anleitung</string>
-<string name="button_identity_options">Identity options</string>
+<string name="button_identity_options">Identitäts-Optionen</string>
+<string name="identity">Identity</string>
+<string name="language_hindi">Hindi</string>
 </resources>

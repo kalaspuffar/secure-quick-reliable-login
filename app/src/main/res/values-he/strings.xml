@@ -53,14 +53,14 @@
 <string name="title_activity_settings">SQRL - Settings</string>
 <string name="settings_hint_length">QuickPass length (characters)</string>
 <string name="settings_password_verify">Password verify (seconds)</string>
-<string name="settings_idle_timeout">Idle timeout (minutes)</string>
+<string name="settings_idle_timeout">QuickPass timeout (minutes)</string>
 <string name="settings_sqrl_only">Request SQRL only login</string>
 <string name="settings_no_sqrl_bypass">Request no SQRL bypass</string>
 <string name="settings_save">Save</string>
 <string name="settings_cancel">ביטול</string>
 <string name="settings_fragment_save">Save</string>
 <string name="settings_hint_length_not_number">QuickPass input is not a number</string>
-<string name="settings_idle_timeout_not_number">Idle timeout input is not a number</string>
+<string name="settings_idle_timeout_not_number">QuickPass timeout input is not a number</string>
 <string name="settings_password_verify_not_number">Password verify input is not a number</string>
 <string name="settings_hint_length_to_large">QuickPass value is too large. (0–255)</string>
 <string name="save_settings_password">סיסמה</string>
@@ -267,4 +267,6 @@
 <string name="idle_timeout_guidance">So you don\'t forget your SQRL master password, the maximum QuickPass timeout is one week ( %1$s minutes), after which you\'ll have to type in the master password again.</string>
 <string name="guidance_heading">Guidance</string>
 <string name="button_identity_options">Identity options</string>
+<string name="identity">Identity</string>
+<string name="language_hindi">Hindi</string>
 </resources>
