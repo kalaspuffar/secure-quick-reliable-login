@@ -18,39 +18,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/txtSelectedIdentityHeadline"
-            android:layout_width="wrap_content"
+        <include layout="@layout/fragment_identity_selector"
+            android:id="@+id/identitySelector"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:text="@string/main_selected_identity"
-            android:textColor="@android:color/primary_text_dark"
-            android:textSize="10sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/txtSelectedIdentity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:singleLine="true"
-            android:text="@string/main_selected_identity"
-            android:textColor="@android:color/primary_text_dark"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txtSelectedIdentityHeadline" />
 
         <ImageButton
             android:id="@+id/btnUseIdentity"
@@ -61,10 +41,11 @@
             android:elevation="2dp"
             android:focusable="true"
             android:scaleType="fitCenter"
+            app:layout_constraintTop_toBottomOf="@id/identitySelector"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txtSelectedIdentity"
-            app:srcCompat="@drawable/ic_scan_qr_black_24dp" />
+            app:srcCompat="@drawable/ic_scan_qr_black_24dp"
+            tools:layout_editor_absoluteY="49dp" />
 
         <TextView
             android:id="@+id/txtScanQrCode"

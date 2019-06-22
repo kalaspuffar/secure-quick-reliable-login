@@ -1,17 +1,12 @@
 package org.ea.sqrl.activites;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.hardware.biometrics.BiometricPrompt;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.support.design.widget.Snackbar;
-import android.text.SpannableString;
-import android.text.style.UnderlineSpan;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -20,11 +15,11 @@ import com.google.zxing.integration.android.IntentResult;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.LoginBaseActivity;
-import org.ea.sqrl.activites.identity.IdentityManagementActivity;
 import org.ea.sqrl.processors.BioAuthenticationCallback;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.IdentitySelector;
 import org.ea.sqrl.utils.SqrlApplication;
 import org.ea.sqrl.utils.Utils;
 
@@ -43,8 +38,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
     public static final String ACTION_QUICK_SCAN = "org.ea.sqrl.activites.QUICK_SCAN";
     public static final String ACTION_LOGON = "org.ea.sqrl.activites.LOGON";
 
-    private TextView txtSelectedIdentityHeadline = null;
-    private TextView txtSelectedIdentity = null;
+    private IdentitySelector mIdentitySelector = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,40 +48,19 @@ public class SimplifiedActivity extends LoginBaseActivity {
         rootView = findViewById(R.id.simplifiedActivityView);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
-        txtSelectedIdentityHeadline = findViewById(R.id.txtSelectedIdentityHeadline);
-        txtSelectedIdentityHeadline.append(":");
-
-        txtSelectedIdentity = findViewById(R.id.txtSelectedIdentity);
-        txtSelectedIdentity.setOnClickListener(
-                v -> {
-                    startActivity(new Intent(this, IdentityManagementActivity.class));
-                }
-        );
-
-        final IntentIntegrator integrator = new IntentIntegrator(this);
-        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
-        integrator.setCameraId(0);
-        integrator.setBeepEnabled(false);
-        integrator.setOrientationLocked(false);
-        integrator.setBarcodeImageEnabled(false);
-
         setupLoginPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
         setupBasePopups(getLayoutInflater(), false);
 
-        final ImageButton btnUseIdentity = findViewById(R.id.btnUseIdentity);
-        btnUseIdentity.setOnClickListener(
-            v -> {
-                integrator.setPrompt(this.getString(R.string.scan_site_code));
-                integrator.initiateScan();
-            }
-        );
+        mIdentitySelector = new IdentitySelector(this, true,
+                false, false, true, true);
+        mIdentitySelector.registerLayout(findViewById(R.id.identitySelector));
+
+        findViewById(R.id.btnUseIdentity).setOnClickListener(v -> initiateScan());
+        findViewById(R.id.txtScanQrCode).setOnClickListener(v -> initiateScan());
 
         if (ACTION_QUICK_SCAN.equals(getIntent().getAction())) {
-            handler.postDelayed(() -> {
-                integrator.setPrompt(SimplifiedActivity.this.getString(R.string.scan_site_code));
-                integrator.initiateScan();
-            }, 100L);
+            handler.postDelayed(() -> initiateScan(), 100L);
         }
     }
 
@@ -103,30 +76,8 @@ public class SimplifiedActivity extends LoginBaseActivity {
         } else {
             long currentId = SqrlApplication.getCurrentId(this.getApplication());
             if(currentId != 0) {
-                byte[] identityData = mDbHelper.getIdentityData(currentId);
-                SQRLStorage storage = SQRLStorage.getInstance(SimplifiedActivity.this.getApplicationContext());
-                try {
-                    storage.read(identityData);
-
-                    if (mDbHelper.getIdentities().size() > 1) {
-                        String identityName = mDbHelper.getIdentityName(currentId);
-                        if (identityName.length() > 20) {
-                            identityName = identityName.substring(0, 20) + "...";
-                        }
-                        SpannableString ssIdentityName = new SpannableString(identityName);
-                        ssIdentityName.setSpan(new UnderlineSpan(), 0, ssIdentityName.length(), 0);
-                        txtSelectedIdentity.setText(ssIdentityName);
-                        txtSelectedIdentity.setVisibility(View.VISIBLE);
-                        txtSelectedIdentityHeadline.setVisibility(View.VISIBLE);
-                    } else {
-                        txtSelectedIdentityHeadline.setVisibility(View.GONE);
-                        txtSelectedIdentity.setVisibility(View.GONE);
-                    }
-
-                } catch (Exception e) {
-                    showErrorMessage(e.getMessage());
-                    Log.e(TAG, e.getMessage(), e);
-                }
+                SqrlApplication.setCurrentId(this, currentId);
+                mIdentitySelector.update();
             }
 
             setupBasePopups(getLayoutInflater(), false);
@@ -237,4 +188,14 @@ public class SimplifiedActivity extends LoginBaseActivity {
         }
     }
 
+    private void initiateScan() {
+        final IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+        integrator.setCameraId(0);
+        integrator.setBeepEnabled(false);
+        integrator.setOrientationLocked(false);
+        integrator.setBarcodeImageEnabled(false);
+        integrator.setPrompt(this.getString(R.string.scan_site_code));
+        integrator.initiateScan();
+    }
 }
