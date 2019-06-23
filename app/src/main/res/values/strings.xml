@@ -270,4 +270,9 @@
 <string name="identity">Identity</string>
 <string name="language_hindi">Hindi</string>
 <string name="title_activity_identity_settings">SQRL - Identity Settings</string>
+<string name="helptext_password_verify_seconds">Your identity\'s security can be improved by lengthening the time required to verify your full SQRL password. There is NO KNOWN WAY for any attacker, spy agency or government to dramatically speed up this verification process. And since your shorter QuickPass can be used after you have entered your password once, you only need to wait once. But someone trying to guess your password needs to wait EVERY TIME they guess.\n\nA five-second verification duration is recommended, but you are free to choose whatever seems best four your convenience and security.</string>
+<string name="helptext_quickpass_length">To encourage the use of one longer and more secure access password, SQRL only requires your FULL password to be provided when it is first used or after a period of extended absence. (This can also be set in the identity settings).\n\nOnce the full password was entered once, SQRL only needs an occasional "QuickPass", which is the first several characters of your password. More QuickPass characters are a bit safer while less are more convenient. Four characters is recommended.</string>
+<string name="helptext_quickpass_timeout">For protection, SQRL\'s QuickPass can be erased after some time, which is specified by the QuickPass timeout.\n\nAfter the timeout, SQRL will ask for the FULL password again on the next login.</string>
+<string name="helptext_request_only_sqrl_login">Request SQRL-enabled websites to disable all other non-SQRL login for maximum security.</string>
+<string name="helptext_request_no_sqrl_bypass">Request SQRL-enabled websites to refuse any and all forms of "I forgot my password" account recovery.</string>
 </resources>
