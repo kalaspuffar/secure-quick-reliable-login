@@ -1,11 +1,8 @@
 package org.ea.sqrl.activites;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +15,7 @@ import android.widget.PopupWindow;
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.IdentitySelector;
 import org.ea.sqrl.utils.SqrlApplication;
 
 /**
@@ -29,10 +27,11 @@ public class SettingsActivity extends BaseActivity {
     private static final int ONE_WEEK_IN_MINUTES = 60 * 24 * 7;
 
     private PopupWindow savePopupWindow;
+    private IdentitySelector mIdentitySelector = null;
 
-    private EditText txtSettingsHintLength;
+    private EditText txtSettingsQuickPassLength;
     private EditText txtSettingsPasswordVerify;
-    private EditText txtSettingsIdleTimeout;
+    private EditText txtSettingsQuickPassTimeout;
     private CheckBox cbSettingsSQRLOnly;
     private CheckBox cbSettingsNoBypass;
 
@@ -45,18 +44,11 @@ public class SettingsActivity extends BaseActivity {
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
-        SQRLStorage storage = SQRLStorage.getInstance(SettingsActivity.this.getApplicationContext());
-
-        txtSettingsHintLength = findViewById(R.id.txtSettingsHintLength);
-        txtSettingsHintLength.setText(Integer.toString(storage.getHintLength()));
+        txtSettingsQuickPassLength = findViewById(R.id.txtSettingsQuickPassLength);
         txtSettingsPasswordVerify = findViewById(R.id.txtSettingsPasswordVerifyInSeconds);
-        txtSettingsPasswordVerify.setText(Integer.toString(storage.getPasswordVerify()));
-        txtSettingsIdleTimeout = findViewById(R.id.txtSettingsIdleTimeout);
-        txtSettingsIdleTimeout.setText(Integer.toString(storage.getIdleTimeout()));
+        txtSettingsQuickPassTimeout = findViewById(R.id.txtSettingsQuickPassTimeout);
         cbSettingsSQRLOnly = findViewById(R.id.cbSettingsSQRLOnly);
-        cbSettingsSQRLOnly.setChecked(storage.isSQRLOnly());
         cbSettingsNoBypass = findViewById(R.id.cbSettingsNoBypass);
-        cbSettingsNoBypass.setChecked(storage.isNoByPass());
 
         final Button btnSettingsCancel = findViewById(R.id.btnSettingsCancel);
         btnSettingsCancel.setOnClickListener(v -> SettingsActivity.this.finish());
@@ -66,7 +58,7 @@ public class SettingsActivity extends BaseActivity {
             savePopupWindow.showAtLocation(savePopupWindow.getContentView(), Gravity.CENTER, 0, 0)
         );
 
-        txtSettingsIdleTimeout.addTextChangedListener(new TextWatcher() {
+        txtSettingsQuickPassTimeout.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.length() > 2) {
@@ -74,7 +66,7 @@ public class SettingsActivity extends BaseActivity {
                     try {minutes = Integer.parseInt(editable.toString());} catch (Throwable t) {}
                     if (minutes > ONE_WEEK_IN_MINUTES) {
                         showErrorMessageInternal(getString(R.string.idle_timeout_guidance, ONE_WEEK_IN_MINUTES + ""), null, getString(R.string.guidance_heading));
-                        txtSettingsIdleTimeout.setText(String.valueOf(ONE_WEEK_IN_MINUTES));
+                        txtSettingsQuickPassTimeout.setText(String.valueOf(ONE_WEEK_IN_MINUTES));
                     }
                 }
             }
@@ -87,6 +79,28 @@ public class SettingsActivity extends BaseActivity {
 
         });
 
+        mIdentitySelector = new IdentitySelector(this, true,
+                false, true, false, true);
+        mIdentitySelector.registerLayout(findViewById(R.id.identitySelector));
+        mIdentitySelector.setIdentityChangedListener((identityIndex, identityName) -> update() );
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mIdentitySelector.update();
+        update();
+    }
+
+    private void update() {
+        final SQRLStorage storage = SQRLStorage.getInstance(SettingsActivity.this.getApplicationContext());
+
+        txtSettingsQuickPassLength.setText(Integer.toString(storage.getHintLength()));
+        txtSettingsPasswordVerify.setText(Integer.toString(storage.getPasswordVerify()));
+        txtSettingsQuickPassTimeout.setText(Integer.toString(storage.getIdleTimeout()));
+        cbSettingsSQRLOnly.setChecked(storage.isSQRLOnly());
+        cbSettingsNoBypass.setChecked(storage.isNoByPass());
     }
 
     public int getIntValue(EditText txt, int errorMessage) {
@@ -132,7 +146,7 @@ public class SettingsActivity extends BaseActivity {
                 return;
             }
 
-            int hintLength = getIntValue(txtSettingsHintLength, R.string.settings_hint_length_not_number);
+            int hintLength = getIntValue(txtSettingsQuickPassLength, R.string.settings_hint_length_not_number);
             if(hintLength == -1) return;
             if(hintLength > 255) {
                 showErrorMessage(R.string.settings_hint_length_to_large);
@@ -144,7 +158,7 @@ public class SettingsActivity extends BaseActivity {
             }
             int passwordVerify = getIntValue(txtSettingsPasswordVerify, R.string.settings_password_verify_not_number);
             if(passwordVerify == -1) return;
-            int idleTimeout = getIntValue(txtSettingsIdleTimeout, R.string.settings_idle_timeout_not_number);
+            int idleTimeout = getIntValue(txtSettingsQuickPassTimeout, R.string.settings_idle_timeout_not_number);
             if(idleTimeout == -1) return;
 
             storage.setHintLength(hintLength);

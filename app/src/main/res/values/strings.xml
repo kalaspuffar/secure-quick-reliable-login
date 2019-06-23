@@ -269,4 +269,5 @@
 <string name="button_identity_options">Identity options</string>
 <string name="identity">Identity</string>
 <string name="language_hindi">Hindi</string>
+<string name="title_activity_identity_settings">SQRL - Identity Settings</string>
 </resources>

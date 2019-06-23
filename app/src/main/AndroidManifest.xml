@@ -43,7 +43,7 @@
             />
         <activity
             android:name=".activites.SettingsActivity"
-            android:label="@string/title_activity_settings"
+            android:label="@string/title_activity_identity_settings"
             />
         <activity
             android:name=".activites.SimplifiedActivity"
