@@ -47,8 +47,7 @@ public class IdentityManagementActivity extends BaseActivity {
                 v -> startActivity(new Intent(this, ImportOptionsActivity.class))
         );
 
-        mIdentitySelector = new IdentitySelector(this, true, true,
-                true, false, false);
+        mIdentitySelector = new IdentitySelector(this, true, true, false);
         mIdentitySelector.registerLayout(findViewById(R.id.identitySelector));
     }
 
