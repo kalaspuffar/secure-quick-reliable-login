@@ -248,6 +248,7 @@ public class ImportActivity extends BaseActivity {
                 setPasswordIntent.putExtra(SQRLStorage.NEW_IDENTITY, true);
                 startActivity(setPasswordIntent);
             }, 100);
+            ImportActivity.this.finish();
             return;
         }
 
