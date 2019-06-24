@@ -269,6 +269,9 @@
 <string name="button_identity_options">Identity options</string>
 <string name="identity">Identity</string>
 <string name="language_hindi">Hindi</string>
+<string name="title_set_password">SQRL - Set Password</string>
+<string name="button_set_password">Set password</string>
+<string name="set_password_import_desc">Since the identity being imported has no password set, it is required for you to provide the rescue code given to you at identity creation. You will then chose a new password, which your newly imported identity will be secured with.</string>
 <string name="title_activity_identity_settings">SQRL - Identity Settings</string>
 <string name="helptext_password_verify_seconds">Your identity\'s security can be improved by lengthening the time required to verify your full SQRL password. There is NO KNOWN WAY for any attacker, spy agency or government to dramatically speed up this verification process. And since your shorter QuickPass can be used after you have entered your password once, you only need to wait once. But someone trying to guess your password needs to wait EVERY TIME they guess.\n\nA five-second verification duration is recommended, but you are free to choose whatever seems best for your convenience and security.</string>
 <string name="helptext_quickpass_length">To encourage the use of one longer and more secure access password, SQRL only requires your FULL password to be provided when it is first used or after a specified period of not having entered the full password. (This period is called \"QuickPass timeout\" and can also be set in the identity settings).\n\nOnce the full password was entered, SQRL only needs an occasional "QuickPass", which consists of the first several characters of your password. More QuickPass characters are a bit safer while less are more convenient.\n\nFour characters is recommended.</string>
