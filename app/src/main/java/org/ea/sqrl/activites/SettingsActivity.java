@@ -1,6 +1,5 @@
 package org.ea.sqrl.activites;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -85,50 +84,25 @@ public class SettingsActivity extends BaseActivity {
         mIdentitySelector.registerLayout(findViewById(R.id.identitySelector));
         mIdentitySelector.setIdentityChangedListener((identityIndex, identityName) -> update() );
 
-        findViewById(R.id.imgSettingsPasswordVerifyInSecondsInfo).setOnClickListener(view -> {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.settings_password_verify)
-                    .setMessage(R.string.helptext_password_verify_seconds)
-                    .setIcon(R.drawable.ic_info_outline_24dp)
-                    .create()
-                    .show();
-        });
+        findViewById(R.id.imgSettingsPasswordVerifyInSecondsInfo).setOnClickListener(view ->
+                showInfoMessage(R.string.settings_password_verify, R.string.helptext_password_verify_seconds)
+        );
 
-        findViewById(R.id.imgSettingsQuickPassLengthInfo).setOnClickListener(view -> {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.settings_hint_length)
-                    .setMessage(R.string.helptext_quickpass_length)
-                    .setIcon(R.drawable.ic_info_outline_24dp)
-                    .create()
-                    .show();
-        });
+        findViewById(R.id.imgSettingsQuickPassLengthInfo).setOnClickListener(view ->
+                showInfoMessage(R.string.settings_hint_length, R.string.helptext_quickpass_length)
+        );
 
-        findViewById(R.id.imgSettingsQuickPassTimeoutInfo).setOnClickListener(view -> {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.settings_idle_timeout)
-                    .setMessage(R.string.helptext_quickpass_timeout)
-                    .setIcon(R.drawable.ic_info_outline_24dp)
-                    .create()
-                    .show();
-        });
+        findViewById(R.id.imgSettingsQuickPassTimeoutInfo).setOnClickListener(view ->
+                showInfoMessage(R.string.settings_idle_timeout, R.string.helptext_quickpass_timeout)
+        );
 
-        findViewById(R.id.imgSettingsSQRLOnlyInfo).setOnClickListener(view -> {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.settings_sqrl_only)
-                    .setMessage(R.string.helptext_request_sqrl_only_login)
-                    .setIcon(R.drawable.ic_info_outline_24dp)
-                    .create()
-                    .show();
-        });
+        findViewById(R.id.imgSettingsSQRLOnlyInfo).setOnClickListener(view ->
+                showInfoMessage(R.string.settings_sqrl_only, R.string.helptext_request_sqrl_only_login)
+        );
 
-        findViewById(R.id.imgSettingsNoBypassInfo).setOnClickListener(view -> {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.settings_no_sqrl_bypass)
-                    .setMessage(R.string.helptext_request_no_sqrl_bypass)
-                    .setIcon(R.drawable.ic_info_outline_24dp)
-                    .create()
-                    .show();
-        });
+        findViewById(R.id.imgSettingsNoBypassInfo).setOnClickListener(view ->
+                showInfoMessage(R.string.settings_no_sqrl_bypass, R.string.helptext_request_no_sqrl_bypass)
+        );
     }
 
     @Override

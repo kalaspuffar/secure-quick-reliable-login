@@ -2,8 +2,11 @@ package org.ea.sqrl.activites.base;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
+import org.ea.sqrl.R;
 import org.ea.sqrl.utils.Utils;
 
 /**
@@ -45,5 +48,24 @@ public class CommonBaseActivity extends AppCompatActivity {
             mCurrentLanguage = language;
             this.recreate();
         }
+    }
+
+    protected void showInfoMessage(String title, String message) {
+        if (message == null) return;
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        if (title != null) alertDialogBuilder.setTitle(title);
+        alertDialogBuilder
+                .setMessage(message)
+                .setIcon(R.drawable.ic_info_accent_24dp)
+                .create()
+                .show();
+    }
+
+    protected void showInfoMessage(@StringRes int title, @StringRes int message) {
+        showInfoMessage(
+                this.getResources().getString(title),
+                this.getResources().getString(message)
+        );
     }
 }
