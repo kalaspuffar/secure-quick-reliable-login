@@ -243,7 +243,11 @@ public class ImportActivity extends BaseActivity {
         storage.read(identityData);
 
         if(!storage.hasEncryptedKeys()) {
-            handler.postDelayed(() -> startActivity(new Intent(this, ResetPasswordActivity.class)), 100);
+            handler.postDelayed(() -> {
+                Intent setPasswordIntent = new Intent(this, ResetPasswordActivity.class);
+                setPasswordIntent.putExtra(SQRLStorage.NEW_IDENTITY, true);
+                startActivity(setPasswordIntent);
+            }, 100);
             return;
         }
 
