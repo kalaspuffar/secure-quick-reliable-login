@@ -52,11 +52,14 @@
 
     <ImageView
         android:id="@+id/imgSettingsPasswordVerifyInSecondsInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="16dp"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txtSettingsPasswordVerifyInSeconds"
         app:srcCompat="@drawable/ic_info_outline_24dp" />
@@ -91,11 +94,14 @@
 
     <ImageView
         android:id="@+id/imgSettingsQuickPassLengthInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="16dp"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txtSettingsQuickPassLength"
         app:srcCompat="@drawable/ic_info_outline_24dp" />
@@ -130,11 +136,14 @@
 
     <ImageView
         android:id="@+id/imgSettingsQuickPassTimeoutInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="16dp"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txtSettingsQuickPassTimeout"
         app:srcCompat="@drawable/ic_info_outline_24dp" />
@@ -144,6 +153,7 @@
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="@string/settings_sqrl_only"
@@ -154,11 +164,14 @@
 
     <ImageView
         android:id="@+id/imgSettingsSQRLOnlyInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="16dp"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/cbSettingsSQRLOnly"
         app:srcCompat="@drawable/ic_info_outline_24dp" />
@@ -168,6 +181,7 @@
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="@string/settings_no_sqrl_bypass"
@@ -178,11 +192,14 @@
 
     <ImageView
         android:id="@+id/imgSettingsNoBypassInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="16dp"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/cbSettingsNoBypass"
         app:srcCompat="@drawable/ic_info_outline_24dp" />
