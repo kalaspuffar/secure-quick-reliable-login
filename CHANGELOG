@@ -1,3 +1,11 @@
+Version 1.1.1
+
+Bugfix
+
+* Fix to handle clearing of previous data.
+* Landscape selector now working for URL layout.
+* Exclude login activity from history and recent apps.
+
 Version 1.1.0
 
 Feature
