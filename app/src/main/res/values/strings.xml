@@ -269,4 +269,7 @@
 <string name="button_identity_options">Identity options</string>
 <string name="identity">Identity</string>
 <string name="language_hindi">Hindi</string>
+<string name="title_set_password">SQRL - Set Password</string>
+<string name="button_set_password">Set password</string>
+<string name="set_password_import_desc">Since the identity being imported has no password set, it is required for you to provide the rescue code given to you at identity creation. You will then chose a new password, which your newly imported identity will be secured with.</string>
 </resources>
