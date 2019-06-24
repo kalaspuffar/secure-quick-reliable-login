@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/settingsActivityView"
-    tools:context="org.ea.sqrl.activites.SettingsActivity">
+    android:id="@+id/identitySettingsActivityView"
+    tools:context="org.ea.sqrl.activites.identity.IdentitySettingsActivity">
 
     <include layout="@layout/fragment_identity_selector"
         android:id="@+id/identitySelector"

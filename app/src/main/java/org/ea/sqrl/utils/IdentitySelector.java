@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.ea.sqrl.R;
-import org.ea.sqrl.activites.SettingsActivity;
+import org.ea.sqrl.activites.identity.IdentitySettingsActivity;
 import org.ea.sqrl.activites.StartActivity;
 import org.ea.sqrl.activites.create.RekeyIdentityActivity;
 import org.ea.sqrl.activites.identity.ChangePasswordActivity;
@@ -289,7 +289,7 @@ public class IdentitySelector {
                 switch (item.getItemId()) {
 
                     case R.id.action_idm_settings:
-                        mContext.startActivity(new Intent(mContext, SettingsActivity.class));
+                        mContext.startActivity(new Intent(mContext, IdentitySettingsActivity.class));
                         break;
                     case R.id.action_idm_rename:
                         mContext.startActivity(new Intent(mContext, RenameActivity.class));

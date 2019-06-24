@@ -1,4 +1,4 @@
-package org.ea.sqrl.activites;
+package org.ea.sqrl.activites.identity;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -22,8 +22,8 @@ import org.ea.sqrl.utils.SqrlApplication;
  *
  * @author Daniel Persson
  */
-public class SettingsActivity extends BaseActivity {
-    private static final String TAG = "SettingsActivity";
+public class IdentitySettingsActivity extends BaseActivity {
+    private static final String TAG = "IdentitySettingsActivity";
     private static final int ONE_WEEK_IN_MINUTES = 60 * 24 * 7;
 
     private PopupWindow savePopupWindow;
@@ -38,7 +38,7 @@ public class SettingsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_identity_settings);
 
         setupSavePopupWindow(getLayoutInflater());
         setupProgressPopupWindow(getLayoutInflater());
@@ -51,7 +51,7 @@ public class SettingsActivity extends BaseActivity {
         cbSettingsNoBypass = findViewById(R.id.cbSettingsNoBypass);
 
         final Button btnSettingsCancel = findViewById(R.id.btnSettingsCancel);
-        btnSettingsCancel.setOnClickListener(v -> SettingsActivity.this.finish());
+        btnSettingsCancel.setOnClickListener(v -> IdentitySettingsActivity.this.finish());
 
         final Button btnSettingsSave = findViewById(R.id.btnSettingsSave);
         btnSettingsSave.setOnClickListener(v ->
@@ -114,7 +114,7 @@ public class SettingsActivity extends BaseActivity {
     }
 
     private void update() {
-        final SQRLStorage storage = SQRLStorage.getInstance(SettingsActivity.this.getApplicationContext());
+        final SQRLStorage storage = SQRLStorage.getInstance(IdentitySettingsActivity.this.getApplicationContext());
 
         txtSettingsQuickPassLength.setText(Integer.toString(storage.getHintLength()));
         txtSettingsPasswordVerify.setText(Integer.toString(storage.getPasswordVerify()));
@@ -144,7 +144,7 @@ public class SettingsActivity extends BaseActivity {
 
         final EditText txtPassword = popupView.findViewById(R.id.txtPassword);
 
-        SQRLStorage storage = SQRLStorage.getInstance(SettingsActivity.this.getApplicationContext());
+        SQRLStorage storage = SQRLStorage.getInstance(IdentitySettingsActivity.this.getApplicationContext());
 
         popupView.findViewById(R.id.btnCloseSaveSettings).setOnClickListener(v -> savePopupWindow.dismiss());
         final Button btnSaveSettings = popupView.findViewById(R.id.btnSaveSettings);
@@ -205,7 +205,7 @@ public class SettingsActivity extends BaseActivity {
             handler.post(() -> {
                 txtPassword.setText("");
                 hideProgressPopup();
-                SettingsActivity.this.finish();
+                IdentitySettingsActivity.this.finish();
             });
 
         }).start());

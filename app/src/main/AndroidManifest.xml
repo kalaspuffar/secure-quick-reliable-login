@@ -42,7 +42,7 @@
             android:label="@string/title_activity_clear_identity"
             />
         <activity
-            android:name=".activites.SettingsActivity"
+            android:name=".activites.identity.IdentitySettingsActivity"
             android:label="@string/title_activity_identity_settings"
             />
         <activity
