@@ -15,6 +15,7 @@
         android:supportsRtl="true"
         android:icon="@drawable/ic_sqrl_icon_vector_outline"
         android:label="@string/app_name"
+        android:name=".utils.SqrlApplication"
         android:roundIcon="@drawable/ic_sqrl_icon_circle_vector_outline"
         android:fullBackupContent="@xml/my_backup_rules"
         android:theme="@style/AppTheme"
@@ -28,8 +29,8 @@
             android:label="@string/app_name"
             />
         <activity
-            android:name=".activites.MainActivity"
-            android:label="@string/title_activity_advanced"
+            android:name=".activites.identity.IdentityManagementActivity"
+            android:label="@string/title_identity_management"
             />
 
         <activity
@@ -117,9 +118,27 @@
             android:label="@string/title_export_options"
             />
 
-        <activity android:name=".activites.identity.ImportActivity"
-            android:label="@string/title_import"
+        <activity android:name=".activites.identity.ImportOptionsActivity"
+            android:label="@string/title_import_options"
             />
+
+        <activity android:name=".activites.identity.ImportActivity"
+            android:label="@string/title_import">
+            <!--
+            <intent-filter
+                android:icon="@drawable/ic_sqrl_icon_vector_outline"
+                android:label="@string/app_name"
+                android:priority="50" >
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="text/*" />
+                <data android:mimeType="application/*" />
+            </intent-filter>
+            -->
+        </activity>
 
         <activity android:name=".activites.account.AccountOptionsActivity"
             android:label="@string/title_account_options"
@@ -140,6 +159,8 @@
         <activity
             android:name=".activites.UrlLoginActivity"
             android:label="@string/title_activity_url_login"
+            android:noHistory="true"
+            android:excludeFromRecents="true"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -156,6 +177,14 @@
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
             tools:replace="screenOrientation"
+            />
+
+        <activity android:name=".activites.ClearQuickPassActivity"
+            android:label="@string/title_activity_clear_identity"
+            />
+
+        <activity android:name=".activites.EnableQuickPassActivity"
+            android:label="@string/quickpass_enable_message"
             />
 
         <provider

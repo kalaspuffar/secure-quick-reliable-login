@@ -1,8 +1,6 @@
 package org.ea.sqrl.activites.identity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +14,7 @@ import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.PasswordStrengthMeter;
 import org.ea.sqrl.utils.RescueCodeInputHelper;
+import org.ea.sqrl.utils.SqrlApplication;
 
 public class ResetPasswordActivity extends BaseActivity {
 
@@ -34,6 +33,13 @@ public class ResetPasswordActivity extends BaseActivity {
         final ViewGroup pwStrengthMeter = findViewById(R.id.passwordStrengthMeter);
         final ViewGroup rootView = findViewById(R.id.resetPasswordActivityView);
         final Button btnResetPassword = findViewById(R.id.btnResetPassword);
+
+        // activity was started from an identity import, change ui texts accordingly
+        if (newIdentity) {
+            this.setTitle(R.string.title_set_password);
+            txtResetPasswordDescription.setText(R.string.set_password_import_desc);
+            btnResetPassword.setText(R.string.button_set_password);
+        }
 
         new PasswordStrengthMeter(this)
                 .register(txtResetPasswordNewPassword, pwStrengthMeter);
@@ -76,11 +82,6 @@ public class ResetPasswordActivity extends BaseActivity {
                 }
                 storage.clear();
 
-                SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                        APPS_PREFERENCES,
-                        Context.MODE_PRIVATE
-                );
-
                 storage.clear();
                 handler.post(() -> {
                     hideProgressPopup();
@@ -89,16 +90,16 @@ public class ResetPasswordActivity extends BaseActivity {
                 });
 
                 if(mDbHelper.hasIdentities() && !newIdentity) {
-                    long currentId = sharedPref.getLong(CURRENT_ID, 0);
+                    long currentId = SqrlApplication.getCurrentId(this.getApplication());
+
                     if(currentId != 0) {
                         mDbHelper.updateIdentityData(currentId, storage.createSaveData());
                     }
                     handler.post(() -> ResetPasswordActivity.this.finish());
                 } else {
                     long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
-                    SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putLong(CURRENT_ID, newIdentityId);
-                    editor.apply();
+                    SqrlApplication.saveCurrentId(this.getApplication(), newIdentityId);
+
                     if(newIdentity) {
                         handler.post(() -> {
                             ResetPasswordActivity.this.finish();

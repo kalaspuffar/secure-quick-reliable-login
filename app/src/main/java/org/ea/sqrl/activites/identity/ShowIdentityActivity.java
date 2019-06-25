@@ -11,6 +11,7 @@ import android.widget.TextView;
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.SqrlApplication;
 
 import io.nayuki.qrcodegen.QrCode;
 
@@ -28,11 +29,7 @@ public class ShowIdentityActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_identity);
 
-        SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                APPS_PREFERENCES,
-                Context.MODE_PRIVATE
-        );
-        long currentId = sharedPref.getLong(CURRENT_ID, 0);
+        long currentId = SqrlApplication.getCurrentId(this.getApplication());
 
         if(currentId == 0) return;
 

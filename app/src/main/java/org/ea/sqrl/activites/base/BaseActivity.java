@@ -37,8 +37,8 @@ import android.widget.TextView;
 
 import org.ea.sqrl.BuildConfig;
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.identity.IdentityManagementActivity;
 import org.ea.sqrl.activites.LanguageActivity;
-import org.ea.sqrl.activites.MainActivity;
 import org.ea.sqrl.activites.identity.ClearIdentityActivity;
 import org.ea.sqrl.activites.IntroductionActivity;
 import org.ea.sqrl.database.IdentityDBHelper;
@@ -47,6 +47,7 @@ import org.ea.sqrl.processors.ProgressionUpdater;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.services.ClearIdentityReceiver;
 import org.ea.sqrl.services.ClearIdentityService;
+import org.ea.sqrl.utils.SqrlApplication;
 
 /**
  * This base activity is inherited by all other activities that need logic used for menus,
@@ -57,8 +58,6 @@ import org.ea.sqrl.services.ClearIdentityService;
 @SuppressLint("Registered")
 public class BaseActivity extends CommonBaseActivity {
     private static final String TAG = "BaseActivity";
-    protected static final String CURRENT_ID = "current_id";
-    protected static final String APPS_PREFERENCES = "org.ea.sqrl.preferences";
     protected static final String EXPORT_WITHOUT_PASSWORD = "export_without_password";
 
     private final int REQUEST_PERMISSION_CAMERA = 1;
@@ -77,7 +76,7 @@ public class BaseActivity extends CommonBaseActivity {
     protected EntropyHarvester entropyHarvester;
 
     public BaseActivity() {
-        mDbHelper = new IdentityDBHelper(this);
+        mDbHelper = IdentityDBHelper.getInstance(this);
         try {
             entropyHarvester = EntropyHarvester.getInstance();
         } catch (Exception e) {
@@ -147,7 +146,7 @@ public class BaseActivity extends CommonBaseActivity {
                 startActivity(new Intent(this, LanguageActivity.class));
                 return true;
             case R.id.action_advanced_options:
-                startActivity(new Intent(this, MainActivity.class));
+                startActivity(new Intent(this, IdentityManagementActivity.class));
                 return true;
             case R.id.action_about:
                 AlertDialog.Builder builder;
@@ -268,6 +267,10 @@ public class BaseActivity extends CommonBaseActivity {
     }
 
     public void showErrorMessageInternal(String message, Runnable nextAction) {
+        showErrorMessageInternal(message, nextAction, getResources().getString(R.string.error_dialog_title));
+    }
+
+    public void showErrorMessageInternal(String message, Runnable nextAction, String messageTitle) {
 
         AlertDialog.Builder builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -285,9 +288,13 @@ public class BaseActivity extends CommonBaseActivity {
                     });
                 }
                 txtErrorMessage.setText(message);
-                handler.post(() ->
-                    errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
-                );
+                handler.post(() -> {
+                    if (messageTitle != null) {
+                        TextView heading = errorPopupWindow.getContentView().findViewById(R.id.textView7);
+                        heading.setText(messageTitle);
+                    }
+                    errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
+                });
                 return;
             }
             builder = new AlertDialog.Builder(BaseActivity.this, android.R.style.Theme_Material_Dialog_Alert);
@@ -383,6 +390,8 @@ public class BaseActivity extends CommonBaseActivity {
 
     public void clearQuickPassDelayed() {
         long delayMillis = SQRLStorage.getInstance(BaseActivity.this.getApplicationContext()).getIdleTimeout() * 60000;
+
+        SqrlApplication.setApplicationShortcuts(getApplicationContext());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             JobInfo jobInfo = new JobInfo.Builder(ClearIdentityService.JOB_NUMBER, new ComponentName(this, ClearIdentityService.class))

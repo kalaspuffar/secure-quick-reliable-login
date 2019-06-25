@@ -1,6 +1,65 @@
+Version 1.1.1
+
+Bugfix
+
+* Fix to handle clearing of previous data.
+* Landscape selector now working for URL layout.
+* Exclude login activity from history and recent apps.
+
+Version 1.1.0
+
+Feature
+* Hindi and Chinese translations
+* Application shortcuts
+
+Enhancement
+* Improved rename GUI
+* Remove share feature with application
+* Improved selection of identities.
+
+Bugfix
+* Handle long URLs.
+* Fix "missing argument" error
+
+Version 1.0.0
+
+Feature
+* Added application shortcuts
+
+Enhancements
+* Added file import to start activity
+* Better contrasting night colors
+* Improved domain verification
+* Identity Management v2
+
+Bugfix
+* Remove login popup after failed password
+
+Version 0.16.2
+
+Feature
+* Added chinese
+
+Version 0.16.1
+
+Bug fix
+* QR code import not working on the startup screen
+
+Changes
+* Rename Advanced operations to Identity management
+* Remove Use identity in Identity management
+* Reorder buttons on Identity Management
+
+Version 0.16.0
+
+Feature
+* Enable import of base64-url encoded identities
+* Show identity name in SimplifiedActivity
+* Read identity from file
+
 Version 0.15.0
 
-Bug
+Bug fix
 * Don't delete quickpass on network errors.
 * Login popup issue
 * Simply login code and fix some inconsistencies

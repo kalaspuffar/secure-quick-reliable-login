@@ -10,6 +10,7 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.LoginBaseActivity;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.SqrlApplication;
 
 public class AlternativeLoginActivity extends LoginBaseActivity {
 
@@ -35,11 +36,7 @@ public class AlternativeLoginActivity extends LoginBaseActivity {
         btnAlternativeLogin.setOnClickListener(v -> {
             communicationFlowHandler.setAlternativeId(txtAlternativeId.getText().toString());
 
-            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                    APPS_PREFERENCES,
-                    Context.MODE_PRIVATE
-            );
-            long currentId = sharedPref.getLong(CURRENT_ID, 0);
+            long currentId = SqrlApplication.getCurrentId(this.getApplication());
 
             if(currentId != 0) {
                 doLogin(storage, txtLoginPassword, false, false, AlternativeLoginActivity.this, this);

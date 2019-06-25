@@ -1,0 +1,34 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="org.ea.sqrl.activites.identity.IdentityManagementActivity">
+    <item
+        android:id="@+id/action_idm_settings"
+        android:orderInCategory="90"
+        android:title="@string/button_settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_idm_rename"
+        android:orderInCategory="90"
+        android:title="@string/button_rename_identity"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_idm_remove"
+        android:orderInCategory="90"
+        android:title="@string/button_remove_identity"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_idm_export"
+        android:orderInCategory="90"
+        android:title="@string/button_export_identity"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_idm_password_options"
+        android:orderInCategory="90"
+        android:title="@string/action_password_options"
+        app:showAsAction="never" />
+
+</menu>

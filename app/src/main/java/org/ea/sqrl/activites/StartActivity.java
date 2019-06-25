@@ -11,6 +11,7 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.activites.create.CreateIdentityActivity;
 import org.ea.sqrl.activites.identity.ImportActivity;
+import org.ea.sqrl.activites.identity.ImportOptionsActivity;
 import org.ea.sqrl.activites.identity.TextImportActivity;
 
 /**
@@ -36,21 +37,15 @@ public class StartActivity extends BaseActivity {
         setupCameraAccessPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
-        final Button btnScanSecret = findViewById(R.id.btnScanSecret);
-        btnScanSecret.setOnClickListener(v -> {
-            createNewIdentity = false;
-            this.showPhoneStatePermission();
-        });
-
         final Button btnStartCreateIdentity = findViewById(R.id.btnStartCreateIdentity);
         btnStartCreateIdentity.setOnClickListener(v -> {
             createNewIdentity = true;
             this.showPhoneStatePermission();
         });
 
-        final Button btnTextImport = findViewById(R.id.btnTextImport);
-        btnTextImport.setOnClickListener(
-            v -> startActivity(new Intent(this, TextImportActivity.class))
+        final Button btnImportIdentity = findViewById(R.id.btnImportIdentity);
+        btnImportIdentity.setOnClickListener(
+            v -> startActivity(new Intent(this, ImportOptionsActivity.class))
         );
     }
 
@@ -59,7 +54,10 @@ public class StartActivity extends BaseActivity {
         if(createNewIdentity) {
             startActivity(new Intent(this, CreateIdentityActivity.class));
         } else {
-            startActivity(new Intent(this, ImportActivity.class));
+            Intent importIdentityIntent = new Intent(this, ImportActivity.class);
+            importIdentityIntent.putExtra(ImportOptionsActivity.EXTRA_IMPORT_METHOD,
+                    ImportOptionsActivity.IMPORT_METHOD_QRCODE);
+            startActivity(importIdentityIntent);
         }
     }
 

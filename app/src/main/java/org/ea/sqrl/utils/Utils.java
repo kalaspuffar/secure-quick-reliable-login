@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -15,6 +16,9 @@ import com.google.zxing.FormatException;
 import org.ea.sqrl.database.IdentityDBHelper;
 import org.ea.sqrl.processors.SQRLStorage;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
 
 import static android.content.pm.PackageManager.GET_META_DATA;
@@ -33,16 +37,18 @@ public class Utils {
      * @return  The string without any extra information.
      */
     public static byte[] readSQRLQRCode(Intent data) throws FormatException {
-        return data.getByteArrayExtra("SCAN_RESULT_BYTE_SEGMENTS_0");
+        byte[] qrCode = new byte[0];
+        for(int i=0;; i++) {
+            byte[] newSegment = data.getByteArrayExtra("SCAN_RESULT_BYTE_SEGMENTS_" + i);
+            if(newSegment == null) break;
+            qrCode = EncryptionUtils.combine(qrCode, newSegment);
+        }
+
+        return qrCode;
     }
 
     public static String readSQRLQRCodeAsString(Intent data) {
-        try {
-            return new String(readSQRLQRCode(data), "ASCII");
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
-        return "";
+        return data.getStringExtra("SCAN_RESULT");
     }
 
     public static int getInteger(String s) {
@@ -90,9 +96,32 @@ public class Utils {
                 Context.MODE_PRIVATE
         );
         long currentId = sharedPref.getLong("current_id", 0);
-        IdentityDBHelper aDbHelper = new IdentityDBHelper(activity);
+        IdentityDBHelper aDbHelper = IdentityDBHelper.getInstance(activity);
         byte[] identityData = aDbHelper.getIdentityData(currentId);
         SQRLStorage sqrlStorage = SQRLStorage.getInstance(activity);
         sqrlStorage.read(identityData);
+    }
+
+    public static byte[] getFileIntentContent(Context context, Uri contentUri) {
+        if (contentUri == null) return null;
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len;
+
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(contentUri);
+
+            while ((len = inputStream.read(buffer)) != -1) {
+                os.write(buffer, 0, len);
+            }
+
+            inputStream.close();
+            return os.toByteArray();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

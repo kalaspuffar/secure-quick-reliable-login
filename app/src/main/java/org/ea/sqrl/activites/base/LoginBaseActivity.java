@@ -4,29 +4,25 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.constraint.ConstraintLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.account.AccountOptionsActivity;
-import org.ea.sqrl.adapter.IdentityAdapter;
+import org.ea.sqrl.activites.EnableQuickPassActivity;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.SqrlApplication;
+
 import java.util.Map;
 
 /**
@@ -34,14 +30,10 @@ import java.util.Map;
  * @author Daniel Persson
  */
 @SuppressLint("Registered")
-public class LoginBaseActivity extends BaseActivity implements AdapterView.OnItemSelectedListener {
+public class LoginBaseActivity extends BaseActivity {
     private static final String TAG = "LoginBaseActivity";
     protected ConstraintLayout rootView;
-
-    protected Spinner cboxIdentity;
-    protected TextView txtOneIdentity;
     protected Map<Long, String> identities;
-    protected Button btnUseIdentity;
 
     protected PopupWindow loginPopupWindow;
     protected CommunicationFlowHandler communicationFlowHandler = null;
@@ -65,41 +57,6 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
     protected void closeActivity() {}
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        Long[] keyArray = identities.keySet().toArray(new Long[identities.size()]);
-
-        SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                APPS_PREFERENCES,
-                Context.MODE_PRIVATE
-        );
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putLong(CURRENT_ID, keyArray[pos]);
-        editor.apply();
-
-        SQRLStorage storage = SQRLStorage.getInstance(LoginBaseActivity.this.getApplicationContext());
-
-        byte[] identityData = mDbHelper.getIdentityData(keyArray[pos]);
-
-        if(storage.needsReload(identityData)) {
-            storage.clearQuickPass();
-            try {
-                storage.read(identityData);
-            } catch (Exception e) {
-                showErrorMessage(e.getMessage());
-                Log.e(TAG, e.getMessage(), e);
-            }
-        }
-
-        if(btnUseIdentity != null) {
-            btnUseIdentity.setEnabled(storage.hasIdentityBlock());
-        }
-
-        this.selectionUpdated();
-    }
-
-    protected void selectionUpdated() {}
-
-    @Override
     protected void onPause() {
         super.onPause();
         if(communicationFlowHandler != null) {
@@ -107,46 +64,11 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         }
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {}
-
-    private int getPosition(long currentId) {
-        int i = 0;
-        for(long l : identities.keySet()) {
-            if (l == currentId) return i;
-            i++;
-        }
-        return 0;
-    }
-
     protected void closeKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-
-    protected void updateSpinnerData(long currentId) {
-        identities = mDbHelper.getIdentitys();
-        if (identities.size() == 0) return;
-        if(currentId == -1) {
-            currentId = identities.keySet().iterator().next();
-        }
-
-        cboxIdentity.setOnItemSelectedListener(this);
-        cboxIdentity.setAdapter(new IdentityAdapter(identities));
-        cboxIdentity.setSelection(getPosition(currentId), false);
-
-        String currentIdName = mDbHelper.getIdentityName(currentId);
-        txtOneIdentity.setText(currentIdName);
-
-        if (identities.size() > 1) {
-            cboxIdentity.setVisibility(View.VISIBLE);
-            txtOneIdentity.setVisibility(View.INVISIBLE);
-        } else {
-            cboxIdentity.setVisibility(View.INVISIBLE);
-            txtOneIdentity.setVisibility(View.VISIBLE);
         }
     }
 
@@ -173,6 +95,10 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         final EditText txtLoginPassword = popupView.findViewById(R.id.txtLoginPassword);
         txtLoginPassword.setOnEditorActionListener((v, actionId, event) -> {
             if(actionId == EditorInfo.IME_ACTION_DONE){
+                if(LoginBaseActivity.this instanceof EnableQuickPassActivity) {
+                    ((EnableQuickPassActivity)LoginBaseActivity.this).doingLogin();
+                }
+
                 doLogin(storage, txtLoginPassword, false, false, null, LoginBaseActivity.this);
                 return true;
             }
@@ -188,6 +114,10 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
             public void onTextChanged(CharSequence password, int start, int before, int count) {
                 if (!storage.hasQuickPass()) return;
                 if ((start + count) >= storage.getHintLength()) {
+                    if(LoginBaseActivity.this instanceof EnableQuickPassActivity) {
+                        ((EnableQuickPassActivity)LoginBaseActivity.this).doingLogin();
+                    }
+
                     doLogin(storage, txtLoginPassword, true, false, null, LoginBaseActivity.this);
                 }
             }
@@ -204,13 +134,12 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         });
 
         popupView.findViewById(R.id.btnLogin).setOnClickListener(v -> {
-            SharedPreferences sharedPref = this.getApplication().getSharedPreferences(
-                    APPS_PREFERENCES,
-                    Context.MODE_PRIVATE
-            );
-            long currentId = sharedPref.getLong(CURRENT_ID, 0);
+            long currentId = SqrlApplication.getCurrentId(this.getApplication());
 
             if(currentId != 0) {
+                if(LoginBaseActivity.this instanceof EnableQuickPassActivity) {
+                    ((EnableQuickPassActivity)LoginBaseActivity.this).doingLogin();
+                }
                 doLogin(storage, txtLoginPassword, false, false, null, this);
             }
         });
@@ -224,22 +153,37 @@ public class LoginBaseActivity extends BaseActivity implements AdapterView.OnIte
         new Thread(() -> {
             boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, usedQuickpass);
             if(!decryptionOk) {
-                showErrorMessage(R.string.decrypt_identity_fail);
-                handler.post(() -> {
-                    txtLoginPassword.setHint(R.string.login_identity_password);
-                    txtLoginPassword.setText("");
-                    hideProgressPopup();
+                showErrorMessage(R.string.decrypt_identity_fail, () -> {
                     if (!usedCps) {
                         showLoginPopup();
                     }
                 });
+                handler.post(() -> {
+                    txtLoginPassword.setHint(R.string.login_identity_password);
+                    txtLoginPassword.setText("");
+                    hideProgressPopup();
+                });
                 storage.clear();
                 storage.clearQuickPass();
+                if(LoginBaseActivity.this instanceof EnableQuickPassActivity) {
+                    ((EnableQuickPassActivity)LoginBaseActivity.this).failedLogin();
+                }
                 return;
             }
             clearQuickPassDelayed();
 
             handler.post(() -> txtLoginPassword.setText(""));
+
+            if (context instanceof EnableQuickPassActivity) {
+                storage.clear();
+                handler.post(() -> {
+                    hideProgressPopup();
+                    closeActivity();
+                    EnableQuickPassActivity enableQuickPassActivity = (EnableQuickPassActivity)context;
+                    enableQuickPassActivity.finish();
+                });
+                return;
+            }
 
             if (usedCps) {
                 communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);

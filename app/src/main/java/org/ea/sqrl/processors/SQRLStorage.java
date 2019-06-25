@@ -7,15 +7,19 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
+import android.util.Base64;
 import android.util.Log;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.jni.Grc_aesgcm;
 import org.ea.sqrl.utils.EncryptionUtils;
+import org.ea.sqrl.utils.SqrlApplication;
 import org.libsodium.jni.NaCl;
 import org.libsodium.jni.Sodium;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -47,6 +51,7 @@ import static java.security.spec.RSAKeyGenParameterSpec.F4;
 public class SQRLStorage {
     private static final String TAG = "SQRLStorage";
     public static final String STORAGE_HEADER = "sqrldata";
+    public static final String STORAGE_HEADER_BASE64 = "SQRLDATA";
     public static final String NEW_IDENTITY = "new_identity";
     private static final int PASSWORD_PBKDF = 1;
     private static final int RESCUECODE_PBKDF = 2;
@@ -144,6 +149,11 @@ public class SQRLStorage {
         hasPreviousBlock = false;
         passwordBlockLength = 0;
 
+        if (STORAGE_HEADER_BASE64.equals(header)) {
+            input = base64UrlDecodeIdentity(input);
+            if (input == null) throw new Exception("Invalid base64 identity format");
+            header = new String(Arrays.copyOfRange(input, 0, 8));
+        }
         if (!STORAGE_HEADER.equals(header)) throw new Exception("Incorrect header");
         int readOffset = 8;
         int readLen = readOffset + 2;
@@ -162,6 +172,47 @@ public class SQRLStorage {
 
         String inputString = EncryptionUtils.encodeBase56(Arrays.copyOfRange(input, HEADER_LENGTH + passwordBlockLength, input.length));
         verifyingRecoveryBlock = fixString(inputString);
+    }
+
+    /**
+     * Decodes a SQRL identity which was base64-url encoded, which is signalled by the
+     * uppercase header 'SQRLDATA'
+     *
+     * @param input The full base64-url encoded identity data, including the plaintext header.
+     * @return The identity data decoded to the standard SQRL binary format, or null on error.
+     */
+    public byte[] base64UrlDecodeIdentity(byte[] input) {
+        if (input.length < HEADER_LENGTH) return null;
+        String header = new String(Arrays.copyOfRange(input, 0, 8));
+        if (!header.equals(STORAGE_HEADER_BASE64)) return null;
+
+        byte[] data = Arrays.copyOfRange(input, HEADER_LENGTH, input.length);
+        if (data.length < 1) return null;
+
+        // The SQRL spec allows for the base64url-illegal characters CR, LF, TAB and SPACE
+        // to be present in the input data and specifies that they should be silently ignored
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        for (int i=0; i<data.length; i++) {
+            if (data[i] == 10 || // LF
+                data[i] == 13 || // CR
+                data[i] == 9  || // TAB
+                data[i] == 11 )  // SPACE
+                continue;
+            bos.write(data[i]);
+        }
+
+        byte[] decodedData = Base64.decode(bos.toByteArray(), Base64.URL_SAFE);
+
+        try {
+            bos = new ByteArrayOutputStream();
+            bos.write(STORAGE_HEADER.getBytes()); // lowercase header
+            bos.write(decodedData);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return bos.toByteArray();
     }
 
     /**
@@ -720,6 +771,8 @@ public class SQRLStorage {
         if(notificationManager != null) {
             notificationManager.cancel(BaseActivity.NOTIFICATION_IDENTITY_UNLOCKED);
         }
+
+        SqrlApplication.setApplicationShortcuts(context);
     }
 
     public void clear() {

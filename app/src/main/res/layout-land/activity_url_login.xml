@@ -7,54 +7,18 @@
     android:id="@+id/urlLoginActivityView"
     tools:context="org.ea.sqrl.activites.UrlLoginActivity">
 
-
-    <TextView
-        android:id="@+id/txtOneIdentity"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
+    <include layout="@layout/fragment_identity_selector"
+        android:id="@+id/identitySelector"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:maxLines="1"
-        android:padding="8dp"
-        android:text=""
-        android:textSize="18sp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
-
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:duplicateParentState="true"
-        android:text="@string/current_identity_title"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <Spinner
-        android:id="@+id/cboxIdentity"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:contentDescription="@string/main_selected_identity"
-        android:duplicateParentState="true"
-        android:minHeight="48dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btnLoginOptions"
@@ -71,23 +35,34 @@
         android:id="@+id/textView4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="24dp"
         android:text="@string/login_verify_domain_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cboxIdentity" />
+        app:layout_constraintTop_toBottomOf="@+id/identitySelector" />
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/txtSite"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginStart="24dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:fontFamily="monospace"
         android:gravity="center"
+        android:text="example-domain.com"
         android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"
+        android:typeface="monospace"
+        app:autoSizeMaxTextSize="36sp"
+        app:autoSizeMinTextSize="20sp"
+        app:autoSizeStepGranularity="1sp"
+        app:autoSizeTextType="uniform"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />

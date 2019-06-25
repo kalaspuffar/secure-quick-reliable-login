@@ -8,6 +8,7 @@ import android.widget.Button;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.CommonBaseActivity;
+import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.RescueCodeInputHelper;
 
 /**
@@ -26,6 +27,9 @@ public class RescueCodeEnterActivity extends CommonBaseActivity {
         ViewGroup rootLayout = findViewById(R.id.rescueCodeEntryActivityView);
         Button btnRescueCodeEnterNext = findViewById(R.id.btnRescueCodeEnterNext);
 
+        boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
+        if(runningTest) return;
+
         RescueCodeInputHelper rescueCodeInputHelper = new RescueCodeInputHelper(
                 this, rootLayout, btnRescueCodeEnterNext, true);
         rescueCodeInputHelper.setStatusChangedListener(successfullyCompleted -> {
@@ -37,8 +41,5 @@ public class RescueCodeEnterActivity extends CommonBaseActivity {
             this.finish();
             startActivity(new Intent(this, SaveIdentityActivity.class));
         });
-
-        boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
-        if(runningTest) return;
     }
 }

@@ -9,6 +9,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.WindowManager;
 
+import org.ea.sqrl.activites.identity.IdentityManagementActivity;
 import org.ea.sqrl.activites.LanguageActivity;
 import org.ea.sqrl.activites.SimplifiedActivity;
 import org.ea.sqrl.activites.account.AccountOptionsActivity;
@@ -20,7 +21,6 @@ import org.ea.sqrl.activites.identity.ClearIdentityActivity;
 import org.ea.sqrl.activites.create.CreateIdentityActivity;
 import org.ea.sqrl.activites.create.EntropyGatherActivity;
 import org.ea.sqrl.activites.IntroductionActivity;
-import org.ea.sqrl.activites.MainActivity;
 import org.ea.sqrl.activites.create.NewIdentityDoneActivity;
 import org.ea.sqrl.activites.create.RekeyIdentityActivity;
 import org.ea.sqrl.activites.create.RekeyVerifyActivity;
@@ -36,7 +36,6 @@ import org.ea.sqrl.activites.identity.ShowIdentityActivity;
 import org.ea.sqrl.activites.StartActivity;
 import org.ea.sqrl.activites.UrlLoginActivity;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -72,8 +71,8 @@ public class AccessibilityInstrumentedTest {
             new ActivityTestRule<>(IntroductionActivity.class, true, false);
 
     @Rule
-    public ActivityTestRule<MainActivity> mainActivityRule =
-            new ActivityTestRule<>(MainActivity.class, true, false);
+    public ActivityTestRule<IdentityManagementActivity> identityManagementActivityRule =
+            new ActivityTestRule<>(IdentityManagementActivity.class, true, false);
 
     @Rule
     public ActivityTestRule<NewIdentityDoneActivity> newIdentityDoneActivityRule =
@@ -229,12 +228,12 @@ public class AccessibilityInstrumentedTest {
     public void testMainActivityAccessibility() throws Exception {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
-        Intent intent = new Intent(targetContext, MainActivity.class);
+        Intent intent = new Intent(targetContext, IdentityManagementActivity.class);
         intent.putExtra("RUNNING_TEST", true);
-        MainActivity a = mainActivityRule.launchActivity(intent);
+        IdentityManagementActivity a = identityManagementActivityRule.launchActivity(intent);
         unlockScreen(a);
 
-        onView(withId(R.id.mainActivityView)).perform(click());
+        onView(withId(R.id.identityManagementActivityView)).perform(click());
     }
 
     @Test

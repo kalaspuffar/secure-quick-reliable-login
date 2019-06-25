@@ -16,6 +16,7 @@
         android:ems="10"
         android:hint="@string/rename_identity_desc"
         android:inputType="textPersonName"
+        android:imeOptions="actionDone"
         android:nextFocusDown="@+id/btnRename"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

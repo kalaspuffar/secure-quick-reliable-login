@@ -67,6 +67,7 @@
         android:layout_marginRight="16dp"
         android:ems="10"
         android:inputType="textShortMessage|textNoSuggestions"
+        android:hint="@string/account_options_alternative_id"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

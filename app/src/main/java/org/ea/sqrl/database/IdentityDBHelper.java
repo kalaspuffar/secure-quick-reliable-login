@@ -32,7 +32,16 @@ public class IdentityDBHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "SQRLIdentities.db";
 
-    public IdentityDBHelper(Context context) {
+    private static IdentityDBHelper mIdentityDbHelper;
+
+    public static IdentityDBHelper getInstance(Context context) {
+        if (mIdentityDbHelper == null) {
+            mIdentityDbHelper = new IdentityDBHelper(context);
+        }
+        return mIdentityDbHelper;
+    }
+
+    private IdentityDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
     public void onCreate(SQLiteDatabase db) {
@@ -81,7 +90,7 @@ public class IdentityDBHelper extends SQLiteOpenHelper {
         return returnVal;
     }
 
-    public Map<Long, String> getIdentitys() {
+    public Map<Long, String> getIdentities() {
         Cursor cursor = this.getWritableDatabase().query(
                 IdentityEntry.TABLE_NAME,
                 new String[] {
@@ -114,7 +123,7 @@ public class IdentityDBHelper extends SQLiteOpenHelper {
     }
 
     public boolean checkUnique(long id, String name) {
-        for(Map.Entry<Long, String> entry : getIdentitys().entrySet()) {
+        for(Map.Entry<Long, String> entry : getIdentities().entrySet()) {
             if(entry.getKey() != id && entry.getValue().equals(name)) {
                 return false;
             }
@@ -156,12 +165,12 @@ public class IdentityDBHelper extends SQLiteOpenHelper {
     }
 
     public boolean hasIdentities() {
-        Map<Long, String> identities = getIdentitys();
+        Map<Long, String> identities = getIdentities();
         return identities.size() > 0;
     }
 
     public String getIdentityName(long currentId) {
-        Map<Long, String> identities = this.getIdentitys();
+        Map<Long, String> identities = this.getIdentities();
         return identities.get(currentId);
     }
 }
