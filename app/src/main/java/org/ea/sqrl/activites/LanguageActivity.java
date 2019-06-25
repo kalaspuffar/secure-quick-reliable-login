@@ -43,6 +43,7 @@ public class LanguageActivity extends CommonBaseActivity {
         languages.add(new Language(R.string.language_czech, "cs"));
         languages.add(new Language(R.string.language_dutch, "nl"));
         languages.add(new Language(R.string.language_english, "en"));
+        languages.add(new Language(R.string.language_finish, "fi"));
         languages.add(new Language(R.string.language_french, "fr"));
         languages.add(new Language(R.string.language_german, "de"));
         languages.add(new Language(R.string.language_hebrew, "he"));
@@ -50,12 +51,11 @@ public class LanguageActivity extends CommonBaseActivity {
         languages.add(new Language(R.string.language_hungarian, "hu"));
         languages.add(new Language(R.string.language_japanese, "ja"));
         languages.add(new Language(R.string.language_norwegian, "no"));
+        languages.add(new Language(R.string.language_polish, "pl"));
         languages.add(new Language(R.string.language_russian, "ru"));
         languages.add(new Language(R.string.language_slovenian, "sl"));
-        languages.add(new Language(R.string.language_swedish, "sv"));
         languages.add(new Language(R.string.language_spanish, "es"));
-
-
+        languages.add(new Language(R.string.language_swedish, "sv"));
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
         String prefLanguage = sharedPreferences.getString("language", "");
