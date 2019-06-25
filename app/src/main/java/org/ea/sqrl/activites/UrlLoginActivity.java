@@ -184,8 +184,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
             }
         }
 
-        mIdentitySelector = new IdentitySelector(this, true,
-                false, true, false, true);
+        mIdentitySelector = new IdentitySelector(this, true,false, true);
         mIdentitySelector.registerLayout(findViewById(R.id.identitySelector));
         mIdentitySelector.setIdentityChangedListener((identityIndex, identityName) -> {
             if (storage.hasQuickPass()) {

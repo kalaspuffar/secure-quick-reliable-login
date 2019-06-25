@@ -52,8 +52,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
         setupErrorPopupWindow(getLayoutInflater());
         setupBasePopups(getLayoutInflater(), false);
 
-        mIdentitySelector = new IdentitySelector(this, true,
-                false, false, true, true);
+        mIdentitySelector = new IdentitySelector(this, true,false, true);
         mIdentitySelector.registerLayout(findViewById(R.id.identitySelector));
 
         findViewById(R.id.btnUseIdentity).setOnClickListener(v -> initiateScan());
