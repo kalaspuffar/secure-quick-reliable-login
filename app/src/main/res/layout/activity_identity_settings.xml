@@ -7,224 +7,240 @@
     android:id="@+id/identitySettingsActivityView"
     tools:context="org.ea.sqrl.activites.identity.IdentitySettingsActivity">
 
-    <include layout="@layout/fragment_identity_selector"
-        android:id="@+id/identitySelector"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-    <TextView
-        android:id="@+id/txtSettingsPasswordVerifyInSecondsHeadline"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="8dp"
-        android:text="@string/settings_password_verify"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/identitySelector" />
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/txtSettingsPasswordVerifyInSeconds"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:ems="10"
-        android:hint="@string/settings_password_verify"
-        android:importantForAutofill="no"
-        android:inputType="number"
-        android:nextFocusDown="@+id/txtSettingsQuickPassLength"
-        app:layout_constraintEnd_toStartOf="@id/imgSettingsPasswordVerifyInSecondsInfo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtSettingsPasswordVerifyInSecondsHeadline"
-        tools:ignore="TextFields" />
+            <include layout="@layout/fragment_identity_selector"
+                android:id="@+id/identitySelector"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/imgSettingsPasswordVerifyInSecondsInfo"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="16dp"
-        android:padding="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/txtSettingsPasswordVerifyInSeconds"
-        app:srcCompat="@drawable/ic_info_outline_24dp" />
+            <TextView
+                android:id="@+id/txtSettingsPasswordVerifyInSecondsHeadline"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="8dp"
+                android:text="@string/settings_password_verify"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/identitySelector" />
 
-    <TextView
-        android:id="@+id/txtSettingsQuickPassLengthHeadline"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/settings_hint_length"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imgSettingsPasswordVerifyInSecondsInfo" />
+            <EditText
+                android:id="@+id/txtSettingsPasswordVerifyInSeconds"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:ems="10"
+                android:hint="@string/settings_password_verify"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:nextFocusDown="@+id/txtSettingsQuickPassLength"
+                app:layout_constraintEnd_toStartOf="@id/imgSettingsPasswordVerifyInSecondsInfo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtSettingsPasswordVerifyInSecondsHeadline"
+                tools:ignore="TextFields" />
 
-    <EditText
-        android:id="@+id/txtSettingsQuickPassLength"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:ems="10"
-        android:hint="@string/settings_hint_length"
-        android:importantForAutofill="no"
-        android:inputType="number"
-        android:nextFocusDown="@+id/txtSettingsQuickPassTimeout"
-        app:layout_constraintEnd_toStartOf="@+id/imgSettingsQuickPassLengthInfo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtSettingsQuickPassLengthHeadline" />
+            <ImageView
+                android:id="@+id/imgSettingsPasswordVerifyInSecondsInfo"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="16dp"
+                android:padding="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/txtSettingsPasswordVerifyInSeconds"
+                app:srcCompat="@drawable/ic_info_outline_24dp" />
 
-    <ImageView
-        android:id="@+id/imgSettingsQuickPassLengthInfo"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="16dp"
-        android:padding="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/txtSettingsQuickPassLength"
-        app:srcCompat="@drawable/ic_info_outline_24dp" />
+            <TextView
+                android:id="@+id/txtSettingsQuickPassLengthHeadline"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/settings_hint_length"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/imgSettingsPasswordVerifyInSecondsInfo" />
 
-    <TextView
-        android:id="@+id/txtSettingsQuickPassTimeoutHeadline"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/settings_idle_timeout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtSettingsQuickPassLength" />
+            <EditText
+                android:id="@+id/txtSettingsQuickPassLength"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:ems="10"
+                android:hint="@string/settings_hint_length"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:nextFocusDown="@+id/txtSettingsQuickPassTimeout"
+                app:layout_constraintEnd_toStartOf="@+id/imgSettingsQuickPassLengthInfo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtSettingsQuickPassLengthHeadline" />
 
-    <EditText
-        android:id="@+id/txtSettingsQuickPassTimeout"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:ems="10"
-        android:hint="@string/settings_idle_timeout"
-        android:importantForAutofill="no"
-        android:inputType="number"
-        android:nextFocusDown="@+id/cbSettingsSQRLOnly"
-        app:layout_constraintEnd_toStartOf="@+id/imgSettingsQuickPassTimeoutInfo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtSettingsQuickPassTimeoutHeadline" />
+            <ImageView
+                android:id="@+id/imgSettingsQuickPassLengthInfo"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="16dp"
+                android:padding="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/txtSettingsQuickPassLength"
+                app:srcCompat="@drawable/ic_info_outline_24dp" />
 
-    <ImageView
-        android:id="@+id/imgSettingsQuickPassTimeoutInfo"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="16dp"
-        android:padding="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/txtSettingsQuickPassTimeout"
-        app:srcCompat="@drawable/ic_info_outline_24dp" />
+            <TextView
+                android:id="@+id/txtSettingsQuickPassTimeoutHeadline"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/settings_idle_timeout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtSettingsQuickPassLength" />
 
-    <CheckBox
-        android:id="@+id/cbSettingsSQRLOnly"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="@string/settings_sqrl_only"
-        android:nextFocusDown="@+id/cbSettingsNoBypass"
-        app:layout_constraintEnd_toStartOf="@+id/imgSettingsSQRLOnlyInfo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtSettingsQuickPassTimeout" />
+            <EditText
+                android:id="@+id/txtSettingsQuickPassTimeout"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:ems="10"
+                android:hint="@string/settings_idle_timeout"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:nextFocusDown="@+id/cbSettingsSQRLOnly"
+                app:layout_constraintEnd_toStartOf="@+id/imgSettingsQuickPassTimeoutInfo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtSettingsQuickPassTimeoutHeadline" />
 
-    <ImageView
-        android:id="@+id/imgSettingsSQRLOnlyInfo"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="16dp"
-        android:padding="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/cbSettingsSQRLOnly"
-        app:srcCompat="@drawable/ic_info_outline_24dp" />
+            <ImageView
+                android:id="@+id/imgSettingsQuickPassTimeoutInfo"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="16dp"
+                android:padding="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/txtSettingsQuickPassTimeout"
+                app:srcCompat="@drawable/ic_info_outline_24dp" />
 
-    <CheckBox
-        android:id="@+id/cbSettingsNoBypass"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="@string/settings_no_sqrl_bypass"
-        android:nextFocusDown="@+id/btnSettingsCancel"
-        app:layout_constraintEnd_toStartOf="@+id/imgSettingsNoBypassInfo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cbSettingsSQRLOnly" />
+            <CheckBox
+                android:id="@+id/cbSettingsSQRLOnly"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:text="@string/settings_sqrl_only"
+                android:nextFocusDown="@+id/cbSettingsNoBypass"
+                app:layout_constraintEnd_toStartOf="@+id/imgSettingsSQRLOnlyInfo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtSettingsQuickPassTimeout" />
 
-    <ImageView
-        android:id="@+id/imgSettingsNoBypassInfo"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="16dp"
-        android:padding="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/cbSettingsNoBypass"
-        app:srcCompat="@drawable/ic_info_outline_24dp" />
+            <ImageView
+                android:id="@+id/imgSettingsSQRLOnlyInfo"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="16dp"
+                android:padding="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/cbSettingsSQRLOnly"
+                app:srcCompat="@drawable/ic_info_outline_24dp" />
 
-    <Button
-        android:id="@+id/btnSettingsCancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/settings_cancel"
-        android:nextFocusDown="@+id/btnSettingsSave"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cbSettingsNoBypass"
-        android:layout_marginLeft="16dp" />
+            <CheckBox
+                android:id="@+id/cbSettingsNoBypass"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:text="@string/settings_no_sqrl_bypass"
+                android:nextFocusDown="@+id/btnSettingsCancel"
+                app:layout_constraintEnd_toStartOf="@+id/imgSettingsNoBypassInfo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cbSettingsSQRLOnly" />
 
-    <Button
-        android:id="@+id/btnSettingsSave"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/settings_save"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cbSettingsNoBypass"
-        android:layout_marginRight="16dp" />
+            <ImageView
+                android:id="@+id/imgSettingsNoBypassInfo"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="16dp"
+                android:padding="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/cbSettingsNoBypass"
+                app:srcCompat="@drawable/ic_info_outline_24dp" />
+
+            <Button
+                android:id="@+id/btnSettingsCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/settings_cancel"
+                android:nextFocusDown="@+id/btnSettingsSave"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cbSettingsNoBypass"
+                android:layout_marginLeft="16dp" />
+
+            <Button
+                android:id="@+id/btnSettingsSave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/settings_save"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cbSettingsNoBypass"
+                android:layout_marginRight="16dp" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
 
 </android.support.constraint.ConstraintLayout>
