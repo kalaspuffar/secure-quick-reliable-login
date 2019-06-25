@@ -49,8 +49,6 @@ public class IdentitySelector {
     private boolean mEnableIdentityChange;
     private boolean mHideOnSingleIdentity;
     private boolean mEnableIdentityOptions;
-    private boolean mShowLayoutBorder;
-    private boolean mTwoLinesCentered;
     private IdentityChangedListener mIdentityChangedListener = null;
     private Map<Long, String> mIdentities;
     private IdentityDBHelper mDbHelper = null;
@@ -67,17 +65,13 @@ public class IdentitySelector {
      * @param enableIdentityChange   Set to true if selecting another identity should be enabled, or to false otherwise.
      * @param enableIdentityOptions  Set to true if identity options should be enabled, or to false otherwise.
      *                               If enabled, an options icon will be displayed in the identity selector layout.
-     * @param showLayoutBorder       Set to true if a border should be drawn around the identity selector layout, false otherwise.
-     * @param twoLinesCentered       Set to true if the layout should use two lines and align its contents centered, false otherwise.
      * @param hideOnSingleIdentity   Set to true if the identity selector layout should be hidden if only one identity exists.
      */
-    public IdentitySelector(Context context, boolean enableIdentityChange, boolean enableIdentityOptions,
-                            boolean showLayoutBorder, boolean twoLinesCentered, boolean hideOnSingleIdentity) {
+    public IdentitySelector(Context context, boolean enableIdentityChange,
+                            boolean enableIdentityOptions, boolean hideOnSingleIdentity) {
         mContext = context;
         mEnableIdentityChange = enableIdentityChange;
         mEnableIdentityOptions = enableIdentityOptions;
-        mShowLayoutBorder = showLayoutBorder;
-        mTwoLinesCentered = twoLinesCentered;
         mHideOnSingleIdentity = hideOnSingleIdentity;
         mDbHelper = IdentityDBHelper.getInstance(mContext);
         mIdentities = mDbHelper.getIdentities();
@@ -99,20 +93,12 @@ public class IdentitySelector {
         mImgListIdentities =  mIdentitySelectorLayout.findViewById(R.id.imgListIdentities);
         mImgIdentityOptions =  mIdentitySelectorLayout.findViewById(R.id.imgIdentityOptions);
 
-        mImgListIdentities.setOnClickListener(mOnListIdentitiesClickListener);
-        mImgIdentityOptions.setOnClickListener(mOnIdentitySettingsClickListener);
+        if (mImgListIdentities != null) mImgListIdentities.setOnClickListener(mOnListIdentitiesClickListener);
+        if (mImgIdentityOptions != null) mImgIdentityOptions.setOnClickListener(mOnIdentitySettingsClickListener);
 
         mTxtSelectedIdentityHeadline.setText(
                 mTxtSelectedIdentityHeadline.getText() + ":"
         );
-
-        if (!mShowLayoutBorder) {
-            mIdentitySelectorLayout.setBackground(null);
-        }
-
-        if (mTwoLinesCentered) {
-            setTwoLinesCentered();
-        }
 
         update();
     }
@@ -146,14 +132,15 @@ public class IdentitySelector {
         }
 
         if (!mEnableIdentityChange || mIdentities.size() < 2) {
-            mImgListIdentities.setVisibility(View.GONE);
+            if (mImgListIdentities != null) mImgListIdentities.setVisibility(View.GONE);
             mTxtSelectedIdentity.setOnClickListener(null);
         } else {
-            mImgListIdentities.setVisibility(View.VISIBLE);
+            if (mImgListIdentities != null) mImgListIdentities.setVisibility(View.VISIBLE);
             mTxtSelectedIdentity.setOnClickListener(mOnListIdentitiesClickListener);
         }
 
-        mImgIdentityOptions.setVisibility( mEnableIdentityOptions ? View.VISIBLE : View.GONE);
+        if (mImgIdentityOptions != null)
+            mImgIdentityOptions.setVisibility( mEnableIdentityOptions ? View.VISIBLE : View.GONE);
     }
 
     /**
@@ -189,48 +176,6 @@ public class IdentitySelector {
             i++;
         }
         return -1;
-    }
-
-    private void setTwoLinesCentered() {
-        ConstraintSet constraintSet = new ConstraintSet();
-        constraintSet.clone((ConstraintLayout)mIdentitySelectorLayout);
-
-        ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
-        mTxtSelectedIdentityHeadline.setLayoutParams(lp);
-
-        constraintSet.connect(mTxtSelectedIdentityHeadline.getId(),ConstraintSet.LEFT,
-                mIdentitySelectorLayout.getId(), ConstraintSet.LEFT,8);
-        constraintSet.connect(mTxtSelectedIdentityHeadline.getId(),ConstraintSet.START,
-                mIdentitySelectorLayout.getId(), ConstraintSet.START,8);
-        constraintSet.connect(mTxtSelectedIdentityHeadline.getId(),ConstraintSet.RIGHT,
-                mIdentitySelectorLayout.getId(), ConstraintSet.RIGHT,8);
-        constraintSet.connect(mTxtSelectedIdentityHeadline.getId(),ConstraintSet.END,
-                mIdentitySelectorLayout.getId(), ConstraintSet.END,8);
-        mTxtSelectedIdentityHeadline.setGravity(Gravity.CENTER | Gravity.BOTTOM);
-
-
-        constraintSet.connect(mTxtSelectedIdentity.getId(),ConstraintSet.LEFT,
-                mIdentitySelectorLayout.getId(), ConstraintSet.LEFT,8);
-        constraintSet.connect(mTxtSelectedIdentity.getId(),ConstraintSet.START,
-                mIdentitySelectorLayout.getId(), ConstraintSet.START,8);
-        constraintSet.connect(mTxtSelectedIdentity.getId(),ConstraintSet.RIGHT,
-                mIdentitySelectorLayout.getId(), ConstraintSet.RIGHT,8);
-        constraintSet.connect(mTxtSelectedIdentity.getId(),ConstraintSet.END,
-                mIdentitySelectorLayout.getId(), ConstraintSet.END,8);
-        mTxtSelectedIdentity.setGravity(Gravity.CENTER | Gravity.BOTTOM);
-        constraintSet.connect(mTxtSelectedIdentity.getId(),ConstraintSet.TOP,
-                mTxtSelectedIdentityHeadline.getId(), ConstraintSet.BOTTOM,4);
-
-        constraintSet.applyTo((ConstraintLayout)mIdentitySelectorLayout);
-
-        mTxtSelectedIdentityHeadline.setTextColor(
-                mContext.getResources().getColor(android.R.color.primary_text_dark));
-
-        mTxtSelectedIdentity.setTextColor(
-                mContext.getResources().getColor(android.R.color.primary_text_dark));
-
-        mTxtSelectedIdentity.setTextSize(16);
     }
 
     private void removeIdentity() {
