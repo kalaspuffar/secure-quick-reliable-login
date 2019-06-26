@@ -30,7 +30,7 @@ import java.util.Map;
 
 public class CommunicationFlowHandler {
     private static final String TAG = "CommFlowHandler";
-    private int lastTIF = 0;
+    private int lastTIF;
 
     public enum Action {
         QUERY_WITH_SUK,
@@ -81,8 +81,10 @@ public class CommunicationFlowHandler {
         this.commHandler = CommunicationHandler.getInstance(currentActivity);
         this.currentActivity = currentActivity;
         this.handler = handler;
-        this.lastTIF = 0;
+        this.lastTIF = -1;
     }
+
+    // 4752-8598-3699-7697-1131-0271
 
     public static CommunicationFlowHandler getInstance(Activity currentActivity, Handler handler) {
         if(instance == null) {
@@ -138,6 +140,8 @@ public class CommunicationFlowHandler {
         }
     }
 
+    // 9974-7101-4159-6599-2490-1731
+
     public void handleNextAction() {
         if(commHandler.hasErrorMessage(shouldRunServer)) {
             txtErrorMessage.setText(commHandler.getErrorMessage(this.currentActivity, shouldRunServer));
@@ -185,13 +189,18 @@ public class CommunicationFlowHandler {
             case LOCK_ACCOUNT_CPS:
                 if(commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED))
                     throw new Exception(currentActivity.getString(R.string.communication_sqrl_disabled));
-                if(!commHandler.isIdentityKnown(false)) return;
+                if(!commHandler.isIdentityKnown(false))
+                    throw new Exception(currentActivity.getString(R.string.account_missing));
                 break;
             case UNLOCK_ACCOUNT:
             case UNLOCK_ACCOUNT_CPS:
-                if(!commHandler.isIdentityKnown(true)) return;
+                if(!commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED)) return;
+                if(!commHandler.isIdentityKnown(true))
+                    throw new Exception(currentActivity.getString(R.string.account_missing));
                 break;
         }
+
+        boolean identityKnown = commHandler.isIdentityKnown(false);
 
         commHandler.clearLastResponse();
 
@@ -209,14 +218,14 @@ public class CommunicationFlowHandler {
                 postQuery(commHandler, true, false);
                 break;
             case LOGIN:
-                if (commHandler.isIdentityKnown(false)) {
+                if (identityKnown) {
                     postLogin(commHandler, true, false);
                 } else if (!commHandler.isIdentityKnown(false)) {
                     postCreateAccount(commHandler, true, false);
                 }
                 break;
             case LOGIN_CPS:
-                if (commHandler.isIdentityKnown(false)) {
+                if (identityKnown) {
                     postLogin(commHandler, false, true);
                 } else if (!commHandler.isIdentityKnown(false)) {
                     postCreateAccount(commHandler, false,true);
@@ -229,14 +238,10 @@ public class CommunicationFlowHandler {
                 postRemoveAccount(commHandler, false, true);
                 break;
             case LOCK_ACCOUNT:
-                if(commHandler.isIdentityKnown(false)) {
-                    postDisableAccount(commHandler, true, false);
-                }
+                postDisableAccount(commHandler, true, false);
                 break;
             case LOCK_ACCOUNT_CPS:
-                if(commHandler.isIdentityKnown(false)) {
-                    postDisableAccount(commHandler, false, true);
-                }
+                postDisableAccount(commHandler, false, true);
                 break;
             case UNLOCK_ACCOUNT:
                 postEnableAccount(commHandler, true, false);
