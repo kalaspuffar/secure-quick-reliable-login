@@ -278,6 +278,6 @@
 <string name="helptext_quickpass_timeout">For protection, SQRL\'s QuickPass will be erased after some time. This time span is specified by the QuickPass timeout.\n\nAfter the timeout, SQRL will ask for the FULL password again on the next login.</string>
 <string name="helptext_request_sqrl_only_login">SQRL nutzende Webseiten affordern, alle nicht-SQRL Loginmethoden zu deaktivieren.</string>
 <string name="helptext_request_no_sqrl_bypass">SQRL nutzende Webseiten auffordern, alle Formen von \"Passwort vergessen\"-Accountwiederherstellung abzulehnen</string>
-<string name="language_finish">Finish</string>
+<string name="language_finnish">Finish</string>
 <string name="language_polish">Polish</string>
 </resources>

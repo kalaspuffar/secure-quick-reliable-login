@@ -43,7 +43,7 @@ public class LanguageActivity extends CommonBaseActivity {
         languages.add(new Language(R.string.language_czech, "cs"));
         languages.add(new Language(R.string.language_dutch, "nl"));
         languages.add(new Language(R.string.language_english, "en"));
-        languages.add(new Language(R.string.language_finish, "fi"));
+        languages.add(new Language(R.string.language_finnish, "fi"));
         languages.add(new Language(R.string.language_french, "fr"));
         languages.add(new Language(R.string.language_german, "de"));
         languages.add(new Language(R.string.language_hebrew, "he"));
