@@ -79,8 +79,7 @@ public class IdentitySettingsActivity extends BaseActivity {
 
         });
 
-        mIdentitySelector = new IdentitySelector(this, true,
-                false, true, false, true);
+        mIdentitySelector = new IdentitySelector(this, true, false, true);
         mIdentitySelector.registerLayout(findViewById(R.id.identitySelector));
         mIdentitySelector.setIdentityChangedListener((identityIndex, identityName) -> update() );
 
