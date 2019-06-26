@@ -52,7 +52,7 @@
 <string name="change_password_retyped_password_do_not_match">Det nya lösenordet är inte samma som sin återupprepning</string>
 <string name="title_activity_settings">SQRL - Inställningar</string>
 <string name="settings_hint_length">QuickPass längd (antal tecken)</string>
-<string name="settings_password_verify">tid för lösenord verifiering (sekunder)</string>
+<string name="settings_password_verify">Tid för lösenord verifiering (sekunder)</string>
 <string name="settings_idle_timeout">ta bort snabb lösenord efter (minuter)</string>
 <string name="settings_sqrl_only">Tillåt bara SQRL login</string>
 <string name="settings_no_sqrl_bypass">Tillåt ingen SQRL bypass</string>
@@ -61,7 +61,7 @@
 <string name="settings_fragment_save">Spara</string>
 <string name="settings_hint_length_not_number">QuickPass längd är inte en siffra</string>
 <string name="settings_idle_timeout_not_number">tid för lösenord verifiering är inte en siffra</string>
-<string name="settings_password_verify_not_number">tid för lösenord verifiering är inte en siffra</string>
+<string name="settings_password_verify_not_number">Tid för lösenord verifiering är inte en siffra</string>
 <string name="settings_hint_length_to_large">QuickPass längd är för lång. (0-255)</string>
 <string name="save_settings_password">Lösenord</string>
 <string name="save_identity_to">Spara identitet till</string>
@@ -271,13 +271,13 @@
 <string name="language_hindi">Indiska</string>
 <string name="title_set_password">SQRL - Sätt lösenord</string>
 <string name="button_set_password">Sätt lösenord</string>
-<string name="set_password_import_desc">Since the identity being imported has no password set, it is required for you to provide the rescue code given to you at identity creation. You will then chose a new password, which your newly imported identity will be secured with.</string>
+<string name="set_password_import_desc">Den importerade identiteten hade inget lösenord satt så den är säkrad med din återställningskod som ni fick vid skapandet av identiteten. Du behöver välja ett nytt lösenord som används för att säkra identiteten på denna enhet.</string>
 <string name="title_activity_identity_settings">SQRL - Identitetsinställningar</string>
-<string name="helptext_password_verify_seconds">Your identity\'s security can be improved by lengthening the time required to verify your full SQRL password. There is NO KNOWN WAY for any attacker, spy agency or government to dramatically speed up this verification process. And since your shorter QuickPass can be used after you have entered your password, you only need to wait once. But someone trying to guess your password needs to wait EVERY TIME they guess.\n\nA five-second verification duration is recommended, but you are free to choose whatever seems best for your convenience and security.</string>
-<string name="helptext_quickpass_length">To encourage the use of a longer and more secure access password, SQRL can be configured to only require that your FULL password be provided when it is first used and periodically after that. Once the full password has been entered, for a specified period of time, SQRL may only require the first few characters of your password (called a \"QuickPass\") just to prove it is still you. (How long the \"QuickPass\" is active for is called the \"QuickPass timeout and can also be set in the identity settings). \n\nYou chose between a longer and safer QuickPass or a shorter and more convenient one. What makes this trade-off acceptable is that the QuickPass MUST be entered correctly on the first try or the full password will be required again. \n\nFour characters are the recommended length. But you may set it as low as 1 and as long as your full password.</string>
-<string name="helptext_quickpass_timeout">For protection, SQRL\'s QuickPass will be erased after some time. This time span is specified by the QuickPass timeout.\n\nAfter the timeout, SQRL will ask for the FULL password again on the next login.</string>
-<string name="helptext_request_sqrl_only_login">Request SQRL-enabled websites to disable all other non-SQRL login methods for maximum security.</string>
-<string name="helptext_request_no_sqrl_bypass">Request SQRL-enabled websites to refuse any and all forms of \"I forgot my password\" account recovery.</string>
-<string name="language_finnish">Finska</string>
+<string name="helptext_password_verify_seconds">Hur säker din identitet är på din enhet kan ändras genom att avgöra hur lång tid det tar att öppna den med ditt fullständiga lösenord. Det finns INGEN möjlighet för en som vill knäcka ditt lösenord att snabba på denna process. Och då ett kortare QuickPass kan användas för inloggning behöver du bara vänta en gång. Men någon som försöker gissa ditt lösenord behöver vänta för VARJE gissning.\n\nEn fem sekunders verifieringstid är rekommenderat, men du kan välja fritt vad som känns rätt för din säkerhet och bekvämlighet.</string>
+<string name="helptext_quickpass_length">Då ett längre och säkrare lösenord är att rekommendera kan SQRL konfigureras at bara kräva ditt FULLSTÄNDIGA lösenord första gången du loggar in och sedan bara då och då. När ditt fullständiga lösenord har angets, och en tid efter det, kan SQRL bara kräva att ni anger några av de första tecknen av ditt lösenord (kallat \"QuickPass\") för att bevisa att det fortfarande är du. (Hur länge \"QuickPass\" är aktivt är kallat \"Tid för lösenord verifiering\" och kan sättas under inställningar)\n\nDu väljer mellan ett längre och säkrare QuickPass eller ett kortare och mer bekvämt. Vad som gör denna kompromiss acceptabel är att QuickPass måste vara rätt på första försöket annars krävs det fullständiga lösenordet igen.\n\nFyra tecken är rekommenderad längd. Men du kan sätta detta värde så lågt som ett tecken eller så långt som ditt lösenords längd.</string>
+<string name="helptext_quickpass_timeout">För din säkerhet kommer SQRL\'s QuickPass function att löpa ut. Tiden det tar innan den återställs anges här.\n\nEfter QuickPass har återställts kommer SQRL be om ditt fullständiga lösenord igen vid nästa inloggning.</string>
+<string name="helptext_request_sqrl_only_login">Kräv att hemsidor som använder SQRL skall deaktivera alla andra inloggningsalternativ för maximal säkerhet.</string>
+<string name="helptext_request_no_sqrl_bypass">Kräv att hemsidor som använder SQRL skall deaktivera alla former av \"Jag har glömt mitt lösenord\" för att återställa kontot.</string>
 <string name="language_polish">Polska</string>
+<string name="language_finnish">Finska</string>
 </resources>
