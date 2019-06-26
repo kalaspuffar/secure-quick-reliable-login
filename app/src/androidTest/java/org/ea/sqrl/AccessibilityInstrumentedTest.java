@@ -27,7 +27,7 @@ import org.ea.sqrl.activites.create.RekeyVerifyActivity;
 import org.ea.sqrl.activites.create.RescueCodeEnterActivity;
 import org.ea.sqrl.activites.create.RescueCodeShowActivity;
 import org.ea.sqrl.activites.create.SaveIdentityActivity;
-import org.ea.sqrl.activites.SettingsActivity;
+import org.ea.sqrl.activites.identity.IdentitySettingsActivity;
 import org.ea.sqrl.activites.identity.ExportOptionsActivity;
 import org.ea.sqrl.activites.identity.ImportActivity;
 import org.ea.sqrl.activites.identity.RenameActivity;
@@ -99,8 +99,8 @@ public class AccessibilityInstrumentedTest {
             new ActivityTestRule<>(SaveIdentityActivity.class, true, false);
 
     @Rule
-    public ActivityTestRule<SettingsActivity> settingsActivityRule =
-            new ActivityTestRule<>(SettingsActivity.class, true, false);
+    public ActivityTestRule<IdentitySettingsActivity> identitySettingsActivityRule =
+            new ActivityTestRule<>(IdentitySettingsActivity.class, true, false);
 
     @Rule
     public ActivityTestRule<ShowIdentityActivity> showIdentityActivityRule =
@@ -304,14 +304,14 @@ public class AccessibilityInstrumentedTest {
     }
 
     @Test
-    public void testSettingsActivityAccessibility() throws Exception {
+    public void testIdentitySettingsActivityAccessibility() throws Exception {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
-        Intent intent = new Intent(targetContext, SettingsActivity.class);
-        SettingsActivity a = settingsActivityRule.launchActivity(intent);
+        Intent intent = new Intent(targetContext, IdentitySettingsActivity.class);
+        IdentitySettingsActivity a = identitySettingsActivityRule.launchActivity(intent);
         unlockScreen(a);
 
-        onView(withId(R.id.settingsActivityView)).perform(click());
+        onView(withId(R.id.identitySettingsActivityView)).perform(click());
     }
 
     @Test
