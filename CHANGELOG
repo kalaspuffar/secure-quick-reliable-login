@@ -1,10 +1,18 @@
-Version 1.1.1
+Version 1.2.0
+
+Feature
+* Polish and Finish translations
+* Information popup information for settings.
 
 Bugfix
 
 * Fix to handle clearing of previous data.
 * Landscape selector now working for URL layout.
 * Exclude login activity from history and recent apps.
+
+Enhancement
+* Improved selection of identities.
+
 
 Version 1.1.0
 

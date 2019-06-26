@@ -269,4 +269,15 @@
 <string name="button_identity_options">Identitets hantering</string>
 <string name="identity">Identitet</string>
 <string name="language_hindi">Indiska</string>
+<string name="title_set_password">SQRL - Sätt lösenord</string>
+<string name="button_set_password">Sätt lösenord</string>
+<string name="set_password_import_desc">Since the identity being imported has no password set, it is required for you to provide the rescue code given to you at identity creation. You will then chose a new password, which your newly imported identity will be secured with.</string>
+<string name="title_activity_identity_settings">SQRL - Identitetsinställningar</string>
+<string name="helptext_password_verify_seconds">Your identity\'s security can be improved by lengthening the time required to verify your full SQRL password. There is NO KNOWN WAY for any attacker, spy agency or government to dramatically speed up this verification process. And since your shorter QuickPass can be used after you have entered your password, you only need to wait once. But someone trying to guess your password needs to wait EVERY TIME they guess.\n\nA five-second verification duration is recommended, but you are free to choose whatever seems best for your convenience and security.</string>
+<string name="helptext_quickpass_length">To encourage the use of a longer and more secure access password, SQRL can be configured to only require that your FULL password be provided when it is first used and periodically after that. Once the full password has been entered, for a specified period of time, SQRL may only require the first few characters of your password (called a \"QuickPass\") just to prove it is still you. (How long the \"QuickPass\" is active for is called the \"QuickPass timeout and can also be set in the identity settings). \n\nYou chose between a longer and safer QuickPass or a shorter and more convenient one. What makes this trade-off acceptable is that the QuickPass MUST be entered correctly on the first try or the full password will be required again. \n\nFour characters are the recommended length. But you may set it as low as 1 and as long as your full password.</string>
+<string name="helptext_quickpass_timeout">For protection, SQRL\'s QuickPass will be erased after some time. This time span is specified by the QuickPass timeout.\n\nAfter the timeout, SQRL will ask for the FULL password again on the next login.</string>
+<string name="helptext_request_sqrl_only_login">Request SQRL-enabled websites to disable all other non-SQRL login methods for maximum security.</string>
+<string name="helptext_request_no_sqrl_bypass">Request SQRL-enabled websites to refuse any and all forms of \"I forgot my password\" account recovery.</string>
+<string name="language_finish">Finska</string>
+<string name="language_polish">Polska</string>
 </resources>
