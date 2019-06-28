@@ -42,7 +42,10 @@ public class DisableAccountActivity extends BaseActivity {
                     });
                     return;
                 }
-                txtDisablePassword.setText("");
+
+                handler.post(() -> {
+                    txtDisablePassword.setText("");
+                });
 
                 if(communicationFlowHandler.isUrlBasedLogin()) {
                     communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);

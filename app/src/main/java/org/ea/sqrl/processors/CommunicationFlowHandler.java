@@ -185,15 +185,15 @@ public class CommunicationFlowHandler {
             case LOCK_ACCOUNT_CPS:
                 if(commHandler.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED))
                     throw new Exception(currentActivity.getString(R.string.communication_sqrl_disabled));
-                if(!commHandler.isIdentityKnown(false)) return;
+                if(!commHandler.isIdentityKnown(false))
+                    throw new Exception(currentActivity.getString(R.string.account_missing));
                 break;
             case UNLOCK_ACCOUNT:
             case UNLOCK_ACCOUNT_CPS:
-                if(!commHandler.isIdentityKnown(true)) return;
+                if(!commHandler.isIdentityKnown(true))
+                    throw new Exception(currentActivity.getString(R.string.account_missing));
                 break;
         }
-
-        commHandler.clearLastResponse();
 
         switch (a) {
             case QUERY_WITH_SUK:
@@ -229,14 +229,10 @@ public class CommunicationFlowHandler {
                 postRemoveAccount(commHandler, false, true);
                 break;
             case LOCK_ACCOUNT:
-                if(commHandler.isIdentityKnown(false)) {
-                    postDisableAccount(commHandler, true, false);
-                }
+                postDisableAccount(commHandler, true, false);
                 break;
             case LOCK_ACCOUNT_CPS:
-                if(commHandler.isIdentityKnown(false)) {
-                    postDisableAccount(commHandler, false, true);
-                }
+                postDisableAccount(commHandler, false, true);
                 break;
             case UNLOCK_ACCOUNT:
                 postEnableAccount(commHandler, true, false);
@@ -261,21 +257,6 @@ public class CommunicationFlowHandler {
             lastTIF = commHandler.getTif();
             commHandler.clearLastResponse();
         }
-
-        /*
-        switch (a) {
-            case QUERY_WITH_SUK:
-            case QUERY_WITHOUT_SUK:
-            case QUERY_WITH_SUK_QRCODE:
-            case QUERY_WITHOUT_SUK_QRCODE:
-                if(!hasRetried && commHandler.isTIFBitSet(CommunicationHandler.TIF_TRANSIENT_ERROR)) {
-                    actionStack.push(a);
-                    commHandler.clearLastResponse();
-                    hasRetried = true;
-                }
-                break;
-        }
-        */
 
         if(commHandler.hasAskQuestion() && this.actionStack.isEmpty()) {
             this.actionStack.add(Action.QUERY_WITHOUT_SUK);
