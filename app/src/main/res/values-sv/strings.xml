@@ -86,8 +86,8 @@
 <string name="progress_title">Arbetar</string>
 <string name="login_identity_password">Lösenord</string>
 <string name="main_identity_removed">Identitet borttagen</string>
-<string name="button_lock_account">Lås konto</string>
-<string name="button_unlock_account">Lås upp konto</string>
+<string name="button_lock_account">Inaktivera konto</string>
+<string name="button_unlock_account">Aktivera konto</string>
 <string name="button_remove_account">Ta bort konto</string>
 <string name="login_optional_options">Andra funktioner</string>
 <string name="button_login_options">Andra funktioner</string>

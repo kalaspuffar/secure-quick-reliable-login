@@ -86,8 +86,8 @@
 <string name="progress_title">עובדים</string>
 <string name="login_identity_password">סיסמה</string>
 <string name="main_identity_removed">Identity removed</string>
-<string name="button_lock_account">Lock account</string>
-<string name="button_unlock_account">Unlock account</string>
+<string name="button_lock_account">Disable account</string>
+<string name="button_unlock_account">Enable account</string>
 <string name="button_remove_account">למחוק חשבון</string>
 <string name="login_optional_options">Other options</string>
 <string name="button_login_options">Options</string>
