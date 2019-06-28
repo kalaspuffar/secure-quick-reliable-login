@@ -26,7 +26,7 @@ public class DisableAccountActivity extends BaseActivity {
 
         final EditText txtDisablePassword = findViewById(R.id.txtDisablePassword);
         findViewById(R.id.btnDisableAccount).setOnClickListener(v -> {
-            showProgressPopup();
+            handler.post(() -> showProgressPopup());
 
             new Thread(() -> {
                 boolean decryptionOk = storage.decryptIdentityKey(txtDisablePassword.getText().toString(), entropyHarvester, false);
@@ -43,9 +43,7 @@ public class DisableAccountActivity extends BaseActivity {
                     return;
                 }
 
-                handler.post(() -> {
-                    txtDisablePassword.setText("");
-                });
+                handler.post(() -> txtDisablePassword.setText(""));
 
                 if(communicationFlowHandler.isUrlBasedLogin()) {
                     communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
@@ -59,7 +57,11 @@ public class DisableAccountActivity extends BaseActivity {
                     storage.clear();
                     handler.post(() -> {
                         hideProgressPopup();
-                        closeActivity();
+                        showInfoMessage(
+                                R.string.disable_account_title,
+                                R.string.disable_account_successful,
+                                () -> closeActivity()
+                        );
                     });
                 });
 

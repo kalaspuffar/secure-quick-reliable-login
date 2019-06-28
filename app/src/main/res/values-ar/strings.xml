@@ -20,7 +20,7 @@
 <string name="communication_client_failure">Client failure: Some information in the query didn\'t make sense to the server so it won\'t handle this request.</string>
 <string name="communication_command_failed">Command failed: The web server has encountered a problem successfully processing the query. </string>
 <string name="communication_function_not_supported">Function(s) not supported: Requested one or more SQRL functions, that the server does not currently support.</string>
-<string name="communication_sqrl_disabled">SQRL authentication for this identity has previously been locked. To use this identity it needs to be unlocked using rescue code.</string>
+<string name="communication_sqrl_disabled">SQRL authentication for this identity has previously been disabled. To use this identity it needs to be enabled using rescue code.</string>
 <string name="communication_transient_error">Transient error: The server indicates that the signature(s) are correct, but something about the query prevented the command from completing.</string>
 <string name="title_activity_main">SQRL - الرئيسية</string>
 <string name="button_import_identity">استيراد</string>
@@ -279,5 +279,9 @@
 <string name="helptext_request_sqrl_only_login">Request SQRL-enabled websites to disable all other non-SQRL login methods for maximum security.</string>
 <string name="helptext_request_no_sqrl_bypass">Request SQRL-enabled websites to refuse any and all forms of \"I forgot my password\" account recovery.</string>
 <string name="language_polish">Polish</string>
-<string name="language_finnish">Finnish\n</string>
+<string name="language_finnish">Finnish</string>
+<string name="account_missing">No account found on the server</string>
+<string name="disable_account_successful">The account is disabled</string>
+<string name="enable_account_successful">The account is enabled</string>
+<string name="remove_account_successful">The account is removed</string>
 </resources>
