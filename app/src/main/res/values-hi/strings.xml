@@ -279,6 +279,9 @@
 <string name="helptext_request_sqrl_only_login">Request SQRL-enabled websites to disable all other non-SQRL login methods for maximum security.</string>
 <string name="helptext_request_no_sqrl_bypass">Request SQRL-enabled websites to refuse any and all forms of \"I forgot my password\" account recovery.</string>
 <string name="language_polish">Polish</string>
-<string name="language_finnish">Finnish\n</string>
+<string name="language_finnish">Finnish</string>
 <string name="account_missing">No account found on the server</string>
+<string name="disable_account_successful">The account is disabled</string>
+<string name="enable_account_successful">The account is enabled</string>
+<string name="remove_account_successful">The account is removed</string>
 </resources>

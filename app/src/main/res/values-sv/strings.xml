@@ -20,7 +20,7 @@
 <string name="communication_client_failure">Klient fel: Någon information som skickades från Android applikationen kunde inte tolkas av hemsidan. Sidan kommer inte hantera denna fråga.</string>
 <string name="communication_command_failed">Felaktig fråga: Hemsidan har stött på ett problem och kommer inte genomföra åtgärd</string>
 <string name="communication_function_not_supported">Funktion inte tillgänglig: Funktionen som SQRL försökte genomföra kan inte genomföras mot denna hemsida då de inte har stöd ännu.</string>
-<string name="communication_sqrl_disabled">SQRL autentisering för denna identitet har tidigare låsts. För att använda denna identitet igen krävs att identiteten låses upp genom att ange återställningskoden.</string>
+<string name="communication_sqrl_disabled">SQRL autentisering för denna identitet har tidigare inaktiverat. För att använda denna identitet igen krävs att identiteten aktiveras genom att ange återställningskoden.</string>
 <string name="communication_transient_error">Kortvarigt fel: Hemsidan gav indikation om att all information var korrekt, men något hindrade operationen att genomföras. Vargod försök igen.</string>
 <string name="title_activity_main">SQRL - Huvudsida</string>
 <string name="button_import_identity">Importera identitet</string>
@@ -86,15 +86,15 @@
 <string name="progress_title">Arbetar</string>
 <string name="login_identity_password">Lösenord</string>
 <string name="main_identity_removed">Identitet borttagen</string>
-<string name="button_lock_account">Lås konto</string>
-<string name="button_unlock_account">Lås upp konto</string>
+<string name="button_lock_account">Inaktivera konto</string>
+<string name="button_unlock_account">Aktivera konto</string>
 <string name="button_remove_account">Ta bort konto</string>
 <string name="login_optional_options">Andra funktioner</string>
 <string name="button_login_options">Andra funktioner</string>
-<string name="disable_account_title">Lås konto</string>
-<string name="button_disable_account">Lås</string>
-<string name="enable_account_title">Lås upp konto</string>
-<string name="button_enable_account_enable">Lås upp</string>
+<string name="disable_account_title">Inactivera konto</string>
+<string name="button_disable_account">Inactivera</string>
+<string name="enable_account_title">Aktivera konto</string>
+<string name="button_enable_account_enable">Aktivera</string>
 <string name="remove_account_title">Remove account</string>
 <string name="button_remove_account_remove">Remove</string>
 <string name="button_export_show_identity">Visa identitet</string>
@@ -276,9 +276,12 @@
 <string name="helptext_password_verify_seconds">Hur säker din identitet är på din enhet kan ändras genom att avgöra hur lång tid det tar att öppna den med ditt fullständiga lösenord. Det finns INGEN möjlighet för en som vill knäcka ditt lösenord att snabba på denna process. Och då ett kortare QuickPass kan användas för inloggning behöver du bara vänta en gång. Men någon som försöker gissa ditt lösenord behöver vänta för VARJE gissning.\n\nEn fem sekunders verifieringstid är rekommenderat, men du kan välja fritt vad som känns rätt för din säkerhet och bekvämlighet.</string>
 <string name="helptext_quickpass_length">Då ett längre och säkrare lösenord är att rekommendera kan SQRL konfigureras at bara kräva ditt FULLSTÄNDIGA lösenord första gången du loggar in och sedan bara då och då. När ditt fullständiga lösenord har angets, och en tid efter det, kan SQRL bara kräva att ni anger några av de första tecknen av ditt lösenord (kallat \"QuickPass\") för att bevisa att det fortfarande är du. (Hur länge \"QuickPass\" är aktivt är kallat \"Tid för lösenord verifiering\" och kan sättas under inställningar)\n\nDu väljer mellan ett längre och säkrare QuickPass eller ett kortare och mer bekvämt. Vad som gör denna kompromiss acceptabel är att QuickPass måste vara rätt på första försöket annars krävs det fullständiga lösenordet igen.\n\nFyra tecken är rekommenderad längd. Men du kan sätta detta värde så lågt som ett tecken eller så långt som ditt lösenords längd.</string>
 <string name="helptext_quickpass_timeout">För din säkerhet kommer SQRL\'s QuickPass function att löpa ut. Tiden det tar innan den återställs anges här.\n\nEfter QuickPass har återställts kommer SQRL be om ditt fullständiga lösenord igen vid nästa inloggning.</string>
-<string name="helptext_request_sqrl_only_login">Kräv att hemsidor som använder SQRL skall deaktivera alla andra inloggningsalternativ för maximal säkerhet.</string>
-<string name="helptext_request_no_sqrl_bypass">Kräv att hemsidor som använder SQRL skall deaktivera alla former av \"Jag har glömt mitt lösenord\" för att återställa kontot.</string>
+<string name="helptext_request_sqrl_only_login">Kräv att hemsidor som använder SQRL skall inaktivera alla andra inloggningsalternativ för maximal säkerhet.</string>
+<string name="helptext_request_no_sqrl_bypass">Kräv att hemsidor som använder SQRL skall inaktivera alla former av \"Jag har glömt mitt lösenord\" för att återställa kontot.</string>
 <string name="language_polish">Polska</string>
 <string name="language_finnish">Finska</string>
 <string name="account_missing">Inget konto funnet hos hemsidan</string>
+<string name="disable_account_successful">Kontot är inaktivt</string>
+<string name="enable_account_successful">Kontot är aktivt</string>
+<string name="remove_account_successful">Kontot är borttaget</string>
 </resources>

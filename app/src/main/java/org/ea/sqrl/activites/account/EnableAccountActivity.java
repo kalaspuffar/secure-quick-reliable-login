@@ -63,9 +63,7 @@ public class EnableAccountActivity extends BaseActivity {
                     storage.clear();
                     return;
                 } finally {
-                    handler.post(() -> {
-                        rescueCodeInputHelper.clearForm();
-                    });
+                    handler.post(() -> rescueCodeInputHelper.clearForm());
                 }
 
                 if(communicationFlowHandler.isUrlBasedLogin()) {
@@ -80,7 +78,11 @@ public class EnableAccountActivity extends BaseActivity {
                     storage.clear();
                     handler.post(() -> {
                         hideProgressPopup();
-                        closeActivity();
+                        showInfoMessage(
+                                R.string.enable_account_title,
+                                R.string.enable_account_successful,
+                                () -> closeActivity()
+                        );
                     });
                 });
 

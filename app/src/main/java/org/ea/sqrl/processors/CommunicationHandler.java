@@ -396,10 +396,11 @@ public class CommunicationHandler {
 
     private void setResponseData(String responseData) throws Exception {
         this.response = new String(EncryptionUtils.decodeUrlSafe(responseData));
+        this.lastResponse = new HashMap<>();
         for(String param : response.split("\r\n")) {
             int firstEqualSign = param.indexOf("=");
             if(firstEqualSign == -1) continue;
-            lastResponse.put(param.substring(0, firstEqualSign), param.substring(firstEqualSign+1));
+            this.lastResponse.put(param.substring(0, firstEqualSign), param.substring(firstEqualSign+1));
         }
     }
 
@@ -559,7 +560,8 @@ public class CommunicationHandler {
     }
 
     public boolean hasAskQuestion() {
-        return this.lastResponse.containsKey("ask");
+        return this.lastResponse.containsKey("ask") &&
+                !this.lastResponse.get("ask").isEmpty();
     }
 
     public void showAskDialog() {

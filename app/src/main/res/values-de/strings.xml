@@ -281,4 +281,7 @@
 <string name="language_polish">Polnisch</string>
 <string name="language_finnish">Finnisch</string>
 <string name="account_missing">Kein Konto am Server gefunden</string>
+<string name="disable_account_successful">The account is disabled</string>
+<string name="enable_account_successful">The account is enabled</string>
+<string name="remove_account_successful">The account is removed</string>
 </resources>

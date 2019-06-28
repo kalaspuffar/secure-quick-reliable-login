@@ -1,5 +1,6 @@
 package org.ea.sqrl.activites.base;
 
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
@@ -50,7 +51,7 @@ public class CommonBaseActivity extends AppCompatActivity {
         }
     }
 
-    protected void showInfoMessage(String title, String message) {
+    protected void showInfoMessage(String title, String message, Runnable done) {
         if (message == null) return;
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -58,6 +59,7 @@ public class CommonBaseActivity extends AppCompatActivity {
         alertDialogBuilder
                 .setMessage(message)
                 .setIcon(R.drawable.ic_info_accent_24dp)
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> done.run())
                 .create()
                 .show();
     }
@@ -65,7 +67,16 @@ public class CommonBaseActivity extends AppCompatActivity {
     protected void showInfoMessage(@StringRes int title, @StringRes int message) {
         showInfoMessage(
                 this.getResources().getString(title),
-                this.getResources().getString(message)
+                this.getResources().getString(message),
+                () -> {}
+        );
+    }
+
+    protected void showInfoMessage(@StringRes int title, @StringRes int message, Runnable done) {
+        showInfoMessage(
+                this.getResources().getString(title),
+                this.getResources().getString(message),
+                done
         );
     }
 }

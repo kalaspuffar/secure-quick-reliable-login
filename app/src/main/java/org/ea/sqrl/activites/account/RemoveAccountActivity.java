@@ -82,7 +82,11 @@ public class RemoveAccountActivity extends BaseActivity {
                     storage.clear();
                     handler.post(() -> {
                         hideProgressPopup();
-                        closeActivity();
+                        showInfoMessage(
+                                R.string.remove_account_title,
+                                R.string.remove_account_successful,
+                                () -> closeActivity()
+                        );
                     });
                 });
 
