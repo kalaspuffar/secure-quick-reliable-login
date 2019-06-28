@@ -280,4 +280,5 @@
 <string name="helptext_request_no_sqrl_bypass">Request SQRL-enabled websites to refuse any and all forms of \"I forgot my password\" account recovery.</string>
 <string name="language_polish">Polish</string>
 <string name="language_finnish">Finnish\n</string>
+<string name="account_missing">No account found on the server</string>
 </resources>

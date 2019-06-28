@@ -280,4 +280,5 @@
 <string name="helptext_request_no_sqrl_bypass">SQRL nutzende Webseiten auffordern, alle Formen von \"Passwort vergessen\"-Accountwiederherstellung abzulehnen</string>
 <string name="language_polish">Polnisch</string>
 <string name="language_finnish">Finnisch</string>
+<string name="account_missing">Kein Konto am Server gefunden</string>
 </resources>

@@ -280,4 +280,5 @@
 <string name="helptext_request_no_sqrl_bypass">Kräv att hemsidor som använder SQRL skall deaktivera alla former av \"Jag har glömt mitt lösenord\" för att återställa kontot.</string>
 <string name="language_polish">Polska</string>
 <string name="language_finnish">Finska</string>
+<string name="account_missing">Inget konto funnet hos hemsidan</string>
 </resources>
