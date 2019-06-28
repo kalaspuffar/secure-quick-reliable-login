@@ -9,6 +9,8 @@ Bugfix
 * Fix to handle clearing of previous data.
 * Landscape selector now working for URL layout.
 * Exclude login activity from history and recent apps.
+* Handle empty ask question.
+* Fixes for contrast in show rescue code dialog.
 
 Enhancement
 * Improved selection of identities.
