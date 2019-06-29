@@ -8,9 +8,6 @@ import org.ea.sqrl.activites.base.BaseActivity;
 
 public class ImportOptionsActivity extends BaseActivity {
     private static final String TAG = "ImportOptionsActivity";
-    public static final String EXTRA_IMPORT_METHOD = "ImportMethod";
-    public static final String IMPORT_METHOD_QRCODE = "QR_CODE";
-    public static final String IMPORT_METHOD_FILE = "FILE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,13 +19,13 @@ public class ImportOptionsActivity extends BaseActivity {
 
         findViewById(R.id.btnScanQRCode).setOnClickListener(v -> {
             Intent importIdentityIntent = new Intent(this, ImportActivity.class);
-            importIdentityIntent.putExtra(EXTRA_IMPORT_METHOD, IMPORT_METHOD_QRCODE);
+            importIdentityIntent.putExtra(ImportActivity.EXTRA_IMPORT_METHOD, ImportActivity.IMPORT_METHOD_QR_CODE);
             startActivity(importIdentityIntent);
         });
 
         findViewById(R.id.btnPickIdentityFile).setOnClickListener(v -> {
             Intent importIdentityIntent = new Intent(this, ImportActivity.class);
-            importIdentityIntent.putExtra(EXTRA_IMPORT_METHOD, IMPORT_METHOD_FILE);
+            importIdentityIntent.putExtra(ImportActivity.EXTRA_IMPORT_METHOD, ImportActivity.IMPORT_METHOD_FILE);
             startActivity(importIdentityIntent);
         });
 
