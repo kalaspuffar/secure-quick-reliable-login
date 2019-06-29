@@ -133,6 +133,11 @@ public class BaseActivity extends CommonBaseActivity {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
             menu.findItem(R.id.action_language).setVisible(false);
         }
+
+        if (this instanceof IdentityManagementActivity) {
+            menu.findItem(R.id.action_identity_management).setVisible(false);
+        }
+
         return true;
     }
 
@@ -145,7 +150,7 @@ public class BaseActivity extends CommonBaseActivity {
             case R.id.action_language:
                 startActivity(new Intent(this, LanguageActivity.class));
                 return true;
-            case R.id.action_advanced_options:
+            case R.id.action_identity_management:
                 startActivity(new Intent(this, IdentityManagementActivity.class));
                 return true;
             case R.id.action_about:

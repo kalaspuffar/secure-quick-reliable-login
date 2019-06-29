@@ -14,7 +14,7 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_advanced_options"
+        android:id="@+id/action_identity_management"
         android:orderInCategory="90"
         android:title="@string/identity_management"
         app:showAsAction="never" />
