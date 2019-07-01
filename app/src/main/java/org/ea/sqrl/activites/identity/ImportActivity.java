@@ -1,8 +1,6 @@
 package org.ea.sqrl.activites.identity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -28,6 +26,11 @@ import java.util.Arrays;
 public class ImportActivity extends BaseActivity {
     private static final String TAG = "ImportActivity";
     private static final int PICK_FILE_REQUEST_CODE = 1;
+    public static final String EXTRA_IMPORT_METHOD = "import_method";
+    public static final String IMPORT_METHOD_QR_CODE = "qr_code";
+    public static final String IMPORT_METHOD_FORWARDED_QR_CODE = "forwarded_qr_code";
+    public static final String IMPORT_METHOD_FILE = "file";
+    public static final String EXTRA_FORWARDED_QR_CODE = "forwarded_qr_code";
 
     private boolean firstIdentity = false;
     private ConstraintLayout rootView = null;
@@ -135,15 +138,15 @@ public class ImportActivity extends BaseActivity {
             return;
         }
 
-        String importMethod = intent.getStringExtra(ImportOptionsActivity.EXTRA_IMPORT_METHOD);
+        String importMethod = intent.getStringExtra(EXTRA_IMPORT_METHOD);
         if (importMethod == null) return;
 
-        if (importMethod.equals(ImportOptionsActivity.IMPORT_METHOD_FILE)) {
+        if (importMethod.equals(IMPORT_METHOD_FILE)) {
             chooseFile();
             return;
         }
 
-        if (importMethod.equals(ImportOptionsActivity.IMPORT_METHOD_QRCODE)) {
+        if (importMethod.equals(IMPORT_METHOD_QR_CODE)) {
             final IntentIntegrator integrator = new IntentIntegrator(this);
             integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
             integrator.setCameraId(0);
@@ -153,6 +156,17 @@ public class ImportActivity extends BaseActivity {
 
             integrator.setPrompt(this.getString(R.string.scan_identity));
             integrator.initiateScan();
+        }
+
+        if (importMethod.equals(IMPORT_METHOD_FORWARDED_QR_CODE)) {
+            byte[] identityData = intent.getByteArrayExtra(EXTRA_FORWARDED_QR_CODE);
+            if (identityData == null) return;
+            try {
+                readIdentityData(identityData);
+            } catch (Exception e) {
+                showErrorMessage(e.getMessage());
+                Log.e(TAG, e.getMessage(), e);
+            }
         }
     }
 
