@@ -78,7 +78,7 @@ public class LoginBaseActivity extends BaseActivity {
     }
 
     public void hideLoginPopup() {
-        loginPopupWindow.dismiss();
+        if (loginPopupWindow != null) loginPopupWindow.dismiss();
         unlockRotation();
     }
 

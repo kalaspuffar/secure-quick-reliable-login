@@ -1,8 +1,6 @@
 package org.ea.sqrl.activites;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.hardware.biometrics.BiometricPrompt;
 import android.net.Uri;
 import android.os.Build;
@@ -36,7 +34,9 @@ import javax.crypto.Cipher;
  */
 public class UrlLoginActivity extends LoginBaseActivity {
     private static final String TAG = "UrlLoginActivity";
+    public static final String EXTRA_USE_CPS = "use_cps";
 
+    private boolean useCps = true;
     private EditText txtLoginPassword;
     private IdentitySelector mIdentitySelector = null;
 
@@ -61,6 +61,9 @@ public class UrlLoginActivity extends LoginBaseActivity {
             showErrorMessage(R.string.url_login_missing_url);
             return;
         }
+
+        useCps = intent.getBooleanExtra(EXTRA_USE_CPS, true);
+
         txtUrlLogin.setText(data.getHost());
 
         final String serverData = data.toString();
@@ -99,7 +102,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
         txtLoginPassword.setOnEditorActionListener((v, actionId, event) -> {
             if(actionId == EditorInfo.IME_ACTION_DONE){
-                doLogin(storage, txtLoginPassword, false, true, null,UrlLoginActivity.this);
+                doLogin(storage, txtLoginPassword, false, useCps, null,UrlLoginActivity.this);
                 return true;
             }
             return false;
@@ -114,7 +117,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
             public void onTextChanged(CharSequence password, int start, int before, int count) {
                 if (!storage.hasQuickPass()) return;
                 if ((start + count) >= storage.getHintLength()) {
-                    doLogin(storage, txtLoginPassword, true, true, null, UrlLoginActivity.this);
+                    doLogin(storage, txtLoginPassword, true, useCps, null, UrlLoginActivity.this);
                 }
             }
 
@@ -132,16 +135,26 @@ public class UrlLoginActivity extends LoginBaseActivity {
             long currentId = SqrlApplication.getCurrentId(this.getApplication());
 
             if(currentId != 0) {
-                doLogin(storage, txtLoginPassword, false, true, null,this);
+                doLogin(storage, txtLoginPassword, false, useCps, null,this);
             }
         });
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && storage.hasBiometric()) {
             BioAuthenticationCallback biometricCallback =
                     new BioAuthenticationCallback(UrlLoginActivity.this.getApplicationContext(), () -> {
+
+                        //doLogin(storage, txtLoginPassword, false, useCps, this, this);
+
+
                         handler.post(() -> showProgressPopup());
-                        communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
-                        communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN_CPS);
+
+                        if (useCps) {
+                            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
+                            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN_CPS);
+                        } else {
+                            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK_QRCODE);
+                            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN);
+                        }
 
                         communicationFlowHandler.setDoneAction(() -> {
                             storage.clear();

@@ -1,13 +1,10 @@
 package org.ea.sqrl.activites;
 
 import android.content.Intent;
-import android.hardware.biometrics.BiometricPrompt;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.CancellationSignal;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.widget.TextView;
 
 import com.google.zxing.FormatException;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -16,19 +13,13 @@ import com.google.zxing.integration.android.IntentResult;
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.LoginBaseActivity;
 import org.ea.sqrl.activites.identity.ImportActivity;
-import org.ea.sqrl.processors.BioAuthenticationCallback;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
-import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.IdentitySelector;
 import org.ea.sqrl.utils.SqrlApplication;
 import org.ea.sqrl.utils.Utils;
 
-import java.security.KeyStore;
 import java.util.Arrays;
-import java.util.regex.Matcher;
-
-import javax.crypto.Cipher;
 
 /**
  *
@@ -123,7 +114,14 @@ public class SimplifiedActivity extends LoginBaseActivity {
                     return;
                 }
 
+                // A login qr-code was scanned
                 final String serverData = new String(qrCodeData);
+                Intent urlLoginIntent = new Intent(Intent.ACTION_VIEW);
+                urlLoginIntent.setData(Uri.parse(serverData));
+                urlLoginIntent.putExtra(UrlLoginActivity.EXTRA_USE_CPS, false);
+                startActivity(urlLoginIntent);
+
+                /*
 
                 communicationFlowHandler.setServerData(serverData);
                 communicationFlowHandler.setUseSSL(serverData.startsWith("sqrl://"));
@@ -213,6 +211,8 @@ public class SimplifiedActivity extends LoginBaseActivity {
                     }
 
                 }, 100);
+
+                */
             }
         }
     }
