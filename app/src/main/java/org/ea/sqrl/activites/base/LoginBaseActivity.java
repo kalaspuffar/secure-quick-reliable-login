@@ -99,7 +99,7 @@ public class LoginBaseActivity extends BaseActivity {
                     ((EnableQuickPassActivity)LoginBaseActivity.this).doingLogin();
                 }
 
-                doLogin(storage, txtLoginPassword, false, false, null, LoginBaseActivity.this);
+                doLogin(storage, txtLoginPassword, false, false, true, null, LoginBaseActivity.this);
                 return true;
             }
             return false;
@@ -118,7 +118,7 @@ public class LoginBaseActivity extends BaseActivity {
                         ((EnableQuickPassActivity)LoginBaseActivity.this).doingLogin();
                     }
 
-                    doLogin(storage, txtLoginPassword, true, false, null, LoginBaseActivity.this);
+                    doLogin(storage, txtLoginPassword, true, false, true, null, LoginBaseActivity.this);
                 }
             }
 
@@ -140,74 +140,80 @@ public class LoginBaseActivity extends BaseActivity {
                 if(LoginBaseActivity.this instanceof EnableQuickPassActivity) {
                     ((EnableQuickPassActivity)LoginBaseActivity.this).doingLogin();
                 }
-                doLogin(storage, txtLoginPassword, false, false, null, this);
+                doLogin(storage, txtLoginPassword, false, false, true, null, this);
             }
         });
     }
 
-    public void doLogin(SQRLStorage storage, EditText txtLoginPassword, boolean usedQuickpass, boolean usedCps, Activity activityToFinish, Context context) {
-        if (!usedCps) hideLoginPopup();
-        showProgressPopup();
-        closeKeyboard();
+    public void doLogin(SQRLStorage storage, EditText txtLoginPassword, boolean usedQuickpass,
+                        boolean usedCps, boolean needsDecryption, Activity activityToFinish, Context context) {
+        handler.post(() -> {
+            if (!usedCps) hideLoginPopup();
+            showProgressPopup();
+            closeKeyboard();
 
-        new Thread(() -> {
-            boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, usedQuickpass);
-            if(!decryptionOk) {
-                showErrorMessage(R.string.decrypt_identity_fail, () -> {
-                    if (!usedCps) {
-                        showLoginPopup();
+            new Thread(() -> {
+                if (needsDecryption) {
+                    boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, usedQuickpass);
+                    if(!decryptionOk) {
+                        showErrorMessage(R.string.decrypt_identity_fail, () -> {
+                            if (!usedCps) {
+                                showLoginPopup();
+                            }
+                        });
+                        handler.post(() -> {
+                            txtLoginPassword.setHint(R.string.login_identity_password);
+                            txtLoginPassword.setText("");
+                            hideProgressPopup();
+                        });
+                        storage.clear();
+                        storage.clearQuickPass();
+                        if(LoginBaseActivity.this instanceof EnableQuickPassActivity) {
+                            ((EnableQuickPassActivity)LoginBaseActivity.this).failedLogin();
+                        }
+                        return;
                     }
-                });
-                handler.post(() -> {
-                    txtLoginPassword.setHint(R.string.login_identity_password);
-                    txtLoginPassword.setText("");
-                    hideProgressPopup();
-                });
-                storage.clear();
-                storage.clearQuickPass();
-                if(LoginBaseActivity.this instanceof EnableQuickPassActivity) {
-                    ((EnableQuickPassActivity)LoginBaseActivity.this).failedLogin();
                 }
-                return;
-            }
-            clearQuickPassDelayed();
 
-            handler.post(() -> txtLoginPassword.setText(""));
+                clearQuickPassDelayed();
 
-            if (context instanceof EnableQuickPassActivity) {
-                storage.clear();
-                handler.post(() -> {
-                    hideProgressPopup();
-                    closeActivity();
-                    EnableQuickPassActivity enableQuickPassActivity = (EnableQuickPassActivity)context;
-                    enableQuickPassActivity.finish();
+                handler.post(() -> txtLoginPassword.setText(""));
+
+                if (context instanceof EnableQuickPassActivity) {
+                    storage.clear();
+                    handler.post(() -> {
+                        hideProgressPopup();
+                        closeActivity();
+                        EnableQuickPassActivity enableQuickPassActivity = (EnableQuickPassActivity)context;
+                        enableQuickPassActivity.finish();
+                    });
+                    return;
+                }
+
+                if (usedCps) {
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN_CPS);
+                } else {
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK_QRCODE);
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN);
+                }
+
+                communicationFlowHandler.setDoneAction(() -> {
+                    storage.clear();
+                    handler.post(() -> {
+                        hideProgressPopup();
+                        closeActivity();
+                    });
+                    if (activityToFinish != null) activityToFinish.finish();
                 });
-                return;
-            }
 
-            if (usedCps) {
-                communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
-                communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN_CPS);
-            } else {
-                communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK_QRCODE);
-                communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN);
-            }
-
-            communicationFlowHandler.setDoneAction(() -> {
-                storage.clear();
-                handler.post(() -> {
-                    hideProgressPopup();
-                    closeActivity();
+                communicationFlowHandler.setErrorAction(() -> {
+                    storage.clear();
+                    handler.post(() -> hideProgressPopup());
                 });
-                if (activityToFinish != null) activityToFinish.finish();
-            });
 
-            communicationFlowHandler.setErrorAction(() -> {
-                storage.clear();
-                handler.post(() -> hideProgressPopup());
-            });
-
-            communicationFlowHandler.handleNextAction();
-        }).start();
+                communicationFlowHandler.handleNextAction();
+            }).start();
+        }) ;
     }
 }

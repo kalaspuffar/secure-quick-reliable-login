@@ -39,7 +39,7 @@ public class AlternativeLoginActivity extends LoginBaseActivity {
             long currentId = SqrlApplication.getCurrentId(this.getApplication());
 
             if(currentId != 0) {
-                doLogin(storage, txtLoginPassword, false, false, AlternativeLoginActivity.this, this);
+                doLogin(storage, txtLoginPassword, false, false, true, AlternativeLoginActivity.this, this);
             }
         });
     }

@@ -102,7 +102,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
         txtLoginPassword.setOnEditorActionListener((v, actionId, event) -> {
             if(actionId == EditorInfo.IME_ACTION_DONE){
-                doLogin(storage, txtLoginPassword, false, useCps, null,UrlLoginActivity.this);
+                doLogin(storage, txtLoginPassword, false, useCps, true, null, UrlLoginActivity.this);
                 return true;
             }
             return false;
@@ -117,7 +117,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
             public void onTextChanged(CharSequence password, int start, int before, int count) {
                 if (!storage.hasQuickPass()) return;
                 if ((start + count) >= storage.getHintLength()) {
-                    doLogin(storage, txtLoginPassword, true, useCps, null, UrlLoginActivity.this);
+                    doLogin(storage, txtLoginPassword, true, useCps, true, null, UrlLoginActivity.this);
                 }
             }
 
@@ -135,42 +135,15 @@ public class UrlLoginActivity extends LoginBaseActivity {
             long currentId = SqrlApplication.getCurrentId(this.getApplication());
 
             if(currentId != 0) {
-                doLogin(storage, txtLoginPassword, false, useCps, null,this);
+                doLogin(storage, txtLoginPassword, false, useCps, true, null,this);
             }
         });
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && storage.hasBiometric()) {
             BioAuthenticationCallback biometricCallback =
-                    new BioAuthenticationCallback(UrlLoginActivity.this.getApplicationContext(), () -> {
-
-                        //doLogin(storage, txtLoginPassword, false, useCps, this, this);
-
-
-                        handler.post(() -> showProgressPopup());
-
-                        if (useCps) {
-                            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
-                            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN_CPS);
-                        } else {
-                            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK_QRCODE);
-                            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN);
-                        }
-
-                        communicationFlowHandler.setDoneAction(() -> {
-                            storage.clear();
-                            handler.post(() -> {
-                                hideProgressPopup();
-                                closeActivity();
-                            });
-                        });
-
-                        communicationFlowHandler.setErrorAction(() -> {
-                            storage.clear();
-                            handler.post(() -> hideProgressPopup());
-                        });
-
-                        communicationFlowHandler.handleNextAction();
-                    });
+                    new BioAuthenticationCallback(UrlLoginActivity.this.getApplicationContext(), () ->
+                        doLogin(storage, txtLoginPassword, false, useCps, false, UrlLoginActivity.this, UrlLoginActivity.this)
+                    );
 
             BiometricPrompt bioPrompt = new BiometricPrompt.Builder(this)
                     .setTitle(getString(R.string.login_title))
