@@ -148,7 +148,6 @@ public class LoginBaseActivity extends BaseActivity {
     public void doLogin(SQRLStorage storage, EditText txtLoginPassword, boolean usedQuickpass,
                         boolean usedCps, boolean needsDecryption, Activity activityToFinish, Context context) {
         handler.post(() -> {
-            if (!usedCps) hideLoginPopup();
             showProgressPopup();
             closeKeyboard();
 
@@ -156,11 +155,7 @@ public class LoginBaseActivity extends BaseActivity {
                 if (needsDecryption) {
                     boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, usedQuickpass);
                     if(!decryptionOk) {
-                        showErrorMessage(R.string.decrypt_identity_fail, () -> {
-                            if (!usedCps) {
-                                showLoginPopup();
-                            }
-                        });
+                        showErrorMessage(R.string.decrypt_identity_fail);
                         handler.post(() -> {
                             txtLoginPassword.setHint(R.string.login_identity_password);
                             txtLoginPassword.setText("");
