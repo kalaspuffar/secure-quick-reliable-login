@@ -55,8 +55,8 @@ public class StartActivity extends BaseActivity {
             startActivity(new Intent(this, CreateIdentityActivity.class));
         } else {
             Intent importIdentityIntent = new Intent(this, ImportActivity.class);
-            importIdentityIntent.putExtra(ImportOptionsActivity.EXTRA_IMPORT_METHOD,
-                    ImportOptionsActivity.IMPORT_METHOD_QRCODE);
+            importIdentityIntent.putExtra(ImportActivity.EXTRA_IMPORT_METHOD,
+                    ImportActivity.IMPORT_METHOD_QR_CODE);
             startActivity(importIdentityIntent);
         }
     }

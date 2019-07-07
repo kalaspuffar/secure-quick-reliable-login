@@ -7,14 +7,15 @@ import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.zxing.FormatException;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.LoginBaseActivity;
+import org.ea.sqrl.activites.identity.ImportActivity;
 import org.ea.sqrl.processors.BioAuthenticationCallback;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.CommunicationHandler;
@@ -24,6 +25,7 @@ import org.ea.sqrl.utils.SqrlApplication;
 import org.ea.sqrl.utils.Utils;
 
 import java.security.KeyStore;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 
 import javax.crypto.Cipher;
@@ -94,7 +96,35 @@ public class SimplifiedActivity extends LoginBaseActivity {
                     startActivity(new Intent(this, StartActivity.class));
                 }
             } else {
-                final String serverData = Utils.readSQRLQRCodeAsString(data);
+                byte[] qrCodeData = null;
+
+                try {
+                    qrCodeData = Utils.readSQRLQRCode(data);
+                } catch (FormatException fe) {
+                    showErrorMessage(R.string.scan_incorrect);
+                    return;
+                }
+
+                if (qrCodeData == null) {
+                    showErrorMessage(R.string.scan_incorrect);
+                    return;
+                }
+
+                // If an identity qr-code was scanned instead of a login qr code,
+                // simply forward it to the import activity and bail out
+
+                if (qrCodeData.length > 8 && new String(Arrays.copyOfRange(qrCodeData, 0, 8))
+                        .startsWith(SQRLStorage.STORAGE_HEADER)) {
+
+                    Intent importIntent = new Intent(this, ImportActivity.class);
+                    importIntent.putExtra(ImportActivity.EXTRA_IMPORT_METHOD, ImportActivity.IMPORT_METHOD_FORWARDED_QR_CODE);
+                    importIntent.putExtra(ImportActivity.EXTRA_FORWARDED_QR_CODE, qrCodeData);
+                    startActivity(importIntent);
+                    return;
+                }
+
+                final String serverData = new String(qrCodeData);
+
                 communicationFlowHandler.setServerData(serverData);
                 communicationFlowHandler.setUseSSL(serverData.startsWith("sqrl://"));
 

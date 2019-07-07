@@ -9,7 +9,6 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.google.zxing.FormatException;
 
@@ -48,7 +47,13 @@ public class Utils {
     }
 
     public static String readSQRLQRCodeAsString(Intent data) {
-        return data.getStringExtra("SCAN_RESULT");
+        byte[] qrCode = null;
+        try {
+            qrCode = readSQRLQRCode(data);
+        } catch (FormatException fe) { return null; }
+
+        if (qrCode == null) return null;
+        return new String(qrCode);
     }
 
     public static int getInteger(String s) {
