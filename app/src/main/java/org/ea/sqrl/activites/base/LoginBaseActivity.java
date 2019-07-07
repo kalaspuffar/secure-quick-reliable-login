@@ -35,7 +35,6 @@ public class LoginBaseActivity extends BaseActivity {
     protected ConstraintLayout rootView;
     protected Map<Long, String> identities;
 
-    protected PopupWindow loginPopupWindow;
     protected CommunicationFlowHandler communicationFlowHandler = null;
 
 

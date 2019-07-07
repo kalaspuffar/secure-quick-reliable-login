@@ -29,7 +29,6 @@ public class SimplifiedActivity extends LoginBaseActivity {
     private static final String TAG = "SimplifiedActivity";
 
     public static final String ACTION_QUICK_SCAN = "org.ea.sqrl.activites.QUICK_SCAN";
-    public static final String ACTION_LOGON = "org.ea.sqrl.activites.LOGON";
 
     private IdentitySelector mIdentitySelector = null;
 

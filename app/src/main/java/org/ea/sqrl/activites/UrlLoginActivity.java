@@ -28,8 +28,6 @@ import java.util.regex.Matcher;
 
 import javax.crypto.Cipher;
 
-import static org.ea.sqrl.activites.SimplifiedActivity.ACTION_LOGON;
-
 /**
  *
  * @author Daniel Persson
@@ -37,6 +35,7 @@ import static org.ea.sqrl.activites.SimplifiedActivity.ACTION_LOGON;
 public class UrlLoginActivity extends LoginBaseActivity {
     private static final String TAG = "UrlLoginActivity";
     public static final String EXTRA_USE_CPS = "use_cps";
+    public static final String ACTION_QUICKPASS_OPERATION = "org.ea.sqrl.activites.LOGON";
 
     private boolean useCps = true;
     private EditText txtLoginPassword;
@@ -59,7 +58,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
             return;
         }
 
-        if (!ACTION_LOGON.equals(intent.getAction())) {
+        if (!ACTION_QUICKPASS_OPERATION.equals(intent.getAction())) {
             Uri data = intent.getData();
             if(data == null) {
                 showErrorMessage(R.string.url_login_missing_url);
@@ -103,6 +102,14 @@ public class UrlLoginActivity extends LoginBaseActivity {
             txtLoginPassword.setHint(R.string.login_identity_password);
         }
 
+        txtLoginPassword.setOnEditorActionListener((v, actionId, event) -> {
+            if(actionId == EditorInfo.IME_ACTION_DONE){
+                doLogin(storage, txtLoginPassword, false, useCps, true,null, UrlLoginActivity.this);
+                return true;
+            }
+            return false;
+        });
+
         txtLoginPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence password, int start, int count, int after) {
@@ -134,7 +141,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
             }
         });
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && storage.hasBiometric() && !ACTION_LOGON.equals(intent.getAction())) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && storage.hasBiometric() && !ACTION_QUICKPASS_OPERATION.equals(intent.getAction())) {
             BioAuthenticationCallback biometricCallback =
                     new BioAuthenticationCallback(UrlLoginActivity.this.getApplicationContext(), () ->
                         doLogin(storage, txtLoginPassword, false, useCps, false, UrlLoginActivity.this, UrlLoginActivity.this)
