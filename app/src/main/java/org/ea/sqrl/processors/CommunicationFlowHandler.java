@@ -351,7 +351,7 @@ public class CommunicationFlowHandler {
     }
 
     protected void postDisableAccount(CommunicationHandler commHandler, boolean noiptest, boolean clientProvidedSession) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientDisable(noiptest, clientProvidedSession), serverData);
+        String postData = commHandler.createPostParams(commHandler.createClientDisable(noiptest, clientProvidedSession), serverData, true);
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
