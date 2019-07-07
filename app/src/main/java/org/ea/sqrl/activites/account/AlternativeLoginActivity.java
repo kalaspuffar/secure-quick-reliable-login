@@ -23,7 +23,6 @@ public class AlternativeLoginActivity extends LoginBaseActivity {
         rootView = findViewById(R.id.alternativeIdentityActivityView);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
-        setupLoginPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
         setupBasePopups(getLayoutInflater(), false);
 

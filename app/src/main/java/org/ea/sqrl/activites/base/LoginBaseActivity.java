@@ -72,79 +72,6 @@ public class LoginBaseActivity extends BaseActivity {
         }
     }
 
-    public void showLoginPopup() {
-        loginPopupWindow.showAtLocation(loginPopupWindow.getContentView(), Gravity.CENTER, 0, 0);
-        lockRotation();
-    }
-
-    public void hideLoginPopup() {
-        if (loginPopupWindow != null) loginPopupWindow.dismiss();
-        unlockRotation();
-    }
-
-    public void setupLoginPopupWindow(LayoutInflater layoutInflater) {
-        View popupView = layoutInflater.inflate(R.layout.fragment_login, null);
-
-        loginPopupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
-                true);
-
-        final SQRLStorage storage = SQRLStorage.getInstance(LoginBaseActivity.this.getApplicationContext());
-
-        loginPopupWindow.setTouchable(true);
-        final EditText txtLoginPassword = popupView.findViewById(R.id.txtLoginPassword);
-        txtLoginPassword.setOnEditorActionListener((v, actionId, event) -> {
-            if(actionId == EditorInfo.IME_ACTION_DONE){
-                if(LoginBaseActivity.this instanceof EnableQuickPassActivity) {
-                    ((EnableQuickPassActivity)LoginBaseActivity.this).doingLogin();
-                }
-
-                doLogin(storage, txtLoginPassword, false, false, true, null, LoginBaseActivity.this);
-                return true;
-            }
-            return false;
-        });
-
-        txtLoginPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence password, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence password, int start, int before, int count) {
-                if (!storage.hasQuickPass()) return;
-                if ((start + count) >= storage.getHintLength()) {
-                    if(LoginBaseActivity.this instanceof EnableQuickPassActivity) {
-                        ((EnableQuickPassActivity)LoginBaseActivity.this).doingLogin();
-                    }
-
-                    doLogin(storage, txtLoginPassword, true, false, true, null, LoginBaseActivity.this);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
-        popupView.findViewById(R.id.btnCloseLogin).setOnClickListener(v -> hideLoginPopup());
-        popupView.findViewById(R.id.btnLoginOptions).setOnClickListener(v -> {
-            hideLoginPopup();
-            startActivity(new Intent(this, AccountOptionsActivity.class));
-        });
-
-        popupView.findViewById(R.id.btnLogin).setOnClickListener(v -> {
-            long currentId = SqrlApplication.getCurrentId(this.getApplication());
-
-            if(currentId != 0) {
-                if(LoginBaseActivity.this instanceof EnableQuickPassActivity) {
-                    ((EnableQuickPassActivity)LoginBaseActivity.this).doingLogin();
-                }
-                doLogin(storage, txtLoginPassword, false, false, true, null, this);
-            }
-        });
-    }
-
     public void doLogin(SQRLStorage storage, EditText txtLoginPassword, boolean usedQuickpass,
                         boolean usedCps, boolean needsDecryption, Activity activityToFinish, Context context) {
         handler.post(() -> {
@@ -163,9 +90,6 @@ public class LoginBaseActivity extends BaseActivity {
                         });
                         storage.clear();
                         storage.clearQuickPass();
-                        if(LoginBaseActivity.this instanceof EnableQuickPassActivity) {
-                            ((EnableQuickPassActivity)LoginBaseActivity.this).failedLogin();
-                        }
                         return;
                     }
                 }

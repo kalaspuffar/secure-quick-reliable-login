@@ -41,7 +41,6 @@ public class SimplifiedActivity extends LoginBaseActivity {
         rootView = findViewById(R.id.simplifiedActivityView);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
-        setupLoginPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
         setupBasePopups(getLayoutInflater(), false);
 

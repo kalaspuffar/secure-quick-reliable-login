@@ -28,6 +28,8 @@ import java.util.regex.Matcher;
 
 import javax.crypto.Cipher;
 
+import static org.ea.sqrl.activites.SimplifiedActivity.ACTION_LOGON;
+
 /**
  *
  * @author Daniel Persson
@@ -39,6 +41,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
     private boolean useCps = true;
     private EditText txtLoginPassword;
     private IdentitySelector mIdentitySelector = null;
+    private Matcher mSqrlMatcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,36 +59,36 @@ public class UrlLoginActivity extends LoginBaseActivity {
             return;
         }
 
-        Uri data = intent.getData();
-        if(data == null) {
-            showErrorMessage(R.string.url_login_missing_url);
-            return;
-        }
+        if (!ACTION_LOGON.equals(intent.getAction())) {
+            Uri data = intent.getData();
+            if(data == null) {
+                showErrorMessage(R.string.url_login_missing_url);
+                return;
+            }
 
-        useCps = intent.getBooleanExtra(EXTRA_USE_CPS, true);
+            useCps = intent.getBooleanExtra(EXTRA_USE_CPS, true);
 
-        txtUrlLogin.setText(data.getHost());
+            txtUrlLogin.setText(data.getHost());
 
-        final String serverData = data.toString();
-        communicationFlowHandler.setServerData(serverData);
-        communicationFlowHandler.setUseSSL(serverData.startsWith("sqrl://"));
+            final String serverData = data.toString();
+            communicationFlowHandler.setServerData(serverData);
+            communicationFlowHandler.setUseSSL(serverData.startsWith("sqrl://"));
 
-        Matcher sqrlMatcher = CommunicationHandler.sqrlPattern.matcher(serverData);
-        if(!sqrlMatcher.matches()) {
-            showErrorMessage(R.string.scan_incorrect);
-            return;
-        }
+            mSqrlMatcher = CommunicationHandler.sqrlPattern.matcher(serverData);
+            if(!mSqrlMatcher.matches()) {
+                showErrorMessage(R.string.scan_incorrect);
+                return;
+            }
 
-        final String domain = sqrlMatcher.group(1);
-        final String queryLink = sqrlMatcher.group(2);
+            try {
+                communicationFlowHandler.setQueryLink(mSqrlMatcher.group(2));
+                communicationFlowHandler.setDomain(mSqrlMatcher.group(1), mSqrlMatcher.group(2));
+            } catch (Exception e) {
+                showErrorMessage(e.getMessage());
+                Log.e(TAG, e.getMessage(), e);
+                return;
+            }
 
-        try {
-            communicationFlowHandler.setQueryLink(queryLink);
-            communicationFlowHandler.setDomain(domain, queryLink);
-        } catch (Exception e) {
-            showErrorMessage(e.getMessage());
-            Log.e(TAG, e.getMessage(), e);
-            return;
         }
 
         setupBasePopups(getLayoutInflater(), true);
@@ -99,14 +102,6 @@ public class UrlLoginActivity extends LoginBaseActivity {
         } else {
             txtLoginPassword.setHint(R.string.login_identity_password);
         }
-
-        txtLoginPassword.setOnEditorActionListener((v, actionId, event) -> {
-            if(actionId == EditorInfo.IME_ACTION_DONE){
-                doLogin(storage, txtLoginPassword, false, useCps, true, null, UrlLoginActivity.this);
-                return true;
-            }
-            return false;
-        });
 
         txtLoginPassword.addTextChangedListener(new TextWatcher() {
             @Override
@@ -139,7 +134,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
             }
         });
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && storage.hasBiometric()) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && storage.hasBiometric() && !ACTION_LOGON.equals(intent.getAction())) {
             BioAuthenticationCallback biometricCallback =
                     new BioAuthenticationCallback(UrlLoginActivity.this.getApplicationContext(), () ->
                         doLogin(storage, txtLoginPassword, false, useCps, false, UrlLoginActivity.this, UrlLoginActivity.this)
@@ -147,7 +142,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
             BiometricPrompt bioPrompt = new BiometricPrompt.Builder(this)
                     .setTitle(getString(R.string.login_title))
-                    .setSubtitle(domain)
+                    .setSubtitle(mSqrlMatcher.group(1))
                     .setDescription(getString(R.string.login_verify_domain_text))
                     .setNegativeButton(
                             getString(R.string.button_cps_cancel),
@@ -169,16 +164,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
                 e.printStackTrace();
             }
         }
-
-        mIdentitySelector = new IdentitySelector(this, true,false, true);
-        mIdentitySelector.registerLayout(findViewById(R.id.identitySelector));
-        mIdentitySelector.setIdentityChangedListener((identityIndex, identityName) -> {
-            if (storage.hasQuickPass()) {
-                txtLoginPassword.setHint(getString(R.string.login_identity_quickpass, "" + storage.getHintLength()));
-            } else {
-                txtLoginPassword.setHint(R.string.login_identity_password);
-            }
-        });
+        configureIdentitySelector(storage);
     }
 
     @Override
@@ -205,7 +191,8 @@ public class UrlLoginActivity extends LoginBaseActivity {
             startActivity(new Intent(this, StartActivity.class));
         } else {
             setupBasePopups(getLayoutInflater(), true);
-            mIdentitySelector.update();
+            SQRLStorage storage = SQRLStorage.getInstance(UrlLoginActivity.this.getApplicationContext());
+            configureIdentitySelector(storage).update();
         }
     }
 
@@ -216,5 +203,20 @@ public class UrlLoginActivity extends LoginBaseActivity {
         if(progressPopupWindow.isShowing()) {
             hideProgressPopup();
         }
+    }
+
+    private IdentitySelector configureIdentitySelector(SQRLStorage storage) {
+        if (mIdentitySelector == null) {
+            mIdentitySelector = new IdentitySelector(this, true,false, true);
+            mIdentitySelector.registerLayout(findViewById(R.id.identitySelector));
+            mIdentitySelector.setIdentityChangedListener((identityIndex, identityName) -> {
+                if (storage.hasQuickPass()) {
+                    txtLoginPassword.setHint(getString(R.string.login_identity_quickpass, "" + storage.getHintLength()));
+                } else {
+                    txtLoginPassword.setHint(R.string.login_identity_password);
+                }
+            });
+        }
+        return mIdentitySelector;
     }
 }

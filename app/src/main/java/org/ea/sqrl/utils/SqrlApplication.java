@@ -73,14 +73,11 @@ public class SqrlApplication extends Application {
                     .setIntent(intentQuickScan)
                     .build();
 
-            Intent simplifiedActivity = new Intent(context, SimplifiedActivity.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                    .setAction("android.intent.action.MAIN");
             Intent intentLogon = new Intent(context, EnableQuickPassActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     .setAction(SimplifiedActivity.ACTION_LOGON);
-            Intent[] logonIntentList = {simplifiedActivity, intentLogon};
+            Intent[] logonIntentList = {intentLogon};
             logonShortcut = new ShortcutInfo.Builder(context, "setQuickpass")
                     .setShortLabel(context.getString(R.string.set_quickpass))
                     .setLongLabel(context.getString(R.string.set_quickpass_long))
@@ -88,6 +85,9 @@ public class SqrlApplication extends Application {
                     .setIntents(logonIntentList)
                     .build();
 
+            Intent simplifiedActivity = new Intent(context, SimplifiedActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    .setAction("android.intent.action.MAIN");
             Intent intentClearQuickpass = new Intent(context, ClearQuickPassActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)

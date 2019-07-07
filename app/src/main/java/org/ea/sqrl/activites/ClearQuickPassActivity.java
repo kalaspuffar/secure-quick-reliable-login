@@ -1,6 +1,7 @@
 package org.ea.sqrl.activites;
 
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -45,6 +46,10 @@ public class ClearQuickPassActivity extends BaseActivity {
             if (!mToasted) {
                 Toast.makeText(this, getResources().getString(R.string.clear_identity_success), Toast.LENGTH_LONG).show();
             }
+        }
+        finishAffinity();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            finishAndRemoveTask();
         }
     }
 }
