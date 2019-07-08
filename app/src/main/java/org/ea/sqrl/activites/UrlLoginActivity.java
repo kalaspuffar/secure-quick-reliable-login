@@ -35,6 +35,7 @@ import javax.crypto.Cipher;
 public class UrlLoginActivity extends LoginBaseActivity {
     private static final String TAG = "UrlLoginActivity";
     public static final String EXTRA_USE_CPS = "use_cps";
+    public static final String EXTRA_QUICK_SCAN = "quick_scan";
     public static final String ACTION_QUICKPASS_OPERATION = "org.ea.sqrl.activites.LOGON";
 
     private boolean useCps = true;
@@ -90,7 +91,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
         }
 
-        setupBasePopups(getLayoutInflater(), true);
+        setupBasePopups(getLayoutInflater(), useCps);
         setupErrorPopupWindow(getLayoutInflater());
 
         SQRLStorage storage = SQRLStorage.getInstance(UrlLoginActivity.this.getApplicationContext());
@@ -176,15 +177,22 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
     @Override
     protected void closeActivity() {
-        UrlLoginActivity.this.finishAffinity();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            UrlLoginActivity.this.finishAndRemoveTask();
+        boolean quickScan = getIntent().getBooleanExtra(EXTRA_QUICK_SCAN, false);
+        if (useCps || quickScan) {
+            UrlLoginActivity.this.finishAffinity();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                UrlLoginActivity.this.finishAndRemoveTask();
+            }
+        } else {
+            Log.v("sengsational", " returning 'early'");
+            UrlLoginActivity.this.finish();
         }
+        return;
     }
 
     @Override
     public void onBackPressed() {
-        this.closeActivity();
+        UrlLoginActivity.this.finish();
     }
 
     @Override
@@ -197,7 +205,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
         if(!mDbHelper.hasIdentities()) {
             startActivity(new Intent(this, StartActivity.class));
         } else {
-            setupBasePopups(getLayoutInflater(), true);
+            setupBasePopups(getLayoutInflater(), useCps);
             SQRLStorage storage = SQRLStorage.getInstance(UrlLoginActivity.this.getApplicationContext());
             configureIdentitySelector(storage).update();
         }
