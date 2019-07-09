@@ -177,8 +177,10 @@ public class CommunicationHandler {
         sb.append(storage.getOptions(noiptest, requestServerUnlockKey, false));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
+        sb.append("\r\n");
         if(storage.hasPreviousKeys()) {
-            sb.append("\r\npidk=" + EncryptionUtils.encodeUrlSafe(storage.getPreviousPublicKey(cryptDomain)));
+            sb.append("pidk=" + EncryptionUtils.encodeUrlSafe(storage.getPreviousPublicKey(cryptDomain)));
+            sb.append("\r\n");
         }
         return sb.toString();
     }
@@ -192,8 +194,10 @@ public class CommunicationHandler {
         sb.append(storage.getOptions(noiptest, false, clientProvidedSession));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
+        sb.append("\r\n");
         if(storage.hasPreviousKeys()) {
-            sb.append("\r\npidk=" + EncryptionUtils.encodeUrlSafe(storage.getPreviousPublicKey(cryptDomain)));
+            sb.append("pidk=" + EncryptionUtils.encodeUrlSafe(storage.getPreviousPublicKey(cryptDomain)));
+            sb.append("\r\n");
         }
         return sb.toString();
     }
@@ -207,8 +211,10 @@ public class CommunicationHandler {
         sb.append(storage.getOptions(noiptest, false, clientProvidedSession));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
+        sb.append("\r\n");
         if(storage.hasPreviousKeys()) {
-            sb.append("\r\npidk=" + EncryptionUtils.encodeUrlSafe(storage.getPreviousPublicKey(cryptDomain)));
+            sb.append("pidk=" + EncryptionUtils.encodeUrlSafe(storage.getPreviousPublicKey(cryptDomain)));
+            sb.append("\r\n");
         }
         return sb.toString();
     }
@@ -222,8 +228,10 @@ public class CommunicationHandler {
         sb.append(storage.getOptions(noiptest, false, clientProvidedSession));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
+        sb.append("\r\n");
         if(storage.hasPreviousKeys()) {
-            sb.append("\r\npidk=" + EncryptionUtils.encodeUrlSafe(storage.getPreviousPublicKey(cryptDomain)));
+            sb.append("pidk=" + EncryptionUtils.encodeUrlSafe(storage.getPreviousPublicKey(cryptDomain)));
+            sb.append("\r\n");
         }
         return sb.toString();
     }
@@ -239,13 +247,15 @@ public class CommunicationHandler {
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append(storage.getServerUnlockKey(entropyHarvester));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
+        sb.append("\r\n");
         if(storage.hasPreviousKeys()) {
-            sb.append("\r\npidk=" + EncryptionUtils.encodeUrlSafe(storage.getPreviousPublicKey(cryptDomain)));
+            sb.append("pidk=" + EncryptionUtils.encodeUrlSafe(storage.getPreviousPublicKey(cryptDomain)));
+            sb.append("\r\n");
         }
         return sb.toString();
     }
 
-    public String createClientLogin(boolean noiptest, boolean clientProvidedSession) throws Exception {
+    public String createClientLogin(EntropyHarvester entropyHarvester, boolean noiptest, boolean clientProvidedSession) throws Exception {
         SQRLStorage storage = SQRLStorage.getInstance(context);
         StringBuilder sb = new StringBuilder();
         sb.append("ver=1\r\n");
@@ -254,8 +264,11 @@ public class CommunicationHandler {
         sb.append(storage.getOptions(noiptest, false, clientProvidedSession));
         sb.append(storage.getSecretIndex(cryptDomain, lastResponse.get("sin")));
         sb.append("idk=" + EncryptionUtils.encodeUrlSafe(storage.getPublicKey(cryptDomain)));
-        if(storage.hasPreviousKeys()) {
-            sb.append("\r\npidk=" + EncryptionUtils.encodeUrlSafe(storage.getPreviousPublicKey(cryptDomain)));
+        sb.append("\r\n");
+        if(storage.willLoginWithPreviousKey()) {
+            sb.append("pidk=" + EncryptionUtils.encodeUrlSafe(storage.getPreviousPublicKey(cryptDomain)));
+            sb.append("\r\n");
+            sb.append(storage.getServerUnlockKey(entropyHarvester));
         }
         return sb.toString();
     }
@@ -596,5 +609,10 @@ public class CommunicationHandler {
             this.cryptDomain,
             alternativeId.replaceAll("[^A-Za-z0-9]", "").getBytes()
         );
+    }
+
+    public void loginWithPreviousKey() {
+        SQRLStorage storage = SQRLStorage.getInstance(context);
+        storage.loginWithPreviousKey();
     }
 }

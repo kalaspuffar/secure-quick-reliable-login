@@ -256,6 +256,8 @@ public class CommunicationFlowHandler {
             actionStack.push(a);
             lastTIF = commHandler.getTif();
             commHandler.clearLastResponse();
+        } else if(commHandler.isPreviousKeyValid()) {
+            commHandler.loginWithPreviousKey();
         }
 
         if(commHandler.hasAskQuestion() && this.actionStack.isEmpty()) {
@@ -343,7 +345,11 @@ public class CommunicationFlowHandler {
     }
 
     protected void postLogin(CommunicationHandler commHandler, boolean noiptest, boolean clientProvidedSession) throws Exception {
-        String postData = commHandler.createPostParams(commHandler.createClientLogin(noiptest, clientProvidedSession), serverData);
+        String postData = commHandler.createPostParams(
+                commHandler.createClientLogin(entropyHarvester, noiptest, clientProvidedSession),
+                serverData,
+                commHandler.isPreviousKeyValid()
+        );
         commHandler.postRequest(queryLink, postData);
         serverData = commHandler.getResponse();
         queryLink = commHandler.getQueryLink();
