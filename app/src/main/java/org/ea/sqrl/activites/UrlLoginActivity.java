@@ -184,7 +184,6 @@ public class UrlLoginActivity extends LoginBaseActivity {
                 UrlLoginActivity.this.finishAndRemoveTask();
             }
         } else {
-            Log.v("sengsational", " returning 'early'");
             UrlLoginActivity.this.finish();
         }
         return;
