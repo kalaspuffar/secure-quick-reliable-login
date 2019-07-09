@@ -345,6 +345,7 @@ public class SQRLStorage {
 
     public void cleanIdentity() {
         this.previousKeyIndex = 0;
+        this.loginWithPreviousKey = false;
         this.identityPlaintextLength = -1;
         this.identityPlaintext = null;
         this.initializationVector = null;
@@ -767,6 +768,7 @@ public class SQRLStorage {
 
     public void clearQuickPass() {
         this.previousKeyIndex = 0;
+        this.loginWithPreviousKey = false;
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -785,6 +787,8 @@ public class SQRLStorage {
 
     public void clear() {
         this.previousKeyIndex = 0;
+        this.loginWithPreviousKey = false;
+
         try {
             if(this.identityLockKey != null) {
                 clearBytes(this.identityLockKey);
