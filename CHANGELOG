@@ -1,3 +1,13 @@
+Version 1.3.0
+
+Improvement
+* Main page QR scan can now be used for import.
+* Use the same GUI for QR Scan and button clicked on web page.
+
+Bugfixes
+* Don't display Identity management on that page.
+* Handle rekey event correctly. Send new SUK on login.
+
 Version 1.2.0
 
 Feature
