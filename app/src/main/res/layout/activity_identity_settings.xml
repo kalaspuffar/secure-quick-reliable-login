@@ -60,7 +60,8 @@
                 app:layout_constraintEnd_toStartOf="@id/imgSettingsPasswordVerifyInSecondsInfo"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtSettingsPasswordVerifyInSecondsHeadline"
-                tools:ignore="TextFields" />
+                tools:ignore="TextFields"
+                android:layout_marginLeft="16dp" />
 
             <ImageView
                 android:id="@+id/imgSettingsPasswordVerifyInSecondsInfo"
