@@ -69,7 +69,7 @@ public class SQRLStorage {
     private boolean hasRescueBlock = false;
     private boolean hasPreviousBlock = false;
     private int previousKeyIndex = 0;
-    //private byte[] biometricKeyEncrypted;
+    private boolean loginWithPreviousKey = false;
 
     private SQRLStorage(Context context) {
         this.context = context;
@@ -90,6 +90,14 @@ public class SQRLStorage {
 
     public void increasePreviousKeyIndex() {
         previousKeyIndex++;
+    }
+
+    public void loginWithPreviousKey() {
+        this.loginWithPreviousKey = true;
+    }
+
+    public boolean willLoginWithPreviousKey() {
+        return this.loginWithPreviousKey;
     }
 
     public void newRescueCode(EntropyHarvester entropyHarvester) {
@@ -337,6 +345,7 @@ public class SQRLStorage {
 
     public void cleanIdentity() {
         this.previousKeyIndex = 0;
+        this.loginWithPreviousKey = false;
         this.identityPlaintextLength = -1;
         this.identityPlaintext = null;
         this.initializationVector = null;
@@ -759,6 +768,7 @@ public class SQRLStorage {
 
     public void clearQuickPass() {
         this.previousKeyIndex = 0;
+        this.loginWithPreviousKey = false;
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -777,6 +787,8 @@ public class SQRLStorage {
 
     public void clear() {
         this.previousKeyIndex = 0;
+        this.loginWithPreviousKey = false;
+
         try {
             if(this.identityLockKey != null) {
                 clearBytes(this.identityLockKey);
