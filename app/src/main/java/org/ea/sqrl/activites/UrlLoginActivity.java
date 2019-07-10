@@ -6,11 +6,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
@@ -173,6 +176,26 @@ public class UrlLoginActivity extends LoginBaseActivity {
             }
         }
         configureIdentitySelector(storage);
+        setupAdvancedOptions();
+    }
+
+    private void setupAdvancedOptions() {
+
+        final TextView txtAdvancedFunctions = findViewById(R.id.txtAdvancedFunctions);
+        final ImageView imgAdvancedFunctionsToggle = findViewById(R.id.imgAdvancedFunctionsToggle);
+        final ConstraintLayout advancedFunctionsLayout = findViewById(R.id.advancedFunctionsLayout);
+
+        advancedFunctionsLayout.setVisibility(View.GONE);
+
+        imgAdvancedFunctionsToggle.setOnClickListener(v -> {
+            if (advancedFunctionsLayout.getVisibility() == View.GONE) {
+                advancedFunctionsLayout.setVisibility(View.VISIBLE);
+                imgAdvancedFunctionsToggle.setImageDrawable(getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_gray_24dp));
+            } else {
+                advancedFunctionsLayout.setVisibility(View.GONE);
+                imgAdvancedFunctionsToggle.setImageDrawable(getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_gray_24dp));
+            }
+        });
     }
 
     @Override

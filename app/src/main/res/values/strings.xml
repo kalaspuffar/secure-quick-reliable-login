@@ -284,4 +284,5 @@
 <string name="disable_account_successful">The account is disabled</string>
 <string name="enable_account_successful">The account is enabled</string>
 <string name="remove_account_successful">The account is removed</string>
+<string name="standard_login">Standard login</string>
 </resources>

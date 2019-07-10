@@ -18,4 +18,6 @@
 
     <color name="identity_selector_border">#B1BCBE</color>
 
+    <color name="login_advanced_functions_layout_background">#EFEFEF</color>
+
 </resources>

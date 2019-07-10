@@ -1,122 +1,279 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/urlLoginActivityView"
+    android:paddingBottom="16dp"
+    tools:animateLayoutChanges="true"
     tools:context="org.ea.sqrl.activites.UrlLoginActivity">
 
-    <include layout="@layout/fragment_identity_selector"
-        android:id="@+id/identitySelector"
-        android:layout_width="0dp"
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/urlLoginActivityView" >
 
-    <TextView
-        android:id="@+id/txtLoginDescription"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="24dp"
-        android:text="@string/login_verify_domain_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/identitySelector" />
-
-    <TextView
-        android:id="@+id/txtLoginHeadline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
-        android:text="@string/login_domain_title"
-        android:textAlignment="center"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtLoginDescription" />
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/txtSite"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:fontFamily="monospace"
-        android:gravity="center"
-        android:text="example-domain.com"
-        android:textAlignment="center"
-        android:textColor="@color/colorAccent"
-        android:textStyle="bold"
-        android:typeface="monospace"
-        app:autoSizeMaxTextSize="36sp"
-        app:autoSizeMinTextSize="20sp"
-        app:autoSizeStepGranularity="1sp"
-        app:autoSizeTextType="uniform"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtLoginHeadline" />
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/txtLoginPasswordLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="0dp"
-        android:ems="10"
-        app:passwordToggleEnabled="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtSite">
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/txtLoginPassword"
-            android:layout_width="match_parent"
+        <include layout="@layout/fragment_identity_selector"
+            android:id="@+id/identitySelector"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="@string/login_identity_password"
-            android:inputType="textPassword"
-            android:imeOptions="actionDone"/>
-    </android.support.design.widget.TextInputLayout>
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btnLogin"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/button_login"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtLoginPasswordLayout" />
+        <TextView
+            android:id="@+id/txtLoginDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="24dp"
+            android:text="@string/login_verify_domain_text"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/identitySelector" />
 
-    <Button
-        android:id="@+id/btnLoginOptions"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/button_login_options"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
+        <TextView
+            android:id="@+id/txtLoginHeadline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="12dp"
+            android:text="@string/login_domain_title"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtLoginDescription" />
 
-</android.support.constraint.ConstraintLayout>
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/txtSite"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:fontFamily="monospace"
+            android:gravity="center"
+            android:text="example-domain.com"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            android:typeface="monospace"
+            app:autoSizeMaxTextSize="36sp"
+            app:autoSizeMinTextSize="20sp"
+            app:autoSizeStepGranularity="1sp"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtLoginHeadline"
+            tools:ignore="hardcodedText"/>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/txtLoginPasswordLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="0dp"
+            android:ems="10"
+            app:passwordToggleEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtSite">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/txtLoginPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/login_identity_password"
+                android:inputType="textPassword"
+                android:imeOptions="actionDone"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <ImageView
+            android:id="@+id/imgAdvancedFunctionsToggle"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:padding="4dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_keyboard_arrow_down_gray_24dp"
+            tools:srcCompat="@drawable/ic_keyboard_arrow_down_gray_24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtLoginPasswordLayout" />
+
+        <TextView
+            android:id="@+id/txtAdvancedFunctions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="8dp"
+            android:text="@string/button_advanced_functions"
+            app:layout_constraintStart_toEndOf="@+id/imgAdvancedFunctionsToggle"
+            app:layout_constraintTop_toTopOf="@+id/imgAdvancedFunctionsToggle" />
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/advancedFunctionsLayout"
+            android:background="@color/login_advanced_functions_layout_background"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:paddingLeft="24dp"
+            android:paddingStart="16dp"
+            android:paddingRight="0dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgAdvancedFunctionsToggle">
+
+            <EditText
+                android:id="@+id/txtAlternativeId"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:hint="@string/button_alternative_identity"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imgAlternativeIdHelp" />
+
+            <ImageView
+                android:id="@+id/imgAlternativeIdHelp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:padding="4dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintTop_toTopOf="@+id/txtAlternativeId"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:src="@drawable/ic_info_outline_24dp"
+                tools:srcCompat="@drawable/ic_info_outline_24dp" />
+
+            <RadioGroup
+                android:id="@+id/radgrpAccountOptions"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@id/txtAlternativeId"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imgDisableAccountHelp" >
+
+
+                <RadioButton android:id="@+id/chkNormalLogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="32dp"
+                    android:text="@string/standard_login"
+                    android:checked="true"/>
+
+                <RadioButton android:id="@+id/chkDisableAccount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="32dp"
+                    android:text="@string/button_lock_account" />
+
+                <RadioButton android:id="@+id/chkEnableAccount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="32dp"
+                    android:text="@string/button_unlock_account" />
+
+                <RadioButton android:id="@+id/chkRemoveAccount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="32dp"
+                    android:text="@string/button_remove_account" />
+
+            </RadioGroup>
+
+            <ImageView
+                android:id="@+id/imgDisableAccountHelp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="32dp"
+                android:padding="4dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintTop_toBottomOf="@+id/txtAlternativeId"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:src="@drawable/ic_info_outline_24dp"
+                tools:srcCompat="@drawable/ic_info_outline_24dp" />
+
+            <ImageView
+                android:id="@+id/imgEnableAccountHelp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="0dp"
+                android:padding="4dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintTop_toBottomOf="@+id/imgDisableAccountHelp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:src="@drawable/ic_info_outline_24dp"
+                tools:srcCompat="@drawable/ic_info_outline_24dp" />
+
+            <ImageView
+                android:id="@+id/imgDRemoveAccountHelp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="0dp"
+                android:padding="4dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintTop_toBottomOf="@+id/imgEnableAccountHelp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:src="@drawable/ic_info_outline_24dp"
+                tools:srcCompat="@drawable/ic_info_outline_24dp" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/button_login"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/advancedFunctionsLayout" />
+
+        <Button
+            android:id="@+id/btnLoginOptions"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/button_login_options"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</ScrollView>
