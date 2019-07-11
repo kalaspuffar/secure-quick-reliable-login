@@ -138,36 +138,10 @@ public class UrlLoginActivity extends LoginBaseActivity {
         findViewById(R.id.btnLogin).setOnClickListener(v ->
                 doLogin(false, useCps, true));
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && storage.hasBiometric() && !ACTION_QUICKPASS_OPERATION.equals(intent.getAction())) {
-            BioAuthenticationCallback biometricCallback =
-                    new BioAuthenticationCallback(UrlLoginActivity.this.getApplicationContext(), () ->
-                        doLogin(false, useCps, false)
-                    );
-
-            BiometricPrompt bioPrompt = new BiometricPrompt.Builder(this)
-                    .setTitle(getString(R.string.login_title))
-                    .setSubtitle(mSqrlMatcher.group(1))
-                    .setDescription(getString(R.string.login_verify_domain_text))
-                    .setNegativeButton(
-                            getString(R.string.button_cps_cancel),
-                            this.getMainExecutor(),
-                            (dialogInterface, i) -> {}
-                    ).build();
-
-            CancellationSignal cancelSign = new CancellationSignal();
-            cancelSign.setOnCancelListener(() -> {});
-
-            try {
-                KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
-                keyStore.load(null);
-                KeyStore.Entry entry = keyStore.getEntry("quickPass", null);
-                Cipher decCipher = Cipher.getInstance("RSA/ECB/PKCS1PADDING"); //or try with "RSA"
-                decCipher.init(Cipher.DECRYPT_MODE, ((KeyStore.PrivateKeyEntry) entry).getPrivateKey());
-                bioPrompt.authenticate(new BiometricPrompt.CryptoObject(decCipher), cancelSign, this.getMainExecutor(), biometricCallback);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if(storage.hasBiometric() && !ACTION_QUICKPASS_OPERATION.equals(intent.getAction())) {
+            doLoginBiometric();
         }
+
         configureIdentitySelector(storage);
         setupAdvancedFunctions();
         setupHelp();
@@ -288,6 +262,39 @@ public class UrlLoginActivity extends LoginBaseActivity {
             });
         }
         return mIdentitySelector;
+    }
+
+    private void doLoginBiometric() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return;
+
+        BioAuthenticationCallback biometricCallback =
+                new BioAuthenticationCallback(UrlLoginActivity.this.getApplicationContext(), () ->
+                        doLogin(false, useCps, false)
+                );
+
+        BiometricPrompt bioPrompt = new BiometricPrompt.Builder(this)
+                .setTitle(getString(R.string.login_title))
+                .setSubtitle(mSqrlMatcher.group(1))
+                .setDescription(getString(R.string.login_verify_domain_text))
+                .setNegativeButton(
+                        getString(R.string.button_cps_cancel),
+                        this.getMainExecutor(),
+                        (dialogInterface, i) -> {}
+                ).build();
+
+        CancellationSignal cancelSign = new CancellationSignal();
+        cancelSign.setOnCancelListener(() -> {});
+
+        try {
+            KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+            keyStore.load(null);
+            KeyStore.Entry entry = keyStore.getEntry("quickPass", null);
+            Cipher decCipher = Cipher.getInstance("RSA/ECB/PKCS1PADDING"); //or try with "RSA"
+            decCipher.init(Cipher.DECRYPT_MODE, ((KeyStore.PrivateKeyEntry) entry).getPrivateKey());
+            bioPrompt.authenticate(new BiometricPrompt.CryptoObject(decCipher), cancelSign, this.getMainExecutor(), biometricCallback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void doLogin(boolean useQuickpass, boolean useCps, boolean needsDecryption) {
