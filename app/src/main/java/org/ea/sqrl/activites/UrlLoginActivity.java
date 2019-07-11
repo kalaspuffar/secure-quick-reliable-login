@@ -54,6 +54,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
         setContentView(R.layout.activity_url_login);
 
         rootView = findViewById(R.id.urlLoginActivityView);
+        txtLoginPassword = findViewById(R.id.txtLoginPassword);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
         final TextView txtUrlLogin = findViewById(R.id.txtSite);
@@ -96,12 +97,11 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
         }
 
-        setupBasePopups(getLayoutInflater(), useCps);
+        setupBasePopups(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
         SQRLStorage storage = SQRLStorage.getInstance(UrlLoginActivity.this.getApplicationContext());
 
-        txtLoginPassword = findViewById(R.id.txtLoginPassword);
         if(storage.hasQuickPass()) {
             txtLoginPassword.setHint(getString(R.string.login_identity_quickpass, "" + storage.getHintLength()));
         } else {
@@ -110,7 +110,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
         txtLoginPassword.setOnEditorActionListener((v, actionId, event) -> {
             if(actionId == EditorInfo.IME_ACTION_DONE){
-                doLogin(storage, txtLoginPassword, false, useCps, true,null, UrlLoginActivity.this);
+                doLogin(false, useCps, true);
                 return true;
             }
             return false;
@@ -118,19 +118,15 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
         txtLoginPassword.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence password, int start, int count, int after) {
-            }
-
+            public void beforeTextChanged(CharSequence password, int start, int count, int after) {}
+            @Override
+            public void afterTextChanged(Editable s) {}
             @Override
             public void onTextChanged(CharSequence password, int start, int before, int count) {
                 if (!storage.hasQuickPass()) return;
                 if ((start + count) >= storage.getHintLength()) {
-                    doLogin(storage, txtLoginPassword, true, useCps, true, null, UrlLoginActivity.this);
+                    doLogin(true, useCps, true);
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
             }
         });
 
@@ -139,18 +135,13 @@ public class UrlLoginActivity extends LoginBaseActivity {
             startActivity(new Intent(this, AccountOptionsActivity.class));
         });
 
-        findViewById(R.id.btnLogin).setOnClickListener(v -> {
-            long currentId = SqrlApplication.getCurrentId(this.getApplication());
-
-            if(currentId != 0) {
-                doLogin(storage, txtLoginPassword, false, useCps, true, null,this);
-            }
-        });
+        findViewById(R.id.btnLogin).setOnClickListener(v ->
+                doLogin(false, useCps, true));
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && storage.hasBiometric() && !ACTION_QUICKPASS_OPERATION.equals(intent.getAction())) {
             BioAuthenticationCallback biometricCallback =
                     new BioAuthenticationCallback(UrlLoginActivity.this.getApplicationContext(), () ->
-                        doLogin(storage, txtLoginPassword, false, useCps, false, UrlLoginActivity.this, UrlLoginActivity.this)
+                        doLogin(false, useCps, false)
                     );
 
             BiometricPrompt bioPrompt = new BiometricPrompt.Builder(this)
@@ -269,7 +260,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
         if(!mDbHelper.hasIdentities()) {
             startActivity(new Intent(this, StartActivity.class));
         } else {
-            setupBasePopups(getLayoutInflater(), useCps);
+            setupBasePopups(getLayoutInflater());
             SQRLStorage storage = SQRLStorage.getInstance(UrlLoginActivity.this.getApplicationContext());
             configureIdentitySelector(storage).update();
         }
@@ -297,5 +288,80 @@ public class UrlLoginActivity extends LoginBaseActivity {
             });
         }
         return mIdentitySelector;
+    }
+
+    public void doLogin(boolean useQuickpass, boolean useCps, boolean needsDecryption) {
+
+        handler.post(() -> {
+            SQRLStorage storage = SQRLStorage.getInstance(this.getApplicationContext());
+
+            long currentId = SqrlApplication.getCurrentId(this.getApplication());
+            if(currentId <= 0) return;
+
+            String alternateId = ((TextView)findViewById(R.id.txtAlternateId)).getText().toString();
+            if (!alternateId.equals("")) {
+                communicationFlowHandler.setAlternativeId(alternateId);
+            }
+
+            communicationFlowHandler.setUrlBasedLogin(useCps);
+
+            showProgressPopup();
+            closeKeyboard();
+
+            new Thread(() -> {
+                if (needsDecryption) {
+                    boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, useQuickpass);
+                    if(!decryptionOk) {
+                        showErrorMessage(R.string.decrypt_identity_fail);
+                        handler.post(() -> {
+                            txtLoginPassword.setHint(R.string.login_identity_password);
+                            txtLoginPassword.setText("");
+                            hideProgressPopup();
+                        });
+                        storage.clear();
+                        storage.clearQuickPass();
+                        return;
+                    }
+                }
+
+                clearQuickPassAfterTimeout();
+
+                handler.post(() -> txtLoginPassword.setText(""));
+
+                if (this instanceof EnableQuickPassActivity) {
+                    storage.clear();
+                    handler.post(() -> {
+                        hideProgressPopup();
+                        closeActivity();
+                        EnableQuickPassActivity enableQuickPassActivity = (EnableQuickPassActivity)this;
+                        enableQuickPassActivity.finish();
+                    });
+                    return;
+                }
+
+                if (useCps) {
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN_CPS);
+                } else {
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK_QRCODE);
+                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN);
+                }
+
+                communicationFlowHandler.setDoneAction(() -> {
+                    storage.clear();
+                    handler.post(() -> {
+                        hideProgressPopup();
+                        closeActivity();
+                    });
+                });
+
+                communicationFlowHandler.setErrorAction(() -> {
+                    storage.clear();
+                    handler.post(() -> hideProgressPopup());
+                });
+
+                communicationFlowHandler.handleNextAction();
+            }).start();
+        }) ;
     }
 }

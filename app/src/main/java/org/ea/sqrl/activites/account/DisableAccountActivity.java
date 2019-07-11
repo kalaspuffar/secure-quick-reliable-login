@@ -31,7 +31,7 @@ public class DisableAccountActivity extends BaseActivity {
             new Thread(() -> {
                 boolean decryptionOk = storage.decryptIdentityKey(txtDisablePassword.getText().toString(), entropyHarvester, false);
                 if(decryptionOk) {
-                    clearQuickPassDelayed();
+                    clearQuickPassAfterTimeout();
                 } else {
                     showErrorMessage(R.string.decrypt_identity_fail);
                     storage.clearQuickPass();

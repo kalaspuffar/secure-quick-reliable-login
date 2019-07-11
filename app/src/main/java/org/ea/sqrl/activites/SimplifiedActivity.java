@@ -41,7 +41,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
         setupErrorPopupWindow(getLayoutInflater());
-        setupBasePopups(getLayoutInflater(), false);
+        setupBasePopups(getLayoutInflater());
 
         mIdentitySelector = new IdentitySelector(this, true,false, true);
         mIdentitySelector.registerLayout(findViewById(R.id.identitySelector));
@@ -70,7 +70,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
                 mIdentitySelector.update();
             }
 
-            setupBasePopups(getLayoutInflater(), false);
+            setupBasePopups(getLayoutInflater());
         }
     }
 

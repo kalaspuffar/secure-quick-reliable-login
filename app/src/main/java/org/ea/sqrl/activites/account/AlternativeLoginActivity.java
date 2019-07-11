@@ -24,7 +24,8 @@ public class AlternativeLoginActivity extends LoginBaseActivity {
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
         setupErrorPopupWindow(getLayoutInflater());
-        setupBasePopups(getLayoutInflater(), false);
+        setupBasePopups(getLayoutInflater());
+        communicationFlowHandler.setUrlBasedLogin(false);
 
         final SQRLStorage storage = SQRLStorage.getInstance(AlternativeLoginActivity.this.getApplicationContext());
 
@@ -38,7 +39,7 @@ public class AlternativeLoginActivity extends LoginBaseActivity {
             long currentId = SqrlApplication.getCurrentId(this.getApplication());
 
             if(currentId != 0) {
-                doLogin(storage, txtLoginPassword, false, false, true, AlternativeLoginActivity.this, this);
+                //doLogin(storage, txtLoginPassword, false, false, true, AlternativeLoginActivity.this, this);
             }
         });
     }
