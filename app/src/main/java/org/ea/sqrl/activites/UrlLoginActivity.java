@@ -12,8 +12,10 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
@@ -176,27 +178,67 @@ public class UrlLoginActivity extends LoginBaseActivity {
             }
         }
         configureIdentitySelector(storage);
-        setupAdvancedOptions();
+        setupAdvancedFunctions();
+        setupHelp();
     }
 
-    private void setupAdvancedOptions() {
+    private void setupHelp() {
+        findViewById(R.id.imgAlternateIdHelp).setOnClickListener(v ->
+                showInfoMessage(R.string.button_alternative_identity, R.string.helptext_alterate_id));
+        findViewById(R.id.imgDisableAccountHelp).setOnClickListener(v ->
+                showInfoMessage(R.string.button_lock_account, R.string.helptext_disable_account));
+        findViewById(R.id.imgEnableAccountHelp).setOnClickListener(v ->
+                showInfoMessage(R.string.button_unlock_account, R.string.helptext_enable_account));
+        findViewById(R.id.imgRemoveAccountHelp).setOnClickListener(v ->
+                showInfoMessage(R.string.button_remove_account, R.string.helptext_remove_account));
+    }
 
-        final TextView txtAdvancedFunctions = findViewById(R.id.txtAdvancedFunctions);
-        final ImageView imgAdvancedFunctionsToggle = findViewById(R.id.imgAdvancedFunctionsToggle);
+    private void setupAdvancedFunctions() {
         final ConstraintLayout advancedFunctionsLayout = findViewById(R.id.advancedFunctionsLayout);
+        final ImageView imgAdvancedFunctionsToggle = findViewById(R.id.imgAdvancedFunctionsToggle);
+        final TextView txtAdvancedFunctions = findViewById(R.id.txtAdvancedFunctions);
+        final RadioGroup radgrpAccountOptions = findViewById(R.id.radgrpAccountOptions);
 
-        advancedFunctionsLayout.setVisibility(View.GONE);
+        radgrpAccountOptions.setOnCheckedChangeListener((group, checkedId) -> {
+            Button btnLogin = findViewById(R.id.btnLogin);
 
-        imgAdvancedFunctionsToggle.setOnClickListener(v -> {
-            if (advancedFunctionsLayout.getVisibility() == View.GONE) {
-                advancedFunctionsLayout.setVisibility(View.VISIBLE);
-                imgAdvancedFunctionsToggle.setImageDrawable(getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_gray_24dp));
-            } else {
-                advancedFunctionsLayout.setVisibility(View.GONE);
-                imgAdvancedFunctionsToggle.setImageDrawable(getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_gray_24dp));
+            switch (checkedId) {
+                case R.id.radDisableAccount:
+                    btnLogin.setText(R.string.button_lock_account);
+                    break;
+                case R.id.radEnableAccount:
+                    btnLogin.setText(R.string.button_unlock_account);
+                    break;
+                case R.id.radRemoveAccount:
+                    btnLogin.setText(R.string.button_remove_account);
+                    break;
+                case R.id.radStandardLogin:
+                default:
+                    btnLogin.setText(R.string.button_login);
+                    break;
             }
         });
+
+        imgAdvancedFunctionsToggle.setOnClickListener(toggleAdvancedFunctionsListener);
+        txtAdvancedFunctions.setOnClickListener(toggleAdvancedFunctionsListener);
+
+        advancedFunctionsLayout.setVisibility(View.GONE);
     }
+
+    private View.OnClickListener toggleAdvancedFunctionsListener = (v) -> {
+        final ConstraintLayout advancedFunctionsLayout = findViewById(R.id.advancedFunctionsLayout);
+        final ImageView imgAdvancedFunctionsToggle = findViewById(R.id.imgAdvancedFunctionsToggle);
+
+        if (advancedFunctionsLayout.getVisibility() == View.GONE) {
+            advancedFunctionsLayout.setVisibility(View.VISIBLE);
+            imgAdvancedFunctionsToggle.setImageDrawable(getResources().getDrawable(
+                    R.drawable.ic_keyboard_arrow_up_gray_24dp));
+        } else {
+            advancedFunctionsLayout.setVisibility(View.GONE);
+            imgAdvancedFunctionsToggle.setImageDrawable(getResources().getDrawable(
+                    R.drawable.ic_keyboard_arrow_down_gray_24dp));
+        }
+    };
 
     @Override
     protected void closeActivity() {

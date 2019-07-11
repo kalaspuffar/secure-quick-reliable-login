@@ -147,7 +147,7 @@
             app:layout_constraintTop_toBottomOf="@+id/imgAdvancedFunctionsToggle">
 
             <EditText
-                android:id="@+id/txtAlternativeId"
+                android:id="@+id/txtAlternateId"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="16dp"
@@ -156,10 +156,10 @@
                 android:hint="@string/button_alternative_identity"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/imgAlternativeIdHelp" />
+                app:layout_constraintEnd_toStartOf="@+id/imgAlternateIdHelp" />
 
             <ImageView
-                android:id="@+id/imgAlternativeIdHelp"
+                android:id="@+id/imgAlternateIdHelp"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginLeft="16dp"
@@ -167,7 +167,7 @@
                 android:layout_marginTop="8dp"
                 android:padding="4dp"
                 android:scaleType="centerCrop"
-                app:layout_constraintTop_toTopOf="@+id/txtAlternativeId"
+                app:layout_constraintTop_toTopOf="@+id/txtAlternateId"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:src="@drawable/ic_info_outline_24dp"
                 tools:srcCompat="@drawable/ic_info_outline_24dp" />
@@ -177,31 +177,31 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@id/txtAlternativeId"
+                app:layout_constraintTop_toBottomOf="@id/txtAlternateId"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/imgDisableAccountHelp" >
 
 
-                <RadioButton android:id="@+id/chkNormalLogin"
+                <RadioButton android:id="@+id/radStandardLogin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minHeight="32dp"
                     android:text="@string/standard_login"
                     android:checked="true"/>
 
-                <RadioButton android:id="@+id/chkDisableAccount"
+                <RadioButton android:id="@+id/radDisableAccount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minHeight="32dp"
                     android:text="@string/button_lock_account" />
 
-                <RadioButton android:id="@+id/chkEnableAccount"
+                <RadioButton android:id="@+id/radEnableAccount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minHeight="32dp"
                     android:text="@string/button_unlock_account" />
 
-                <RadioButton android:id="@+id/chkRemoveAccount"
+                <RadioButton android:id="@+id/radRemoveAccount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minHeight="32dp"
@@ -216,7 +216,7 @@
                 android:layout_marginTop="32dp"
                 android:padding="4dp"
                 android:scaleType="centerCrop"
-                app:layout_constraintTop_toBottomOf="@+id/txtAlternativeId"
+                app:layout_constraintTop_toBottomOf="@+id/txtAlternateId"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:src="@drawable/ic_info_outline_24dp"
                 tools:srcCompat="@drawable/ic_info_outline_24dp" />
@@ -234,7 +234,7 @@
                 tools:srcCompat="@drawable/ic_info_outline_24dp" />
 
             <ImageView
-                android:id="@+id/imgDRemoveAccountHelp"
+                android:id="@+id/imgRemoveAccountHelp"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginTop="0dp"
