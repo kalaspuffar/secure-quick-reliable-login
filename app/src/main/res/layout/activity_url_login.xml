@@ -102,37 +102,45 @@
                 android:imeOptions="actionDone"/>
         </android.support.design.widget.TextInputLayout>
 
-        <ImageView
-            android:id="@+id/imgAdvancedFunctionsToggle"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+        <LinearLayout
+            android:id="@+id/toggleAdvancedFunctionsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
-            android:padding="4dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_keyboard_arrow_down_gray_24dp"
-            tools:srcCompat="@drawable/ic_keyboard_arrow_down_gray_24dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtLoginPasswordLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/txtLoginPasswordLayout">
 
-        <TextView
-            android:id="@+id/txtAdvancedFunctions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginStart="0dp"
-            android:layout_marginLeft="8dp"
-            android:text="@string/button_advanced_functions"
-            app:layout_constraintStart_toEndOf="@+id/imgAdvancedFunctionsToggle"
-            app:layout_constraintTop_toTopOf="@+id/imgAdvancedFunctionsToggle" />
+            <ImageView
+                android:id="@+id/imgAdvancedFunctionsToggle"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:padding="4dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_keyboard_arrow_down_gray_24dp"
+                tools:srcCompat="@drawable/ic_keyboard_arrow_down_gray_24dp" />
+
+            <TextView
+                android:id="@+id/txtAdvancedFunctions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:layout_marginLeft="8dp"
+                android:text="@string/button_advanced_functions" />
+
+        </LinearLayout>
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/advancedFunctionsLayout"
             android:background="@color/login_advanced_functions_layout_background"
-            android:layout_marginTop="0dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginRight="16dp"
@@ -144,7 +152,7 @@
             android:paddingBottom="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imgAdvancedFunctionsToggle">
+            app:layout_constraintTop_toBottomOf="@+id/toggleAdvancedFunctionsLayout">
 
             <EditText
                 android:id="@+id/txtAlternateId"
@@ -154,9 +162,11 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginTop="8dp"
                 android:hint="@string/button_alternative_identity"
+                android:inputType="text"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/imgAlternateIdHelp" />
+                app:layout_constraintEnd_toStartOf="@+id/imgAlternateIdHelp"
+                android:importantForAutofill="no" tools:targetApi="o"/>
 
             <ImageView
                 android:id="@+id/imgAlternateIdHelp"
@@ -254,11 +264,13 @@
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:text="@string/button_login"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/advancedFunctionsLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/advancedFunctionsLayout"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <Button
             android:id="@+id/btnLoginOptions"
