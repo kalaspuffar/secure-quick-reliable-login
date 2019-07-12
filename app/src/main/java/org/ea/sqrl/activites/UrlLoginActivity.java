@@ -147,6 +147,50 @@ public class UrlLoginActivity extends LoginBaseActivity {
         setupHelp();
     }
 
+    @Override
+    protected void closeActivity() {
+        boolean quickScan = getIntent().getBooleanExtra(EXTRA_QUICK_SCAN, false);
+        if (useCps || quickScan) {
+            UrlLoginActivity.this.finishAffinity();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                UrlLoginActivity.this.finishAndRemoveTask();
+            }
+        } else {
+            UrlLoginActivity.this.finish();
+        }
+        return;
+    }
+
+    @Override
+    public void onBackPressed() {
+        UrlLoginActivity.this.finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
+        if(runningTest) return;
+
+        if(!mDbHelper.hasIdentities()) {
+            startActivity(new Intent(this, StartActivity.class));
+        } else {
+            setupBasePopups(getLayoutInflater());
+            SQRLStorage storage = SQRLStorage.getInstance(UrlLoginActivity.this.getApplicationContext());
+            configureIdentitySelector(storage).update();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if(progressPopupWindow.isShowing()) {
+            hideProgressPopup();
+        }
+    }
+
     private void setupHelp() {
         findViewById(R.id.imgAlternateIdHelp).setOnClickListener(v ->
                 showInfoMessage(R.string.button_alternative_identity, R.string.helptext_alterate_id));
@@ -205,50 +249,6 @@ public class UrlLoginActivity extends LoginBaseActivity {
         }
     };
 
-    @Override
-    protected void closeActivity() {
-        boolean quickScan = getIntent().getBooleanExtra(EXTRA_QUICK_SCAN, false);
-        if (useCps || quickScan) {
-            UrlLoginActivity.this.finishAffinity();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                UrlLoginActivity.this.finishAndRemoveTask();
-            }
-        } else {
-            UrlLoginActivity.this.finish();
-        }
-        return;
-    }
-
-    @Override
-    public void onBackPressed() {
-        UrlLoginActivity.this.finish();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
-        if(runningTest) return;
-
-        if(!mDbHelper.hasIdentities()) {
-            startActivity(new Intent(this, StartActivity.class));
-        } else {
-            setupBasePopups(getLayoutInflater());
-            SQRLStorage storage = SQRLStorage.getInstance(UrlLoginActivity.this.getApplicationContext());
-            configureIdentitySelector(storage).update();
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        if(progressPopupWindow.isShowing()) {
-            hideProgressPopup();
-        }
-    }
-
     private IdentitySelector configureIdentitySelector(SQRLStorage storage) {
         if (mIdentitySelector == null) {
             mIdentitySelector = new IdentitySelector(this, true,false, true);
@@ -269,7 +269,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
         BioAuthenticationCallback biometricCallback =
                 new BioAuthenticationCallback(UrlLoginActivity.this.getApplicationContext(), () ->
-                        doLogin(false, useCps, false)
+                        handler.post(() -> doLogin(false, useCps, false))
                 );
 
         BiometricPrompt bioPrompt = new BiometricPrompt.Builder(this)
@@ -298,77 +298,117 @@ public class UrlLoginActivity extends LoginBaseActivity {
     }
 
     public void doLogin(boolean useQuickpass, boolean useCps, boolean needsDecryption) {
+        SQRLStorage storage = SQRLStorage.getInstance(this.getApplicationContext());
 
-        handler.post(() -> {
-            SQRLStorage storage = SQRLStorage.getInstance(this.getApplicationContext());
+        long currentId = SqrlApplication.getCurrentId(this.getApplication());
+        if(currentId <= 0) return;
 
-            long currentId = SqrlApplication.getCurrentId(this.getApplication());
-            if(currentId <= 0) return;
+        String alternateId = ((TextView)findViewById(R.id.txtAlternateId)).getText().toString();
+        if (!alternateId.equals("")) {
+            communicationFlowHandler.setAlternativeId(alternateId);
+        }
 
-            String alternateId = ((TextView)findViewById(R.id.txtAlternateId)).getText().toString();
-            if (!alternateId.equals("")) {
-                communicationFlowHandler.setAlternativeId(alternateId);
-            }
+        communicationFlowHandler.setUrlBasedLogin(useCps);
 
-            communicationFlowHandler.setUrlBasedLogin(useCps);
+        showProgressPopup();
+        closeKeyboard();
 
-            showProgressPopup();
-            closeKeyboard();
-
-            new Thread(() -> {
-                if (needsDecryption) {
-                    boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, useQuickpass);
-                    if(!decryptionOk) {
-                        showErrorMessage(R.string.decrypt_identity_fail);
-                        handler.post(() -> {
-                            txtLoginPassword.setHint(R.string.login_identity_password);
-                            txtLoginPassword.setText("");
-                            hideProgressPopup();
-                        });
-                        storage.clear();
-                        storage.clearQuickPass();
-                        return;
-                    }
-                }
-
-                clearQuickPassAfterTimeout();
-
-                handler.post(() -> txtLoginPassword.setText(""));
-
-                if (this instanceof EnableQuickPassActivity) {
-                    storage.clear();
+        new Thread(() -> {
+            if (needsDecryption) {
+                boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, useQuickpass);
+                if(!decryptionOk) {
+                    showErrorMessage(R.string.decrypt_identity_fail);
                     handler.post(() -> {
+                        txtLoginPassword.setHint(R.string.login_identity_password);
+                        txtLoginPassword.setText("");
                         hideProgressPopup();
-                        closeActivity();
-                        EnableQuickPassActivity enableQuickPassActivity = (EnableQuickPassActivity)this;
-                        enableQuickPassActivity.finish();
                     });
+                    storage.clear();
+                    storage.clearQuickPass();
                     return;
                 }
+            }
 
-                if (useCps) {
-                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
-                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN_CPS);
-                } else {
-                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK_QRCODE);
-                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN);
-                }
+            clearQuickPassAfterTimeout();
 
-                communicationFlowHandler.setDoneAction(() -> {
-                    storage.clear();
-                    handler.post(() -> {
-                        hideProgressPopup();
-                        closeActivity();
-                    });
+            handler.post(() -> txtLoginPassword.setText(""));
+
+            if (this instanceof EnableQuickPassActivity) {
+                storage.clear();
+                handler.post(() -> {
+                    hideProgressPopup();
+                    closeActivity();
+                    EnableQuickPassActivity enableQuickPassActivity = (EnableQuickPassActivity)this;
+                    enableQuickPassActivity.finish();
                 });
+                return;
+            }
 
-                communicationFlowHandler.setErrorAction(() -> {
-                    storage.clear();
-                    handler.post(() -> hideProgressPopup());
-                });
+            final RadioGroup radgrpAccountOptions = findViewById(R.id.radgrpAccountOptions);
+            int checkedId = radgrpAccountOptions.getCheckedRadioButtonId();
 
-                communicationFlowHandler.handleNextAction();
-            }).start();
-        }) ;
+            switch (checkedId) {
+                case R.id.radDisableAccount:
+                    configureCommFlowHandlerDisableAccount(storage);
+                    break;
+                case R.id.radEnableAccount:
+
+                    break;
+                case R.id.radRemoveAccount:
+
+                    break;
+                case R.id.radStandardLogin:
+                default:
+                    configureCommFlowHandlerStandardLogin(storage);
+                    break;
+            }
+
+            communicationFlowHandler.setErrorAction(() -> {
+                storage.clear();
+                handler.post(() -> hideProgressPopup());
+            });
+
+            communicationFlowHandler.handleNextAction();
+        }).start();
+    }
+
+    private void configureCommFlowHandlerStandardLogin(SQRLStorage storage) {
+        if (communicationFlowHandler.isUrlBasedLogin()) {
+            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
+            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN_CPS);
+        } else {
+            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK_QRCODE);
+            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN);
+        }
+
+        communicationFlowHandler.setDoneAction(() -> {
+            storage.clear();
+            handler.post(() -> {
+                hideProgressPopup();
+                closeActivity();
+            });
+        });
+    }
+
+    private void configureCommFlowHandlerDisableAccount(SQRLStorage storage) {
+        if(communicationFlowHandler.isUrlBasedLogin()) {
+            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
+            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOCK_ACCOUNT_CPS);
+        } else {
+            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK_QRCODE);
+            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOCK_ACCOUNT);
+        }
+
+        communicationFlowHandler.setDoneAction(() -> {
+            storage.clear();
+            handler.post(() -> {
+                hideProgressPopup();
+                showInfoMessage(
+                        R.string.disable_account_title,
+                        R.string.disable_account_successful,
+                        () -> closeActivity()
+                );
+            });
+        });
     }
 }
