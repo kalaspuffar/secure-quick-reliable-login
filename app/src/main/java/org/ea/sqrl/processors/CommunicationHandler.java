@@ -318,7 +318,7 @@ public class CommunicationHandler {
             sb.append(EncryptionUtils.encodeUrlSafe(Arrays.copyOfRange(signed_message, 0, Sodium.crypto_sign_bytes())));
         }
 
-        if(unlockServerKey) {
+        if(unlockServerKey && hasServerUnlockKey()) {
             Sodium.crypto_sign(
                     signed_message,
                     signed_message_len,
@@ -550,6 +550,10 @@ public class CommunicationHandler {
             return "";
         }
         return lastResponse.get("qry");
+    }
+
+    public boolean hasServerUnlockKey() {
+        return lastResponse.containsKey("suk");
     }
 
     public byte[] getServerUnlockKey() throws Exception{
