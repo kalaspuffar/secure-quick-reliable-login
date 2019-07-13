@@ -553,7 +553,7 @@ public class CommunicationHandler {
     }
 
     public boolean hasServerUnlockKey() {
-        return lastResponse.containsKey("suk");
+        return lastResponse.containsKey("suk") && !lastResponse.get("suk").isEmpty();
     }
 
     public byte[] getServerUnlockKey() throws Exception{
