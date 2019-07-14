@@ -115,8 +115,8 @@ public class SimplifiedActivity extends LoginBaseActivity {
                 final String serverData = new String(qrCodeData);
                 Intent urlLoginIntent = new Intent(Intent.ACTION_VIEW);
                 urlLoginIntent.setData(Uri.parse(serverData));
-                urlLoginIntent.putExtra(UrlLoginActivity.EXTRA_USE_CPS, false);
-                if (ACTION_QUICK_SCAN.equals(getIntent().getAction())) urlLoginIntent.putExtra(UrlLoginActivity.EXTRA_QUICK_SCAN, true);
+                urlLoginIntent.putExtra(LoginActivity.EXTRA_USE_CPS, false);
+                if (ACTION_QUICK_SCAN.equals(getIntent().getAction())) urlLoginIntent.putExtra(LoginActivity.EXTRA_QUICK_SCAN, true);
                 startActivity(urlLoginIntent);
             }
         }

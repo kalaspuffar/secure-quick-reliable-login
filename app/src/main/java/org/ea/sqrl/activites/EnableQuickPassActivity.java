@@ -12,7 +12,7 @@ import org.ea.sqrl.utils.SqrlApplication;
 
 import static android.view.View.GONE;
 
-public class EnableQuickPassActivity extends UrlLoginActivity {
+public class EnableQuickPassActivity extends LoginActivity {
     String TAG = "EnableQuickPassActivity";
 
     @Override

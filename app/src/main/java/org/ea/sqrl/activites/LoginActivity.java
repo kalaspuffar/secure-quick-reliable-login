@@ -40,8 +40,8 @@ import javax.crypto.Cipher;
  *
  * @author Daniel Persson
  */
-public class UrlLoginActivity extends LoginBaseActivity {
-    private static final String TAG = "UrlLoginActivity";
+public class LoginActivity extends LoginBaseActivity {
+    private static final String TAG = "LoginActivity";
     public static final String EXTRA_USE_CPS = "use_cps";
     public static final String EXTRA_QUICK_SCAN = "quick_scan";
     public static final String ACTION_QUICKPASS_OPERATION = "org.ea.sqrl.activites.LOGON";
@@ -55,9 +55,9 @@ public class UrlLoginActivity extends LoginBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_url_login);
+        setContentView(R.layout.activity_login);
 
-        rootView = findViewById(R.id.urlLoginActivityView);
+        rootView = findViewById(R.id.loginActivityView);
         txtLoginPassword = findViewById(R.id.txtLoginPassword);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
@@ -105,7 +105,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
         setupBasePopups(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
-        SQRLStorage storage = SQRLStorage.getInstance(UrlLoginActivity.this.getApplicationContext());
+        SQRLStorage storage = SQRLStorage.getInstance(LoginActivity.this.getApplicationContext());
 
         if(storage.hasQuickPass()) {
             txtLoginPassword.setHint(getString(R.string.login_identity_quickpass, "" + storage.getHintLength()));
@@ -136,7 +136,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
         });
 
         findViewById(R.id.btnLoginOptions).setOnClickListener(v -> {
-            UrlLoginActivity.this.finish();
+            LoginActivity.this.finish();
             startActivity(new Intent(this, AccountOptionsActivity.class));
         });
 
@@ -157,19 +157,18 @@ public class UrlLoginActivity extends LoginBaseActivity {
     protected void closeActivity() {
         boolean quickScan = getIntent().getBooleanExtra(EXTRA_QUICK_SCAN, false);
         if (useCps || quickScan) {
-            UrlLoginActivity.this.finishAffinity();
+            LoginActivity.this.finishAffinity();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                UrlLoginActivity.this.finishAndRemoveTask();
+                LoginActivity.this.finishAndRemoveTask();
             }
         } else {
-            UrlLoginActivity.this.finish();
+            LoginActivity.this.finish();
         }
-        return;
     }
 
     @Override
     public void onBackPressed() {
-        UrlLoginActivity.this.finish();
+        LoginActivity.this.finish();
     }
 
     @Override
@@ -184,7 +183,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
         } else {
             useCps = getIntent().getBooleanExtra(EXTRA_USE_CPS, true);
             setupBasePopups(getLayoutInflater());
-            SQRLStorage storage = SQRLStorage.getInstance(UrlLoginActivity.this.getApplicationContext());
+            SQRLStorage storage = SQRLStorage.getInstance(LoginActivity.this.getApplicationContext());
             configureIdentitySelector(storage).update();
             setupAdvancedFunctions();
             setupHelp();
@@ -218,8 +217,8 @@ public class UrlLoginActivity extends LoginBaseActivity {
         final RadioGroup radgrpAccountOptions = findViewById(R.id.radgrpAccountOptions);
         final Button btnLogin = findViewById(R.id.btnLogin);
 
-        mRescueCodeInputHelper = new RescueCodeInputHelper(UrlLoginActivity.this,
-                findViewById(R.id.urlLoginActivityView), btnLogin, false);
+        mRescueCodeInputHelper = new RescueCodeInputHelper(LoginActivity.this,
+                findViewById(R.id.loginActivityView), btnLogin, false);
         mRescueCodeInputHelper.setStatusChangedListener(successfullyCompleted ->
             btnLogin.setEnabled(successfullyCompleted)
         );
@@ -315,7 +314,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return;
 
         BioAuthenticationCallback biometricCallback =
-                new BioAuthenticationCallback(UrlLoginActivity.this.getApplicationContext(), () ->
+                new BioAuthenticationCallback(LoginActivity.this.getApplicationContext(), () ->
                         handler.post(() -> doLogin(false, useCps, false))
                 );
 
