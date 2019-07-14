@@ -21,7 +21,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
-import org.ea.sqrl.activites.account.AccountOptionsActivity;
 import org.ea.sqrl.activites.base.LoginBaseActivity;
 import org.ea.sqrl.processors.BioAuthenticationCallback;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
@@ -133,11 +132,6 @@ public class LoginActivity extends LoginBaseActivity {
                     doLogin(true, useCps, true);
                 }
             }
-        });
-
-        findViewById(R.id.btnLoginOptions).setOnClickListener(v -> {
-            LoginActivity.this.finish();
-            startActivity(new Intent(this, AccountOptionsActivity.class));
         });
 
         findViewById(R.id.btnLogin).setOnClickListener(v ->

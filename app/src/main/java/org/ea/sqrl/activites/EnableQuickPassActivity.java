@@ -29,9 +29,6 @@ public class EnableQuickPassActivity extends LoginActivity {
         domainText.setText("");
         domainText.setVisibility(GONE);
 
-        Button buttonOptions = rootView.findViewById(R.id.btnLoginOptions);
-        buttonOptions.setVisibility(GONE);
-
         Button buttonLogin = rootView.findViewById(R.id.btnLogin);
         buttonLogin.setText(R.string.enable_text);
     }
