@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -26,6 +28,7 @@ import org.ea.sqrl.processors.CommunicationFlowHandler;
 import org.ea.sqrl.processors.CommunicationHandler;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.IdentitySelector;
+import org.ea.sqrl.utils.RescueCodeInputHelper;
 import org.ea.sqrl.utils.SqrlApplication;
 
 import java.security.KeyStore;
@@ -47,6 +50,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
     private EditText txtLoginPassword;
     private IdentitySelector mIdentitySelector = null;
     private Matcher mSqrlMatcher;
+    private RescueCodeInputHelper mRescueCodeInputHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +61,9 @@ public class UrlLoginActivity extends LoginBaseActivity {
         txtLoginPassword = findViewById(R.id.txtLoginPassword);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
-        final TextView txtUrlLogin = findViewById(R.id.txtSite);
+        final TextView txtSiteDomain = findViewById(R.id.txtSite);
+        final LinearLayout rescueCodeLayout = findViewById(R.id.rescueCodeLayout);
+
         Intent intent = getIntent();
 
         boolean testing = intent.getBooleanExtra("RUNNING_TEST", false);
@@ -74,7 +80,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
             useCps = intent.getBooleanExtra(EXTRA_USE_CPS, true);
 
-            txtUrlLogin.setText(data.getHost());
+            txtSiteDomain.setText(data.getHost());
 
             final String serverData = data.toString();
             communicationFlowHandler.setServerData(serverData);
@@ -94,7 +100,6 @@ public class UrlLoginActivity extends LoginBaseActivity {
                 Log.e(TAG, e.getMessage(), e);
                 return;
             }
-
         }
 
         setupBasePopups(getLayoutInflater());
@@ -142,6 +147,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
             doLoginBiometric();
         }
 
+        rescueCodeLayout.setVisibility(View.GONE);
         configureIdentitySelector(storage);
         setupAdvancedFunctions();
         setupHelp();
@@ -176,9 +182,12 @@ public class UrlLoginActivity extends LoginBaseActivity {
         if(!mDbHelper.hasIdentities()) {
             startActivity(new Intent(this, StartActivity.class));
         } else {
+            useCps = getIntent().getBooleanExtra(EXTRA_USE_CPS, true);
             setupBasePopups(getLayoutInflater());
             SQRLStorage storage = SQRLStorage.getInstance(UrlLoginActivity.this.getApplicationContext());
             configureIdentitySelector(storage).update();
+            setupAdvancedFunctions();
+            setupHelp();
         }
     }
 
@@ -207,22 +216,40 @@ public class UrlLoginActivity extends LoginBaseActivity {
         final ImageView imgAdvancedFunctionsToggle = findViewById(R.id.imgAdvancedFunctionsToggle);
         final TextView txtAdvancedFunctions = findViewById(R.id.txtAdvancedFunctions);
         final RadioGroup radgrpAccountOptions = findViewById(R.id.radgrpAccountOptions);
+        final Button btnLogin = findViewById(R.id.btnLogin);
+
+        mRescueCodeInputHelper = new RescueCodeInputHelper(UrlLoginActivity.this,
+                findViewById(R.id.urlLoginActivityView), btnLogin, false);
+        mRescueCodeInputHelper.setStatusChangedListener(successfullyCompleted ->
+            btnLogin.setEnabled(successfullyCompleted)
+        );
 
         radgrpAccountOptions.setOnCheckedChangeListener((group, checkedId) -> {
-            Button btnLogin = findViewById(R.id.btnLogin);
-
             switch (checkedId) {
                 case R.id.radDisableAccount:
+                    showPasswordLayout();
+                    btnLogin.setEnabled(true);
                     btnLogin.setText(R.string.button_lock_account);
                     break;
+
                 case R.id.radEnableAccount:
+                    showRescueCodeLayout();
+                    mRescueCodeInputHelper.clearForm();
+                    btnLogin.setEnabled(false);
                     btnLogin.setText(R.string.button_unlock_account);
                     break;
+
                 case R.id.radRemoveAccount:
+                    showRescueCodeLayout();
+                    mRescueCodeInputHelper.clearForm();
+                    btnLogin.setEnabled(false);
                     btnLogin.setText(R.string.button_remove_account);
                     break;
+
                 case R.id.radStandardLogin:
                 default:
+                    showPasswordLayout();
+                    btnLogin.setEnabled(true);
                     btnLogin.setText(R.string.button_login);
                     break;
             }
@@ -234,9 +261,29 @@ public class UrlLoginActivity extends LoginBaseActivity {
         advancedFunctionsLayout.setVisibility(View.GONE);
     }
 
+    private void showPasswordLayout() {
+        final LinearLayout rescueCodeLayout = findViewById(R.id.rescueCodeLayout);
+        final TextInputLayout passwordInputLayout = findViewById(R.id.txtLoginPasswordLayout);
+
+        rescueCodeLayout.setVisibility(View.GONE);
+        passwordInputLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void showRescueCodeLayout() {
+        final LinearLayout rescueCodeLayout = findViewById(R.id.rescueCodeLayout);
+        final TextInputLayout passwordInputLayout = findViewById(R.id.txtLoginPasswordLayout);
+
+        rescueCodeLayout.setVisibility(View.VISIBLE);
+        passwordInputLayout.setVisibility(View.GONE);
+
+    }
+
     private View.OnClickListener toggleAdvancedFunctionsListener = (v) -> {
         final ConstraintLayout advancedFunctionsLayout = findViewById(R.id.advancedFunctionsLayout);
         final ImageView imgAdvancedFunctionsToggle = findViewById(R.id.imgAdvancedFunctionsToggle);
+        final TextView txtLoginDescription = findViewById(R.id.txtLoginDescription);
+
+        txtLoginDescription.setVisibility(View.GONE);
 
         if (advancedFunctionsLayout.getVisibility() == View.GONE) {
             advancedFunctionsLayout.setVisibility(View.VISIBLE);
@@ -298,6 +345,7 @@ public class UrlLoginActivity extends LoginBaseActivity {
     }
 
     public void doLogin(boolean useQuickpass, boolean useCps, boolean needsDecryption) {
+        final RadioGroup radgrpAccountOptions = findViewById(R.id.radgrpAccountOptions);
         SQRLStorage storage = SQRLStorage.getInstance(this.getApplicationContext());
 
         long currentId = SqrlApplication.getCurrentId(this.getApplication());
@@ -315,22 +363,12 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
         new Thread(() -> {
             if (needsDecryption) {
-                boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, useQuickpass);
-                if(!decryptionOk) {
-                    showErrorMessage(R.string.decrypt_identity_fail);
-                    handler.post(() -> {
-                        txtLoginPassword.setHint(R.string.login_identity_password);
-                        txtLoginPassword.setText("");
-                        hideProgressPopup();
-                    });
-                    storage.clear();
-                    storage.clearQuickPass();
+                if (!decryptIdentityInternal(storage, useQuickpass)) {
                     return;
                 }
             }
 
             clearQuickPassAfterTimeout();
-
             handler.post(() -> txtLoginPassword.setText(""));
 
             if (this instanceof EnableQuickPassActivity) {
@@ -338,13 +376,11 @@ public class UrlLoginActivity extends LoginBaseActivity {
                 handler.post(() -> {
                     hideProgressPopup();
                     closeActivity();
-                    EnableQuickPassActivity enableQuickPassActivity = (EnableQuickPassActivity)this;
-                    enableQuickPassActivity.finish();
+                    finish();
                 });
                 return;
             }
 
-            final RadioGroup radgrpAccountOptions = findViewById(R.id.radgrpAccountOptions);
             int checkedId = radgrpAccountOptions.getCheckedRadioButtonId();
 
             switch (checkedId) {
@@ -352,10 +388,10 @@ public class UrlLoginActivity extends LoginBaseActivity {
                     configureCommFlowHandlerDisableAccount(storage);
                     break;
                 case R.id.radEnableAccount:
-
+                    configureCommFlowHandlerEnableAccount(storage);
                     break;
                 case R.id.radRemoveAccount:
-
+                    configureCommFlowHandlerRemoveAccount(storage);
                     break;
                 case R.id.radStandardLogin:
                 default:
@@ -370,6 +406,46 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
             communicationFlowHandler.handleNextAction();
         }).start();
+    }
+
+    private boolean decryptIdentityInternal(SQRLStorage storage, boolean useQuickPass) {
+        final RadioGroup radgrpAccountOptions = findViewById(R.id.radgrpAccountOptions);
+
+        if (radgrpAccountOptions.getCheckedRadioButtonId() == R.id.radEnableAccount ||
+                radgrpAccountOptions.getCheckedRadioButtonId() == R.id.radRemoveAccount) {
+
+            try {
+                if (!storage.decryptUnlockKey(mRescueCodeInputHelper.getRescueCodeInput())) {
+                    showErrorMessage(R.string.decrypt_identity_fail);
+                    handler.post(() -> hideProgressPopup());
+                    return false;
+                }
+                storage.reInitializeMasterKeyIdentity();
+                return true;
+            } catch (Exception e) {
+                showErrorMessage(e.getMessage());
+                Log.e(TAG, e.getMessage(), e);
+                this.closeActivity();
+                storage.clear();
+                storage.clearQuickPass();
+                return false;
+            } finally {
+                handler.post(() -> mRescueCodeInputHelper.clearForm());
+            }
+        } else {
+            if(!storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, useQuickPass)) {
+                showErrorMessage(R.string.decrypt_identity_fail);
+                handler.post(() -> {
+                    txtLoginPassword.setHint(R.string.login_identity_password);
+                    txtLoginPassword.setText("");
+                    hideProgressPopup();
+                });
+                storage.clear();
+                storage.clearQuickPass();
+                return false;
+            }
+            return true;
+        }
     }
 
     private void configureCommFlowHandlerStandardLogin(SQRLStorage storage) {
@@ -401,11 +477,58 @@ public class UrlLoginActivity extends LoginBaseActivity {
 
         communicationFlowHandler.setDoneAction(() -> {
             storage.clear();
+            storage.clearQuickPass();
             handler.post(() -> {
                 hideProgressPopup();
                 showInfoMessage(
                         R.string.disable_account_title,
                         R.string.disable_account_successful,
+                        () -> closeActivity()
+                );
+            });
+        });
+    }
+
+    private void configureCommFlowHandlerEnableAccount(SQRLStorage storage) {
+        if(communicationFlowHandler.isUrlBasedLogin()) {
+            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITH_SUK);
+            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.UNLOCK_ACCOUNT_CPS);
+        } else {
+            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITH_SUK_QRCODE);
+            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.UNLOCK_ACCOUNT);
+        }
+
+        communicationFlowHandler.setDoneAction(() -> {
+            storage.clear();
+            handler.post(() -> {
+                hideProgressPopup();
+                showInfoMessage(
+                        R.string.enable_account_title,
+                        R.string.enable_account_successful,
+                        () -> closeActivity()
+                );
+            });
+        });
+    }
+
+    private void configureCommFlowHandlerRemoveAccount(SQRLStorage storage) {
+        if(communicationFlowHandler.isUrlBasedLogin()) {
+            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITH_SUK);
+            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOCK_ACCOUNT_CPS);
+            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.REMOVE_ACCOUNT_CPS);
+        } else {
+            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITH_SUK_QRCODE);
+            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOCK_ACCOUNT);
+            communicationFlowHandler.addAction(CommunicationFlowHandler.Action.REMOVE_ACCOUNT);
+        }
+
+        communicationFlowHandler.setDoneAction(() -> {
+            storage.clear();
+            handler.post(() -> {
+                hideProgressPopup();
+                showInfoMessage(
+                        R.string.remove_account_title,
+                        R.string.remove_account_successful,
                         () -> closeActivity()
                 );
             });
