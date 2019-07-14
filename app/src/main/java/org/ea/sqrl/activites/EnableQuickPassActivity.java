@@ -3,6 +3,7 @@ package org.ea.sqrl.activites;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,9 @@ public class EnableQuickPassActivity extends LoginActivity {
         TextView domainText = rootView.findViewById(R.id.txtSite);
         domainText.setText("");
         domainText.setVisibility(GONE);
+
+        LinearLayout toggleAdvancedFunctionsLayout = rootView.findViewById(R.id.toggleAdvancedFunctionsLayout);
+        toggleAdvancedFunctionsLayout.setVisibility(GONE);
 
         Button buttonLogin = rootView.findViewById(R.id.btnLogin);
         buttonLogin.setText(R.string.enable_text);
