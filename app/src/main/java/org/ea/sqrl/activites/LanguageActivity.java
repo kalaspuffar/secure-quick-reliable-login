@@ -135,8 +135,8 @@ public class LanguageActivity extends CommonBaseActivity {
 
             viewHolder.languageImageView.setImageResource(
                     focusedItem == position ?
-                        android.R.drawable.btn_star_big_on :
-                        android.R.drawable.btn_star_big_off
+                        R.drawable.ic_star_accent_24dp :
+                        R.drawable.ic_star_border_gray_24dp
             );
         }
 
