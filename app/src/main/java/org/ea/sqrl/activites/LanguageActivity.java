@@ -3,6 +3,7 @@ package org.ea.sqrl.activites;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatDelegate;
@@ -137,7 +138,13 @@ public class LanguageActivity extends CommonBaseActivity {
                     focusedItem == position ?
                         R.drawable.ic_star_accent_24dp :
                         R.drawable.ic_star_border_gray_24dp
+                        //R.drawable.ic_check_box_accent_24dp :
+                        //R.drawable.ic_check_box_outline_blank_gray_24dp
             );
+
+            if (focusedItem == position) {
+                languageTextView.setTypeface(languageTextView.getTypeface(), Typeface.BOLD);
+            }
         }
 
         // Returns the total count of items in the list
