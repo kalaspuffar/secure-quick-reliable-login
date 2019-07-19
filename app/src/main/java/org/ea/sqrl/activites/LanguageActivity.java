@@ -138,8 +138,6 @@ public class LanguageActivity extends CommonBaseActivity {
                     focusedItem == position ?
                         R.drawable.ic_star_accent_24dp :
                         R.drawable.ic_star_border_gray_24dp
-                        //R.drawable.ic_check_box_accent_24dp :
-                        //R.drawable.ic_check_box_outline_blank_gray_24dp
             );
 
             if (focusedItem == position) {
