@@ -38,10 +38,6 @@
             android:label="@string/title_activity_show_identity"
             />
         <activity
-            android:name=".activites.identity.ClearIdentityActivity"
-            android:label="@string/title_activity_clear_identity"
-            />
-        <activity
             android:name=".activites.identity.IdentitySettingsActivity"
             android:label="@string/title_activity_identity_settings"
             />

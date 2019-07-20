@@ -37,9 +37,10 @@ import android.widget.TextView;
 
 import org.ea.sqrl.BuildConfig;
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.ClearQuickPassActivity;
+import org.ea.sqrl.activites.SimplifiedActivity;
 import org.ea.sqrl.activites.identity.IdentityManagementActivity;
 import org.ea.sqrl.activites.LanguageActivity;
-import org.ea.sqrl.activites.identity.ClearIdentityActivity;
 import org.ea.sqrl.activites.IntroductionActivity;
 import org.ea.sqrl.database.IdentityDBHelper;
 import org.ea.sqrl.processors.EntropyHarvester;
@@ -373,11 +374,15 @@ public class BaseActivity extends CommonBaseActivity {
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(getString(R.string.notification_identity_unlocked_desc)));
 
-        Intent resultIntent = new Intent(this, ClearIdentityActivity.class);
+        Intent intentClearQuickpass = new Intent(this, ClearQuickPassActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                .setAction(ClearQuickPassActivity.ACTION_CLEAR_QUICK_PASS);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(ClearIdentityActivity.class);
-        stackBuilder.addNextIntent(resultIntent);
+        stackBuilder.addParentStack(SimplifiedActivity.class);
+        stackBuilder.addNextIntent(intentClearQuickpass);
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(
                         0,
