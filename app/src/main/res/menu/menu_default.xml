@@ -4,23 +4,27 @@
     tools:context="org.ea.sqrl.activites.IntroductionActivity">
     <item
         android:id="@+id/action_help"
+        android:icon="@drawable/ic_help_outline_menuiconcolor_24dp"
         android:orderInCategory="90"
         android:title="@string/action_help"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_language"
+        android:icon="@drawable/ic_language_menuiconcolor_24dp"
         android:orderInCategory="90"
         android:title="@string/action_language"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_identity_management"
+        android:icon="@drawable/ic_id_management_menuitemcolor_24dp"
         android:orderInCategory="90"
         android:title="@string/identity_management"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_about"
+        android:icon="@drawable/ic_info_outline_menuitemcolor_24dp"
         android:orderInCategory="100"
         android:title="@string/action_about"
         app:showAsAction="never" />

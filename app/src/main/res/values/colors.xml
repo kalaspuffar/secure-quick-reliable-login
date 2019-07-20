@@ -21,4 +21,6 @@
     <color name="login_advanced_functions_layout_background">#EFEFEF</color>
     <color name="login_advanced_functions_layout_border">@android:color/transparent</color>
 
+    <color name="menu_icon">@color/colorAccent</color>
+
 </resources>
