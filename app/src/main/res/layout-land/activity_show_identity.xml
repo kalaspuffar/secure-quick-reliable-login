@@ -17,6 +17,8 @@
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:contentDescription="@string/show_identity_image_desc"
+        android:background="#FFFFFF"
+        android:padding="20dp"
         app:layout_constraintBottom_toTopOf="@+id/btnCloseIdentity"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
