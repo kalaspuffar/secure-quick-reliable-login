@@ -54,22 +54,19 @@ public class CommunicationFlowHandler {
     private TextView txtErrorMessage;
 
     private Deque<Action> actionStack = new ArrayDeque<>();
-    private ServerSocket server;
     private Runnable doneAction;
     private Runnable errorAction;
     private Handler handler;
     private boolean hasRetried = false;
-    private boolean sentImage = false;
-    private Thread cpsThread;
 
     private static CommunicationFlowHandler instance = null;
+    private CPSServer cpsServer = null;
     private EntropyHarvester entropyHarvester;
     private final CommunicationHandler commHandler;
     private String serverData = null;
     private String queryLink = null;
     private boolean shouldRunServer = false;
     private boolean cpsServerStarted = false;
-    private boolean cancelCPS = false;
     private Activity currentActivity;
 
     private CommunicationFlowHandler(Activity currentActivity, Handler handler) {
@@ -79,6 +76,7 @@ public class CommunicationFlowHandler {
             Log.e(TAG, e.getMessage(), e);
         }
         this.commHandler = CommunicationHandler.getInstance(currentActivity);
+        this.cpsServer = CPSServer.getInstance(this);
         this.currentActivity = currentActivity;
         this.handler = handler;
         this.lastTIF = 0;
@@ -120,22 +118,8 @@ public class CommunicationFlowHandler {
         this.commHandler.setAlternativeId(alternativeId);
     }
 
-    public void waitForCPS(boolean afterConversation) {
-        int time = 0;
-        while (cpsThread.isAlive() && time < 10 && (!sentImage || afterConversation)) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {}
-            time++;
-        }
-    }
-
-    public void waitForTransactionDone() {
-        while (cpsThread.isAlive() && !this.commHandler.hasCPSUrl()) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {}
-        }
+    public CommunicationHandler getCommHandler() {
+        return this.commHandler;
     }
 
     public void handleNextAction() {
@@ -146,9 +130,9 @@ public class CommunicationFlowHandler {
         }
         try {
             if (shouldRunServer && !cpsServerStarted) {
-                cpsServerStarted = startCPSServer(() -> done());
+                cpsServerStarted = cpsServer.start(() -> done());
                 if(!cpsServerStarted) {
-                    cpsThread.interrupt();
+                    cpsServer.interruptServerThread();
                     currentActivity.startActivity(new Intent(currentActivity, CPSMissingActivity.class));
                     return;
                 }
@@ -157,7 +141,7 @@ public class CommunicationFlowHandler {
                 runAction(actionStack.pop());
             } else {
                 if (shouldRunServer) {
-                    waitForCPS(true);
+                    cpsServer.waitForCPS(true);
                 }
                 done();
             }
@@ -272,18 +256,16 @@ public class CommunicationFlowHandler {
         shouldRunServer = false;
         hasRetried = false;
         cpsServerStarted = false;
-        sentImage = false;
         new Thread(doneAction).start();
     }
 
     private void error() {
         if(shouldRunServer && cpsServerStarted) {
-            cancelCPS = true;
+            cpsServer.setCancelCPS(true);
         }
         shouldRunServer = false;
         hasRetried = false;
         cpsServerStarted = false;
-        sentImage = false;
         commHandler.clearLastResponse();
         handler.post(() ->
             errorPopupWindow.showAtLocation(errorPopupWindow.getContentView(), Gravity.CENTER, 0, 0)
@@ -439,111 +421,7 @@ public class CommunicationFlowHandler {
         });
     }
 
-    private Map<String, String> getQueryParams(String data) throws Exception {
-        Map<String, String> params = new HashMap<>();
-        String url = EncryptionUtils.decodeUrlSafeString(data);
-        String query = url.split("\\?")[1];
-        String[] paramArr = query.split("&");
-        for(String s : paramArr) {
-            String[] param = s.split("=");
-            if(param[0].equals("can")) {
-                params.put(param[0], EncryptionUtils.decodeUrlSafeString(param[1]));
-            } else {
-                params.put(param[0], param[1]);
-            }
-        }
-        return params;
-    }
-
-    public void closeServer() {
-        if (server != null) {
-            try {
-                server.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private boolean startCPSServer(Runnable closeScreen) throws Exception {
-        cpsThread = new Thread(() -> {
-            boolean done = false;
-            try {
-                server = new ServerSocket(25519);
-
-                while (!server.isClosed() && !done) {
-                    Socket socket = server.accept();
-                    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-                    String line = in.readLine();
-                    Log.i(TAG, line);
-
-                    if(line.contains("gif HTTP/1.1")) {
-                        byte[] content = EncryptionUtils.decodeUrlSafe(
-                                "R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-                        );
-                        OutputStream os = socket.getOutputStream();
-                        StringBuilder out = new StringBuilder();
-                        out.append("HTTP/1.0 200 OK\r\n");
-                        out.append("Content-Type: image/gif\r\n");
-                        out.append("Content-Length: ").append(content.length).append("\r\n\r\n");
-                        Log.i(TAG, out.toString());
-                        os.write(out.toString().getBytes("UTF-8"));
-                        os.write(content);
-                        os.flush();
-                        os.close();
-                        sentImage = true;
-                    } else {
-                        String[] linearg = line.split(" ");
-                        String data = linearg[1].substring(1);
-
-                        Map<String, String> params = getQueryParams(data);
-                        if(params.containsKey("can")) {
-                            Log.i(TAG, params.get("can"));
-                        }
-
-                        OutputStream os = socket.getOutputStream();
-                        StringBuilder out = new StringBuilder();
-
-                        waitForTransactionDone();
-
-                        out.append("HTTP/1.0 302 Found\r\n");
-                        if(cancelCPS) {
-                            if(params.containsKey("can")) {
-                                out.append("Location: ").append(params.get("can")).append("\r\n\r\n");
-                            } else {
-                                out.append("Location: ").append("https://www.google.com").append("\r\n\r\n");
-                            }
-                        } else {
-                            out.append("Location: ").append(commHandler.getCPSUrl()).append("\r\n\r\n");
-                        }
-                        Log.i(TAG, out.toString());
-                        os.write(out.toString().getBytes("UTF-8"));
-                        os.flush();
-                        os.close();
-                        done = true;
-                    }
-
-                    in.close();
-                    socket.close();
-                }
-            } catch (Exception e) {
-                Log.e(TAG, e.getMessage(), e);
-            }
-
-            if(done) {
-                closeScreen.run();
-            }
-        });
-        cpsThread.start();
-
-        waitForCPS(false);
-
-        if(cpsThread.isAlive() && !sentImage) {
-            return false;
-        }
-        return true;
-    }
+    public void closeCPSServer() { cpsServer.close(); }
 
     public byte[] getDomain() {
         return commHandler.getDomain();
