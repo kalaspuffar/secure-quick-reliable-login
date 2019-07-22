@@ -17,7 +17,6 @@ import org.ea.sqrl.activites.account.DisableAccountActivity;
 import org.ea.sqrl.activites.account.EnableAccountActivity;
 import org.ea.sqrl.activites.account.RemoveAccountActivity;
 import org.ea.sqrl.activites.identity.ChangePasswordActivity;
-import org.ea.sqrl.activites.identity.ClearIdentityActivity;
 import org.ea.sqrl.activites.create.CreateIdentityActivity;
 import org.ea.sqrl.activites.create.EntropyGatherActivity;
 import org.ea.sqrl.activites.IntroductionActivity;
@@ -53,10 +52,6 @@ public class AccessibilityInstrumentedTest {
     @Rule
     public ActivityTestRule<SimplifiedActivity> simplifiedActivityTestRule =
             new ActivityTestRule<>(SimplifiedActivity.class, true, false);
-
-    @Rule
-    public ActivityTestRule<ClearIdentityActivity> clearIdentityActivityRule =
-            new ActivityTestRule<>(ClearIdentityActivity.class, true, false);
 
     @Rule
     public ActivityTestRule<CreateIdentityActivity> createIdentityActivityRule =
@@ -176,19 +171,6 @@ public class AccessibilityInstrumentedTest {
         unlockScreen(a);
 
         onView(withId(R.id.simplifiedActivityView)).perform(click());
-    }
-
-    @Test
-//    @Ignore // Still failing test, not important as it don't have that many elements.
-    public void testClearIdentityActivityAccessibility() throws Exception {
-        Context targetContext = InstrumentationRegistry.getInstrumentation()
-                .getTargetContext();
-        Intent intent = new Intent(targetContext, ClearIdentityActivity.class);
-        intent.putExtra("RUNNING_TEST", true);
-        ClearIdentityActivity a = clearIdentityActivityRule.launchActivity(intent);
-        unlockScreen(a);
-
-        onView(withId(R.id.clearIdentityActivityView)).perform(click());
     }
 
     @Test
