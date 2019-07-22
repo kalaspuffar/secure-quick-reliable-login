@@ -1,8 +1,11 @@
 package org.ea.sqrl.processors;
 
+import android.content.Context;
 import android.util.Log;
 
+import org.ea.sqrl.R;
 import org.ea.sqrl.utils.EncryptionUtils;
+import org.ea.sqrl.utils.Utils;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -13,8 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Provides a minimalistic "web server" on port 25519 to handle
- * SQRL's "Client Provided Session (CPS)" authentication protection.
+ * Provides a minimalistic "web server" on port 25519 to support
+ * SQRL's "Client Provided Session (CPS)" authentication protection mechanism.
  *
  */
 public class CPSServer {
@@ -23,6 +26,7 @@ public class CPSServer {
 
     private static CPSServer mInstance = null;
     private static CommunicationFlowHandler mCommFlowHandler = null;
+    private static Context mContext;
     private ServerSocket mServerSocket;
     private boolean mSentImage = false;
     private Thread mCpsThread;
@@ -30,7 +34,8 @@ public class CPSServer {
 
     private CPSServer() {}
 
-    public static CPSServer getInstance(CommunicationFlowHandler communicationFlowHandler) {
+    public static CPSServer getInstance(Context context, CommunicationFlowHandler communicationFlowHandler) {
+        mContext = context;
         mCommFlowHandler = communicationFlowHandler;
 
         if(mInstance == null) {
@@ -69,53 +74,30 @@ public class CPSServer {
                     Socket socket = mServerSocket.accept();
                     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-                    String line = in.readLine();
-                    Log.i(TAG, line);
+                    String requestLine = in.readLine();
+                    Log.i(TAG, requestLine);
 
-                    if(line.contains("gif HTTP/1.1")) {
-                        byte[] content = EncryptionUtils.decodeUrlSafe(
-                                "R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-                        );
-                        OutputStream os = socket.getOutputStream();
-                        StringBuilder out = new StringBuilder();
-                        out.append("HTTP/1.0 200 OK\r\n");
-                        out.append("Content-Type: image/gif\r\n");
-                        out.append("Content-Length: ").append(content.length).append("\r\n\r\n");
-                        Log.i(TAG, out.toString());
-                        os.write(out.toString().getBytes("UTF-8"));
-                        os.write(content);
-                        os.flush();
-                        os.close();
+                    if(requestLine.contains("gif HTTP/1.1")) {
+                        sendDummyGifImage(socket);
                         mSentImage = true;
                     } else {
-                        String[] linearg = line.split(" ");
-                        String data = linearg[1].substring(1);
-
+                        String[] requestTokens = requestLine.split(" ");
+                        if (requestTokens.length < 2 || requestTokens[1].length() < 2) break;
+                        String data = requestTokens[1].substring(1);
                         Map<String, String> params = getQueryParams(data);
-                        if(params.containsKey("can")) {
-                            Log.i(TAG, params.get("can"));
-                        }
-
-                        OutputStream os = socket.getOutputStream();
-                        StringBuilder out = new StringBuilder();
 
                         waitForTransactionDone();
 
-                        out.append("HTTP/1.0 302 Found\r\n");
                         if(mCancelCPS) {
                             if(params.containsKey("can")) {
-                                out.append("Location: ").append(params.get("can")).append("\r\n\r\n");
+                                send302Redirect(socket, params.get("can"));
                             } else {
-                                out.append("Location: ").append("https://www.google.com").append("\r\n\r\n");
+                                sendConnectionAborted(socket);
                             }
                         } else {
-                            out.append("Location: ").append(mCommFlowHandler.getCommHandler()
-                                    .getCPSUrl()).append("\r\n\r\n");
+                            send302Redirect(socket, mCommFlowHandler.getCommHandler().getCPSUrl());
                         }
-                        Log.i(TAG, out.toString());
-                        os.write(out.toString().getBytes("UTF-8"));
-                        os.flush();
-                        os.close();
+
                         done = true;
                     }
 
@@ -142,6 +124,68 @@ public class CPSServer {
             return false;
         }
         return true;
+    }
+
+    private void sendDummyGifImage(Socket socket) {
+        try {
+            byte[] content = EncryptionUtils.decodeUrlSafe(
+                    "R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+            );
+            OutputStream os = socket.getOutputStream();
+            StringBuilder out = new StringBuilder();
+
+            out.append("HTTP/1.0 200 OK\r\n");
+            out.append("Content-Type: image/gif\r\n");
+            out.append("Content-Length: ").append(content.length).append("\r\n\r\n");
+            Log.i(TAG, out.toString());
+            os.write(out.toString().getBytes("UTF-8"));
+            os.write(content);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendConnectionAborted(Socket socket) {
+        try {
+            byte[] htmlBytes = Utils.getAssetContent(mContext, "cps_cancelled.html");
+            String html = new String(htmlBytes);
+            html = html.replace("{{0}}", mContext.getResources().getString(R.string.cps_auth_aborted_headline));
+            html = html.replace("{{1}}", mContext.getResources().getString(R.string.cps_auth_aborted_description));
+            html = html.replace("{{2}}", mContext.getResources().getString(R.string.cps_auth_aborted_go_back_now));
+            htmlBytes = html.getBytes();
+            OutputStream os = socket.getOutputStream();
+            StringBuilder out = new StringBuilder();
+
+            out.append("HTTP/1.0 200 OK\r\n");
+            out.append("Content-Type: text/html\r\n");
+            out.append("Content-Length: ").append(htmlBytes.length).append("\r\n\r\n");
+            Log.i(TAG, out.toString());
+            os.write(out.toString().getBytes("UTF-8"));
+            os.write(htmlBytes);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void send302Redirect(Socket socket, String redirectUrl) {
+        try {
+            OutputStream os = socket.getOutputStream();
+            StringBuilder out = new StringBuilder();
+
+            out.append("HTTP/1.0 302 Found\r\n");
+            out.append("Location: ").append(redirectUrl).append("\r\n\r\n");
+            Log.i(TAG, out.toString());
+            os.write(out.toString().getBytes("UTF-8"));
+            os.flush();
+            os.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private Map<String, String> getQueryParams(String data) throws Exception {

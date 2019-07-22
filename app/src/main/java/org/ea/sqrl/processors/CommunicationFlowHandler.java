@@ -16,17 +16,9 @@ import android.widget.TextView;
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.CPSMissingActivity;
 import org.ea.sqrl.services.AskDialogService;
-import org.ea.sqrl.utils.EncryptionUtils;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
 
 public class CommunicationFlowHandler {
     private static final String TAG = "CommFlowHandler";
@@ -76,7 +68,7 @@ public class CommunicationFlowHandler {
             Log.e(TAG, e.getMessage(), e);
         }
         this.commHandler = CommunicationHandler.getInstance(currentActivity);
-        this.cpsServer = CPSServer.getInstance(this);
+        this.cpsServer = CPSServer.getInstance(currentActivity, this);
         this.currentActivity = currentActivity;
         this.handler = handler;
         this.lastTIF = 0;
