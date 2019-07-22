@@ -8,6 +8,7 @@ import org.ea.sqrl.utils.EncryptionUtils;
 import org.ea.sqrl.utils.Utils;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ServerSocket;
@@ -45,22 +46,6 @@ public class CPSServer {
         return mInstance;
     }
 
-    public void close() {
-        if (mCpsThread != null) mCpsThread.interrupt();
-
-        if (mServerSocket != null) {
-            try {
-                mServerSocket.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void setCancelCPS(boolean cancelCPS) {
-        mCancelCPS = cancelCPS;
-    }
-
     public boolean start(Runnable doneAction) {
         mCpsThread = new Thread(() -> {
 
@@ -77,6 +62,13 @@ public class CPSServer {
                     String requestLine = in.readLine();
                     Log.i(TAG, requestLine);
 
+                    Map<String, String> headers = parseHeaders(in);
+                    if (headers.containsKey("origin")) {
+                        sendConnectionAbortedPage(socket);
+                        done = true;
+                        break;
+                    }
+
                     if(requestLine.contains("gif HTTP/1.1")) {
                         sendDummyGifImage(socket);
                         mSentImage = true;
@@ -88,16 +80,15 @@ public class CPSServer {
 
                         waitForTransactionDone();
 
-                        if(mCancelCPS) {
-                            if(params.containsKey("can")) {
+                        if (mCancelCPS) {
+                            if (params.containsKey("can")) {
                                 send302Redirect(socket, params.get("can"));
                             } else {
-                                sendConnectionAborted(socket);
+                                sendConnectionAbortedPage(socket);
                             }
                         } else {
                             send302Redirect(socket, mCommFlowHandler.getCommHandler().getCPSUrl());
                         }
-
                         done = true;
                     }
 
@@ -126,6 +117,66 @@ public class CPSServer {
         return true;
     }
 
+    public void close() {
+        if (mCpsThread != null) mCpsThread.interrupt();
+
+        if (mServerSocket != null) {
+            try {
+                mServerSocket.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void interruptServerThread() {
+        mCpsThread.interrupt();
+    }
+
+    public void waitForTransactionDone() {
+        while (mCpsThread.isAlive() && !mCommFlowHandler.getCommHandler().hasCPSUrl()) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {}
+        }
+    }
+
+    public void waitForCPS(boolean afterConversation) {
+        int time = 0;
+        while (mCpsThread.isAlive() && time < 10 && (!mSentImage || afterConversation)) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {}
+            time++;
+        }
+    }
+
+    public void setCancelCPS(boolean cancelCPS) {
+        mCancelCPS = cancelCPS;
+    }
+
+    private Map<String, String> parseHeaders(BufferedReader reader) {
+        Map<String, String> headers = new HashMap<>();
+        String line;
+        int idx;
+
+        try {
+            line = reader.readLine();
+            while (line != null && !line.equals("")) {
+                idx = line.indexOf(':');
+                if (idx < 0) {
+                    break;
+                }
+                else {
+                    headers.put(line.substring(0, idx).toLowerCase(), line.substring(idx+1).trim());
+                }
+                line = reader.readLine();
+            }
+        } catch (IOException e) { }
+
+        return headers;
+    }
+
     private void sendDummyGifImage(Socket socket) {
         try {
             byte[] content = EncryptionUtils.decodeUrlSafe(
@@ -147,7 +198,7 @@ public class CPSServer {
         }
     }
 
-    private void sendConnectionAborted(Socket socket) {
+    private void sendConnectionAbortedPage(Socket socket) {
         try {
             byte[] htmlBytes = Utils.getAssetContent(mContext, "cps_cancelled.html");
             String html = new String(htmlBytes);
@@ -202,27 +253,5 @@ public class CPSServer {
             }
         }
         return params;
-    }
-
-    public void interruptServerThread() {
-        mCpsThread.interrupt();
-    }
-
-    public void waitForTransactionDone() {
-        while (mCpsThread.isAlive() && !mCommFlowHandler.getCommHandler().hasCPSUrl()) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {}
-        }
-    }
-
-    public void waitForCPS(boolean afterConversation) {
-        int time = 0;
-        while (mCpsThread.isAlive() && time < 10 && (!mSentImage || afterConversation)) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {}
-            time++;
-        }
     }
 }
