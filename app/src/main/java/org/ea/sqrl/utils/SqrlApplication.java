@@ -14,7 +14,7 @@ import org.ea.sqrl.R;
 import org.ea.sqrl.activites.SimplifiedActivity;
 import org.ea.sqrl.activites.ClearQuickPassActivity;
 import org.ea.sqrl.activites.EnableQuickPassActivity;
-import org.ea.sqrl.activites.UrlLoginActivity;
+import org.ea.sqrl.activites.LoginActivity;
 import org.ea.sqrl.database.IdentityDBHelper;
 import org.ea.sqrl.processors.EntropyHarvester;
 import org.ea.sqrl.processors.SQRLStorage;
@@ -77,7 +77,7 @@ public class SqrlApplication extends Application {
             Intent intentLogon = new Intent(context, EnableQuickPassActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                    .setAction(UrlLoginActivity.ACTION_QUICKPASS_OPERATION);
+                    .setAction(LoginActivity.ACTION_QUICKPASS_OPERATION);
             Intent[] logonIntentList = {intentLogon};
             logonShortcut = new ShortcutInfo.Builder(context, "setQuickpass")
                     .setShortLabel(context.getString(R.string.set_quickpass))

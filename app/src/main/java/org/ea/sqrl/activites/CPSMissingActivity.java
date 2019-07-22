@@ -21,7 +21,8 @@ public class CPSMissingActivity  extends LoginBaseActivity {
         setContentView(R.layout.activity_cps_missing);
 
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
-        setupBasePopups(getLayoutInflater(), true);
+        communicationFlowHandler.setUrlBasedLogin(true);
+        setupBasePopups(getLayoutInflater());
 
         final TextView txtSite = findViewById(R.id.txtSite);
         txtSite.setText(new String(communicationFlowHandler.getDomain()));

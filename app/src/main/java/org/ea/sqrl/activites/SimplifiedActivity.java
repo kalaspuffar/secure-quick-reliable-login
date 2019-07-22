@@ -41,7 +41,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
         setupErrorPopupWindow(getLayoutInflater());
-        setupBasePopups(getLayoutInflater(), false);
+        setupBasePopups(getLayoutInflater());
 
         mIdentitySelector = new IdentitySelector(this, true,false, true);
         mIdentitySelector.registerLayout(findViewById(R.id.identitySelector));
@@ -70,7 +70,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
                 mIdentitySelector.update();
             }
 
-            setupBasePopups(getLayoutInflater(), false);
+            setupBasePopups(getLayoutInflater());
         }
     }
 
@@ -115,8 +115,8 @@ public class SimplifiedActivity extends LoginBaseActivity {
                 final String serverData = new String(qrCodeData);
                 Intent urlLoginIntent = new Intent(Intent.ACTION_VIEW);
                 urlLoginIntent.setData(Uri.parse(serverData));
-                urlLoginIntent.putExtra(UrlLoginActivity.EXTRA_USE_CPS, false);
-                if (ACTION_QUICK_SCAN.equals(getIntent().getAction())) urlLoginIntent.putExtra(UrlLoginActivity.EXTRA_QUICK_SCAN, true);
+                urlLoginIntent.putExtra(LoginActivity.EXTRA_USE_CPS, false);
+                if (ACTION_QUICK_SCAN.equals(getIntent().getAction())) urlLoginIntent.putExtra(LoginActivity.EXTRA_QUICK_SCAN, true);
                 startActivity(urlLoginIntent);
             }
         }

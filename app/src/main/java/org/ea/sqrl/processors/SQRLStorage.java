@@ -26,6 +26,7 @@ import java.nio.ByteOrder;
 import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.security.spec.RSAKeyGenParameterSpec;
 import java.util.ArrayList;
@@ -775,6 +776,15 @@ public class SQRLStorage {
         editor.remove("quickpass");
         editor.remove("biometricKey");
         editor.apply();
+
+        try {
+            KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+            keyStore.load(null);
+            keyStore.deleteEntry("quickPass");
+
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
 
         NotificationManager notificationManager =
                 (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
