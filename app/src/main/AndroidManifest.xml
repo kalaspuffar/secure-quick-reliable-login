@@ -157,7 +157,7 @@
             />
 
         <activity
-            android:name=".activites.UrlLoginActivity"
+            android:name=".activites.LoginActivity"
             android:label="@string/title_activity_url_login"
             android:noHistory="true"
             android:excludeFromRecents="true"

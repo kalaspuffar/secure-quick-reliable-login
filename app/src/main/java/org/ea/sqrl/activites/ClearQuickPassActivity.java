@@ -3,7 +3,6 @@ package org.ea.sqrl.activites;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import org.ea.sqrl.R;
@@ -20,7 +19,7 @@ public class ClearQuickPassActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_clear_quickpass);
         getWindow().setBackgroundDrawable(new ColorDrawable(0));
 
         SQRLStorage storage = SQRLStorage.getInstance(ClearQuickPassActivity.this.getApplicationContext());

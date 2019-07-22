@@ -1,27 +1,13 @@
 package org.ea.sqrl.activites.base;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.PopupWindow;
 
-import org.ea.sqrl.R;
-import org.ea.sqrl.activites.account.AccountOptionsActivity;
-import org.ea.sqrl.activites.EnableQuickPassActivity;
 import org.ea.sqrl.processors.CommunicationFlowHandler;
-import org.ea.sqrl.processors.SQRLStorage;
-import org.ea.sqrl.utils.SqrlApplication;
 
 import java.util.Map;
 
@@ -38,13 +24,12 @@ public class LoginBaseActivity extends BaseActivity {
     protected CommunicationFlowHandler communicationFlowHandler = null;
 
 
-    protected void setupBasePopups(LayoutInflater layoutInflater, boolean urlBasedLogin) {
+    protected void setupBasePopups(LayoutInflater layoutInflater) {
         boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
         if(runningTest) return;
 
         communicationFlowHandler.setupAskPopupWindow(layoutInflater, handler);
         communicationFlowHandler.setupErrorPopupWindow(layoutInflater);
-        communicationFlowHandler.setUrlBasedLogin(urlBasedLogin);
     }
 
     @Override
@@ -69,69 +54,5 @@ public class LoginBaseActivity extends BaseActivity {
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-    }
-
-    public void doLogin(SQRLStorage storage, EditText txtLoginPassword, boolean usedQuickpass,
-                        boolean usedCps, boolean needsDecryption, Activity activityToFinish, Context context) {
-        handler.post(() -> {
-            showProgressPopup();
-            closeKeyboard();
-
-            new Thread(() -> {
-                if (needsDecryption) {
-                    boolean decryptionOk = storage.decryptIdentityKey(txtLoginPassword.getText().toString(), entropyHarvester, usedQuickpass);
-                    if(!decryptionOk) {
-                        showErrorMessage(R.string.decrypt_identity_fail);
-                        handler.post(() -> {
-                            txtLoginPassword.setHint(R.string.login_identity_password);
-                            txtLoginPassword.setText("");
-                            hideProgressPopup();
-                        });
-                        storage.clear();
-                        storage.clearQuickPass();
-                        return;
-                    }
-                }
-
-                clearQuickPassDelayed();
-
-                handler.post(() -> txtLoginPassword.setText(""));
-
-                if (context instanceof EnableQuickPassActivity) {
-                    storage.clear();
-                    handler.post(() -> {
-                        hideProgressPopup();
-                        closeActivity();
-                        EnableQuickPassActivity enableQuickPassActivity = (EnableQuickPassActivity)context;
-                        enableQuickPassActivity.finish();
-                    });
-                    return;
-                }
-
-                if (usedCps) {
-                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK);
-                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN_CPS);
-                } else {
-                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.QUERY_WITHOUT_SUK_QRCODE);
-                    communicationFlowHandler.addAction(CommunicationFlowHandler.Action.LOGIN);
-                }
-
-                communicationFlowHandler.setDoneAction(() -> {
-                    storage.clear();
-                    handler.post(() -> {
-                        hideProgressPopup();
-                        closeActivity();
-                    });
-                    if (activityToFinish != null) activityToFinish.finish();
-                });
-
-                communicationFlowHandler.setErrorAction(() -> {
-                    storage.clear();
-                    handler.post(() -> hideProgressPopup());
-                });
-
-                communicationFlowHandler.handleNextAction();
-            }).start();
-        }) ;
     }
 }

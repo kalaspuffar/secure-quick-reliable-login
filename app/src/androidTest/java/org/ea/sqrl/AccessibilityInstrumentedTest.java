@@ -34,7 +34,7 @@ import org.ea.sqrl.activites.identity.RenameActivity;
 import org.ea.sqrl.activites.identity.ResetPasswordActivity;
 import org.ea.sqrl.activites.identity.ShowIdentityActivity;
 import org.ea.sqrl.activites.StartActivity;
-import org.ea.sqrl.activites.UrlLoginActivity;
+import org.ea.sqrl.activites.LoginActivity;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -111,8 +111,8 @@ public class AccessibilityInstrumentedTest {
             new ActivityTestRule<>(StartActivity.class, true, false);
 
     @Rule
-    public ActivityTestRule<UrlLoginActivity> urlLoginActivityRule =
-            new ActivityTestRule<>(UrlLoginActivity.class, true, false);
+    public ActivityTestRule<LoginActivity> loginActivityRule =
+            new ActivityTestRule<>(LoginActivity.class, true, false);
 
     @Rule
     public ActivityTestRule<ChangePasswordActivity> changePasswordActivityRule =
@@ -338,15 +338,15 @@ public class AccessibilityInstrumentedTest {
     }
 
     @Test
-    public void testUrlLoginActivityAccessibility() throws Exception {
+    public void testLoginActivityAccessibility() throws Exception {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
-        Intent intent = new Intent(targetContext, UrlLoginActivity.class);
+        Intent intent = new Intent(targetContext, LoginActivity.class);
         intent.putExtra("RUNNING_TEST", true);
-        UrlLoginActivity a = urlLoginActivityRule.launchActivity(intent);
+        LoginActivity a = loginActivityRule.launchActivity(intent);
         unlockScreen(a);
 
-        onView(withId(R.id.urlLoginActivityView)).perform(click());
+        onView(withId(R.id.loginActivityView)).perform(click());
     }
 
     @Test
