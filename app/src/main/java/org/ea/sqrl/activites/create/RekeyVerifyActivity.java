@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
@@ -33,7 +32,7 @@ public class RekeyVerifyActivity extends LoginBaseActivity {
         setupErrorPopupWindow(getLayoutInflater());
 
         rootView = findViewById(R.id.rekeyVerifyActivityView);
-        final TextView txtTooManyRekey = findViewById(R.id.txtTooManyRekey);
+        final TextView txtTooManyRekeyAttempts = findViewById(R.id.txtTooManyRekeyAttempts);
         final Button btnRekeyIdentityStart = findViewById(R.id.btnRekeyIdentityStart);
 
         RescueCodeInputHelper rescueCodeInputHelper = new RescueCodeInputHelper(
@@ -43,7 +42,7 @@ public class RekeyVerifyActivity extends LoginBaseActivity {
         });
 
         if(storage.hasAllPreviousKeys()) {
-            txtTooManyRekey.setVisibility(View.VISIBLE);
+            txtTooManyRekeyAttempts.setVisibility(View.VISIBLE);
         }
 
         btnRekeyIdentityStart.setEnabled(false);
