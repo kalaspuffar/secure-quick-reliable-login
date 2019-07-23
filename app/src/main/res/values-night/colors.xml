@@ -21,6 +21,6 @@
     <color name="login_advanced_functions_layout_background">@android:color/transparent</color>
     <color name="login_advanced_functions_layout_border">#B1BCBE</color>
 
-    <color name="menu_icon">@color/colorAccent</color>
+    <color name="menu_icon">#FFFFFF</color>
 
 </resources>
