@@ -251,7 +251,9 @@ public class CommunicationFlowHandler {
                 commHandler.isTIFBitSet(CommunicationHandler.TIF_CLIENT_FAILURE) ||
                 commHandler.isTIFBitSet(CommunicationHandler.TIF_COMMAND_FAILED) ||
                 commHandler.isTIFBitSet(CommunicationHandler.TIF_BAD_ID_ASSOCIATION)
-            ) && commHandler.getTif() != lastTIF
+            ) &&
+            commHandler.getTif() != lastTIF &&
+            !commHandler.getQueryLink().isEmpty()
         ) {
             actionStack.push(a);
             lastTIF = commHandler.getTif();
@@ -262,6 +264,10 @@ public class CommunicationFlowHandler {
 
         if(commHandler.hasAskQuestion() && this.actionStack.isEmpty()) {
             this.actionStack.add(Action.QUERY_WITHOUT_SUK);
+        }
+
+        if(commHandler.getQueryLink().isEmpty()) {
+            this.actionStack.clear();
         }
 
         commHandler.setAskAction(this::handleNextAction);
