@@ -25,8 +25,8 @@ import java.util.Arrays;
  *
  * @author Daniel Persson
  */
-public class SimplifiedActivity extends LoginBaseActivity {
-    private static final String TAG = "SimplifiedActivity";
+public class MainActivity extends LoginBaseActivity {
+    private static final String TAG = "MainActivity";
 
     public static final String ACTION_QUICK_SCAN = "org.ea.sqrl.activites.QUICK_SCAN";
 
@@ -35,9 +35,9 @@ public class SimplifiedActivity extends LoginBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_simplified);
+        setContentView(R.layout.activity_main);
 
-        rootView = findViewById(R.id.simplifiedActivityView);
+        rootView = findViewById(R.id.mainActivityView);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
         setupErrorPopupWindow(getLayoutInflater());
@@ -79,7 +79,7 @@ public class SimplifiedActivity extends LoginBaseActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result != null) {
             if(result.getContents() == null) {
-                Log.d("SimplifiedActivity", "Cancelled scan");
+                Log.d("MainActivity", "Cancelled scan");
                 Snackbar.make(rootView, R.string.scan_cancel, Snackbar.LENGTH_LONG).show();
                 if(!mDbHelper.hasIdentities()) {
                     startActivity(new Intent(this, StartActivity.class));

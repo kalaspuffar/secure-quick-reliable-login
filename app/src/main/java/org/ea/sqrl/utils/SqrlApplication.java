@@ -11,7 +11,7 @@ import android.os.Build;
 import android.util.Log;
 
 import org.ea.sqrl.R;
-import org.ea.sqrl.activites.SimplifiedActivity;
+import org.ea.sqrl.activites.MainActivity;
 import org.ea.sqrl.activites.ClearQuickPassActivity;
 import org.ea.sqrl.activites.EnableQuickPassActivity;
 import org.ea.sqrl.activites.LoginActivity;
@@ -64,9 +64,9 @@ public class SqrlApplication extends Application {
 
     public static void configureShortcuts(Context context) {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Intent intentQuickScan = new Intent(context, SimplifiedActivity.class)
+            Intent intentQuickScan = new Intent(context, MainActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                    .setAction(SimplifiedActivity.ACTION_QUICK_SCAN);
+                    .setAction(MainActivity.ACTION_QUICK_SCAN);
             scanShortcut = new ShortcutInfo.Builder(context, "scanQrWeb")
                     .setShortLabel(context.getString(R.string.scan_qr_code))
                     .setLongLabel(context.getString(R.string.scan_qr_code_long))
@@ -86,7 +86,7 @@ public class SqrlApplication extends Application {
                     .setIntents(logonIntentList)
                     .build();
 
-            Intent simplifiedActivity = new Intent(context, SimplifiedActivity.class)
+            Intent mainActivity = new Intent(context, MainActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                     .setAction("android.intent.action.MAIN");
             Intent intentClearQuickpass = new Intent(context, ClearQuickPassActivity.class)
@@ -94,7 +94,7 @@ public class SqrlApplication extends Application {
                     .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
                     .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     .setAction(ClearQuickPassActivity.ACTION_CLEAR_QUICK_PASS);
-            Intent[] clearQuickPassIntentList = {simplifiedActivity, intentClearQuickpass};
+            Intent[] clearQuickPassIntentList = {mainActivity, intentClearQuickpass};
             clearQuickPassShortcut = new ShortcutInfo.Builder(context, "clearQuickpass")
                     .setShortLabel(context.getString(R.string.clear_quickpass))
                     .setLongLabel(context.getString(R.string.clear_quickpass_long))
