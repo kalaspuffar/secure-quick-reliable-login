@@ -8,6 +8,7 @@ import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
 import android.os.Build;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 
 import org.ea.sqrl.R;
@@ -35,6 +36,7 @@ public class SqrlApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         configureShortcuts(getApplicationContext());
         setApplicationShortcuts(getApplicationContext());
         try {
