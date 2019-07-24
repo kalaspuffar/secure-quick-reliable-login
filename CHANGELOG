@@ -1,3 +1,22 @@
+Version 1.4.0
+
+Bugfix
+* Better clearing of QuickPass
+
+Improvements
+* Improved login dialog
+    * Alternative ID can now easily be used with disable, remove and enable.
+    * Handling disable, enable and remove directly
+    * Added help texts and cleaner flow.
+* Improved design on multiple activities
+    * Language selection
+    * Rekey presentation and entering
+    * CPS Missing
+    * New identity done
+* Adaptive icons for all versions of Android
+* Improved CPS flow with simple page when cancelation address missing
+* Code clean-up and improved readability.
+
 Version 1.3.0
 
 Improvement
