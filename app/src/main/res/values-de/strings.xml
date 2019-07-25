@@ -87,13 +87,13 @@
 <string name="login_identity_password">Passwort</string>
 <string name="main_identity_removed">Identität gelöscht</string>
 <string name="button_lock_account">Konto sperren</string>
-<string name="button_unlock_account">Konto entsperren</string>
+<string name="button_unlock_account">Konto aktivieren</string>
 <string name="button_remove_account">Konto löschen</string>
 <string name="login_optional_options">Andere Optionen</string>
 <string name="button_login_options">Optionen</string>
 <string name="disable_account_title">Konto sperren</string>
 <string name="button_disable_account">Sperren</string>
-<string name="enable_account_title">Konto entsperren</string>
+<string name="enable_account_title">Konto aktivieren</string>
 <string name="button_enable_account_enable">Entsperren</string>
 <string name="remove_account_title">Konto löschen</string>
 <string name="button_remove_account_remove">Löschen</string>
@@ -184,7 +184,7 @@
 <string name="login_identity_quickpass">Passwort (Erste %s Zeichen)</string>
 <string name="title_change_password">SQRL - Passwort ändern</string>
 <string name="title_reset_password">SQRL - Passwort zurücksetzen</string>
-<string name="title_disable_account">SQRL - Konto deaktivieren</string>
+<string name="title_disable_account">SQRL - Konto sperren</string>
 <string name="title_enable_account">SQRL - Konto aktivieren</string>
 <string name="title_remove_account">SQRL - Konto löschen</string>
 <string name="title_rename_identity">SQRL - Identität umbenennen</string>
@@ -281,7 +281,15 @@
 <string name="language_polish">Polnisch</string>
 <string name="language_finnish">Finnisch</string>
 <string name="account_missing">Kein Konto am Server gefunden</string>
-<string name="disable_account_successful">Das Konto ist deaktiviert</string>
-<string name="enable_account_successful">Das Konto ist aktiviert</string>
-<string name="remove_account_successful">Das Konto ist gelöscht</string>
+<string name="disable_account_successful">Das Konto wurde deaktiviert</string>
+<string name="enable_account_successful">Das Konto wurde aktiviert</string>
+<string name="remove_account_successful">Das Konto wurde gelöscht</string>
+<string name="standard_login">Standard-Login</string>
+<string name="helptext_alterate_id">Normalerweise ist es ausreichend und auch wünschenswert, dass SQRL jeder Webseite nur eine Benutzer-Identität präsentiert. Für diese normale Anwendung werden keine alternativen Identitäten benötigt und das Feld \"Alternative Identität\" sollte leer bleiben.\n\nEs kann aber durchaus Situationen geben, in denen es für einen SQRL-Nutzer wünschenswert ist, einer einzelnen Webseite eine alternative Identität zu präsentieren. Dies kann ein einmaliges Ereignis sein, bei dem man auf einer Webseite lieber anonym bleiben und daher eine Identität nutzen möchte, welche die Webseite noch nie zuvor gesehen hat und vielleicht auch nie wieder sehen wird, oder der Nutzer macht längerfristigen oder gar permanenten Gebrauch von alternativen Identitäten.\n\nObwohl alternative Identitäten dazu benützt werden können, permanente Identitäten zu erstellen, wäre eine Alternative dazu, eine oder mehrere Standard-SQRL-Identitäten zu erstellen. Auch wenn diese Vorgehensweise etwas mühsamer erscheinen mag, kann es für manche Benutzer oder Anwendungsfälle die angemessenere Lösung sein.\n\nJede in das Feld \"Alternative Identität\" eingegebene Zeichenfolge sorgt dafür, dass der Webseite eine einzigartige und und nicht zuordenbare Identität präsentiert wird. Es ist für die Webseite unmöglich, diese alternative Identität mit der normalen Identität in Verbindung zu bringen.\n\nEs ist durchaus angebracht, diese Zeichenfolge als den Namen der alternativen Identität anzusehen, denn jedes Mal, wenn die selbe Zeichenfolge angegeben wird, wird auch die selbe Identität generiert. Es können grundsätzliche beliebige Zeichen verwendet werden, aber da man sich diese merken muss, falls diese alternative Identität in Zukunft noch einmal verwendet werden sollte, ist es ratsam, eine sprechenden und leicht zu merkenden Namen zu verwenden.\n\nBei Alternativen Identitäten wird zwischen Groß- und Kleinschreibung unterschieden, deren Namen müssen also exakt gleich wiederverwendet werden.  Es ist ratsam, sich alternative Identitäten, die zukünftig wiederverwendet werden sollten, zu notieren.\n\nBitte beachten Sie auch, dass SQRL keine alternativen Identitäten speichert. Diese werden nach jedem Gebrauch gelöscht und müssen jedes Mal wieder eingegeben werden, wenn die normale Identität temporär durch die alternative Identität übersteuert werden soll.</string>
+<string name="helptext_disable_account">Auch wenn bei SQRL jeder nur denkbare Schutzmechanismus zum Einsatz kommt, ist es trotzdem vorstellbar, dass jemand irgendwie Zugriff auf Ihre SQRL-Identität erlangt. Um vor einer unautorisierten Nutzung zu schützen, kann jeder Webseite die Anordnung erteilt werden, die Erkennung Ihrer Identität zu sperren. Auf diese Weise können Sie den SQRL-Zugang zu Ihren wichtigsten Accounts blockieren. Indem Sie dies tun, sperren Sie natürlich auch Ihren eigenen Zugang mittels SQRL, damit aber auch den Zugang für jeden anderen, der sich Zugang zu Ihrer SQRL-Identität verschafft haben könnte. Mit anderen Worten, Sie können sich mit SQRL nicht bei gesperrten Accounts anmelden, aber genauso wenig kann es jeder andere.\n\nNur ein SQRL-Client, der mit dem geheimen Rettungs-Schlüssel (\"Rescue Code\") entsperrt wurde, kann eine gesperrte Webseite wieder für den Zugang durch SQRL freigeben, oder die kompromittierte Identität durch eine andere ersetzen.  Dieser geheime Rettungs-Schlüssel (\"Rescue Code\") kann nie gestohlen oder versehentlich preisgegeben werden, weil er nie innerhalb der SQRL-Anwendung vorgehalten und nie auf irgendein Speichermedium geschrieben wird.\n\nDa das Entsperren einer Webseite für Ihre Identität nur durch die Eingabe des Rettungs-Schlüssels (\"Rescue Code\") möglich ist, sollten Sie sicher sein, dass Sie Zugang zum Rettungs-Schlüssel haben, bevor Sie den Zugang sperren.</string>
+<string name="helptext_enable_account">Wenn Sie zuvor den SQRL-Zugang für eine bestimmte Webseite gesperrt haben, können Sie ihn mit dieser Funktion wieder aktivieren.\n\nBitte beachten Sie, dass dieser Vorgang die Eingabe des geheimen Sicherungs-Schlüssels (\"Rescue Code\") erfordert, den Sie bei der Erstellung der Identität erhalten haben.</string>
+<string name="helptext_remove_account">Es gibt mehrere Gründe, warum Sie es wünschen könnten, Ihre SQRL-Identität gänzlich von einer Webseite zu löschen:\n\nSie könnten es vorziehen, damit aufzuhören, sich mittels SQRL bei einer bestimmten Webseite anzumelden. In diesem Fall können Sie, wenn es auch nicht wirklich nötig ist, Ihre SQRL-Identität permanent von dieser Webseite löschen.\n\nOder Sie könnten eine einzelne SQRL-Identität mit anderen teilen wollen, möchten aber eine oder mehrere Webseiten für andere Nutzer dieser Identität unzugänglich machen.\n\nOder Sie könnten es wünschen, die Anmeldung zu einer bestimmten Webseite an eine andere SQRL-Identität zu übertragen. Solange diese Webseite keine mehrfachen SQRL-Identitäten unterstützt, müssten Sie Ihre aktuelle Identität zuerst von dieser Webseite löschen, bevor Sie die neue hinzufügen können.\n\nUm diesen Transfer-Prozess zu vereinfachen, wird das Löschen Ihrer SQRL-Identität Ihre aktuelle Browser-Session eingeloggt belassen, so dass eine andere SQRL-Identität sofort hinzugefügt werden kann. Dies könnte wichtig sein, falls die Webseite ausschließlich SQRL-Anmeldung unterstützt.\n\nUm einem mutwilligen Austausch Ihrer Identität vorzubeugen, erfordert die Löschung einer Identität die zusätzliche Sicherheit des zur Identität gehörigen Rettungs-Schlüssels (\"Rescue Code\"). Wenn der Rettungs-Schlüssel nicht bereits in den SQRL-Client geladen wurde, werden Sie dazu aufgefordert, diesen einzugeben, bevor Sie mit der Anmeldung und dem Löschen der Identität fortfahren.</string>
+<string name="cps_auth_aborted_headline">Authentication aborted</string>
+<string name="cps_auth_aborted_description">SQRL\'s CPS authentication has been aborted. You will be automatically sent back to the previous page in a few seconds. If this does not work, please press your browser\'s \"BACK\" button or click on the link below.</string>
+<string name="cps_auth_aborted_go_back_now">Go back now</string>
 </resources>
