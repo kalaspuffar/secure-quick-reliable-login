@@ -13,6 +13,7 @@ Improvements
     * Rekey presentation and entering
     * CPS Missing
     * New identity done
+* Added icons to improve menu selection
 * Adaptive icons for all versions of Android
 * Improved CPS flow with simple page when cancelation address missing
 * Code clean-up and improved readability.
