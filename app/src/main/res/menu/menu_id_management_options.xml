@@ -6,29 +6,34 @@
         android:id="@+id/action_idm_settings"
         android:orderInCategory="90"
         android:title="@string/button_settings"
+        android:icon="@drawable/ic_settings_menuiconcolor_24dp"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_idm_rename"
         android:orderInCategory="90"
         android:title="@string/button_rename_identity"
+        android:icon="@drawable/ic_rename_color_menuiconcolor_24dp"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_idm_remove"
         android:orderInCategory="90"
         android:title="@string/button_remove_identity"
+        android:icon="@drawable/ic_delete_menuiconcolor_24dp"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_idm_export"
         android:orderInCategory="90"
         android:title="@string/button_export_identity"
+        android:icon="@drawable/ic_export_menuiconcolor_24dp"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_idm_password_options"
         android:orderInCategory="90"
         android:title="@string/action_password_options"
+        android:icon="@drawable/ic_password_menuiconcolor_24dp"
         app:showAsAction="never" />
 
 </menu>

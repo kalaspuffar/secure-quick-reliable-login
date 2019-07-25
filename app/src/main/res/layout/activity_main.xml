@@ -2,11 +2,11 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/simplifiedActivityView"
+    android:id="@+id/mainActivityView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context="org.ea.sqrl.activites.SimplifiedActivity">
+    tools:context="org.ea.sqrl.activites.MainActivity">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/linearLayout2"
@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <include layout="@layout/fragment_identity_selector_simplified"
+        <include layout="@layout/fragment_identity_selector_main_activity"
             android:id="@+id/identitySelector"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
