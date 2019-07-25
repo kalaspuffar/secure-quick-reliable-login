@@ -147,7 +147,7 @@ public class Utils {
                     break;
                 }
             }
-        } catch (Exception e) {e.printStackTrace(); 
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
     public static byte[] readFullInputStreamBytes(InputStream inputStream) {
