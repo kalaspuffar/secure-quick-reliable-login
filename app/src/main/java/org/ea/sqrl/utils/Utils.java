@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.v7.widget.PopupMenu;
 
 import com.google.zxing.FormatException;
 
@@ -19,6 +20,8 @@ import org.ea.sqrl.processors.SQRLStorage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Locale;
 
 import static android.content.pm.PackageManager.GET_META_DATA;
@@ -129,6 +132,22 @@ public class Utils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static void enablePopupMenuIcons(PopupMenu popup) {
+        try {
+            Field[] fields = popup.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                if ("mPopup".equals(field.getName())) {
+                    field.setAccessible(true);
+                    Object menuPopupHelper = field.get(popup);
+                    Class<?> classPopupHelper = Class.forName(menuPopupHelper.getClass().getName());
+                    Method setForceIcons = classPopupHelper.getMethod("setForceShowIcon", boolean.class);
+                    setForceIcons.invoke(menuPopupHelper, true);
+                    break;
+                }
+            }
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
     public static byte[] readFullInputStreamBytes(InputStream inputStream) {

@@ -4,13 +4,10 @@ package org.ea.sqrl.utils;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -227,6 +224,7 @@ public class IdentitySelector {
         @Override
         public void onClick(View v) {
             PopupMenu popup = new PopupMenu(mContext, mImgIdentityOptions);
+            Utils.enablePopupMenuIcons(popup);
             popup.getMenuInflater()
                     .inflate(R.menu.menu_id_management_options, popup.getMenu());
 
@@ -260,6 +258,7 @@ public class IdentitySelector {
 
     private void showPasswordOptionsMenu() {
         PopupMenu popup = new PopupMenu(mContext, mImgIdentityOptions);
+        Utils.enablePopupMenuIcons(popup);
         popup.getMenuInflater()
                 .inflate(R.menu.menu_id_password_options, popup.getMenu());
 

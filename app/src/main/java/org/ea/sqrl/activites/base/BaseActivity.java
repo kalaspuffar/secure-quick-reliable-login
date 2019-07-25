@@ -30,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
@@ -49,6 +50,8 @@ import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.services.ClearIdentityReceiver;
 import org.ea.sqrl.services.ClearIdentityService;
 import org.ea.sqrl.utils.SqrlApplication;
+
+import java.lang.reflect.Method;
 
 /**
  * This base activity is inherited by all other activities that need logic used for menus,
@@ -140,6 +143,23 @@ public class BaseActivity extends CommonBaseActivity {
         }
 
         return true;
+    }
+
+    @Override
+    protected boolean onPrepareOptionsPanel(View view, Menu menu) {
+        if (menu != null) {
+            if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
+                try {
+                    Method m = menu.getClass().getDeclaredMethod(
+                            "setOptionalIconsVisible", Boolean.TYPE);
+                    m.setAccessible(true);
+                    m.invoke(menu, true);
+                } catch (Exception e) {
+                    Log.e(getClass().getSimpleName(), "onMenuOpened...unable to set icons for overflow menu", e);
+                }
+            }
+        }
+        return super.onPrepareOptionsPanel(view, menu);
     }
 
     @Override
