@@ -44,7 +44,7 @@ public class LoginBaseActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         if(communicationFlowHandler != null) {
-            communicationFlowHandler.closeServer();
+            communicationFlowHandler.closeCPSServer();
         }
     }
 
