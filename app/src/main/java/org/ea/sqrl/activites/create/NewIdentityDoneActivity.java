@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.ea.sqrl.R;
-import org.ea.sqrl.activites.SimplifiedActivity;
+import org.ea.sqrl.activites.MainActivity;
 import org.ea.sqrl.activites.identity.ExportOptionsActivity;
 import org.ea.sqrl.activites.base.LoginBaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
@@ -48,7 +48,7 @@ public class NewIdentityDoneActivity extends LoginBaseActivity {
                     } else {
                         this.finishAffinity();
                     }
-                    startActivity(new Intent(this, SimplifiedActivity.class));
+                    startActivity(new Intent(this, MainActivity.class));
                 }
         );
     }

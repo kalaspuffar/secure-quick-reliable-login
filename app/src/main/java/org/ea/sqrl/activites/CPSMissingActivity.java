@@ -53,7 +53,7 @@ public class CPSMissingActivity  extends LoginBaseActivity {
 
         final Button btnCPSCancel = findViewById(R.id.btnCPSCancel);
         btnCPSCancel.setOnClickListener(v -> {
-            startActivity(new Intent(this, SimplifiedActivity.class));
+            startActivity(new Intent(this, MainActivity.class));
             this.finish();
         });
     }

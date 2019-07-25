@@ -11,11 +11,7 @@ import android.view.WindowManager;
 
 import org.ea.sqrl.activites.identity.IdentityManagementActivity;
 import org.ea.sqrl.activites.LanguageActivity;
-import org.ea.sqrl.activites.SimplifiedActivity;
-import org.ea.sqrl.activites.account.AccountOptionsActivity;
-import org.ea.sqrl.activites.account.DisableAccountActivity;
-import org.ea.sqrl.activites.account.EnableAccountActivity;
-import org.ea.sqrl.activites.account.RemoveAccountActivity;
+import org.ea.sqrl.activites.MainActivity;
 import org.ea.sqrl.activites.identity.ChangePasswordActivity;
 import org.ea.sqrl.activites.create.CreateIdentityActivity;
 import org.ea.sqrl.activites.create.EntropyGatherActivity;
@@ -50,8 +46,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 @RunWith(AndroidJUnit4.class)
 public class AccessibilityInstrumentedTest {
     @Rule
-    public ActivityTestRule<SimplifiedActivity> simplifiedActivityTestRule =
-            new ActivityTestRule<>(SimplifiedActivity.class, true, false);
+    public ActivityTestRule<MainActivity> mainActivityTestRule =
+            new ActivityTestRule<>(MainActivity.class, true, false);
 
     @Rule
     public ActivityTestRule<CreateIdentityActivity> createIdentityActivityRule =
@@ -118,18 +114,6 @@ public class AccessibilityInstrumentedTest {
             new ActivityTestRule<>(ResetPasswordActivity.class, true, false);
 
     @Rule
-    public ActivityTestRule<DisableAccountActivity> disableAccountActivityRule =
-            new ActivityTestRule<>(DisableAccountActivity.class, true, false);
-
-    @Rule
-    public ActivityTestRule<EnableAccountActivity> enableAccountActivityRule =
-            new ActivityTestRule<>(EnableAccountActivity.class, true, false);
-
-    @Rule
-    public ActivityTestRule<RemoveAccountActivity> removeAccountActivityRule =
-            new ActivityTestRule<>(RemoveAccountActivity.class, true, false);
-
-    @Rule
     public ActivityTestRule<RenameActivity> renameIdentityActivityRule =
             new ActivityTestRule<>(RenameActivity.class, true, false);
 
@@ -140,10 +124,6 @@ public class AccessibilityInstrumentedTest {
     @Rule
     public ActivityTestRule<ImportActivity> importActivityRule =
             new ActivityTestRule<>(ImportActivity.class, true, false);
-
-    @Rule
-    public ActivityTestRule<AccountOptionsActivity> accountOptionsActivityRule =
-            new ActivityTestRule<>(AccountOptionsActivity.class, true, false);
 
     @Rule
     public ActivityTestRule<LanguageActivity> languageActivityRule =
@@ -165,12 +145,12 @@ public class AccessibilityInstrumentedTest {
     public void testAdvancedActivityAccessibility() throws Exception {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
-        Intent intent = new Intent(targetContext, SimplifiedActivity.class);
+        Intent intent = new Intent(targetContext, MainActivity.class);
         intent.putExtra("RUNNING_TEST", true);
-        SimplifiedActivity a = simplifiedActivityTestRule.launchActivity(intent);
+        MainActivity a = mainActivityTestRule.launchActivity(intent);
         unlockScreen(a);
 
-        onView(withId(R.id.simplifiedActivityView)).perform(click());
+        onView(withId(R.id.mainActivityView)).perform(click());
     }
 
     @Test
@@ -356,42 +336,6 @@ public class AccessibilityInstrumentedTest {
     }
 
     @Test
-    public void disableAccountActivityAccessibility() throws Exception {
-        Context targetContext = InstrumentationRegistry.getInstrumentation()
-                .getTargetContext();
-        Intent intent = new Intent(targetContext, DisableAccountActivity.class);
-        intent.putExtra("RUNNING_TEST", true);
-        DisableAccountActivity a = disableAccountActivityRule.launchActivity(intent);
-        unlockScreen(a);
-
-        onView(withId(R.id.disableAccountActivityView)).perform(click());
-    }
-
-    @Test
-    public void enableAccountActivityAccessibility() throws Exception {
-        Context targetContext = InstrumentationRegistry.getInstrumentation()
-                .getTargetContext();
-        Intent intent = new Intent(targetContext, EnableAccountActivity.class);
-        intent.putExtra("RUNNING_TEST", true);
-        EnableAccountActivity a = enableAccountActivityRule.launchActivity(intent);
-        unlockScreen(a);
-
-        onView(withId(R.id.enableAccountActivityView)).perform(click());
-    }
-
-    @Test
-    public void removeAccountActivityAccessibility() throws Exception {
-        Context targetContext = InstrumentationRegistry.getInstrumentation()
-                .getTargetContext();
-        Intent intent = new Intent(targetContext, RemoveAccountActivity.class);
-        intent.putExtra("RUNNING_TEST", true);
-        RemoveAccountActivity a = removeAccountActivityRule.launchActivity(intent);
-        unlockScreen(a);
-
-        onView(withId(R.id.removeAccountActivityView)).perform(click());
-    }
-
-    @Test
     public void renameIdentityActivityAccessibility() throws Exception {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
@@ -425,18 +369,6 @@ public class AccessibilityInstrumentedTest {
         unlockScreen(a);
 
         onView(withId(R.id.importActivityView)).perform(click());
-    }
-
-    @Test
-    public void accountOptionsActivityAccessibility() throws Exception {
-        Context targetContext = InstrumentationRegistry.getInstrumentation()
-                .getTargetContext();
-        Intent intent = new Intent(targetContext, AccountOptionsActivity.class);
-        intent.putExtra("RUNNING_TEST", true);
-        AccountOptionsActivity a = accountOptionsActivityRule.launchActivity(intent);
-        unlockScreen(a);
-
-        onView(withId(R.id.accountOptionsActivityView)).perform(click());
     }
 
     @Test
