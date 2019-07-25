@@ -39,7 +39,7 @@ import android.widget.TextView;
 import org.ea.sqrl.BuildConfig;
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.ClearQuickPassActivity;
-import org.ea.sqrl.activites.SimplifiedActivity;
+import org.ea.sqrl.activites.MainActivity;
 import org.ea.sqrl.activites.identity.IdentityManagementActivity;
 import org.ea.sqrl.activites.LanguageActivity;
 import org.ea.sqrl.activites.IntroductionActivity;
@@ -401,7 +401,7 @@ public class BaseActivity extends CommonBaseActivity {
                 .setAction(ClearQuickPassActivity.ACTION_CLEAR_QUICK_PASS);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(SimplifiedActivity.class);
+        stackBuilder.addParentStack(MainActivity.class);
         stackBuilder.addNextIntent(intentClearQuickpass);
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(

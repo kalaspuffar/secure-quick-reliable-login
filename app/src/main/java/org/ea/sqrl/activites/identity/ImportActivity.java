@@ -15,7 +15,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import org.ea.sqrl.R;
-import org.ea.sqrl.activites.SimplifiedActivity;
+import org.ea.sqrl.activites.MainActivity;
 import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.SqrlApplication;
@@ -115,7 +115,7 @@ public class ImportActivity extends BaseActivity {
                     if(newIdentityId != 0) {
                         if(firstIdentity) {
                             mDbHelper.updateIdentityName(newIdentityId, "Default");
-                            startActivity(new Intent(this, SimplifiedActivity.class));
+                            startActivity(new Intent(this, MainActivity.class));
                         } else {
                             startActivity(new Intent(this, RenameActivity.class));
                         }

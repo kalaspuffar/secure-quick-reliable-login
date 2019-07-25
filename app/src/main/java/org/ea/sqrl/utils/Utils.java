@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
@@ -146,6 +147,34 @@ public class Utils {
                     break;
                 }
             }
-        } catch (Exception e) {e.printStackTrace(); }
+        } catch (Exception e) {e.printStackTrace(); 
+    }
+
+    public static byte[] readFullInputStreamBytes(InputStream inputStream) {
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int length;
+
+        try {
+            while ((length = inputStream.read(buffer)) != -1) {
+                result.write(buffer, 0, length);
+            }
+
+            return result.toByteArray();
+
+        } catch (IOException ex) {
+            return null;
+        }
+    }
+
+    public static byte[] getAssetContent(Context context, String assetName) {
+        AssetManager am = context.getAssets();
+
+        try {
+            InputStream is = am.open(assetName);
+            return readFullInputStreamBytes(is);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

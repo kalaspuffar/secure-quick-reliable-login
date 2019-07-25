@@ -124,8 +124,7 @@
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_keyboard_arrow_down_gray_24dp"
-                tools:srcCompat="@drawable/ic_keyboard_arrow_down_gray_24dp" />
+                app:srcCompat="@drawable/ic_keyboard_arrow_down_gray_24dp" />
 
             <TextView
                 android:id="@+id/txtAdvancedFunctions"
@@ -181,8 +180,7 @@
                 android:scaleType="centerCrop"
                 app:layout_constraintTop_toTopOf="@+id/txtAlternateId"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:src="@drawable/ic_info_outline_24dp"
-                tools:srcCompat="@drawable/ic_info_outline_24dp" />
+                app:srcCompat="@drawable/ic_info_outline_24dp" />
 
             <RadioGroup
                 android:id="@+id/radgrpAccountOptions"
@@ -230,8 +228,7 @@
                 android:scaleType="centerCrop"
                 app:layout_constraintTop_toBottomOf="@+id/txtAlternateId"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:src="@drawable/ic_info_outline_24dp"
-                tools:srcCompat="@drawable/ic_info_outline_24dp" />
+                app:srcCompat="@drawable/ic_info_outline_24dp" />
 
             <ImageView
                 android:id="@+id/imgEnableAccountHelp"
@@ -242,8 +239,7 @@
                 android:scaleType="centerCrop"
                 app:layout_constraintTop_toBottomOf="@+id/imgDisableAccountHelp"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:src="@drawable/ic_info_outline_24dp"
-                tools:srcCompat="@drawable/ic_info_outline_24dp" />
+                app:srcCompat="@drawable/ic_info_outline_24dp" />
 
             <ImageView
                 android:id="@+id/imgRemoveAccountHelp"
@@ -254,8 +250,7 @@
                 android:scaleType="centerCrop"
                 app:layout_constraintTop_toBottomOf="@+id/imgEnableAccountHelp"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:src="@drawable/ic_info_outline_24dp"
-                tools:srcCompat="@drawable/ic_info_outline_24dp" />
+                app:srcCompat="@drawable/ic_info_outline_24dp" />
 
         </android.support.constraint.ConstraintLayout>
 
