@@ -135,6 +135,7 @@ public class CommunicationHandler {
         int portColon = domain.indexOf(":");
         if (atSignIndex != -1) {
             domain = domain.substring(atSignIndex + 1);
+            portColon = domain.indexOf(":");
         }
         if (portColon != -1) {
             domain = domain.substring(0, portColon);
@@ -146,13 +147,14 @@ public class CommunicationHandler {
             throw new Exception("Incorrect cryptDomain " + domain);
         }
 
-        this.cryptDomain = domain.getBytes();
+        this.cryptDomain = domain.toLowerCase().getBytes();
 
         Matcher queryMatcher = sqrlQueryPattern.matcher(queryLink);
         if(queryMatcher.find()) {
             String path = queryMatcher.group(1);
             int sizeOfPath = Utils.getInteger(queryMatcher.group(2));
-            if(sizeOfPath > 0 && sizeOfPath < path.length() + 1) {
+            sizeOfPath = sizeOfPath < path.length() ? sizeOfPath : path.length();
+            if(sizeOfPath > 0) {
                 this.cryptDomain = EncryptionUtils.combine(
                     this.cryptDomain,
                     path.substring(0, sizeOfPath).getBytes()
