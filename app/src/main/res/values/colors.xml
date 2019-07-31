@@ -23,4 +23,9 @@
 
     <color name="menu_icon">@color/secondary_text_default_material_light</color>
 
+    <color name="main_screen_background">#000000</color>
+    <color name="main_screen_scan_button">@color/colorAccent</color>
+    <color name="main_screen_scan_button_text">@android:color/primary_text_dark</color>
+    <color name="scan_qr_icon_magnifying_glass_bg">@android:color/white</color>
+
 </resources>
