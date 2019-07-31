@@ -13,24 +13,25 @@
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
         android:background="@color/zxing_transparent"
-        android:contentDescription="@string/change_password_close"
         app:srcCompat="@drawable/ic_close"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/txtCurrentIdentityHeadline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:duplicateParentState="true"
-        android:text="@string/current_identity_title"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+    <ImageView
+        android:id="@+id/imgIdentityManagement"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/title_identity_management"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_identity_management_accent_24dp" />
 
     <include layout="@layout/fragment_identity_selector"
         android:id="@+id/identitySelector"
@@ -43,7 +44,7 @@
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtCurrentIdentityHeadline" />
+        app:layout_constraintTop_toBottomOf="@+id/imgIdentityManagement" />
 
 
 
@@ -55,7 +56,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:duplicateParentState="true"
-        android:text="@string/button_create_identity"
+        android:text="@string/button_start_create_identity"
         app:layout_constraintBottom_toTopOf="@+id/btnImport"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
