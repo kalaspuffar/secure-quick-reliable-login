@@ -5,11 +5,16 @@
     android:id="@+id/mainActivityView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
     tools:context="org.ea.sqrl.activites.MainActivity">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background"/>
+
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/scanButtonLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/layout_corners"
@@ -53,7 +58,7 @@
             android:layout_marginBottom="8dp"
             android:text="@string/scan_site_code"
             android:textAllCaps="true"
-            android:textColor="@android:color/primary_text_dark"
+            android:textColor="@color/main_screen_scan_button_text"
             android:textSize="14sp"
             android:minHeight="48dp"
             android:gravity="center"

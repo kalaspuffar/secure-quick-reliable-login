@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.print.PrintAttributes;
 import android.print.PrintManager;
 
-import android.support.v7.app.AppCompatDelegate;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.ViewGroup;
@@ -35,7 +34,6 @@ public class RescueCodeShowActivity extends CommonBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rescuecode_show);
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
 
         try {
             final EntropyHarvester entropyHarvester = EntropyHarvester.getInstance();
