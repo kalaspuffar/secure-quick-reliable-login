@@ -292,4 +292,7 @@
 <string name="cps_auth_aborted_headline">Authentication aborted</string>
 <string name="cps_auth_aborted_description">SQRL\'s CPS authentication has been aborted. You will be automatically sent back to the previous page in a few seconds. If this does not work, please press your browser\'s \"BACK\" button or click on the link below.</string>
 <string name="cps_auth_aborted_go_back_now">Go back now</string>
+<string name="quickpass">QuickPass</string>
+<string name="helptext_quickpass_login">Please provide the short \"QuickPass\", which consists of the first few characters of your SQRL identity password.</string>
+<string name="helptext_password_login">Please provide the full length SQRL identity password that you have chosen during identity creation.</string>
 </resources>
