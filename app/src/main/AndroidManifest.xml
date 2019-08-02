@@ -94,18 +94,6 @@
             android:label="@string/title_reset_password"
             />
 
-        <activity android:name=".activites.account.DisableAccountActivity"
-            android:label="@string/title_disable_account"
-            />
-
-        <activity android:name=".activites.account.EnableAccountActivity"
-            android:label="@string/title_enable_account"
-            />
-
-        <activity android:name=".activites.account.RemoveAccountActivity"
-            android:label="@string/title_remove_account"
-            />
-
         <activity android:name=".activites.identity.RenameActivity"
             android:label="@string/title_rename_identity"
             />
@@ -136,20 +124,12 @@
             -->
         </activity>
 
-        <activity android:name=".activites.account.AccountOptionsActivity"
-            android:label="@string/title_account_options"
-            />
-
         <activity android:name=".activites.CPSMissingActivity"
             android:label="@string/title_cps_missing"
             />
 
         <activity android:name=".activites.LanguageActivity"
             android:label="@string/title_language"
-            />
-
-        <activity android:name=".activites.account.AlternativeLoginActivity"
-            android:label="@string/title_alternative_identity"
             />
 
         <activity
