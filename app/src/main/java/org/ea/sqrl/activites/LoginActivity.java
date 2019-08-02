@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -194,6 +193,16 @@ public class LoginActivity extends LoginBaseActivity {
     }
 
     private void setupHelp() {
+        SQRLStorage storage = SQRLStorage.getInstance(LoginActivity.this.getApplicationContext());
+
+        findViewById(R.id.imgLoginPasswordHelp).setOnClickListener(v -> {
+            if (storage.hasQuickPass()) {
+                showInfoMessage(R.string.quickpass, R.string.helptext_quickpass_login);
+            } else {
+                showInfoMessage(R.string.introduction_password_title, R.string.helptext_password_login);
+            }
+        });
+
         findViewById(R.id.imgAlternateIdHelp).setOnClickListener(v ->
                 showInfoMessage(R.string.button_alternative_identity, R.string.helptext_alterate_id));
         findViewById(R.id.imgDisableAccountHelp).setOnClickListener(v ->
@@ -256,7 +265,7 @@ public class LoginActivity extends LoginBaseActivity {
 
     private void showPasswordLayout() {
         final LinearLayout rescueCodeLayout = findViewById(R.id.rescueCodeLayout);
-        final TextInputLayout passwordInputLayout = findViewById(R.id.txtLoginPasswordLayout);
+        final ConstraintLayout passwordInputLayout = findViewById(R.id.txtLoginPasswordLayout);
 
         rescueCodeLayout.setVisibility(View.GONE);
         passwordInputLayout.setVisibility(View.VISIBLE);
@@ -264,7 +273,7 @@ public class LoginActivity extends LoginBaseActivity {
 
     private void showRescueCodeLayout() {
         final LinearLayout rescueCodeLayout = findViewById(R.id.rescueCodeLayout);
-        final TextInputLayout passwordInputLayout = findViewById(R.id.txtLoginPasswordLayout);
+        final ConstraintLayout passwordInputLayout = findViewById(R.id.txtLoginPasswordLayout);
 
         rescueCodeLayout.setVisibility(View.VISIBLE);
         passwordInputLayout.setVisibility(View.GONE);

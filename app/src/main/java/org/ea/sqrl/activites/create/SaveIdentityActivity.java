@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.LoginBaseActivity;
@@ -37,6 +38,10 @@ public class SaveIdentityActivity extends LoginBaseActivity {
         final EditText txtNewPassword = findViewById(R.id.txtNewPassword);
         final EditText txtRetypePassword = findViewById(R.id.txtRetypePassword);
         final ViewGroup pwStrengthMeter = findViewById(R.id.passwordStrengthMeter);
+        final ImageView imgNewPasswordHelp = findViewById(R.id.imgNewPasswordHelp);
+
+        imgNewPasswordHelp.setOnClickListener(view ->
+                showInfoMessage(R.string.reset_password_new, R.string.introduction_password));
 
         new PasswordStrengthMeter(this)
                 .register(txtNewPassword, pwStrengthMeter);

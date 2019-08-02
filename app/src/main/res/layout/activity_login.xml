@@ -80,27 +80,50 @@
             app:layout_constraintTop_toBottomOf="@+id/txtLoginHeadline"
             tools:ignore="hardcodedText"/>
 
-        <android.support.design.widget.TextInputLayout
+        <android.support.constraint.ConstraintLayout
             android:id="@+id/txtLoginPasswordLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="0dp"
-            android:ems="10"
-            app:passwordToggleEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/advancedFunctionsLayout">
+            app:layout_constraintTop_toBottomOf="@+id/advancedFunctionsLayout"
+            app:layout_constraintWidth_max="500dp">
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/txtLoginPassword"
-                android:layout_width="match_parent"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/txtLoginPasswordLayoutInternal"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/login_identity_password"
-                android:inputType="textPassword"
-                android:imeOptions="actionDone"/>
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:ems="10"
+                android:minWidth="400dp"
+                app:layout_constraintEnd_toStartOf="@id/imgLoginPasswordHelp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:passwordToggleEnabled="true">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/txtLoginPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/login_identity_password"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword" />
+            </android.support.design.widget.TextInputLayout>
+
+            <ImageView
+                android:id="@+id/imgLoginPasswordHelp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:padding="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/txtLoginPasswordLayout"
+                app:srcCompat="@drawable/ic_info_outline_24dp" />
+
+        </android.support.constraint.ConstraintLayout>
 
         <LinearLayout
             android:id="@+id/toggleAdvancedFunctionsLayout"
@@ -167,7 +190,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/imgAlternateIdHelp"
-                android:importantForAutofill="no" tools:targetApi="o"/>
+                android:importantForAutofill="no" />
 
             <ImageView
                 android:id="@+id/imgAlternateIdHelp"
@@ -267,7 +290,7 @@
             android:gravity="center"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtLoginPasswordLayout">
+            app:layout_constraintTop_toBottomOf="@id/txtLoginPasswordLayout">
 
             <TextView
                 android:layout_width="wrap_content"
