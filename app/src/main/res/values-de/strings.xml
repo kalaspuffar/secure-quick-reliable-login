@@ -263,7 +263,7 @@
 <string name="set_quickpass">QuickPass einrichten</string>
 <string name="set_quickpass_long">SQRL-Passwort eingeben, um QuickPass zu aktivieren</string>
 <string name="identity_required">Es muss eine Identität erstellt werden, bevor diese Funktion benützt werden kann</string>
-<string name="quickpass_enable_heading">QuickPass aktivieren</string>
+<string name="title_enable_quickpass">QuickPass aktivieren</string>
 <string name="idle_timeout_guidance">Damit Sie Ihr SQRL Masterpasswort nicht vergessen, kann QuickPass maximal eine Woche (%1$s Minuten) aktiv bleiben. Danach müssen Sie ihr Masterpasswort erneut eingeben.</string>
 <string name="guidance_heading">Anleitung</string>
 <string name="button_identity_options">Identitäts-Optionen</string>
