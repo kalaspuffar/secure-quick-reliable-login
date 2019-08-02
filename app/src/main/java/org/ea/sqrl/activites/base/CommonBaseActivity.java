@@ -1,11 +1,11 @@
 package org.ea.sqrl.activites.base;
 
-import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.utils.Utils;
@@ -23,6 +23,8 @@ public class CommonBaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
 
         Utils.setLanguage(this);
         Utils.reloadActivityTitle(this);

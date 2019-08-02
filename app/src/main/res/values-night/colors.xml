@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <color name="colorPrimary">#303f9f</color>
-    <color name="colorPrimaryDark">#303f9f</color>
+    <color name="colorPrimary">#000000</color>
+    <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#CE93D8</color>
 
 
@@ -22,5 +22,10 @@
     <color name="login_advanced_functions_layout_border">#B1BCBE</color>
 
     <color name="menu_icon">#FFFFFF</color>
+
+    <color name="main_screen_background">#121212</color>
+    <color name="main_screen_scan_button">#242424</color>
+    <color name="main_screen_scan_button_text">@android:color/primary_text_dark</color>
+    <color name="scan_qr_icon_magnifying_glass_bg">@color/colorAccent</color>
 
 </resources>

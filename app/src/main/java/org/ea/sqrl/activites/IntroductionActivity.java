@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatDelegate;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +31,6 @@ public class IntroductionActivity extends CommonBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_introduction);
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
 
         final SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 

@@ -1,12 +1,14 @@
 package org.ea.sqrl.activites.identity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.MainActivity;
 import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.utils.SqrlApplication;
 
@@ -53,6 +55,7 @@ public class RenameActivity extends BaseActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(txtIdentityName.getWindowToken(), 0);
 
-        RenameActivity.this.finish();
+        RenameActivity.this.finishAffinity();
+        startActivity(new Intent(this, MainActivity.class));
     }
 }
