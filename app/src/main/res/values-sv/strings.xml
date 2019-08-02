@@ -263,7 +263,7 @@
 <string name="set_quickpass">Aktivera QuickPass</string>
 <string name="set_quickpass_long">Skriv in SQRL lösenord för att aktivera QuickPass</string>
 <string name="identity_required">En identitet måste vara skapad för att använda denna funktion</string>
-<string name="quickpass_enable_heading">Aktivera QuickPass</string>
+<string name="title_enable_quickpass">Aktivera QuickPass</string>
 <string name="idle_timeout_guidance">Så att du inte glömmer ditt SQRL huvud lösenord, har maximum tiden för QuickPass satts till en vecka ( %1$s minuter), efter detta behöver du skriva in huvud lösenordet igen.</string>
 <string name="guidance_heading">Vägledning</string>
 <string name="button_identity_options">Identitets hantering</string>

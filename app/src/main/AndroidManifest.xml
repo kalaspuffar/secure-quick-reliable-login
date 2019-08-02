@@ -180,7 +180,7 @@
             />
 
         <activity android:name=".activites.EnableQuickPassActivity"
-            android:label="@string/quickpass_enable_message"
+            android:label="@string/title_enable_quickpass"
             />
 
         <provider
