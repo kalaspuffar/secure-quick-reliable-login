@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_star_border_gray_24dp" />
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView
         android:id="@+id/languageText"
         android:layout_width="0dp"
         android:layout_height="0dp"

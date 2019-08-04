@@ -14,6 +14,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
         android:text="@string/rescuecode_show_desc"
         app:layout_constraintBottom_toTopOf="@+id/rescueCodeInput"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,6 +29,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/btnPrintRescueCode"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,21 +41,21 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="32dp"
         android:text="@string/button_print_rescue_code"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginLeft="16dp" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btnRescueCodeShowNext"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="32dp"
         android:text="@string/button_entropy_gather_next"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginRight="16dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
