@@ -104,7 +104,8 @@ public class ImportActivity extends BaseActivity {
                     firstIdentity = true;
                 }
 
-                long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
+                long newIdentityId = mDbHelper.newIdentity(
+                        ImportActivity.this, storage.createSaveData());
 
                 SqrlApplication.saveCurrentId(this.getApplication(), newIdentityId);
 
@@ -114,7 +115,8 @@ public class ImportActivity extends BaseActivity {
 
                     if(newIdentityId != 0) {
                         if(firstIdentity) {
-                            mDbHelper.updateIdentityName(newIdentityId, "Default");
+                            mDbHelper.updateIdentityName(ImportActivity.this, newIdentityId,
+                                    getResources().getString(R.string.default_identity_name));
                             startActivity(new Intent(this, MainActivity.class));
                         } else {
                             startActivity(new Intent(this, RenameActivity.class));

@@ -97,7 +97,8 @@ public class ResetPasswordActivity extends BaseActivity {
                     }
                     handler.post(() -> ResetPasswordActivity.this.finish());
                 } else {
-                    long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
+                    long newIdentityId = mDbHelper.newIdentity(
+                            ResetPasswordActivity.this, storage.createSaveData());
                     SqrlApplication.saveCurrentId(this.getApplication(), newIdentityId);
 
                     if(newIdentity) {

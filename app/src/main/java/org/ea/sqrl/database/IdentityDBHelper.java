@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import org.ea.sqrl.R;
 import org.ea.sqrl.database.IdentityContract.IdentityEntry;
 
 import java.util.HashMap;
@@ -61,14 +62,19 @@ public class IdentityDBHelper extends SQLiteOpenHelper {
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    public long newIdentity(byte[] data) {
+    public long newIdentity(Context context, byte[] data) {
         ContentValues values = new ContentValues();
         values.put(IdentityContract.IdentityEntry.COLUMN_NAME_DATA, data);
-        return this.getWritableDatabase().insert(
+        long id = this.getWritableDatabase().insert(
                     IdentityEntry.TABLE_NAME,
                     null,
                     values
                 );
+
+        updateIdentityName(context, id,
+                context.getResources().getString(R.string.default_identity_name));
+
+        return id;
     }
 
     public byte[] getIdentityData(long id) {
@@ -131,13 +137,17 @@ public class IdentityDBHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public void updateIdentityName(long id, String name) {
+    public void updateIdentityName(Context context, long id, String name) {
         SQLiteDatabase db = this.getWritableDatabase();
 
+        if (name == null || name.isEmpty()) {
+            name = context.getResources().getString(R.string.default_identity_name);
+        }
         String newName = name;
-        int i = 1;
+
+        int i = 2;
         while(!checkUnique(id, newName)) {
-            newName = name + " (" + i + ")";
+            newName = name + " " + i;
             i++;
         }
 
