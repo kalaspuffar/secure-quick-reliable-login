@@ -14,10 +14,10 @@
         android:layout_alignParentBottom="true"
         app:layout_constraintTop_toTopOf="parent"
         app:tabGravity="center"
-        app:tabTextColor="@android:color/darker_gray"
+        app:tabTextColor="@color/intro_tab_text"
         app:tabIndicatorColor="@color/colorAccent"
         app:tabMode="scrollable"
-        app:tabSelectedTextColor="@android:color/black">
+        app:tabSelectedTextColor="@color/intro_tab_selected_text">
     </android.support.design.widget.TabLayout>
 
 
