@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.LoginBaseActivity;
+import org.ea.sqrl.activites.identity.RenameActivity;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.PasswordStrengthMeter;
 import org.ea.sqrl.utils.SqrlApplication;
@@ -21,6 +22,8 @@ import org.ea.sqrl.utils.SqrlApplication;
  */
 public class SaveIdentityActivity extends LoginBaseActivity {
     private static final String TAG = "SaveIdentityActivity";
+
+    private boolean firstIdentity = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +37,6 @@ public class SaveIdentityActivity extends LoginBaseActivity {
 
         SQRLStorage storage = SQRLStorage.getInstance(SaveIdentityActivity.this.getApplicationContext());
 
-        final EditText txtIdentityName = findViewById(R.id.txtIdentityName);
         final EditText txtNewPassword = findViewById(R.id.txtNewPassword);
         final EditText txtRetypePassword = findViewById(R.id.txtRetypePassword);
         final ViewGroup pwStrengthMeter = findViewById(R.id.passwordStrengthMeter);
@@ -78,19 +80,29 @@ public class SaveIdentityActivity extends LoginBaseActivity {
                     handler.post(() -> hideProgressPopup());
                 }
 
-                long newIdentityId = mDbHelper.newIdentity(SaveIdentityActivity.this, storage.createSaveData());
-                mDbHelper.updateIdentityName(SaveIdentityActivity.this, newIdentityId,
-                        txtIdentityName.getText().toString());
+                if(!mDbHelper.hasIdentities()) {
+                    firstIdentity = true;
+                }
 
+                long newIdentityId = mDbHelper.newIdentity(SaveIdentityActivity.this, storage.createSaveData());
                 SqrlApplication.saveCurrentId(this.getApplication(), newIdentityId);
 
                 handler.post(() -> {
-                    txtIdentityName.setText("");
                     txtNewPassword.setText("");
                     txtRetypePassword.setText("");
 
                     SaveIdentityActivity.this.finish();
-                    startActivity(new Intent(this, NewIdentityDoneActivity.class));
+
+                    Intent nextActivity = null;
+
+                    if(firstIdentity) {
+                        nextActivity = new Intent(this, NewIdentityDoneActivity.class);
+                    } else {
+                        nextActivity = new Intent(this, RenameActivity.class);
+                        nextActivity.putExtra(SqrlApplication.EXTRA_NEXT_ACTIVITY, NewIdentityDoneActivity.class.getName());
+                    }
+
+                    startActivity(nextActivity);
                 });
             }).start();
         });

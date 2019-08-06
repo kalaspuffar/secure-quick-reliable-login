@@ -17,25 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
-            <EditText
-                android:id="@+id/txtIdentityName"
-                android:layout_width="0dp"
-                android:layout_height="52dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                android:ems="10"
-                android:hint="@string/txt_identity_name_hint"
-                android:inputType="textPersonName"
-                android:nextFocusDown="@id/imgNewPasswordHelp"
-                android:nextFocusForward="@id/imgNewPasswordHelp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:importantForAutofill="no" />
-
             <TextView
                 android:id="@+id/txtNewPasswordHeadline"
                 android:layout_width="0dp"
@@ -49,7 +30,7 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@+id/imgNewPasswordHelp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtIdentityName" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/imgNewPasswordHelp"
@@ -61,7 +42,7 @@
                 android:nextFocusDown="@id/txtNewPassword"
                 android:nextFocusForward="@id/txtNewPassword"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtIdentityName"
+                app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_info_outline_24dp" />
 
             <EditText
