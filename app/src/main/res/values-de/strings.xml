@@ -263,7 +263,6 @@
 <string name="set_quickpass">QuickPass einrichten</string>
 <string name="set_quickpass_long">SQRL-Passwort eingeben, um QuickPass zu aktivieren</string>
 <string name="identity_required">Es muss eine Identität erstellt werden, bevor diese Funktion benützt werden kann</string>
-<string name="title_enable_quickpass">QuickPass aktivieren</string>
 <string name="idle_timeout_guidance">Damit Sie Ihr SQRL Masterpasswort nicht vergessen, kann QuickPass maximal eine Woche (%1$s Minuten) aktiv bleiben. Danach müssen Sie ihr Masterpasswort erneut eingeben.</string>
 <string name="guidance_heading">Anleitung</string>
 <string name="button_identity_options">Identitäts-Optionen</string>
@@ -293,6 +292,8 @@
 <string name="cps_auth_aborted_description">SQRLs CPS-Authentifizierung wurde abgebrochen. Sie werden in ein paar Sekunden automatisch zur vorherigen Seite zurückgeleitet. Falls dies nicht funktioniert, drücken Sie bitte in Ihrem Browser auf die Schaltfläche \"Zurück\" oder klicken Sie auf den folgenden Link.</string>
 <string name="cps_auth_aborted_go_back_now">Jetzt zurückgehen</string>
 <string name="quickpass">QuickPass</string>
-<string name="helptext_quickpass_login">Please provide the short \"QuickPass\", which consists of the first few characters of your SQRL identity password.</string>
-<string name="helptext_password_login">Please provide the full-length SQRL identity password that you have chosen for this identity.</string>
+<string name="helptext_quickpass_login">Bitte geben Sie das kurze \"QuickPass\" ein, welches aus den ersten paar Zeichen ihres SQRL Identitäts-Passworts besteht.</string>
+<string name="helptext_password_login">Bitte geben Sie Ihr SQRL Identitäts-Passwort in voller Länge ein, welches Sie für diese Identität festgelegt haben.</string>
+<string name="title_enable_quickpass">QuickPass aktivieren</string>
+<string name="default_identity_name">Meine Identität</string>
 </resources>

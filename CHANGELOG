@@ -2,10 +2,13 @@ Version 1.5.0
 
 Bugfix
 * Handle rename in a consistent manner.
+* Fixing contrast issues in darkmode
 
 Improvements
 * Better darkmode frontpage
 * Add help texts to password fields.
+* Remove extra prefix "SQRL -"
+* First identity will now have the name "My identity"
 
 Version 1.4.0
 

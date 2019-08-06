@@ -263,7 +263,6 @@
 <string name="set_quickpass">Aseta QuickPass</string>
 <string name="set_quickpass_long">Syötä SQRL salasana aloittaaksesi QuickPassin käytön</string>
 <string name="identity_required">Identiteetti tulee luoda ennen tämän ominaisuuden käyttöä</string>
-<string name="title_enable_quickpass">Aktivoi QuickPass</string>
 <string name="idle_timeout_guidance">Jottet unohda SQRL-salasanaasi, maksimi QuickPass käyttöaika on yksi viikko (%1$s minuuttia), jonka jälkeen pääsalasana tulee syöttää uudestaan.</string>
 <string name="guidance_heading">Opastus</string>
 <string name="button_identity_options">Identiteetin asetukset</string>
@@ -295,4 +294,6 @@
 <string name="quickpass">QuickPass</string>
 <string name="helptext_quickpass_login">Please provide the short \"QuickPass\", which consists of the first few characters of your SQRL identity password.</string>
 <string name="helptext_password_login">Please provide the full-length SQRL identity password that you have chosen for this identity.</string>
+<string name="title_enable_quickpass">Aktivoi QuickPass</string>
+<string name="default_identity_name">My Identity</string>
 </resources>

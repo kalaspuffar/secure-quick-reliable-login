@@ -263,7 +263,6 @@
 <string name="set_quickpass">क्विकपास सेट करें</string>
 <string name="set_quickpass_long">क्विकपास संलग्न करने के लिए SQRL पासवर्ड दर्ज करें</string>
 <string name="identity_required">इस फ़ंक्शन का उपयोग करने से पहले एक पहचान अवशय बनाई जानी चाहिए</string>
-<string name="title_enable_quickpass">क्विकपास सक्षम करें</string>
 <string name="idle_timeout_guidance">इसलिए आप अपने SQRL मास्टर पासवर्ड को न भूलें, अधिकतम QuickPass टाइमआउट एक सप्ताह (%1$s मिनट) है, जिसके बाद आपको फिर से मास्टर पासवर्ड टाइप करना होगा।</string>
 <string name="guidance_heading">मार्गदर्शन</string>
 <string name="button_identity_options">पहचान विकल्प</string>
@@ -295,4 +294,6 @@
 <string name="quickpass">QuickPass</string>
 <string name="helptext_quickpass_login">Please provide the short \"QuickPass\", which consists of the first few characters of your SQRL identity password.</string>
 <string name="helptext_password_login">Please provide the full-length SQRL identity password that you have chosen for this identity.</string>
+<string name="title_enable_quickpass">क्विकपास सक्षम करें</string>
+<string name="default_identity_name">My Identity</string>
 </resources>

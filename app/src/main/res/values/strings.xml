@@ -263,7 +263,6 @@
 <string name="set_quickpass">Set QuickPass</string>
 <string name="set_quickpass_long">Enter SQRL password to engage QuickPass</string>
 <string name="identity_required">An identity must be created before using this function</string>
-<string name="title_enable_quickpass">Enable QuickPass</string>
 <string name="idle_timeout_guidance">So you don\'t forget your SQRL master password, the maximum QuickPass timeout is one week ( %1$s minutes), after which you\'ll have to type in the master password again.</string>
 <string name="guidance_heading">Guidance</string>
 <string name="button_identity_options">Identity options</string>
@@ -295,5 +294,6 @@
 <string name="quickpass">QuickPass</string>
 <string name="helptext_quickpass_login">Please provide the short \"QuickPass\", which consists of the first few characters of your SQRL identity password.</string>
 <string name="helptext_password_login">Please provide the full-length SQRL identity password that you have chosen for this identity.</string>
+<string name="title_enable_quickpass">Enable QuickPass</string>
 <string name="default_identity_name">My Identity</string>
 </resources>
