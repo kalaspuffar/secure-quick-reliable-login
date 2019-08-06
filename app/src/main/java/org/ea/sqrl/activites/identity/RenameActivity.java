@@ -49,7 +49,8 @@ public class RenameActivity extends BaseActivity {
         final long currentId = SqrlApplication.getCurrentId(this.getApplication());
 
         if(currentId != 0) {
-            mDbHelper.updateIdentityName(currentId, txtIdentityName.getText().toString());
+            mDbHelper.updateIdentityName(RenameActivity.this, currentId,
+                    txtIdentityName.getText().toString());
         }
 
         InputMethodManager imm = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);

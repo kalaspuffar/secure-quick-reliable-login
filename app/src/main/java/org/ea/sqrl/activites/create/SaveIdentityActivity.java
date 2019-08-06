@@ -78,8 +78,9 @@ public class SaveIdentityActivity extends LoginBaseActivity {
                     handler.post(() -> hideProgressPopup());
                 }
 
-                long newIdentityId = mDbHelper.newIdentity(storage.createSaveData());
-                mDbHelper.updateIdentityName(newIdentityId, txtIdentityName.getText().toString());
+                long newIdentityId = mDbHelper.newIdentity(SaveIdentityActivity.this, storage.createSaveData());
+                mDbHelper.updateIdentityName(SaveIdentityActivity.this, newIdentityId,
+                        txtIdentityName.getText().toString());
 
                 SqrlApplication.saveCurrentId(this.getApplication(), newIdentityId);
 
