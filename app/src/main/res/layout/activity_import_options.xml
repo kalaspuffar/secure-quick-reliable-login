@@ -6,6 +6,21 @@
     android:id="@+id/importOptionsActivityView"
     tools:context="org.ea.sqrl.activites.identity.ImportOptionsActivity">
 
+    <ImageView
+        android:id="@+id/imgImportIdentity"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_import_accent_24dp" />
+
     <Button
         android:id="@+id/btnScanQRCode"
         android:layout_width="0dp"
@@ -14,13 +29,13 @@
         android:layout_marginStart="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="32dp"
         android:duplicateParentState="true"
         android:text="@string/button_scan_secret"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/imgImportIdentity" />
 
     <Button
         android:id="@+id/btnPickIdentityFile"
