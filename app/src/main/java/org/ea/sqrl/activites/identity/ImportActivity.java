@@ -115,8 +115,6 @@ public class ImportActivity extends BaseActivity {
 
                     if(newIdentityId != 0) {
                         if(firstIdentity) {
-                            mDbHelper.updateIdentityName(ImportActivity.this, newIdentityId,
-                                    getResources().getString(R.string.default_identity_name));
                             startActivity(new Intent(this, MainActivity.class));
                         } else {
                             startActivity(new Intent(this, RenameActivity.class));

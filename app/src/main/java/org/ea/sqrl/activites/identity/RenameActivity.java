@@ -57,6 +57,18 @@ public class RenameActivity extends BaseActivity {
         imm.hideSoftInputFromWindow(txtIdentityName.getWindowToken(), 0);
 
         RenameActivity.this.finishAffinity();
-        startActivity(new Intent(this, MainActivity.class));
+
+        Intent nextActivity = new Intent(this, MainActivity.class);
+
+        if (getIntent().hasExtra(SqrlApplication.EXTRA_NEXT_ACTIVITY)) {
+            try {
+                String activityClassName = getIntent().getStringExtra(SqrlApplication.EXTRA_NEXT_ACTIVITY);
+                nextActivity = new Intent(this, Class.forName(activityClassName));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        startActivity(nextActivity);
     }
 }
