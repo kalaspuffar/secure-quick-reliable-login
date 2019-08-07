@@ -16,7 +16,7 @@
 <string name="about_message_text"><b>Secure Quick Reliable Login</b>\n\nVersio: %s\n\nGithub repository:\n<a href="https://github.com/kalaspuffar/secure-quick-reliable-login">https://github.com/kalaspuffar/secure-quick-reliable-login</a>\n\nTekijät:\nDaniel Persson</string>
 <string name="decrypt_identity_message">Olet onnistuneesti skannannut identiteettisi. Varmista, että alla oleva tieto vastaa avainsivun tulostetta.</string>
 <string name="communication_incorrect_response">Väärä vastaus. Palvelin ei vastannut virhekoodilla. Yritä myöhemmin uudelleen.</string>
-<string name="communication_bad_id_association">Bad ID Association: SQRL identity which may be associated with the query nut does not match the SQRL ID used to submit the query.</string>
+<string name="communication_bad_id_association">Identiteettien epäselvyys: SQRL Identiteetti joka voidaan liittää pyynnön pähkinään, ei vastaa SQRL Identiteettiä jota käytettiin lähettämään pyyntö.</string>
 <string name="communication_client_failure">Palvelin ei ymmärtänyt jotain parametria asiakasohjelman lähettämässä viestissä, joten se ei käsittele pyyntöä.</string>
 <string name="communication_command_failed">Komento epäonnistui. Palvelin kohtasi ongelman eikä voinut käsitellä pyyntöä onnistuneesti.</string>
 <string name="communication_function_not_supported">Toimitoa ei tueta: Pyydettiin yhtä tai useampaa SQRL-toimintoa, jota palvelin ei tällä hetkellä tue.</string>
@@ -292,8 +292,8 @@
 <string name="cps_auth_aborted_description">SQRL:n CPS autentikointi on keskeytetty. Selain palaa automaattisesti takaisin edelliselle sivulle muutamassa sekunnissa. Jos näin ei käy, klikkaa selaimen Takaisin-nappia tai klikkaa alla olevaa linkkiä.</string>
 <string name="cps_auth_aborted_go_back_now">Palaa</string>
 <string name="quickpass">QuickPass</string>
-<string name="helptext_quickpass_login">Please provide the short \"QuickPass\", which consists of the first few characters of your SQRL identity password.</string>
-<string name="helptext_password_login">Please provide the full-length SQRL identity password that you have chosen for this identity.</string>
+<string name="helptext_quickpass_login">Syötä lyhyt QuickPass, joka muodostuu muutamista ensimmäisistä SQRL-salasanasi merkeistä.</string>
+<string name="helptext_password_login">Syötä tälle Identiteetille valitsemasi SQRL-salasanasi kokonaan.</string>
 <string name="title_enable_quickpass">Aktivoi QuickPass</string>
-<string name="default_identity_name">My Identity</string>
+<string name="default_identity_name">Oma Identiteettini</string>
 </resources>

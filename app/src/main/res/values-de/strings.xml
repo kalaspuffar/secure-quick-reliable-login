@@ -46,13 +46,13 @@
 <string name="notification_identity_unlocked_title">Ihre Identität wurde im Gerätespeicher entsperrt.</string>
 <string name="login_verify_domain_text">Mit diesem Protokoll können Sie sich bei der eingescannten URL anmelden. Bitte vergewissern Sie sich, dass die gescannte Domain mit der Seite übereinstimmt, auf der Sie sich anmelden möchten, bevor Sie das Passwort eingeben</string>
 <string name="login_domain_title">Wollen Sie sich anmelden bei:</string>
-<string name="change_password_retype">Passwort erneut zur Verifizierung eingeben</string>
+<string name="change_password_retype">Passwort wiederholen</string>
 <string name="change_password_current">Aktuelles Passwort</string>
 <string name="change_password_new_password">Bitte wählen Sie ein neues Passwort</string>
-<string name="change_password_retyped_password_do_not_match">Passwort-Bestätigung stimmt nicht mit neuem Passwort überein.</string>
+<string name="change_password_retyped_password_do_not_match">Wiederholtes Passwort stimmt nicht mit neuem Passwort überein.</string>
 <string name="title_activity_settings">Einstellungen</string>
 <string name="settings_hint_length">QuickPass-Länge (Zeichen)</string>
-<string name="settings_password_verify">Passwortverifikation (Sekunden)</string>
+<string name="settings_password_verify">Passwortbestätigung (Sekunden)</string>
 <string name="settings_idle_timeout">Quickpass-Timeout (Minuten)</string>
 <string name="settings_sqrl_only">\"Nur SQRL\"-Anmeldung anfordern</string>
 <string name="settings_no_sqrl_bypass">\"Kein SQRL-Bypass\" anfordern</string>
@@ -61,7 +61,7 @@
 <string name="settings_fragment_save">Speichern</string>
 <string name="settings_hint_length_not_number">Eingabe für QuickPass ist keine Zahl</string>
 <string name="settings_idle_timeout_not_number">Eingabe für Quickpass-Timeout ist keine Zahl</string>
-<string name="settings_password_verify_not_number">Eingabe für Passwort-Bestätigung ist keine Zahl</string>
+<string name="settings_password_verify_not_number">Eingabe für Passwortbestätigung ist keine Zahl</string>
 <string name="settings_hint_length_to_large">QuickPass ist zu lang. (0-255)</string>
 <string name="save_settings_password">Passwort</string>
 <string name="save_identity_to">Identität speichern unter</string>
@@ -129,7 +129,7 @@
 <string name="title_save_identity">Identität speichern</string>
 <string name="button_print_rescue_code">Drucken</string>
 <string name="show_identity_image_desc">QR-Code der Identität</string>
-<string name="url_login_missing_url">Fehler! Der App-Aufruf erfolgte ohne Angabe einer URL, bitte wiederholen Sie den Vorgang.</string>
+<string name="url_login_missing_url">Fehler! Der App-Aufruf erfolgte ohne Angabe einer URL. Bitte versuchen Sie es erneut.</string>
 <string name="main_activity_could_not_create_dir">Temporäres Verzeichnis zum Versenden der Datei konnte nicht erstellt werden. Bitte überprüfen Sie ihren Speicherplatz.</string>
 <string name="rekey_verify_message">Geben Sie den Rettungscode zur Bestätigung ein und starten Sie dann das ReKeying der Identität.</string>
 <string name="button_rekey_verify_next">Weiter</string>
