@@ -7,6 +7,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -57,6 +58,16 @@ public class ImportActivity extends BaseActivity {
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
+        txtPassword.setOnEditorActionListener((v, actionId, event) -> {
+            switch (actionId) {
+                case EditorInfo.IME_ACTION_DONE:
+                    doImport();
+                    return true;
+                default:
+                    return false;
+            }
+        });
+
         btnForgotPassword.setOnClickListener(
                 v -> {
                     ImportActivity.this.finish();
@@ -66,64 +77,7 @@ public class ImportActivity extends BaseActivity {
                 }
         );
 
-        btnImportIdentityDo.setOnClickListener(v -> {
-            showProgressPopup();
-
-            new Thread(() -> {
-                SQRLStorage storage = SQRLStorage.getInstance(ImportActivity.this.getApplicationContext());
-                try {
-                    boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString(), entropyHarvester, false);
-                    if(!decryptStatus) {
-                        handler.post(() -> {
-                            showErrorMessage(R.string.decrypt_identity_fail);
-                            txtPassword.setText("");
-                            hideProgressPopup();
-                        });
-                        storage.clearQuickPass();
-                        storage.clear();
-                        return;
-                    }
-                    storage.clearQuickPass();
-
-                    boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
-                    if (!encryptStatus) {
-                        handler.post(() -> {
-                            showErrorMessage(R.string.encrypt_identity_fail);
-                            txtPassword.setText("");
-                            hideProgressPopup();
-                        });
-                        return;
-                    }
-                    storage.clear();
-                } catch (Exception e) {
-                    showErrorMessage(e.getMessage());
-                    Log.e(TAG, e.getMessage(), e);
-                }
-
-                if(!mDbHelper.hasIdentities()) {
-                    firstIdentity = true;
-                }
-
-                long newIdentityId = mDbHelper.newIdentity(
-                        ImportActivity.this, storage.createSaveData());
-
-                SqrlApplication.saveCurrentId(this.getApplication(), newIdentityId);
-
-                handler.post(() -> {
-                    txtPassword.setText("");
-                    hideProgressPopup();
-
-                    if(newIdentityId != 0) {
-                        if(firstIdentity) {
-                            startActivity(new Intent(this, MainActivity.class));
-                        } else {
-                            startActivity(new Intent(this, RenameActivity.class));
-                        }
-                        ImportActivity.this.finish();
-                    }
-                });
-            }).start();
-        });
+        btnImportIdentityDo.setOnClickListener(v -> doImport());
 
         boolean testing = getIntent().getBooleanExtra("RUNNING_TEST", false);
         if(testing) {
@@ -209,6 +163,65 @@ public class ImportActivity extends BaseActivity {
                 }
             }
         }
+    }
+
+    private void doImport() {
+        showProgressPopup();
+
+        new Thread(() -> {
+            SQRLStorage storage = SQRLStorage.getInstance(ImportActivity.this.getApplicationContext());
+            try {
+                boolean decryptStatus = storage.decryptIdentityKey(txtPassword.getText().toString(), entropyHarvester, false);
+                if(!decryptStatus) {
+                    handler.post(() -> {
+                        showErrorMessage(R.string.decrypt_identity_fail);
+                        txtPassword.setText("");
+                        hideProgressPopup();
+                    });
+                    storage.clearQuickPass();
+                    storage.clear();
+                    return;
+                }
+                storage.clearQuickPass();
+
+                boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
+                if (!encryptStatus) {
+                    handler.post(() -> {
+                        showErrorMessage(R.string.encrypt_identity_fail);
+                        txtPassword.setText("");
+                        hideProgressPopup();
+                    });
+                    return;
+                }
+                storage.clear();
+            } catch (Exception e) {
+                showErrorMessage(e.getMessage());
+                Log.e(TAG, e.getMessage(), e);
+            }
+
+            if(!mDbHelper.hasIdentities()) {
+                firstIdentity = true;
+            }
+
+            long newIdentityId = mDbHelper.newIdentity(
+                    ImportActivity.this, storage.createSaveData());
+
+            SqrlApplication.saveCurrentId(this.getApplication(), newIdentityId);
+
+            handler.post(() -> {
+                txtPassword.setText("");
+                hideProgressPopup();
+
+                if(newIdentityId != 0) {
+                    if(firstIdentity) {
+                        startActivity(new Intent(this, MainActivity.class));
+                    } else {
+                        startActivity(new Intent(this, RenameActivity.class));
+                    }
+                    ImportActivity.this.finish();
+                }
+            });
+        }).start();
     }
 
     private void chooseFile() {
