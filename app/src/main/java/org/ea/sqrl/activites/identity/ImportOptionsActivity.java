@@ -2,9 +2,11 @@ package org.ea.sqrl.activites.identity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
+import org.ea.sqrl.utils.Utils;
 
 public class ImportOptionsActivity extends BaseActivity {
     private static final String TAG = "ImportOptionsActivity";
@@ -33,5 +35,13 @@ public class ImportOptionsActivity extends BaseActivity {
             Intent textImportIntent = new Intent(this, TextImportActivity.class);
             startActivity(textImportIntent);
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        ImageView imgImportIdentity = findViewById(R.id.imgImportIdentity);
+        Utils.hideViewIfDisplayHeightSmallerThan(this, imgImportIdentity, 600);
     }
 }
