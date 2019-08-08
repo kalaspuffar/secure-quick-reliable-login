@@ -31,9 +31,6 @@ public class IdentityManagementActivity extends BaseActivity {
 
         setupErrorPopupWindow(getLayoutInflater());
 
-        final ImageButton btnClose = findViewById(R.id.btnClose);
-        btnClose.setOnClickListener(v -> IdentityManagementActivity.this.finish());
-
         final Button btnCreate = findViewById(R.id.btnCreate);
         btnCreate.setOnClickListener(v -> startActivity(new Intent(this, CreateIdentityActivity.class)));
 
