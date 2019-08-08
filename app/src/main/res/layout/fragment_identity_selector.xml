@@ -59,6 +59,7 @@
         android:gravity="center_vertical"
         android:text="@string/main_selected_identity"
         android:textColor="@color/colorAccent"
+        android:focusable="false"
         app:layout_constraintEnd_toStartOf="@+id/imgListIdentities"
         app:layout_constraintStart_toEndOf="@id/txtSelectedIdentityHeadline"
         app:layout_constraintTop_toTopOf="@id/txtSelectedIdentityHeadline" />
