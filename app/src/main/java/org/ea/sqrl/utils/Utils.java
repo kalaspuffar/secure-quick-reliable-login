@@ -11,6 +11,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.PopupMenu;
+import android.util.DisplayMetrics;
+import android.view.View;
 
 import com.google.zxing.FormatException;
 
@@ -175,6 +177,18 @@ public class Utils {
             return readFullInputStreamBytes(is);
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    public static DisplayMetrics getDisplayMetrics(Activity activity) {
+        DisplayMetrics dm = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+        return dm;
+    }
+
+    public static void hideViewIfDisplayHeightSmallerThan(Activity activity, View view, int minHeight) {
+        if (getDisplayMetrics(activity).heightPixels < minHeight) {
+            view.setVisibility(View.GONE);
         }
     }
 }

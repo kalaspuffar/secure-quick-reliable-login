@@ -2,14 +2,16 @@ package org.ea.sqrl.activites.identity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.activites.create.CreateIdentityActivity;
 
 import org.ea.sqrl.utils.IdentitySelector;
+import org.ea.sqrl.utils.Utils;
 
 import java.util.Objects;
 
@@ -49,6 +51,9 @@ public class IdentityManagementActivity extends BaseActivity {
 
         boolean runningTest = getIntent().getBooleanExtra("RUNNING_TEST", false);
         if(runningTest) return;
+
+        final ImageView imgIdentityManagement = findViewById(R.id.imgIdentityManagement);
+        Utils.hideViewIfDisplayHeightSmallerThan(this, imgIdentityManagement, 600);
 
         if(!mDbHelper.hasIdentities()) {
             IdentityManagementActivity.this.finish();
