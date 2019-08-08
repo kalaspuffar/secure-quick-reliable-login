@@ -1,23 +1,17 @@
 package org.ea.sqrl.activites.identity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.PopupMenu;
 import android.widget.Button;
 import android.widget.ImageButton;
 
 import org.ea.sqrl.R;
-import org.ea.sqrl.activites.StartActivity;
 import org.ea.sqrl.activites.base.BaseActivity;
-import org.ea.sqrl.activites.base.LoginBaseActivity;
 import org.ea.sqrl.activites.create.CreateIdentityActivity;
-import org.ea.sqrl.activites.create.RekeyIdentityActivity;
-import org.ea.sqrl.processors.CommunicationFlowHandler;
+
 import org.ea.sqrl.utils.IdentitySelector;
-import org.ea.sqrl.utils.SqrlApplication;
+
+import java.util.Objects;
 
 /**
  * This activity is the central hub for all identity management functionality.
@@ -33,6 +27,7 @@ public class IdentityManagementActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_identity_management);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
 
         setupErrorPopupWindow(getLayoutInflater());
 
