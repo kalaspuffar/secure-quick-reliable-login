@@ -112,7 +112,8 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/login_identity_password"
                     android:imeOptions="actionDone"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    android:focusedByDefault="true"/>
             </android.support.design.widget.TextInputLayout>
 
             <ImageView
@@ -159,7 +160,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
                 android:layout_marginLeft="8dp"
-                android:text="@string/button_advanced_functions" />
+                android:text="@string/button_advanced_functions"
+                android:focusable="false" />
 
         </LinearLayout>
 
