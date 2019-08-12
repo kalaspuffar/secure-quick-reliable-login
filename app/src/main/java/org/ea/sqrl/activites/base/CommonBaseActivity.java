@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatDelegate;
 import org.ea.sqrl.R;
 import org.ea.sqrl.utils.Utils;
 
+import java.util.Objects;
+
 /**
  * This activity is inherited by all other activities and provides common logic
  * such as language support.
@@ -23,6 +25,9 @@ public class CommonBaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
 
@@ -51,6 +56,12 @@ public class CommonBaseActivity extends AppCompatActivity {
             mCurrentLanguage = language;
             this.recreate();
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     protected void showInfoMessage(String title, String message, Runnable done) {
