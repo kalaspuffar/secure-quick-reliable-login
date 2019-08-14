@@ -4,9 +4,25 @@ os: linux
 language: generic
 
 env:
-  - EMULATOR_VERSION=18 TARGET_VERSION=28 ABI="google_apis;armeabi-v7a" ANDROID_BUILD_TOOLS_VERSION=28.0.3 ADB_INSTALL_TIMEOUT=20 QEMU_AUDIO_DRV=none
+  global:
+    - EMULATOR_VERSION=18
+    - TARGET_VERSION=28
+    - ABI="google_apis;armeabi-v7a"
+    - ANDROID_BUILD_TOOLS_VERSION=28.0.3
+    - ADB_INSTALL_TIMEOUT=20
+    - QEMU_AUDIO_DRV=none
+    - GRADLE_OPTS='-Dorg.gradle.daemon=false -Dorg.gradle.parallel=false -Dkotlin.incremental=false -DdisablePreDex'
 
 before_install:
+  - sudo service postgresql stop || true
+  - sudo service mysql stop || true
+  - sudo service memcached stop || true
+  - sudo service bootlogd stop || true
+  - sudo service elasticsearch stop || true
+  - sudo service mongodb stop || true
+  - sudo service cassandra stop || true
+  - sudo service rsync stop || true
+  - sudo service x11-common stop || true
   - export ANDROID_HOME=~/android-sdk-linux
   - wget -q "https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip" -O android-sdk-tools.zip
   - unzip -q android-sdk-tools.zip -d ${ANDROID_HOME}
@@ -31,8 +47,18 @@ before_install:
   - echo no | avdmanager create avd --force -n test -k "system-images;android-$EMULATOR_VERSION;$ABI"
 
 script:
-  - ./gradlew assembleDebugAndroidTest -PdisablePreDex --continue --stacktrace
+  - ./gradlew assembleAndroidTest
   - $ANDROID_HOME/emulator/emulator -avd test -no-window &
   - bash android-wait-for-emulator
   - adb shell input keyevent 82
-  - ./gradlew connectedDebugAndroidTest -PdisablePreDex --continue --stacktrace
+  - ./gradlew connectedAndroidTest
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
