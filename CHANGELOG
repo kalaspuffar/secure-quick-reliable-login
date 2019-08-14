@@ -1,3 +1,12 @@
+Version 1.6.0
+
+Improvements
+* Back option added to all activities for easily returning to
+  previous activity.
+
+Bugfixes
+* Identity Management menu option should only be available from main
+
 Version 1.5.0
 
 Bugfix
