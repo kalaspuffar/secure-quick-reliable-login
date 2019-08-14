@@ -138,7 +138,9 @@ public class BaseActivity extends CommonBaseActivity {
             menu.findItem(R.id.action_language).setVisible(false);
         }
 
-        if (this instanceof IdentityManagementActivity) {
+        if (this instanceof MainActivity) {
+            menu.findItem(R.id.action_identity_management).setVisible(true);
+        } else {
             menu.findItem(R.id.action_identity_management).setVisible(false);
         }
 
