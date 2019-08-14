@@ -34,7 +34,7 @@ before_install:
   - sdkmanager "emulator" "tools" "platform-tools" > /dev/null
   - sdkmanager --list | head -15
   - sdkmanager "build-tools;$ANDROID_BUILD_TOOLS_VERSION" "platforms;android-$TARGET_VERSION" > /dev/null
-  - sdkmanager "system-images;android-$EMULATOR_VERSION;$ABI" > /dev/null
+  - sdkmanager "platforms;android-$EMULATOR_VERSION" "system-images;android-$EMULATOR_VERSION;$ABI" > /dev/null
   - sdkmanager --list | head -15
   - yes | sdkmanager "cmake;3.10.2.4988404"
   - wget https://dl.google.com/android/repository/android-ndk-r18b-linux-x86_64.zip
