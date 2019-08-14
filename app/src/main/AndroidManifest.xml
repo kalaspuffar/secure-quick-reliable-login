@@ -31,7 +31,6 @@
         <activity
             android:name=".activites.identity.IdentityManagementActivity"
             android:label="@string/title_identity_management"
-            android:parentActivityName=".activites.MainActivity"
             />
 
         <activity

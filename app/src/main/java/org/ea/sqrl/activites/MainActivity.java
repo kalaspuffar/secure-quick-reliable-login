@@ -20,6 +20,7 @@ import org.ea.sqrl.utils.SqrlApplication;
 import org.ea.sqrl.utils.Utils;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  *
@@ -36,6 +37,9 @@ public class MainActivity extends LoginBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(false);
 
         rootView = findViewById(R.id.mainActivityView);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);

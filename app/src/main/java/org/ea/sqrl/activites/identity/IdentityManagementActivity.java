@@ -29,7 +29,6 @@ public class IdentityManagementActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_identity_management);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
 
         setupErrorPopupWindow(getLayoutInflater());
 

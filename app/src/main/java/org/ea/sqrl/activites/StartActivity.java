@@ -14,6 +14,8 @@ import org.ea.sqrl.activites.identity.ImportActivity;
 import org.ea.sqrl.activites.identity.ImportOptionsActivity;
 import org.ea.sqrl.activites.identity.TextImportActivity;
 
+import java.util.Objects;
+
 /**
  * Start activity should be a base for the user so we bring them into the application and they know
  * how to use it when installed and identities are added. So where we add some text for to inform
@@ -29,6 +31,9 @@ public class StartActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(false);
 
         final TextView txtWelcomeMessage = findViewById(R.id.txtWelcomeMessage);
         txtWelcomeMessage.setMovementMethod(LinkMovementMethod.getInstance());
