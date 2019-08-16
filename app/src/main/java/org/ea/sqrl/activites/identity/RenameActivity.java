@@ -45,6 +45,18 @@ public class RenameActivity extends BaseActivity {
         findViewById(R.id.btnRename).setOnClickListener(v -> doRename());
     }
 
+    @Override
+    public void onBackPressed() {
+        hideKeyboard();
+
+        if (isTaskRoot()) {
+            startActivity(getNextActivity());
+            finish();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     private void doRename() {
         final long currentId = SqrlApplication.getCurrentId(this.getApplication());
 
@@ -53,11 +65,12 @@ public class RenameActivity extends BaseActivity {
                     txtIdentityName.getText().toString());
         }
 
-        InputMethodManager imm = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(txtIdentityName.getWindowToken(), 0);
-
+        hideKeyboard();
         RenameActivity.this.finishAffinity();
+        startActivity(getNextActivity());
+    }
 
+    private Intent getNextActivity() {
         Intent nextActivity = new Intent(this, MainActivity.class);
 
         if (getIntent().hasExtra(SqrlApplication.EXTRA_NEXT_ACTIVITY)) {
@@ -68,7 +81,11 @@ public class RenameActivity extends BaseActivity {
                 e.printStackTrace();
             }
         }
+        return nextActivity;
+    }
 
-        startActivity(nextActivity);
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(txtIdentityName.getWindowToken(), 0);
     }
 }
