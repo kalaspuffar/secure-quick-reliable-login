@@ -35,7 +35,6 @@ public class RescueCodeEnterActivity extends CommonBaseActivity {
 
         btnRescueCodeEnterNext.setEnabled(false);
         btnRescueCodeEnterNext.setOnClickListener(v -> {
-            this.finish();
             startActivity(new Intent(this, SaveIdentityActivity.class));
         });
     }

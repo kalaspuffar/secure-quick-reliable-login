@@ -58,7 +58,6 @@ public class RescueCodeShowActivity extends CommonBaseActivity {
         }
 
         findViewById(R.id.btnRescueCodeShowNext).setOnClickListener(v -> {
-            this.finish();
             startActivity(new Intent(this, RescueCodeEnterActivity.class));
         });
 

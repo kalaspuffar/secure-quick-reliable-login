@@ -31,11 +31,8 @@ public class CreateIdentityActivity extends CommonBaseActivity {
         txtCreateIdentityMessage.setMovementMethod(LinkMovementMethod.getInstance());
 
         final Button btnCreateIdentityCreate = findViewById(R.id.btnCreateIdentityCreate);
-        btnCreateIdentityCreate.setOnClickListener(
-                v -> {
-                    this.finish();
-                    startActivity(new Intent(this, EntropyGatherActivity.class));
-                }
-        );
+        btnCreateIdentityCreate.setOnClickListener(v -> {
+            startActivity(new Intent(this, EntropyGatherActivity.class));
+        });
     }
 }
