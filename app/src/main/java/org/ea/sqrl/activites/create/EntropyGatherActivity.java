@@ -39,6 +39,11 @@ public class EntropyGatherActivity extends CommonBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entropy_gather);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         showPhoneStatePermission();
     }
@@ -52,7 +57,6 @@ public class EntropyGatherActivity extends CommonBaseActivity {
                 mCamera.release();
             }
             entropyHarvester.digestEntropy();
-            this.finish();
             startActivity(new Intent(this, RescueCodeShowActivity.class));
         });
 

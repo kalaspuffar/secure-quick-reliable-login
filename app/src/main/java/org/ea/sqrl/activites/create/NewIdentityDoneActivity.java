@@ -60,9 +60,15 @@ public class NewIdentityDoneActivity extends LoginBaseActivity {
 
     @Override
     public void onBackPressed() {
-        NewIdentityDoneActivity.this.finishAffinity();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            NewIdentityDoneActivity.this.finishAndRemoveTask();
+
+        if (isTaskRoot()) {
+            startActivity(new Intent(NewIdentityDoneActivity.this, MainActivity.class));
+            finish();
+        } else {
+            finishAffinity();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                finishAndRemoveTask();
+            }
         }
     }
 }

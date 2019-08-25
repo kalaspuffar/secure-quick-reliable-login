@@ -197,8 +197,13 @@ public class IdentitySelector {
             }
         };
 
+        String identityName = IdentityDBHelper.getInstance(mContext)
+                .getIdentityName(SqrlApplication.getCurrentId(mContext));
+
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(mContext);
-        builder.setMessage(R.string.remove_identity_confirmation)
+        builder.setTitle(identityName)
+                .setMessage(R.string.remove_identity_confirmation)
+                .setIcon(R.drawable.ic_delete_menuiconcolor_24dp)
                 .setNegativeButton(R.string.remove_identity_confirmation_negative, dialogClickListener)
                 .setPositiveButton(R.string.remove_identity_confirmation_positive, dialogClickListener)
                 .show();
