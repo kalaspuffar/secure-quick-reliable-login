@@ -70,6 +70,7 @@ public class EncryptionUtils {
         BigInteger largeNum = new BigInteger(1, data);
         String resultStr = "";
         int i = 0;
+        int len = 0;
         byte line = 0;
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         while(!largeNum.equals(BigInteger.ZERO)) {
@@ -87,7 +88,16 @@ public class EncryptionUtils {
             resultStr += (char)BASE56_ENCODE[res[1].intValue()];
             md.update(BASE56_ENCODE[res[1].intValue()]);
             i++;
+            len++;
         }
+
+        // Added extra padding.
+        int paddLen = (int)Math.ceil( data.length * 8.0 / (Math.log(56) / Math.log(2)));
+        for(int j = len; j < paddLen; j++) {
+            resultStr += (char)BASE56_ENCODE[0];
+            md.update(BASE56_ENCODE[0]);
+        }
+
         md.update(line);
         byte[] checksum = reverse(md.digest());
         BigInteger remainder = new BigInteger(1, checksum).mod(BASE);
