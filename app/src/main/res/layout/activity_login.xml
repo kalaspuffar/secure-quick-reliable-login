@@ -175,48 +175,78 @@
             android:layout_marginStart="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginLeft="16dp"
-            android:paddingLeft="24dp"
-            android:paddingStart="16dp"
+            android:paddingLeft="0dp"
+            android:paddingStart="0dp"
             android:paddingRight="0dp"
-            android:paddingEnd="16dp"
+            android:paddingEnd="0dp"
             android:paddingBottom="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toggleAdvancedFunctionsLayout">
 
-            <EditText
-                android:id="@+id/txtAlternateId"
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="8dp"
-                android:hint="@string/button_alternative_identity"
-                android:inputType="text"
-                app:layout_constraintTop_toTopOf="parent"
+                android:id="@+id/altIdLayout"
+                android:background="@drawable/alt_id_input_background"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginLeft="8dp"
+                android:paddingLeft="8dp"
+                android:paddingStart="8dp"
+                android:paddingRight="0dp"
+                android:paddingEnd="0dp"
+                android:paddingBottom="0dp"
+                android:paddingTop="0dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/imgAlternateIdHelp"
-                android:importantForAutofill="no" />
-
-            <ImageView
-                android:id="@+id/imgAlternateIdHelp"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:padding="4dp"
-                android:scaleType="centerCrop"
-                app:layout_constraintTop_toTopOf="@+id/txtAlternateId"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:srcCompat="@drawable/ic_info_outline_24dp" />
+                app:layout_constraintTop_toTopOf="@+id/advancedFunctionsLayout">
+
+                <EditText
+                    android:id="@+id/txtAlternateId"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:hint="@string/button_alternative_identity"
+                    android:inputType="text"
+                    android:textSize="14dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/imgAlternateIdHelp"
+                    android:importantForAutofill="no" />
+
+                <ImageView
+                    android:id="@+id/imgAlternateIdHelp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="4dp"
+                    android:padding="4dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintTop_toTopOf="@+id/txtAlternateId"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:srcCompat="@drawable/ic_info_outline_24dp" />
+
+
+            </android.support.constraint.ConstraintLayout>
 
             <RadioGroup
                 android:id="@+id/radgrpAccountOptions"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@id/txtAlternateId"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintTop_toBottomOf="@id/altIdLayout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/imgDisableAccountHelp" >
 
@@ -253,9 +283,11 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginTop="32dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
                 android:padding="4dp"
                 android:scaleType="centerCrop"
-                app:layout_constraintTop_toBottomOf="@+id/txtAlternateId"
+                app:layout_constraintTop_toBottomOf="@+id/altIdLayout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:srcCompat="@drawable/ic_info_outline_24dp" />
 
@@ -264,6 +296,8 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginTop="0dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
                 android:padding="4dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintTop_toBottomOf="@+id/imgDisableAccountHelp"
@@ -275,6 +309,8 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginTop="0dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
                 android:padding="4dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintTop_toBottomOf="@+id/imgEnableAccountHelp"
