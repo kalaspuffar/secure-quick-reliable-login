@@ -26,4 +26,13 @@ public class Base56UnitTest {
 
         assertEquals("Encoding should be the same before and after", testIdentity, encoded);
     }
+
+    @Test
+    public void testEncodeAndDecodePaddedLong() throws Exception {
+        final String testIdentity = "tP8zx8kY8EMPLqzWVq6aPL2my25Pc6KwrVyrUQwRiBKwRc6FPAmPumtrGQ8CtBhxqkRLExuE7tsFbrzUTfb2qSZ9eqDbcfjv8Zdqi6DXa5Ztn3CWsVAZFFF6jafiyixYhGqSeZdg4zjCi7cMgEsBYwWHevsB2H6y9gam2GbXk5A4SSek4Rmrmx64qxUnQJer62WnGcWArqCBzQYVw4GcvAsBjvjDvjN7RhKGdhLpLMTKB7DpfTkhCeaPDWCZxy3AVzxbwKSdjHcZmnaMegiE2t";
+        byte[] decodedBytes = EncryptionUtils.decodeBase56(testIdentity);
+        String encoded = EncryptionUtils.encodeBase56(decodedBytes);
+
+        assertEquals("Encoding should be the same before and after", testIdentity, encoded);
+    }
 }
