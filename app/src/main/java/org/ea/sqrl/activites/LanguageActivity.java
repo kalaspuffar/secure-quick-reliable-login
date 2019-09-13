@@ -48,6 +48,7 @@ public class LanguageActivity extends CommonBaseActivity {
         languages.add(new Language(R.string.language_hindi, "hi"));
         languages.add(new Language(R.string.language_hungarian, "hu"));
         languages.add(new Language(R.string.language_japanese, "ja"));
+        languages.add(new Language(R.string.language_korean, "ko"));
         languages.add(new Language(R.string.language_norwegian, "no"));
         languages.add(new Language(R.string.language_polish, "pl"));
         languages.add(new Language(R.string.language_russian, "ru"));
