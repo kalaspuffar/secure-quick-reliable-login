@@ -296,4 +296,5 @@
 <string name="helptext_password_login">Vargod ange det fullständiga SQRL identitets lösenordet som du valt till identiteten.</string>
 <string name="title_enable_quickpass">Aktivera QuickPass</string>
 <string name="default_identity_name">Min identitet</string>
+<string name="language_korean">Korianska</string>
 </resources>

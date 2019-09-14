@@ -21,7 +21,9 @@ public class EncryptionUtils {
     private static final String TAG = "EncryptionUtils";
     private static final byte[] BASE56_ENCODE = "23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz".getBytes();
     private static final String BASE56_DECODE = "23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz";
-    private static final BigInteger BASE = BigInteger.valueOf(56);
+    private static final int BASE_INT = 56;
+    private static final int CHARS_PER_LINE = 19;
+    private static final BigInteger BASE = BigInteger.valueOf(BASE_INT);
 
     public static byte[] combine(byte[] a, byte b) {
         return combine(a, new byte[] {b});
@@ -49,7 +51,6 @@ public class EncryptionUtils {
         return data;
     }
 
-
     /**
      * This function will create an base56 string with the least significant byte first.
      * We use the reverse function every time we need to do math operations on the byte stream
@@ -66,28 +67,38 @@ public class EncryptionUtils {
      * @throws Exception    Throws an exception if the platform doesn't support SHA-256.
      */
     public static String encodeBase56(byte[] data) throws Exception {
+        final int expectedLength = (int) Math.ceil((data.length*8)/(Math.log(BASE_INT)/Math.log(2)));
+
         data = reverse(data);
         BigInteger largeNum = new BigInteger(1, data);
         String resultStr = "";
-        int i = 0;
+        int charsOnLine = 0;
         byte line = 0;
         MessageDigest md = MessageDigest.getInstance("SHA-256");
-        while(!largeNum.equals(BigInteger.ZERO)) {
-            if(i == 19) {
+        for(int totalLength = 0; totalLength < expectedLength; totalLength++) {
+            if(charsOnLine == CHARS_PER_LINE) {
                 md.update(line);
                 byte[] checksum = reverse(md.digest());
                 BigInteger remainder = new BigInteger(1, checksum).mod(BASE);
                 resultStr += (char)BASE56_ENCODE[remainder.intValue()];
                 md.reset();
                 line++;
-                i = 0;
+                charsOnLine = 0;
             }
-            BigInteger[] res = largeNum.divideAndRemainder(BASE);
-            largeNum = res[0];
-            resultStr += (char)BASE56_ENCODE[res[1].intValue()];
-            md.update(BASE56_ENCODE[res[1].intValue()]);
-            i++;
+
+            if(largeNum.equals(BigInteger.ZERO)) {
+                // pad with "zero"
+                resultStr += (char)BASE56_ENCODE[0];
+                md.update(BASE56_ENCODE[0]);
+            } else {
+                BigInteger[] res = largeNum.divideAndRemainder(BASE);
+                largeNum = res[0];
+                resultStr += (char) BASE56_ENCODE[res[1].intValue()];
+                md.update(BASE56_ENCODE[res[1].intValue()]);
+            }
+            charsOnLine++;
         }
+
         md.update(line);
         byte[] checksum = reverse(md.digest());
         BigInteger remainder = new BigInteger(1, checksum).mod(BASE);
@@ -98,14 +109,17 @@ public class EncryptionUtils {
 
     public static byte[] decodeBase56(String encodedString) throws Exception {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
-        int i = 0;
-        int n = 0;
+        int charIndexPerLine = 0;
+        int charsRead = 0;
         byte line = 0;
         BigInteger largeNum = BigInteger.ZERO;
         int encodedStringLen = encodedString.length();
         for(String s : encodedString.split("")) {
             if(s.isEmpty()) continue;
-            if(i == 19 || encodedStringLen - 1 == n + line) {
+            if(
+                charIndexPerLine == 19 ||
+                encodedStringLen - 1 == charsRead + line
+            ) {
                 md.update(line);
                 byte[] checksum = reverse(md.digest());
                 BigInteger remainder = new BigInteger(1, checksum).mod(BASE);
@@ -114,18 +128,23 @@ public class EncryptionUtils {
                 }
                 md.reset();
                 line++;
-                i = 0;
+                charIndexPerLine = 0;
             } else {
-                BigInteger newVal = BigInteger.valueOf(BASE56_DECODE.indexOf(s)).multiply(BASE.pow(n));
+                BigInteger newVal = BigInteger.valueOf(BASE56_DECODE.indexOf(s)).multiply(BASE.pow(charsRead));
                 largeNum = largeNum.add(newVal);
                 md.update(s.getBytes());
-                i++;
-                n++;
+                charIndexPerLine++;
+                charsRead++;
             }
         }
         byte[] largeBytes = largeNum.toByteArray();
+        final int expectedNumberOfBytes = (int)((encodedStringLen - line)*(Math.log(BASE_INT)/Math.log(2))/8);
+        largeBytes = reverse(largeBytes);
+        if(largeBytes.length > expectedNumberOfBytes) {
+            largeBytes = Arrays.copyOfRange(largeBytes, 0, expectedNumberOfBytes);
+        }
 
-        return reverse(largeBytes);
+        return largeBytes;
     }
 
     public static int validateBase56(String cleanTextIdentity) {
@@ -142,7 +161,7 @@ public class EncryptionUtils {
         int encodedStringLen = cleanTextIdentity.length();
         for (String s : cleanTextIdentity.split("")) {
             if (s.isEmpty()) continue;
-            if (i == 19 || encodedStringLen - 1 == n + line) {
+            if (i == CHARS_PER_LINE || encodedStringLen - 1 == n + line) {
                 md.update(line);
                 byte[] checksum = reverse(md.digest());
                 BigInteger remainder = new BigInteger(1, checksum).mod(BASE);
