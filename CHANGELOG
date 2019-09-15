@@ -1,11 +1,14 @@
-Version 1.6.0
+Version 1.5.1
 
 Improvements
-* Back option added to all activities for easily returning to
-  previous activity.
+* Back option added to all activities for easily returning to previous activity.
+* Added Korean language
 
 Bugfixes
 * Identity Management menu option should only be available from main
+* Fix Alt-Id input field not being recognizable as such
+* Fixing padding on base56 encoding.
+
 
 Version 1.5.0
 
