@@ -31,4 +31,7 @@
     <color name="intro_tab_text">@android:color/darker_gray</color>
     <color name="intro_tab_selected_text">@color/colorAccent</color>
 
+    <color name="alt_id_input_background">#77000000</color>
+    <color name="alt_id_input_border">@android:color/transparent</color>
+
 </resources>

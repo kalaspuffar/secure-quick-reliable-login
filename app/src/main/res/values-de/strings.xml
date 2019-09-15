@@ -296,4 +296,5 @@
 <string name="helptext_password_login">Bitte geben Sie Ihr SQRL Identitäts-Passwort in voller Länge ein, welches Sie für diese Identität festgelegt haben.</string>
 <string name="title_enable_quickpass">QuickPass aktivieren</string>
 <string name="default_identity_name">Meine Identität</string>
+    <string name="language_korean">Korean</string>
 </resources>

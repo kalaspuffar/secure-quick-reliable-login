@@ -9,7 +9,6 @@ Bugfixes
 * Fix Alt-Id input field not being recognizable as such
 * Fixing padding on base56 encoding.
 
-
 Version 1.5.0
 
 Bugfix
