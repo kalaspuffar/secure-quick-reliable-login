@@ -117,7 +117,7 @@ public class EncryptionUtils {
         for(String s : encodedString.split("")) {
             if(s.isEmpty()) continue;
             if(
-                charIndexPerLine == 19 ||
+                charIndexPerLine == CHARS_PER_LINE ||
                 encodedStringLen - 1 == charsRead + line
             ) {
                 md.update(line);
