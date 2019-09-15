@@ -244,7 +244,7 @@
 <string name="button_export_share_identity">Share identity</string>
 <string name="share_identity_to">Share identity to</string>
 <string name="import_identity_file">Import identity file</string>
-<string name="title_import_options">Import</string>
+<string name="title_import_options">Import options</string>
 <string name="install_file_manager_app">Please install a file manager app from the Google Play Store.</string>
 <string name="identity_management">Identity management</string>
 <string name="title_identity_management">Identity Management</string>
@@ -296,5 +296,5 @@
 <string name="helptext_password_login">Please provide the full-length SQRL identity password that you have chosen for this identity.</string>
 <string name="title_enable_quickpass">Enable QuickPass</string>
 <string name="default_identity_name">My Identity</string>
-    <string name="language_korean">Korean</string>
+<string name="language_korean">Korean</string>
 </resources>
