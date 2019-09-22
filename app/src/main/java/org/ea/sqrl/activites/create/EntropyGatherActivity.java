@@ -32,6 +32,8 @@ public class EntropyGatherActivity extends CommonBaseActivity {
     private final int REQUEST_PERMISSION_CAMERA = 1;
 
     private Camera mCamera;
+    private CameraPreview mPreview;
+    private FrameLayout mPreviewLayout;
     private EntropyHarvester entropyHarvester;
     private ProgressBar progressBar;
 
@@ -39,6 +41,7 @@ public class EntropyGatherActivity extends CommonBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entropy_gather);
+        mPreviewLayout = findViewById(R.id.camera_preview);
     }
 
     @Override
@@ -48,14 +51,26 @@ public class EntropyGatherActivity extends CommonBaseActivity {
         showPhoneStatePermission();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (mCamera != null) {
+            mCamera.stopPreview();
+            mCamera.setPreviewCallback(null);
+            mCamera.release();
+            mCamera = null;
+        }
+
+        if (mPreview != null) {
+            mPreviewLayout.removeView(mPreview);
+            mPreview = null;
+        }
+    }
+
     private void initCameraUsage() {
         final Button btnEntropyGatherNext = findViewById(R.id.btnEntropyGatherNext);
         btnEntropyGatherNext.setOnClickListener(v -> {
-            if(mCamera != null) {
-                mCamera.stopPreview();
-                mCamera.setPreviewCallback(null);
-                mCamera.release();
-            }
             entropyHarvester.digestEntropy();
             startActivity(new Intent(this, RescueCodeShowActivity.class));
         });
@@ -69,10 +84,16 @@ public class EntropyGatherActivity extends CommonBaseActivity {
             Log.e(TAG, e.getMessage(), e);
         }
 
-        mCamera = getCameraInstance();
-        final CameraPreview mPreview = new CameraPreview(this, mCamera, entropyHarvester);
-        FrameLayout preview = findViewById(R.id.camera_preview);
-        preview.addView(mPreview);
+        if (mCamera == null) {
+            mCamera = getCameraInstance();
+        }
+
+        if (mPreview == null) {
+            mPreview = new CameraPreview(this, mCamera, entropyHarvester);
+            mPreviewLayout.addView(mPreview);
+        }
+
+        mCamera.startPreview();
     }
 
     private void showPhoneStatePermission() {
@@ -148,30 +169,19 @@ public class EntropyGatherActivity extends CommonBaseActivity {
             try {
                 if(mCamera != null) {
                     mCamera.setPreviewDisplay(holder);
-                    mCamera.startPreview();
+                    mCamera.setPreviewCallback((data, camera) -> {
+                        mEntropyHarvester.addEntropy(progressBar, data);
+                    });
                 }
             } catch (IOException e) {
                 Log.d(TAG, "Error setting camera preview: " + e.getMessage());
             }
         }
 
-        public void surfaceDestroyed(SurfaceHolder holder) {}
-
-        public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-            if (mCamera == null || mHolder.getSurface() == null) {
-                return;
-            }
-
-            try {
-                mCamera.stopPreview();
-                mCamera.setPreviewDisplay(mHolder);
-                mCamera.setPreviewCallback((data, camera) -> {
-                    mEntropyHarvester.addEntropy(progressBar, data);
-                });
-                mCamera.startPreview();
-            } catch (Exception e){
-                Log.d(TAG, "Error starting camera preview: " + e.getMessage());
-            }
+        public void surfaceDestroyed(SurfaceHolder holder) {
+            holder.removeCallback(this);
         }
+
+        public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) { }
     }
 }
