@@ -3,8 +3,6 @@ package org.ea.sqrl.services;
 import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.pdf.PdfDocument;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,8 +14,12 @@ import android.print.PrintDocumentAdapter;
 import android.print.PrintDocumentInfo;
 import android.print.pdf.PrintedPdfDocument;
 import android.support.annotation.RequiresApi;
+import android.text.Layout;
+import android.text.TextPaint;
 
+import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.Utils;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -52,7 +54,7 @@ public class RescueCodePrintDocumentAdapter extends PrintDocumentAdapter {
         }
 
         PrintDocumentInfo info = new PrintDocumentInfo
-                .Builder("rescueCode.pdf")
+                .Builder("RescueCode.pdf")
                 .setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
                 .setPageCount(1)
                 .build();
@@ -92,34 +94,84 @@ public class RescueCodePrintDocumentAdapter extends PrintDocumentAdapter {
     }
 
     private void drawPage(PdfDocument.Page page) {
-        Canvas canvas = page.getCanvas();
-        Paint paint = new Paint();
-
         SQRLStorage storage = SQRLStorage.getInstance(activity);
-        List<String> rescueCode = storage.getTempShowableRescueCode();
+        Canvas canvas = page.getCanvas();
+        int marginTop = 65;
+        int marginLeft = 35;
+        int lastBlockY = marginTop;
 
+        TextPaint headlineText = new TextPaint();
+        headlineText.setAntiAlias(true);
+        headlineText.setTextSize(24);
+        headlineText.setFakeBoldText(true);
+
+        TextPaint redBoldText = new TextPaint();
+        redBoldText.setAntiAlias(true);
+        redBoldText.setTextSize(24);
+        redBoldText.setFakeBoldText(true);
+        redBoldText.setColor(Color.RED);
+
+        TextPaint stdText = new TextPaint();
+        stdText.setAntiAlias(true);
+        stdText.setTextSize(14);
+
+        String headline = activity.getResources().getString(R.string.rescue_code_page_headline);
+        String warning = "!! " + activity.getResources().getString(R.string.rescue_code_page_warning).toUpperCase() + " !!";
+        String description = activity.getResources().getString(R.string.rescue_code_page_description);
+
+        lastBlockY += Utils.drawTextBlock(
+                canvas,
+                headline,
+                Layout.Alignment.ALIGN_CENTER,
+                headlineText,
+                lastBlockY,
+                marginLeft);
+
+        lastBlockY += Utils.drawTextBlock(
+                canvas,
+                warning,
+                Layout.Alignment.ALIGN_CENTER,
+                redBoldText,
+                lastBlockY + 40,
+                marginLeft) + 40;
+
+        lastBlockY += Utils.drawTextBlock(
+                canvas,
+                description,
+                Layout.Alignment.ALIGN_NORMAL,
+                stdText,
+                lastBlockY + 20,
+                marginLeft) + 20;
+
+        List<String> rescueCode = storage.getTempShowableRescueCode();
         StringBuilder sb = new StringBuilder();
         boolean first = true;
-        for(String s : rescueCode) {
-            if(!first) sb.append("-");
+        for (String s : rescueCode) {
+            if (!first) sb.append("-");
             sb.append(s);
             first = false;
         }
-
         String rescueCodeOutput = sb.toString();
 
-        int fontSize = 24;
+        lastBlockY += Utils.drawTextBlock(
+                canvas,
+                rescueCodeOutput,
+                Layout.Alignment.ALIGN_CENTER,
+                redBoldText,
+                lastBlockY + 60,
+                marginLeft) + 60;
 
-        paint.setColor(Color.RED);
-        paint.setFakeBoldText(true);
-        paint.setTextSize(fontSize);
+        String idName = activity.getResources().getString(R.string.txt_identity_name_hint) +
+                ": __________________________________";
 
-        int middleX = canvas.getWidth() / 2;
-        int middleY = canvas.getHeight() / 2;
-        Rect bounds = new Rect();
-        paint.getTextBounds(rescueCodeOutput, 0, rescueCodeOutput.length(), bounds);
-        int width = bounds.width();
+        Utils.drawTextBlock(
+                canvas,
+                idName,
+                Layout.Alignment.ALIGN_CENTER,
+                stdText,
+                lastBlockY + 60,
+                marginLeft);
 
-        canvas.drawText(rescueCodeOutput, middleX - (width / 2), middleY - (fontSize / 2), paint);
+        Utils.drawPrintPageFooter(activity, canvas);
     }
 }

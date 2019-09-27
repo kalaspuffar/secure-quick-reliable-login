@@ -1,9 +1,7 @@
 package org.ea.sqrl.services;
 
 import android.app.Activity;
-import android.content.pm.PackageInfo;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -28,8 +26,6 @@ import org.ea.sqrl.utils.Utils;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import io.nayuki.qrcodegen.QrCode;
 
@@ -206,33 +202,6 @@ public class IdentityPrintDocumentAdapter extends PrintDocumentAdapter {
         paint.setTypeface(Typeface.DEFAULT);
         drawBlockOfText(canvas, paint, activity.getString(R.string.print_identity_desc3), lastBlockY + (bodyText * 2) + (i * bodyText), bodyText);
 
-
-        StringBuilder versionString = new StringBuilder();
-        versionString.append(activity.getString(R.string.print_version_string));
-        versionString.append(" ");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        versionString.append(sdf.format(new Date()));
-        versionString.append(" * ");
-        versionString.append("Version: ");
-
-        Bitmap loadLogo = BitmapFactory.decodeResource(activity.getResources(), R.drawable.sqrl_print_logo);
-        Bitmap sqrlLogo = Bitmap.createScaledBitmap(loadLogo, 40, 40, false);
-
-        canvas.drawBitmap(
-                sqrlLogo,
-                canvasMiddle - (sqrlLogo.getScaledWidth(canvas) / 2),
-                canvas.getHeight() - 140,
-                paint
-        );
-
-        try {
-            PackageInfo pInfo = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0);
-            versionString.append(pInfo.versionName);
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
-
-        drawCenteredText(canvas, paint, versionString.toString(), canvas.getHeight() - 80, 10);
-        drawCenteredText(canvas, paint, "https://github.com/kalaspuffar/secure-quick-reliable-login", canvas.getHeight() - 65, 10);
+        Utils.drawPrintPageFooter(activity, canvas);
     }
 }
