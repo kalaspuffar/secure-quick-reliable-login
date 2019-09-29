@@ -297,4 +297,7 @@
 <string name="title_enable_quickpass">Enable QuickPass</string>
 <string name="default_identity_name">My Identity</string>
 <string name="language_korean">Korean</string>
+<string name="rescue_code_page_headline">This is your Identity\'s Rescue Code</string>
+<string name="rescue_code_page_warning">Do not discard this page</string>
+<string name="rescue_code_page_description">This is the irreplaceable SQRL Rescue Code for the SQRL identity you are creating.\n\nThis code cannot be recreated and must not be lost, misplaced or destroyed. It will allow you to recover from any disaster that might occur. If your identity\'s password is forgotten, or if your SQRL identity should become compromised, this Rescue Code allows you to recover from any situation. (Some situations may also require your SQRL identity. So be sure to also keep a backup of your identity.)\n\nThis printout should be stored in a safe and secure place where it cannot be found by others, but CAN be retrieved if you should ever need it. That need may never arise. But if it does, you\'ll be glad that you kept it safe and secure.\n\nYour identity\'s Rescue Code is:</string>
 </resources>
