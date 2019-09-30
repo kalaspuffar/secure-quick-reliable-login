@@ -19,7 +19,7 @@ import android.text.TextPaint;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
-import org.ea.sqrl.utils.Utils;
+import org.ea.sqrl.utils.DocumentPrintUtils;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -119,7 +119,7 @@ public class RescueCodePrintDocumentAdapter extends PrintDocumentAdapter {
         String warning = "!! " + activity.getResources().getString(R.string.rescue_code_page_warning).toUpperCase() + " !!";
         String description = activity.getResources().getString(R.string.rescue_code_page_description);
 
-        lastBlockY += Utils.drawTextBlock(
+        lastBlockY += DocumentPrintUtils.drawTextBlock(
                 canvas,
                 headline,
                 Layout.Alignment.ALIGN_CENTER,
@@ -127,7 +127,7 @@ public class RescueCodePrintDocumentAdapter extends PrintDocumentAdapter {
                 lastBlockY,
                 marginLeft);
 
-        lastBlockY += Utils.drawTextBlock(
+        lastBlockY += DocumentPrintUtils.drawTextBlock(
                 canvas,
                 warning,
                 Layout.Alignment.ALIGN_CENTER,
@@ -135,7 +135,7 @@ public class RescueCodePrintDocumentAdapter extends PrintDocumentAdapter {
                 lastBlockY + 40,
                 marginLeft) + 40;
 
-        lastBlockY += Utils.drawTextBlock(
+        lastBlockY += DocumentPrintUtils.drawTextBlock(
                 canvas,
                 description,
                 Layout.Alignment.ALIGN_NORMAL,
@@ -153,7 +153,7 @@ public class RescueCodePrintDocumentAdapter extends PrintDocumentAdapter {
         }
         String rescueCodeOutput = sb.toString();
 
-        lastBlockY += Utils.drawTextBlock(
+        lastBlockY += DocumentPrintUtils.drawTextBlock(
                 canvas,
                 rescueCodeOutput,
                 Layout.Alignment.ALIGN_CENTER,
@@ -164,7 +164,7 @@ public class RescueCodePrintDocumentAdapter extends PrintDocumentAdapter {
         String idName = activity.getResources().getString(R.string.txt_identity_name_hint) +
                 ": __________________________________";
 
-        Utils.drawTextBlock(
+        DocumentPrintUtils.drawTextBlock(
                 canvas,
                 idName,
                 Layout.Alignment.ALIGN_CENTER,
@@ -172,6 +172,6 @@ public class RescueCodePrintDocumentAdapter extends PrintDocumentAdapter {
                 lastBlockY + 60,
                 marginLeft);
 
-        Utils.drawPrintPageFooter(activity, canvas);
+        DocumentPrintUtils.drawPrintPageFooter(activity, canvas);
     }
 }

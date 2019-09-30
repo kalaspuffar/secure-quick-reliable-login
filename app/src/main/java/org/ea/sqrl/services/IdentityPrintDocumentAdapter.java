@@ -3,9 +3,7 @@ package org.ea.sqrl.services;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
 import android.os.Build;
@@ -18,10 +16,13 @@ import android.print.PrintDocumentAdapter;
 import android.print.PrintDocumentInfo;
 import android.print.pdf.PrintedPdfDocument;
 import android.support.annotation.RequiresApi;
+import android.text.Layout;
+import android.text.TextPaint;
 import android.util.Log;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;
+import org.ea.sqrl.utils.DocumentPrintUtils;
 import org.ea.sqrl.utils.Utils;
 
 import java.io.FileOutputStream;
@@ -62,7 +63,7 @@ public class IdentityPrintDocumentAdapter extends PrintDocumentAdapter {
         }
 
         PrintDocumentInfo info = new PrintDocumentInfo
-                .Builder("identity.pdf")
+                .Builder("Identity.pdf")
                 .setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
                 .setPageCount(1)
                 .build();
@@ -101,70 +102,41 @@ public class IdentityPrintDocumentAdapter extends PrintDocumentAdapter {
         callback.onWriteFinished(pageRanges);
     }
 
-    private void drawCenteredText(Canvas canvas, Paint paint, String text, int y, int fontSize) {
-        paint.setColor(Color.BLACK);
-        paint.setFakeBoldText(true);
-        paint.setTextSize(fontSize);
-
-        int middle = canvas.getWidth() / 2;
-        Rect bounds = new Rect();
-        paint.getTextBounds(text, 0, text.length(), bounds);
-        int width = bounds.width();
-
-        canvas.drawText(text, middle - (width / 2), y, paint);
-    }
-
-    private int findNextString(String text, Paint paint, int maxWidth) {
-        String[] stringArr = text.split(" ");
-        Rect bounds = new Rect();
-        String nextString = "";
-        int lastLen = 0;
-        for(String s : stringArr) {
-            lastLen = nextString.length();
-            nextString += s;
-            paint.getTextBounds(nextString, 0, nextString.length(), bounds);
-            int width = bounds.width();
-            if(width > maxWidth) {
-                return lastLen;
-            }
-            nextString += " ";
-        }
-        return nextString.trim().length();
-    }
-
-    private int drawBlockOfText(Canvas canvas, Paint paint, String text, int y, int fontSize) {
-        paint.setColor(Color.BLACK);
-        paint.setFakeBoldText(false);
-        paint.setTextSize(fontSize);
-
-        int margin = 52;
-        int maxWidth = canvas.getWidth();
-
-        int i=0;
-        while(!text.isEmpty()) {
-            int nextEnd = findNextString(text, paint, maxWidth - (margin * 2));
-            String output = text.substring(0, nextEnd);
-            canvas.drawText(output, margin, y + (i * fontSize), paint);
-            text = text.substring(nextEnd).trim();
-            i++;
-        }
-
-        return y + (i * fontSize);
-    }
-
     private void drawPage(PdfDocument.Page page) {
         SQRLStorage storage = SQRLStorage.getInstance(activity);
         Canvas canvas = page.getCanvas();
+        int marginLeftRight = 35;
+        int marginTop = 65;
+        int lastBlockY = marginTop;
 
-        int titleBaseLine = 72;
+        TextPaint headlineTextPaint = new TextPaint();
+        headlineTextPaint.setTextSize(16);
+        headlineTextPaint.setFakeBoldText(true);
 
-        Paint paint = new Paint();
+        TextPaint bodyTextPaint = new TextPaint();
+        bodyTextPaint.setTextSize(12);
+
+        TextPaint identityTextTextPaint = new TextPaint(bodyTextPaint);
+        identityTextTextPaint.setTypeface(Typeface.MONOSPACE);
+        identityTextTextPaint.setFakeBoldText(true);
+
         String identityTitle = "\"" + identityName + "\" SQRL Identity";
-        drawCenteredText(canvas, paint, identityTitle, titleBaseLine, 16);
 
-        int bodyText = 12;
+        lastBlockY += DocumentPrintUtils.drawTextBlock(
+                canvas,
+                identityTitle,
+                Layout.Alignment.ALIGN_CENTER,
+                headlineTextPaint,
+                marginTop,
+                marginLeftRight);
 
-        int lastBlockY = drawBlockOfText(canvas, paint, activity.getString(R.string.print_identity_desc1), titleBaseLine + 32, bodyText);
+        lastBlockY += DocumentPrintUtils.drawTextBlock(
+                canvas,
+                activity.getString(R.string.print_identity_desc1),
+                Layout.Alignment.ALIGN_NORMAL,
+                bodyTextPaint,
+                lastBlockY + 20,
+                marginLeftRight) + 20;
 
         byte[] saveData;
         if(this.withoutPassword) {
@@ -179,29 +151,44 @@ public class IdentityPrintDocumentAdapter extends PrintDocumentAdapter {
 
         int bitmapWidth = bitmap.getScaledWidth(canvas);
 
-        canvas.drawBitmap(bitmap, canvasMiddle - (bitmapWidth / 2), lastBlockY + bodyText, paint);
+        canvas.drawBitmap(bitmap, canvasMiddle - (bitmapWidth / 2), lastBlockY + 20, new Paint());
 
-        int bitmapHeight = bitmap.getScaledHeight(canvas);
+        lastBlockY += bitmap.getScaledHeight(canvas) + 20;
 
-        int nextTextBlock = lastBlockY + (bodyText * 2) + bitmapHeight;
+        lastBlockY += DocumentPrintUtils.drawTextBlock(
+                canvas,
+                activity.getString(R.string.print_identity_desc2),
+                Layout.Alignment.ALIGN_NORMAL,
+                bodyTextPaint,
+                lastBlockY + 20,
+                marginLeftRight) + 30;
 
-        lastBlockY = drawBlockOfText(canvas, paint, activity.getString(R.string.print_identity_desc2), nextTextBlock + (bodyText * 2), bodyText);
 
         int i = 0;
         try {
-            paint.setTypeface(Typeface.MONOSPACE);
             Utils.refreshStorageFromDb(activity);
-            for (String s : storage.getVerifyingRecoveryBlock().split("\n")) {
-                drawCenteredText(canvas, paint, s, lastBlockY + bodyText + (i * bodyText), bodyText);
+            for (String identityTextBlock : storage.getVerifyingRecoveryBlock().split("\n")) {
+                lastBlockY += DocumentPrintUtils.drawTextBlock(
+                        canvas,
+                        identityTextBlock,
+                        Layout.Alignment.ALIGN_CENTER,
+                        identityTextTextPaint,
+                        lastBlockY + 3,
+                        marginLeftRight) + 3;
                 i++;
             }
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
         }
 
-        paint.setTypeface(Typeface.DEFAULT);
-        drawBlockOfText(canvas, paint, activity.getString(R.string.print_identity_desc3), lastBlockY + (bodyText * 2) + (i * bodyText), bodyText);
+        DocumentPrintUtils.drawTextBlock(
+                canvas,
+                activity.getString(R.string.print_identity_desc3),
+                Layout.Alignment.ALIGN_NORMAL,
+                bodyTextPaint,
+                lastBlockY + 20,
+                marginLeftRight);
 
-        Utils.drawPrintPageFooter(activity, canvas);
+        DocumentPrintUtils.drawPrintPageFooter(activity, canvas);
     }
 }
