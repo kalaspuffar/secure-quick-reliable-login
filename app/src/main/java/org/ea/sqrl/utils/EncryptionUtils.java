@@ -222,7 +222,7 @@ public class EncryptionUtils {
     public static byte[] xor(byte[] a, byte[] b) {
         byte[] result = new byte[a.length];
         for (int i = 0; i < a.length; i++) {
-            result[i] = (byte) (((int) a[i]) ^ ((int) b[i]));
+            result[i] = (byte) (((int) a[i]) ^ ((int) b[i%b.length]));
         }
         return result;
     }
