@@ -219,10 +219,26 @@ public class EncryptionUtils {
         return new String(decodeUrlSafe(data), "UTF-8");
     }
 
+    /***
+     * Performs a byte-by-byte XOR operation on the provided byte arrays.
+     * Since this is being used for XOR'ing cryptographic keys, in order to avoid information leakage
+     * caused by (partial) reuse of key material, this function enforces both byte arrays to have the
+     * same length (nr of bytes).
+     *
+     * @param a The first operand for the XOR operation. Must be same length as b.
+     * @param b The second operand for the XOR operation. Must be same length as a.
+     * @return The byte array resulting from the XOR operation.
+     * @throws IllegalArgumentException If the lengths of a and b are not equal.
+     */
     public static byte[] xor(byte[] a, byte[] b) {
+        if (a.length != b.length) {
+            throw new IllegalArgumentException(
+                    "The byte arrays to be XOR'ed need to have the same length!");
+        }
+
         byte[] result = new byte[a.length];
         for (int i = 0; i < a.length; i++) {
-            result[i] = (byte) (((int) a[i]) ^ ((int) b[i%b.length]));
+            result[i] = (byte) (((int) a[i]) ^ ((int) b[i]));
         }
         return result;
     }
