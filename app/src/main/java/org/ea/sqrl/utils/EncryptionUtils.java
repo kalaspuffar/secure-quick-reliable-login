@@ -223,7 +223,7 @@ public class EncryptionUtils {
      * Performs a byte-by-byte XOR operation on the provided byte arrays.
      * Since this is being used for XOR'ing cryptographic keys, in order to avoid information leakage
      * caused by (partial) reuse of key material, this function enforces both byte arrays to have the
-     * same length (nr of bytes).
+     * same length (number of bytes).
      *
      * @param a The first operand for the XOR operation. Must be same length as b.
      * @param b The second operand for the XOR operation. Must be same length as a.
