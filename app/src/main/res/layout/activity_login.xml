@@ -207,14 +207,13 @@
                 <EditText
                     android:id="@+id/txtAlternateId"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_marginRight="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:hint="@string/button_alternative_identity"
                     android:inputType="text"
-                    android:textSize="14dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/imgAlternateIdHelp"
@@ -224,15 +223,13 @@
                     android:id="@+id/imgAlternateIdHelp"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
-                    android:layout_marginTop="4dp"
                     android:padding="4dp"
                     android:scaleType="centerCrop"
-                    app:layout_constraintTop_toTopOf="@+id/txtAlternateId"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/txtAlternateId"
                     app:srcCompat="@drawable/ic_info_outline_24dp" />
 
 
@@ -251,28 +248,32 @@
                 app:layout_constraintEnd_toStartOf="@+id/imgDisableAccountHelp" >
 
 
-                <RadioButton android:id="@+id/radStandardLogin"
+                <RadioButton
+                    android:id="@+id/radStandardLogin"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
+                    android:checked="true"
                     android:minHeight="32dp"
-                    android:text="@string/standard_login"
-                    android:checked="true"/>
+                    android:text="@string/standard_login" />
 
-                <RadioButton android:id="@+id/radDisableAccount"
+                <RadioButton
+                    android:id="@+id/radDisableAccount"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:minHeight="32dp"
                     android:text="@string/button_lock_account" />
 
-                <RadioButton android:id="@+id/radEnableAccount"
+                <RadioButton
+                    android:id="@+id/radEnableAccount"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:minHeight="32dp"
                     android:text="@string/button_unlock_account" />
 
-                <RadioButton android:id="@+id/radRemoveAccount"
+                <RadioButton
+                    android:id="@+id/radRemoveAccount"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:minHeight="32dp"
                     android:text="@string/button_remove_account" />
 
@@ -282,39 +283,39 @@
                 android:id="@+id/imgDisableAccountHelp"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="62dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:padding="4dp"
                 android:scaleType="centerCrop"
-                app:layout_constraintTop_toBottomOf="@+id/altIdLayout"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/altIdLayout"
                 app:srcCompat="@drawable/ic_info_outline_24dp" />
 
             <ImageView
                 android:id="@+id/imgEnableAccountHelp"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:padding="4dp"
                 android:scaleType="centerCrop"
-                app:layout_constraintTop_toBottomOf="@+id/imgDisableAccountHelp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imgDisableAccountHelp"
                 app:srcCompat="@drawable/ic_info_outline_24dp" />
 
             <ImageView
                 android:id="@+id/imgRemoveAccountHelp"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:padding="4dp"
                 android:scaleType="centerCrop"
-                app:layout_constraintTop_toBottomOf="@+id/imgEnableAccountHelp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imgEnableAccountHelp"
                 app:srcCompat="@drawable/ic_info_outline_24dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
