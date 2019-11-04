@@ -74,6 +74,7 @@
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="16dp"
                 android:padding="10dp"
+                android:contentDescription="@string/show_more_info"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/txtSettingsPasswordVerifyInSeconds"
                 app:srcCompat="@drawable/ic_info_outline_24dp" />
@@ -119,6 +120,7 @@
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="16dp"
                 android:padding="10dp"
+                android:contentDescription="@string/show_more_info"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/txtSettingsQuickPassLength"
                 app:srcCompat="@drawable/ic_info_outline_24dp" />
@@ -164,6 +166,7 @@
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="16dp"
                 android:padding="10dp"
+                android:contentDescription="@string/show_more_info"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/txtSettingsQuickPassTimeout"
                 app:srcCompat="@drawable/ic_info_outline_24dp" />
@@ -192,6 +195,7 @@
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="16dp"
                 android:padding="10dp"
+                android:contentDescription="@string/show_more_info"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/cbSettingsSQRLOnly"
                 app:srcCompat="@drawable/ic_info_outline_24dp" />
@@ -220,6 +224,7 @@
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="16dp"
                 android:padding="10dp"
+                android:contentDescription="@string/show_more_info"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/cbSettingsNoBypass"
                 app:srcCompat="@drawable/ic_info_outline_24dp" />

@@ -39,6 +39,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:padding="12dp"
+                android:contentDescription="@string/show_more_info"
                 android:nextFocusDown="@id/txtNewPassword"
                 android:nextFocusForward="@id/txtNewPassword"
                 app:layout_constraintEnd_toEndOf="parent"
