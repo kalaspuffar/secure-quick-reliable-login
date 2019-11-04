@@ -1,12 +1,13 @@
 package org.ea.sqrl.utils;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
+import androidx.annotation.Nullable;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;

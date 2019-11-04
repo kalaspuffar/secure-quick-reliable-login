@@ -10,9 +10,9 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.support.v7.widget.PopupMenu;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.PopupMenu;
 
 import com.google.zxing.FormatException;
 

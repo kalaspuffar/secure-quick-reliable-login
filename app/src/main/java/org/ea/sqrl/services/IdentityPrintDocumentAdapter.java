@@ -15,10 +15,11 @@ import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintDocumentInfo;
 import android.print.pdf.PrintedPdfDocument;
-import android.support.annotation.RequiresApi;
 import android.text.Layout;
 import android.text.TextPaint;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.processors.SQRLStorage;

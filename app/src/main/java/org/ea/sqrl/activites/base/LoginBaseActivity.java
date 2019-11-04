@@ -2,10 +2,11 @@ package org.ea.sqrl.activites.base;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.constraint.ConstraintLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import org.ea.sqrl.processors.CommunicationFlowHandler;
 

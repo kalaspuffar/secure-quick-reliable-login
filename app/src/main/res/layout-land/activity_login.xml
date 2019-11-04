@@ -9,7 +9,7 @@
     tools:animateLayoutChanges="true"
     tools:context="org.ea.sqrl.activites.LoginActivity">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/loginActivityView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -92,7 +92,7 @@
 
         </LinearLayout>
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/advancedFunctionsLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -213,9 +213,9 @@
                 app:layout_constraintTop_toBottomOf="@+id/imgEnableAccountHelp"
                 app:srcCompat="@drawable/ic_info_outline_24dp" />
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtSite"
             android:layout_width="0dp"
             android:layout_height="60dp"
@@ -240,7 +240,7 @@
             app:layout_constraintTop_toBottomOf="@+id/txtLoginHeadline"
             tools:ignore="hardcodedText" />
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/txtLoginPasswordLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -249,7 +249,7 @@
             app:layout_constraintTop_toBottomOf="@+id/advancedFunctionsLayout"
             app:layout_constraintWidth_max="500dp">
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/txtLoginPasswordLayoutInternal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -262,14 +262,14 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:passwordToggleEnabled="true">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtLoginPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/login_identity_password"
                     android:imeOptions="actionDone"
                     android:inputType="textPassword" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <ImageView
                 android:id="@+id/imgLoginPasswordHelp"
@@ -283,7 +283,7 @@
                 app:layout_constraintTop_toTopOf="@+id/txtLoginPasswordLayout"
                 app:srcCompat="@drawable/ic_info_outline_24dp" />
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:id="@+id/rescueCodeLayout"
@@ -335,6 +335,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintWidth_max="500dp" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

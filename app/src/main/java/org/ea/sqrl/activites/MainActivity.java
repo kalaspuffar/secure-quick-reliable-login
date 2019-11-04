@@ -3,9 +3,9 @@ package org.ea.sqrl.activites;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.zxing.FormatException;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
