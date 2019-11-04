@@ -249,7 +249,7 @@ public class EncryptionUtils {
             bytesToHash = digest.digest(bytesToHash);
             byte[] xorKey = Arrays.copyOf(bytesToHash, bytesToHash.length);
 
-            for(int i=0; i<15; i++) {
+            for(int i=0; i<16; i++) {
                 bytesToHash = digest.digest(bytesToHash);
                 xorKey = xor(xorKey, bytesToHash);
             }
