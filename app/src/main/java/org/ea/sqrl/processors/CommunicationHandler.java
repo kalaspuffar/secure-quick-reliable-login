@@ -65,6 +65,7 @@ public class CommunicationHandler {
     public static final int TIF_COMMAND_FAILED = 6;
     public static final int TIF_CLIENT_FAILURE = 7;
     public static final int TIF_BAD_ID_ASSOCIATION = 8;
+    public static final int TIF_SUPERSEDED_IDENTITY = 9;
 
     private CommunicationHandler(Context context) {
         this.context = context;
@@ -429,6 +430,11 @@ public class CommunicationHandler {
         return (this.isTIFBitSet(CommunicationHandler.TIF_CURRENT_ID_MATCH) ||
                 this.isTIFBitSet(CommunicationHandler.TIF_PREVIOUS_ID_MATCH)) &&
                 this.isTIFBitSet(CommunicationHandler.TIF_SQRL_DISABLED) == disabled;
+    }
+
+    public boolean isIdentitySuperseded() {
+        return (this.isTIFBitSet(CommunicationHandler.TIF_COMMAND_FAILED) &&
+                this.isTIFBitSet(CommunicationHandler.TIF_SUPERSEDED_IDENTITY));
     }
 
     public String getResponse() {
