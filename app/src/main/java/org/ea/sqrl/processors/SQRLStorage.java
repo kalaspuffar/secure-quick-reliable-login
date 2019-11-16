@@ -102,7 +102,7 @@ public class SQRLStorage {
     }
 
     public void newRescueCode(EntropyHarvester entropyHarvester) {
-        tempRescueCode = new byte[12];
+        tempRescueCode = new byte[32];
         entropyHarvester.fetchRandom(tempRescueCode);
     }
 
@@ -119,7 +119,22 @@ public class SQRLStorage {
         return ret;
     }
 
+
     public String getTempRescueCode() {
+        /*
+        Quoted is the documentation:
+        "At identity creation time, the system obtains 32-bytes (256-bits) of entropy.
+        It then performs successive 32-byte long division by 10 until it has extracted
+        24 division remainder bytes, each with a value of 0 to 9. Note that the means
+        for deriving 24 bytes of decimal data from 256-bits of entropy needs to be
+        carefully considered because other ad hoc approaches might result in non-uniform
+        digit distributions. This would critically weaken a very important security property
+        of SQRL identities."
+
+        In the code below we have 32 bytes of random in tempRescueCode then we create
+        a string radix 10. Then we pick the last 24 characters, this should be equal to
+        dividing the number with 10, 24 times.
+        */
         BigInteger rescueCodeNum = new BigInteger(1, tempRescueCode);
         String rescueCodeStr = rescueCodeNum.toString(10);
         return rescueCodeStr.substring(rescueCodeStr.length() - 24);
