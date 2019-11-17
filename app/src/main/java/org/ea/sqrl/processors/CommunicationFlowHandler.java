@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.CPSMissingActivity;
+import org.ea.sqrl.activites.identity.SupersededIdentityActivity;
 import org.ea.sqrl.services.AskDialogService;
 
 import java.util.ArrayDeque;
@@ -115,6 +116,13 @@ public class CommunicationFlowHandler {
     }
 
     public void handleNextAction() {
+        // Bail out and inform the user if the identity has been superseded
+        if (commHandler.isIdentitySuperseded()) {
+            this.actionStack.clear();
+            currentActivity.startActivity(new Intent(currentActivity, SupersededIdentityActivity.class));
+            return;
+        }
+
         if(commHandler.hasErrorMessage(shouldRunServer)) {
             txtErrorMessage.setText(commHandler.getErrorMessage(this.currentActivity, shouldRunServer));
             error();

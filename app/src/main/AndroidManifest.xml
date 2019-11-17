@@ -21,6 +21,10 @@
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup">
         <activity
+            android:name=".activites.identity.SupersededIdentityActivity"
+            android:label="@string/superseded_identity_headline"
+            />
+        <activity
             android:name=".activites.IntroductionActivity"
             android:label="@string/app_name"
             />
