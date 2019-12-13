@@ -1,5 +1,5 @@
 sudo: required
-dist: trusty
+dist: bionic
 os: linux
 language: generic
 
@@ -24,6 +24,7 @@ before_install:
   - sudo service rsync stop || true
   - sudo service x11-common stop || true
   - export ANDROID_HOME=~/android-sdk-linux
+  - export ANDROID_SDK_ROOT=~/android-sdk-linux
   - wget -q "https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip" -O android-sdk-tools.zip
   - unzip -q android-sdk-tools.zip -d ${ANDROID_HOME}
   - rm android-sdk-tools.zip
@@ -49,8 +50,8 @@ before_install:
   - echo no | avdmanager create avd --force -n test -k "system-images;android-$EMULATOR_VERSION;$ABI"
 
 script:
-  - ./gradlew assembleAndroidTest
-  - $ANDROID_HOME/emulator/emulator -avd test -no-window -prop persist.sys.language=en -prop persist.sys.country=GB -prop hw.lcd.density=440 -prop hw.lcd.height=1920 -prop hw.lcd.width=1080 &
+  - ./gradlew assembleAndroidTest --console=plain
+  - $ANDROID_HOME/emulator/emulator -avd test -no-audio -no-window -prop persist.sys.language=en -prop persist.sys.country=GB -prop hw.lcd.density=440 -prop hw.lcd.height=1920 -prop hw.lcd.width=1080 &
   - bash android-wait-for-emulator
   - adb shell input keyevent 82
   - ./gradlew connectedAndroidTest --console=plain

@@ -7,17 +7,64 @@
         <item name="android:navigationBarColor">@color/colorPrimary</item>
         <item name="android:windowEnterTransition">@android:transition/slide_right</item>
         <item name="android:windowExitTransition">@android:transition/slide_left</item>
+
+        <!-- Toolbar styles -->
+        <item name="toolbarStyle">@style/Custom.Widget.Toolbar</item>
+        <item name="toolbarNavigationButtonStyle">@style/Custom.Widget.Toolbar.Button.Navigation</item>
+        <item name="actionOverflowButtonStyle">@style/Custom.Widget.ActionButton.Overflow</item>
+
+        <item name="windowActionModeOverlay">true</item>
+        <!-- Action Mode styles -->
+        <item name="actionModeStyle">@style/Custom.Widget.ActionMode</item>
+        <item name="actionModeCloseButtonStyle">@style/Custom.Widget.ActionButton.CloseMode</item>
+
         <item name="actionButtonStyle">@style/myActionButtonStyle</item>
+        <item name="actionBarStyle">@style/myActionBarStyle</item>
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="CommonTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
     </style>
 
     <style name="myActionButtonStyle" parent="Widget.AppCompat.ActionButton">
-        <item name="android:width">48dp</item>
-        <item name="android:height">48dp</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:minHeight">48dp</item>
         <item name="android:contentDescription">@string/actionbar_menu</item>
     </style>
 
-    <style name="AppTheme.ActionBar" parent="Widget.AppCompat.ActionBar">
+    <style name="myActionBarStyle" parent="Widget.AppCompat.ActionBar">
         <item name="android:minHeight">48dp</item>
     </style>
 
+    <style name="Custom.Widget.Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:paddingLeft">@dimen/toolbar_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/toolbar_horizontal_padding</item>
+        <item name="contentInsetStart">@dimen/first_keyline</item>
+    </style>
+
+    <style name="Custom.Widget.Toolbar.Button.Navigation" parent="Widget.AppCompat.Toolbar.Button.Navigation">
+        <item name="android:minWidth">48dp</item>
+    </style>
+
+    <style name="Custom.Widget.ActionButton.Overflow" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:width">48dp</item>
+        <item name="android:height">48dp</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
+    </style>
+
+    <style name="Custom.Widget.ActionMode" parent="Widget.AppCompat.ActionMode">
+        <item name="android:paddingLeft">@dimen/toolbar_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/toolbar_horizontal_padding</item>
+    </style>
+
+    <style name="Custom.Widget.ActionButton.CloseMode" parent="Widget.AppCompat.ActionButton.CloseMode">
+        <item name="android:layout_marginRight">20dp</item>
+    </style>
 </resources>
