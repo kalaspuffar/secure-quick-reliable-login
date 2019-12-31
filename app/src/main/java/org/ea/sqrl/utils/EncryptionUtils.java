@@ -42,7 +42,7 @@ public class EncryptionUtils {
      * @param data  input data stream.
      * @return      reversed byte stream
      */
-    private static byte[] reverse(byte[] data) {
+    public static byte[] reverse(byte[] data) {
         for(int i = 0; i < data.length / 2; i++) {
             byte temp = data[i];
             data[i] = data[data.length - i - 1];
