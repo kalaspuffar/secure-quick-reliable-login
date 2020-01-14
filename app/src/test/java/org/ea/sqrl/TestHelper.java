@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Base64;
 
 /**
  * A utility class providing common functionality for the project's
@@ -51,8 +52,8 @@ public class TestHelper {
                         field = field.substring(0, field.length()-1);
                     }
 
-                    if (removeQuotes) {
-                        if (field.charAt(0) == '"') field = field.substring(1, field.length()-1);
+                    if (removeQuotes && field.length() > 0) {
+                        if (field.charAt(0) == '"') field = field.substring(1);
                         if (field.charAt(field.length()-1) == '"') field = field.substring(0, field.length()-1);
                     }
                 }
@@ -66,5 +67,15 @@ public class TestHelper {
         s.close();
 
         return result;
+    }
+
+    static byte[] base64UrlDecode(String s) {
+
+        return Base64.getUrlDecoder().decode(s);
+    }
+
+    static String base64UrlEncode(byte[] input) {
+
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(input);
     }
 }
