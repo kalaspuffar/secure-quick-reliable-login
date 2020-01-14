@@ -43,6 +43,7 @@ We are closely nearing a full implementation of the specification. But there is 
     * [![Translation Korean Status](http://uhash.com/poeditor/ko.svg?t=16)](https://poeditor.com/join/project/Jlsa1tqxlx)
     * [![Translation Norwegian Status](http://uhash.com/poeditor/no.svg?t=16)](https://poeditor.com/join/project/Jlsa1tqxlx)
     * [![Translation Polish Status](http://uhash.com/poeditor/pl.svg?t=16)](https://poeditor.com/join/project/Jlsa1tqxlx)
+    * [![Translation Portuguese Status](http://uhash.com/poeditor/pt-br.svg?t=16)](https://poeditor.com/join/project/Jlsa1tqxlx)
     * [![Translation Russian Status](http://uhash.com/poeditor/ru.svg?t=16)](https://poeditor.com/join/project/Jlsa1tqxlx)
     * [![Translation Slovenian Status](http://uhash.com/poeditor/sl.svg?t=16)](https://poeditor.com/join/project/Jlsa1tqxlx)
     * [![Translation Spanish Status](http://uhash.com/poeditor/es.svg?t=16)](https://poeditor.com/join/project/Jlsa1tqxlx)
