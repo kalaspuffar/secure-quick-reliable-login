@@ -297,4 +297,12 @@
 <string name="title_enable_quickpass">QuickPass aktivieren</string>
 <string name="default_identity_name">Meine Identität</string>
 <string name="language_korean">Koreanisch</string>
+<string name="rescue_code_page_headline">Dies ist der Rettungsschlüssel Ihrer Identität</string>
+<string name="rescue_code_page_warning">Werfen Sie diese Seite nicht weg</string>
+<string name="rescue_code_page_description">Dies ist der unersetzbare SQRL Rettungsschlüssel für die SQRL-Identität, die Sie gerade erzeugen.\n\nDieser Code kann nicht erneut erstellt werden und darf daher nicht verloren gehen oder zerstört werden. Er erlaubt es Ihnen, Ihre Identität im Notfall wiederherzustellen. Sollten Sie z.B. Ihr Identitäts-Passwort vergessen, oder sollte Ihre SQRL-Identität kompromittiert werden, ermöglicht es dieser Rettungsschlüssel, sie in jeder Situation wiederherzustellen. (In einigen Situationen wird zudem auch Ihre SQRL-Identität benötigt. Stellen Sie deshalb sicher, dass Sie auch ein Backup Ihrer Identität erstellen.)\n\nDieser Ausdruck sollte an einem sicheren Ort aufbewahrt werden, wo er nicht von anderen Personen gefunden werden kann, für Sie aber im Notfall griffbereit ist. Es ist gut möglich, dass dieser Notfall niemals eintritt. Falls aber doch, werden Sie froh sein, diesen Ausdruck an einem sicheren Platz verwahrt zu haben.\n\nDer Rettungsschlüssel Ihrer Identität lautet:</string>
+<string name="superseded_identity_headline">SQRL Identity replaced</string>
+<string name="superseded_identity_text">This SQRL identity has been \"rekeyed\" and replaced and used by some other device to sign-in to this website. When that happened, this website learned of the replacement identity and switched to using it instead of the replaced identity.\n\nAfter rekeying and replacing an identity, it MUST also be replaced on ALL of the other devices where it exists. That has not yet been done for your SQRL identity on this device, so it should be done immediately!\n\nFor your protection, your previous identity, which is still on this device, can no longer be used here. Please transfer your rekeyed identity from the device where it was rekeyed to the SQRL client on this device.\n\nThank you.</string>
+<string name="language_indonesian">Indonesisch</string>
+<string name="language_italian">Italienisch</string>
+<string name="language_portuguese">Portugiesisch</string>
 </resources>

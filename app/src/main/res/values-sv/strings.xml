@@ -297,4 +297,12 @@
 <string name="title_enable_quickpass">Aktivera QuickPass</string>
 <string name="default_identity_name">Min identitet</string>
 <string name="language_korean">Korianska</string>
+<string name="rescue_code_page_headline">Detta är din identites återställingskod</string>
+<string name="rescue_code_page_warning">Släng inte denna sida</string>
+<string name="rescue_code_page_description">Det här är den icke ersättningsbara återställningskoden för den här identiteten.\n\nKoden kan inte återskapas och får inte förloras, förläggas eller förstöras. Den gör att du kan återställa din identitet från allt som kan inträffa. Om din identitets lösenord har glömts, eller om din identitet har kommit på avvägar ger denna återställningskod dig möjlighet att återställa denna identitet. (Vissa händelser kan också kräva en säkerhetskopia. Så se till att också hålla en säkerhetskopia av din identitet tillgänglig.)\n\nDenna utskrift bör lagras på ett säkert ställe där andra inte har tillgång men KAN hämtas om du någonsin skulle behöva den. Det behovet kanske aldrig uppstår. Men om det gör det, kommer du att vara glad att du behöll den.\n\nDin identitets återställningskod är:</string>
+<string name="superseded_identity_headline">SQRL Identitiet ersatt</string>
+<string name="superseded_identity_text">Denna identitet är förnyad, ersatt och användes av någon annan enhet för att logga in på denna webbplats. När det hände, fick denna webbplats information om ersättningsidentiteten och bytte till att använda den istället för den ersatta identiteten.\n\nEfter att ha förnyat en identitet måste den också bytas ut på ALLA andra enheter där den finns. Det har ännu inte gjorts för identiten på den här enheten, så det bör göras omedelbart.\n\nFör att skydda dig kan din tidigare identitet, som fortfarande finns på den här enheten, inte längre användas här. Överför din förnyade identitet från enheten där den förnyades till SQRL-klienten på den här enheten.\n\nTack.</string>
+<string name="language_indonesian">Indonesiska</string>
+<string name="language_italian">Italiensk</string>
+<string name="language_portuguese">Portugisiska</string>
 </resources>
