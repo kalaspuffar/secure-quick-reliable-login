@@ -11,12 +11,15 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.IdentitySelector;
 import org.ea.sqrl.utils.SqrlApplication;
+import org.ea.sqrl.utils.TextValidator;
+import org.ea.sqrl.utils.Utils;
 
 /**
  *
@@ -50,6 +53,30 @@ public class IdentitySettingsActivity extends BaseActivity {
         cbSettingsSQRLOnly = findViewById(R.id.cbSettingsSQRLOnly);
         cbSettingsNoBypass = findViewById(R.id.cbSettingsNoBypass);
 
+        txtSettingsQuickPassTimeout.addTextChangedListener(new TextValidator(txtSettingsQuickPassTimeout) {
+            @Override public void validate(EditText editText, String text) {
+                String error = "";
+
+                if (!Utils.isNumeric(text)) {
+                    error = getResources().getString(R.string.error_field_may_not_be_empty);
+                }
+
+                if (text.length() > 2) {
+                    int minutes = -1;
+                    try {minutes = Integer.parseInt(text);} catch (Throwable t) {}
+                    if (minutes > ONE_WEEK_IN_MINUTES) {
+                        error = getString(R.string.idle_timeout_guidance, ONE_WEEK_IN_MINUTES + "");
+                        editText.setText(String.valueOf(ONE_WEEK_IN_MINUTES));
+                        editText.setSelection(editText.getText().length());
+                    }
+                }
+
+                if (!error.equals("")) {
+                    editText.setError(error);
+                }
+            }
+        });
+
         final Button btnSettingsCancel = findViewById(R.id.btnSettingsCancel);
         btnSettingsCancel.setOnClickListener(v -> IdentitySettingsActivity.this.finish());
 
@@ -57,27 +84,6 @@ public class IdentitySettingsActivity extends BaseActivity {
         btnSettingsSave.setOnClickListener(v ->
             savePopupWindow.showAtLocation(savePopupWindow.getContentView(), Gravity.CENTER, 0, 0)
         );
-
-        txtSettingsQuickPassTimeout.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (editable.length() > 2) {
-                    int minutes = -1;
-                    try {minutes = Integer.parseInt(editable.toString());} catch (Throwable t) {}
-                    if (minutes > ONE_WEEK_IN_MINUTES) {
-                        showErrorMessageInternal(getString(R.string.idle_timeout_guidance, ONE_WEEK_IN_MINUTES + ""), null, getString(R.string.guidance_heading));
-                        txtSettingsQuickPassTimeout.setText(String.valueOf(ONE_WEEK_IN_MINUTES));
-                    }
-                }
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-        });
 
         mIdentitySelector = new IdentitySelector(this, true, false, true);
         mIdentitySelector.registerLayout(findViewById(R.id.identitySelector));
