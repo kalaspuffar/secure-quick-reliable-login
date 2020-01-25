@@ -421,7 +421,7 @@ public class BaseActivity extends CommonBaseActivity {
     }
 
     public void clearQuickPassAfterTimeout() {
-        long delayMillis = SQRLStorage.getInstance(BaseActivity.this.getApplicationContext()).getIdleTimeout() * 60000;
+        long delayMillis = (long)SQRLStorage.getInstance(BaseActivity.this.getApplicationContext()).getIdleTimeout() * 60000l;
 
         SqrlApplication.setApplicationShortcuts(getApplicationContext());
 
