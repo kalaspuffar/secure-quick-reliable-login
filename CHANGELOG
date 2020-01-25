@@ -4,6 +4,9 @@ Improvements
 * Update rescue code page to new design.
 * Implement support for tif = 0x200 (reuse of old identity)
 * Implement unit tests for test vectors (2/6)
+* Added Indonesian language
+* Added Italian language
+* Added Portuguese language
 
 Bugfixes
 * Crash report in showErrorMessageInternal from Google Play
