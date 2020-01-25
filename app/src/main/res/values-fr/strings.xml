@@ -305,4 +305,7 @@
 <string name="language_indonesian">Indonesian</string>
 <string name="language_italian">Italian</string>
 <string name="language_portuguese">Portuguese</string>
+<string name="error_field_may_not_be_empty">This field may not be empty</string>
+<string name="error_value_too_large_0_to_255">Value is out of range (0-255)</string>
+<string name="error_value_too_large_0_to_65535">Value is out of range (0-65535)</string>
 </resources>

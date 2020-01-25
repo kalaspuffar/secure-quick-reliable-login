@@ -305,4 +305,7 @@
 <string name="language_indonesian">Indonesiska</string>
 <string name="language_italian">Italiensk</string>
 <string name="language_portuguese">Portugisiska</string>
+<string name="error_field_may_not_be_empty">Inmatningsfältet kan inte vara tomt</string>
+<string name="error_value_too_large_0_to_255">Värdet är inte tillåtet (0-255)</string>
+<string name="error_value_too_large_0_to_65535">Värdet är inte tillåtet (0-65535)</string>
 </resources>
