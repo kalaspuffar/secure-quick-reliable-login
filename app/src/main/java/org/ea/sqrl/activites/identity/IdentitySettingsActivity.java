@@ -11,32 +11,32 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.IdentitySelector;
 import org.ea.sqrl.utils.SqrlApplication;
-import org.ea.sqrl.utils.TextValidator;
 import org.ea.sqrl.utils.Utils;
 
 /**
  *
  * @author Daniel Persson
  */
-public class IdentitySettingsActivity extends BaseActivity {
+public class IdentitySettingsActivity extends BaseActivity implements TextWatcher {
     private static final String TAG = "IdentitySettingsActivity";
-    private static final int ONE_WEEK_IN_MINUTES = 60 * 24 * 7;
 
     private PopupWindow savePopupWindow;
     private IdentitySelector mIdentitySelector = null;
 
-    private EditText txtSettingsQuickPassLength;
-    private EditText txtSettingsPasswordVerify;
-    private EditText txtSettingsQuickPassTimeout;
-    private CheckBox cbSettingsSQRLOnly;
-    private CheckBox cbSettingsNoBypass;
+    private EditText txtQuickPassLength;
+    private EditText txtPwdVerifySecs;
+    private EditText txtQuickPassTimeout;
+    private CheckBox cbSQRLOnly;
+    private CheckBox cbNoBypass;
+    private Button btnSettingsSave;
+
+    private boolean mInputFieldsValid = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,43 +47,24 @@ public class IdentitySettingsActivity extends BaseActivity {
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
-        txtSettingsQuickPassLength = findViewById(R.id.txtSettingsQuickPassLength);
-        txtSettingsPasswordVerify = findViewById(R.id.txtSettingsPasswordVerifyInSeconds);
-        txtSettingsQuickPassTimeout = findViewById(R.id.txtSettingsQuickPassTimeout);
-        cbSettingsSQRLOnly = findViewById(R.id.cbSettingsSQRLOnly);
-        cbSettingsNoBypass = findViewById(R.id.cbSettingsNoBypass);
+        txtQuickPassLength = findViewById(R.id.txtSettingsQuickPassLength);
+        txtPwdVerifySecs = findViewById(R.id.txtSettingsPasswordVerifyInSeconds);
+        txtQuickPassTimeout = findViewById(R.id.txtSettingsQuickPassTimeout);
+        cbSQRLOnly = findViewById(R.id.cbSettingsSQRLOnly);
+        cbNoBypass = findViewById(R.id.cbSettingsNoBypass);
 
-        txtSettingsQuickPassTimeout.addTextChangedListener(new TextValidator(txtSettingsQuickPassTimeout) {
-            @Override public void validate(EditText editText, String text) {
-                String error = "";
-
-                if (!Utils.isNumeric(text)) {
-                    error = getResources().getString(R.string.error_field_may_not_be_empty);
-                }
-
-                if (text.length() > 2) {
-                    int minutes = -1;
-                    try {minutes = Integer.parseInt(text);} catch (Throwable t) {}
-                    if (minutes > ONE_WEEK_IN_MINUTES) {
-                        error = getString(R.string.idle_timeout_guidance, ONE_WEEK_IN_MINUTES + "");
-                        editText.setText(String.valueOf(ONE_WEEK_IN_MINUTES));
-                        editText.setSelection(editText.getText().length());
-                    }
-                }
-
-                if (!error.equals("")) {
-                    editText.setError(error);
-                }
-            }
-        });
+        txtQuickPassLength.addTextChangedListener(this);
+        txtPwdVerifySecs.addTextChangedListener(this);
+        txtQuickPassTimeout.addTextChangedListener(this);
 
         final Button btnSettingsCancel = findViewById(R.id.btnSettingsCancel);
         btnSettingsCancel.setOnClickListener(v -> IdentitySettingsActivity.this.finish());
 
-        final Button btnSettingsSave = findViewById(R.id.btnSettingsSave);
+        btnSettingsSave = findViewById(R.id.btnSettingsSave);
         btnSettingsSave.setOnClickListener(v ->
             savePopupWindow.showAtLocation(savePopupWindow.getContentView(), Gravity.CENTER, 0, 0)
         );
+        btnSettingsSave.setEnabled(false);
 
         mIdentitySelector = new IdentitySelector(this, true, false, true);
         mIdentitySelector.registerLayout(findViewById(R.id.identitySelector));
@@ -116,25 +97,83 @@ public class IdentitySettingsActivity extends BaseActivity {
 
         mIdentitySelector.update();
         update();
+        validateInputFields();
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        validateInputFields();
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {  /* Don't care */ }
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {  /* Don't care */ }
+
+    /**
+     * Validates the contents of all user controlled input fields, sets error messages on the input
+     * fields if necessary and controls whether the "save" button gets enabled or disabled accordingly.
+     */
+    private void validateInputFields() {
+        mInputFieldsValid = true;
+
+        String text = txtQuickPassLength.getText().toString();
+        txtQuickPassLength.setError(null);
+
+        if (text.equals("")) {
+            setInputFieldError(txtQuickPassLength, R.string.error_field_may_not_be_empty);
+        } else if (!Utils.isNumeric(text)) {
+            setInputFieldError(txtQuickPassLength, R.string.settings_hint_length_not_number);
+        } else if (getIntValue(txtQuickPassLength) > 255) {
+            setInputFieldError(txtQuickPassLength, R.string.error_value_too_large_0_to_255);
+        }
+
+        text = txtPwdVerifySecs.getText().toString();
+        txtPwdVerifySecs.setError(null);
+
+        if (text.equals("")) {
+            setInputFieldError(txtPwdVerifySecs, R.string.error_field_may_not_be_empty);
+        } else if (!Utils.isNumeric(text)) {
+            setInputFieldError(txtPwdVerifySecs, R.string.settings_password_verify_not_number);
+        } else if (getIntValue(txtPwdVerifySecs) > 255) {
+            setInputFieldError(txtPwdVerifySecs, R.string.error_value_too_large_0_to_255);
+        }
+
+        text = txtQuickPassTimeout.getText().toString();
+        txtQuickPassTimeout.setError(null);
+
+        if (text.equals("")) {
+            setInputFieldError(txtQuickPassTimeout, R.string.error_field_may_not_be_empty);
+        } else if (!Utils.isNumeric(text)) {
+            setInputFieldError(txtQuickPassTimeout, R.string.settings_idle_timeout_not_number);
+        } else if (getIntValue(txtQuickPassTimeout) > 65535) {
+            setInputFieldError(txtQuickPassTimeout, R.string.error_value_too_large_0_to_65535);
+        }
+
+        btnSettingsSave.setEnabled(mInputFieldsValid);
+    }
+
+    private void setInputFieldError(EditText textField, int errorStringId) {
+        textField.setError(getResources().getString(errorStringId));
+        mInputFieldsValid = false;
     }
 
     private void update() {
         final SQRLStorage storage = SQRLStorage.getInstance(IdentitySettingsActivity.this.getApplicationContext());
 
-        txtSettingsQuickPassLength.setText(Integer.toString(storage.getHintLength()));
-        txtSettingsPasswordVerify.setText(Integer.toString(storage.getPasswordVerify()));
-        txtSettingsQuickPassTimeout.setText(Integer.toString(storage.getIdleTimeout()));
-        cbSettingsSQRLOnly.setChecked(storage.isSQRLOnly());
-        cbSettingsNoBypass.setChecked(storage.isNoByPass());
+        txtQuickPassLength.setText(Integer.toString(storage.getHintLength()));
+        txtPwdVerifySecs.setText(Integer.toString(storage.getPasswordVerify()));
+        txtQuickPassTimeout.setText(Integer.toString(storage.getIdleTimeout()));
+        cbSQRLOnly.setChecked(storage.isSQRLOnly());
+        cbNoBypass.setChecked(storage.isNoByPass());
     }
 
-    public int getIntValue(EditText txt, int errorMessage) {
+    public int getIntValue(EditText txt) {
         try {
             return Integer.parseInt(txt.getText().toString());
         } catch (NumberFormatException nfe) {
-            showErrorMessage(errorMessage);
+            return -1;
         }
-        return -1;
     }
 
     public void setupSavePopupWindow(LayoutInflater layoutInflater) {
@@ -171,26 +210,15 @@ public class IdentitySettingsActivity extends BaseActivity {
                 return;
             }
 
-            int hintLength = getIntValue(txtSettingsQuickPassLength, R.string.settings_hint_length_not_number);
-            if(hintLength == -1) return;
-            if(hintLength > 255) {
-                showErrorMessage(R.string.settings_hint_length_to_large);
-                handler.post(() -> {
-                    hideProgressPopup();
-                    txtPassword.setText("");
-                });
-                return;
-            }
-            int passwordVerify = getIntValue(txtSettingsPasswordVerify, R.string.settings_password_verify_not_number);
-            if(passwordVerify == -1) return;
-            int idleTimeout = getIntValue(txtSettingsQuickPassTimeout, R.string.settings_idle_timeout_not_number);
-            if(idleTimeout == -1) return;
+            int quickPassLength = getIntValue(txtQuickPassLength);
+            int passwordVerify = getIntValue(txtPwdVerifySecs);
+            int quickPassTimeout = getIntValue(txtQuickPassTimeout);
 
-            storage.setHintLength(hintLength);
+            storage.setHintLength(quickPassLength);
             storage.setPasswordVerify(passwordVerify);
-            storage.setIdleTimeout(idleTimeout);
-            storage.setSQRLOnly(cbSettingsSQRLOnly.isChecked());
-            storage.setNoByPass(cbSettingsNoBypass.isChecked());
+            storage.setIdleTimeout(quickPassTimeout);
+            storage.setSQRLOnly(cbSQRLOnly.isChecked());
+            storage.setNoByPass(cbNoBypass.isChecked());
 
             boolean encryptStatus = storage.encryptIdentityKey(txtPassword.getText().toString(), entropyHarvester);
             if (!encryptStatus) {
