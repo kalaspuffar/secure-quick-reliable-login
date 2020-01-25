@@ -1,3 +1,18 @@
+Version 1.6.0
+
+Improvements
+* Update rescue code page to new design.
+* Implement support for tif = 0x200 (reuse of old identity)
+* Implement unit tests for test vectors (2/6)
+
+Bugfixes
+* Crash report in showErrorMessageInternal from Google Play
+* Camera is being used after Camera.release() was called
+* Base56 zero-padding missing on decoding
+* EnHash regression
+* QuickPass not working with large timeout values
+* Error when leaving "QuickPass Timeout" field empty
+
 Version 1.5.1
 
 Improvements
