@@ -124,8 +124,8 @@ public class IdentitySettingsActivity extends BaseActivity implements TextWatche
             setInputFieldError(txtQuickPassLength, R.string.error_field_may_not_be_empty);
         } else if (!Utils.isNumeric(text)) {
             setInputFieldError(txtQuickPassLength, R.string.settings_hint_length_not_number);
-        } else if (getIntValue(txtQuickPassLength) > 255) {
-            setInputFieldError(txtQuickPassLength, R.string.error_value_too_large_0_to_255);
+        } else if (getIntValue(txtQuickPassLength) < 0 || getIntValue(txtQuickPassLength) > 255) {
+            setInputFieldError(txtQuickPassLength, R.string.error_value_out_of_range_0_to_255);
         }
 
         text = txtPwdVerifySecs.getText().toString();
@@ -135,8 +135,8 @@ public class IdentitySettingsActivity extends BaseActivity implements TextWatche
             setInputFieldError(txtPwdVerifySecs, R.string.error_field_may_not_be_empty);
         } else if (!Utils.isNumeric(text)) {
             setInputFieldError(txtPwdVerifySecs, R.string.settings_password_verify_not_number);
-        } else if (getIntValue(txtPwdVerifySecs) > 255) {
-            setInputFieldError(txtPwdVerifySecs, R.string.error_value_too_large_0_to_255);
+        } else if (getIntValue(txtPwdVerifySecs) < 0 || getIntValue(txtPwdVerifySecs) > 255) {
+            setInputFieldError(txtPwdVerifySecs, R.string.error_value_out_of_range_0_to_255);
         }
 
         text = txtQuickPassTimeout.getText().toString();
@@ -146,8 +146,8 @@ public class IdentitySettingsActivity extends BaseActivity implements TextWatche
             setInputFieldError(txtQuickPassTimeout, R.string.error_field_may_not_be_empty);
         } else if (!Utils.isNumeric(text)) {
             setInputFieldError(txtQuickPassTimeout, R.string.settings_idle_timeout_not_number);
-        } else if (getIntValue(txtQuickPassTimeout) > 65535) {
-            setInputFieldError(txtQuickPassTimeout, R.string.error_value_too_large_0_to_65535);
+        } else if (getIntValue(txtQuickPassTimeout) < 0 || getIntValue(txtQuickPassTimeout) > 65535) {
+            setInputFieldError(txtQuickPassTimeout, R.string.error_value_out_of_range_0_to_65535);
         }
 
         btnSettingsSave.setEnabled(mInputFieldsValid);
