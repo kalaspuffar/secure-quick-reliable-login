@@ -94,12 +94,12 @@ public class MainActivity extends LoginBaseActivity {
                 try {
                     qrCodeData = Utils.readSQRLQRCode(data);
                 } catch (FormatException fe) {
-                    showErrorMessage(R.string.scan_incorrect);
+                    Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show();
                     return;
                 }
 
                 if (qrCodeData == null) {
-                    showErrorMessage(R.string.scan_incorrect);
+                    Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show();
                     return;
                 }
 
@@ -117,8 +117,15 @@ public class MainActivity extends LoginBaseActivity {
                 }
 
                 final String serverData = new String(qrCodeData);
+                Uri serverUri = Uri.parse(serverData);
+
+                if (!Utils.isValidSqrlUri(serverUri)) {
+                    Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+
                 Intent urlLoginIntent = new Intent(Intent.ACTION_VIEW);
-                urlLoginIntent.setData(Uri.parse(serverData));
+                urlLoginIntent.setData(serverUri);
                 urlLoginIntent.putExtra(LoginActivity.EXTRA_USE_CPS, false);
                 if (ACTION_QUICK_SCAN.equals(getIntent().getAction())) urlLoginIntent.putExtra(LoginActivity.EXTRA_QUICK_SCAN, true);
                 startActivity(urlLoginIntent);
