@@ -203,4 +203,12 @@ public class Utils {
         }
         return true;
     }
+
+    public static boolean isValidSqrlUri(Uri uri) {
+        if (uri == null) return false;
+        String scheme = uri.getScheme();
+        if (scheme == null || !scheme.toLowerCase().equals("sqrl")) return false;
+
+        return true;
+    }
 }
