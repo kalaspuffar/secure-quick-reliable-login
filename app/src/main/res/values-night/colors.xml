@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#CE93D8</color>
 
+    <color name="primaryDarkTextColor">#ffffff</color>
+    <color name="primaryTextColor">#ffffff</color>
 
     <color name="black_overlay">#66000000</color>
     <color name="primary_text_disabled_material_light" tools:override="true">#ffffff</color>

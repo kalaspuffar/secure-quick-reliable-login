@@ -172,7 +172,7 @@ public class LoginActivity extends LoginBaseActivity {
         if(runningTest) return;
 
         if(!mDbHelper.hasIdentities()) {
-            startActivity(new Intent(this, StartActivity.class));
+            startActivity(new Intent(this, WizardPage1Activity.class));
         } else {
             useCps = getIntent().getBooleanExtra(EXTRA_USE_CPS, true);
             setupBasePopups(getLayoutInflater());

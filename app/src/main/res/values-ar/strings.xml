@@ -308,4 +308,8 @@
 <string name="error_field_may_not_be_empty">This field may not be empty</string>
 <string name="error_value_out_of_range_0_to_255">Value is out of range (0-255)</string>
 <string name="error_value_out_of_range_0_to_65535">Value is out of range (0-65535)</string>
+<string name="intro_1">Welcome to</string>
+<string name="intro_2">SQRL is _one_ identity\n\nCreating _unique_ keys per site\n\nSharing no extra _traceable_ information</string>
+<string name="intro_3">This application is _open source_ and released under an _open license_\n\nFind the link in the _about_ section.</string>
+<string name="intro_4">Start by _creating_ or _importing_ an identity</string>
 </resources>

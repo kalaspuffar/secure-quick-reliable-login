@@ -7,10 +7,14 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.PopupMenu;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
 import android.view.View;
 
@@ -210,5 +214,21 @@ public class Utils {
         if (scheme == null || !scheme.toLowerCase().equals("sqrl")) return false;
 
         return true;
+    }
+
+    public static Spannable getSpanWithHighlight(String s) {
+        Spannable textSpan = new SpannableString(s.replaceAll("_", ""));
+        int point = 0;
+        int highlighted = 0;
+        while(point >= 0) {
+            int start = s.indexOf("_", point + 1);
+            if(start == -1) break;
+            int end = s.indexOf("_", start + 1);
+            if(end == -1) break;
+            textSpan.setSpan(new ForegroundColorSpan(Color.YELLOW), start - highlighted, end  - (highlighted + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            point = end;
+            highlighted += 2;
+        }
+        return textSpan;
     }
 }

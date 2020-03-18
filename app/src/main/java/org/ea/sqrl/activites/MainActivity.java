@@ -66,7 +66,7 @@ public class MainActivity extends LoginBaseActivity {
         if(runningTest) return;
 
         if(!mDbHelper.hasIdentities()) {
-            startActivity(new Intent(this, StartActivity.class));
+            startActivity(new Intent(this, WizardPage1Activity.class));
         } else {
             long currentId = SqrlApplication.getCurrentId(this.getApplication());
             if(currentId != 0) {
@@ -86,7 +86,7 @@ public class MainActivity extends LoginBaseActivity {
                 Log.d(TAG, "Cancelled scan");
                 Snackbar.make(rootView, R.string.scan_cancel, Snackbar.LENGTH_LONG).show();
                 if(!mDbHelper.hasIdentities()) {
-                    startActivity(new Intent(this, StartActivity.class));
+                    startActivity(new Intent(this, WizardPage1Activity.class));
                 }
             } else {
                 byte[] qrCodeData = null;
