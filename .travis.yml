@@ -27,7 +27,7 @@ before_install:
   - export ANDROID_SDK_ROOT=~/android-sdk-linux
   - wget -q "https://dl.google.com/android/repository/commandlinetools-linux-6200805_latest.zip" -O commandlinetools.zip
   - unzip -q commandlinetools.zip -d ${ANDROID_HOME}
-  - rm android-sdk-tools.zip
+  - rm commandlinetools.zip
   - PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools
   - mkdir -p ~/.android
   - touch ~/.android/repositories.cfg
