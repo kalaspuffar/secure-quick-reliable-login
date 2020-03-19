@@ -312,4 +312,6 @@
 <string name="intro_2">SQRL är _en_ identitiet\n\nSkapar _unika_ nycklar för varje websida\n\nDelar ingen extra _identifierande_ information</string>
 <string name="intro_3">Denna applikation är _öppen källkod_ och släppt under en _öppen licens_\n\nHitta mer information i _om_ sektionen.</string>
 <string name="intro_4">Börja med att _skapa_ eller _importera_ en identitet</string>
+<string name="wizard_skip">Hoppa över</string>
+<string name="wizard_next">Nästa</string>
 </resources>

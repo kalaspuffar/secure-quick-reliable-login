@@ -312,4 +312,6 @@
 <string name="intro_2">SQRL在一个身份下\n\n为每个站点创建独立密钥\n\n不共享额外可跟踪的信息</string>
 <string name="intro_3">此应用程序开源，并在开放许可下发布，在关于部分中找到链接。</string>
 <string name="intro_4">通过创建或导入一个身份开始</string>
+<string name="wizard_skip">Skip</string>
+<string name="wizard_next">Next</string>
 </resources>

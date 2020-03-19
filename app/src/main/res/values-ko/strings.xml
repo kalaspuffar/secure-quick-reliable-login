@@ -312,4 +312,6 @@
 <string name="intro_2">SQRL is _one_ identity\n\nCreating _unique_ keys per site\n\nSharing no extra _traceable_ information</string>
 <string name="intro_3">This application is _open source_ and released under an _open license_\n\nFind the link in the _about_ section.</string>
 <string name="intro_4">Start by _creating_ or _importing_ an identity</string>
+<string name="wizard_skip">Skip</string>
+<string name="wizard_next">Next</string>
 </resources>
