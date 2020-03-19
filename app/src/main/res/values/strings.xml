@@ -314,4 +314,5 @@
 <string name="intro_4">Start by _creating_ or _importing_ an identity</string>
 <string name="wizard_skip">Skip</string>
 <string name="wizard_next">Next</string>
+<string name="show_more_info">Click for more information</string>
 </resources>

@@ -58,6 +58,7 @@
         android:layout_marginRight="8dp"
         android:gravity="center_vertical"
         android:text="@string/main_selected_identity"
+        android:contentDescription="@string/main_selected_identity"
         android:textColor="@color/colorAccent"
         android:focusable="false"
         app:layout_constraintEnd_toStartOf="@+id/imgListIdentities"

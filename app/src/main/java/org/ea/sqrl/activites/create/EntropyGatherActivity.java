@@ -93,7 +93,9 @@ public class EntropyGatherActivity extends CommonBaseActivity {
             mPreviewLayout.addView(mPreview);
         }
 
-        mCamera.startPreview();
+        if(mCamera != null) {
+            mCamera.startPreview();
+        }
     }
 
     private void showPhoneStatePermission() {

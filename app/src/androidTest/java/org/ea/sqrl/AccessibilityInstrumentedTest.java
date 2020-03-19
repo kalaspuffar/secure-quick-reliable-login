@@ -10,6 +10,9 @@ import androidx.test.espresso.accessibility.AccessibilityChecks;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckResultUtils;
+import com.google.android.apps.common.testing.accessibility.framework.AccessibilityViewCheckResult;
+
 import org.ea.sqrl.activites.identity.IdentityManagementActivity;
 import org.ea.sqrl.activites.LanguageActivity;
 import org.ea.sqrl.activites.MainActivity;
@@ -31,6 +34,7 @@ import org.ea.sqrl.activites.identity.ResetPasswordActivity;
 import org.ea.sqrl.activites.identity.ShowIdentityActivity;
 import org.ea.sqrl.activites.StartActivity;
 import org.ea.sqrl.activites.LoginActivity;
+import org.hamcrest.Matcher;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,7 +42,12 @@ import org.junit.runner.RunWith;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckResultUtils.matchesViews;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
 
 /**
  *
@@ -132,7 +141,16 @@ public class AccessibilityInstrumentedTest {
 
     @BeforeClass
     public static void enableAccessibilityChecks() {
-        AccessibilityChecks.enable().setRunChecksFromRootView(true);
+        Matcher<AccessibilityViewCheckResult> accessibilityCheckResultMatcher =
+            allOf(
+                AccessibilityCheckResultUtils.matchesCheckNames(is("TouchTargetSizeViewCheck")),
+                matchesViews(withClassName(containsString("OverflowMenuButton")))
+            );
+
+        AccessibilityChecks.enable()
+                .setRunChecksFromRootView(true)
+                .setSuppressingResultMatcher(accessibilityCheckResultMatcher);
+
     }
 
     public void unlockScreen(Activity activity) {
