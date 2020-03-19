@@ -2,6 +2,7 @@ sudo: required
 dist: bionic
 os: linux
 language: generic
+jdk: oraclejdk8
 
 env:
   global:
