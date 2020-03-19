@@ -6,9 +6,9 @@ language: generic
 env:
   global:
     - EMULATOR_VERSION=19
-    - TARGET_VERSION=28
+    - TARGET_VERSION=29
     - ABI="google_apis;armeabi-v7a"
-    - ANDROID_BUILD_TOOLS_VERSION=29.0.2
+    - ANDROID_BUILD_TOOLS_VERSION=29.0.3
     - ADB_INSTALL_TIMEOUT=20
     - QEMU_AUDIO_DRV=none
     - GRADLE_OPTS='-Dorg.gradle.daemon=false -Dorg.gradle.parallel=false -Dkotlin.incremental=false -DdisablePreDex'
@@ -25,8 +25,8 @@ before_install:
   - sudo service x11-common stop || true
   - export ANDROID_HOME=~/android-sdk-linux
   - export ANDROID_SDK_ROOT=~/android-sdk-linux
-  - wget -q "https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip" -O android-sdk-tools.zip
-  - unzip -q android-sdk-tools.zip -d ${ANDROID_HOME}
+  - wget -q "https://dl.google.com/android/repository/commandlinetools-linux-6200805_latest.zip" -O commandlinetools.zip
+  - unzip -q commandlinetools.zip -d ${ANDROID_HOME}
   - rm android-sdk-tools.zip
   - PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools
   - mkdir -p ~/.android
@@ -40,8 +40,8 @@ before_install:
   - sdkmanager "add-ons;addon-google_apis-google-$EMULATOR_VERSION" "system-images;android-$EMULATOR_VERSION;$ABI" > /dev/null
   - yes | sdkmanager "cmake;3.10.2.4988404"
   - sdkmanager --update
-  - wget https://dl.google.com/android/repository/android-ndk-r20-linux-x86_64.zip
-  - unzip android-ndk-r20-linux-x86_64.zip -d $HOME > /dev/null
+  - wget https://dl.google.com/android/repository/android-ndk-r21-linux-x86_64.zip
+  - unzip android-ndk-r21-linux-x86_64.zip -d $HOME > /dev/null
   - export ANDROID_NDK_HOME=$HOME/android-ndk-r20
   - export PATH=$PATH:$ANDROID_NDK_HOME
   - mkdir "$ANDROID_HOME/licenses" || true
