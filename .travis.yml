@@ -1,5 +1,5 @@
 sudo: required
-dist: bionic
+dist: trusty
 os: linux
 language: java
 jdk: oraclejdk8
