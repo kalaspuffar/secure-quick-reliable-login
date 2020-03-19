@@ -308,4 +308,10 @@
 <string name="error_field_may_not_be_empty">Inmatningsfältet kan inte vara tomt</string>
 <string name="error_value_out_of_range_0_to_255">Värdet är inte tillåtet (0-255)</string>
 <string name="error_value_out_of_range_0_to_65535">Värdet är inte tillåtet (0-65535)</string>
+<string name="intro_1">Välkommen till</string>
+<string name="intro_2">SQRL är _en_ identitiet\n\nSkapar _unika_ nycklar för varje websida\n\nDelar ingen extra _identifierande_ information</string>
+<string name="intro_3">Denna applikation är _öppen källkod_ och släppt under en _öppen licens_\n\nHitta mer information i _om_ sektionen.</string>
+<string name="intro_4">Börja med att _skapa_ eller _importera_ en identitet</string>
+<string name="wizard_skip">Hoppa över</string>
+<string name="wizard_next">Nästa</string>
 </resources>
