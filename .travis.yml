@@ -31,15 +31,15 @@ before_install:
   - PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools
   - mkdir -p ~/.android
   - touch ~/.android/repositories.cfg
-  - yes | sdkmanager --licenses
-  - sdkmanager "emulator" "tools" "platform-tools" > /dev/null
-  - sdkmanager --list | head -15
-  - sdkmanager "build-tools;$ANDROID_BUILD_TOOLS_VERSION"
-  - sdkmanager "sources;android-$TARGET_VERSION" "platforms;android-$TARGET_VERSION" > /dev/null
-  - sdkmanager "sources;android-$EMULATOR_VERSION" "platforms;android-$EMULATOR_VERSION" > /dev/null
-  - sdkmanager "add-ons;addon-google_apis-google-$EMULATOR_VERSION" "system-images;android-$EMULATOR_VERSION;$ABI" > /dev/null
-  - yes | sdkmanager "cmake;3.10.2.4988404"
-  - sdkmanager --update
+  - yes | sdkmanager --sdk_root=${ANDROID_HOME} --licenses
+  - sdkmanager --sdk_root=${ANDROID_HOME} "emulator" "tools" "platform-tools" > /dev/null
+  - sdkmanager --sdk_root=${ANDROID_HOME} --list | head -15
+  - sdkmanager --sdk_root=${ANDROID_HOME} "build-tools;$ANDROID_BUILD_TOOLS_VERSION"
+  - sdkmanager --sdk_root=${ANDROID_HOME} "sources;android-$TARGET_VERSION" "platforms;android-$TARGET_VERSION" > /dev/null
+  - sdkmanager --sdk_root=${ANDROID_HOME} "sources;android-$EMULATOR_VERSION" "platforms;android-$EMULATOR_VERSION" > /dev/null
+  - sdkmanager --sdk_root=${ANDROID_HOME} "add-ons;addon-google_apis-google-$EMULATOR_VERSION" "system-images;android-$EMULATOR_VERSION;$ABI" > /dev/null
+  - yes | sdkmanager --sdk_root=${ANDROID_HOME} "cmake;3.10.2.4988404"
+  - sdkmanager --sdk_root=${ANDROID_HOME} --update
   - wget https://dl.google.com/android/repository/android-ndk-r21-linux-x86_64.zip
   - unzip android-ndk-r21-linux-x86_64.zip -d $HOME > /dev/null
   - export ANDROID_NDK_HOME=$HOME/android-ndk-r20
