@@ -31,7 +31,25 @@
         <activity
             android:name=".activites.StartActivity"
             android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
             />
+
+        <activity
+            android:name=".activites.WizardPage1Activity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            />
+        <activity
+            android:name=".activites.WizardPage2Activity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            />
+        <activity
+            android:name=".activites.WizardPage3Activity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            />
+
         <activity
             android:name=".activites.identity.IdentityManagementActivity"
             android:label="@string/title_identity_management"

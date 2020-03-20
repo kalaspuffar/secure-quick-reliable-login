@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.ea.sqrl.R;
+import org.ea.sqrl.activites.WizardPage1Activity;
 import org.ea.sqrl.activites.identity.IdentitySettingsActivity;
 import org.ea.sqrl.activites.StartActivity;
 import org.ea.sqrl.activites.create.RekeyIdentityActivity;
@@ -187,7 +188,7 @@ public class IdentitySelector {
                         Toast.makeText(mContext, mContext.getResources().getString(R.string.main_identity_removed), Toast.LENGTH_SHORT);
 
                         if(!mDbHelper.hasIdentities()) {
-                            mContext.startActivity(new Intent(mContext, StartActivity.class));
+                            mContext.startActivity(new Intent(mContext, WizardPage1Activity.class));
                         }
                     }
                     break;

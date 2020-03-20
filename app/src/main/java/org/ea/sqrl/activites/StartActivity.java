@@ -3,7 +3,11 @@ package org.ea.sqrl.activites;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
+import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -13,6 +17,7 @@ import org.ea.sqrl.activites.create.CreateIdentityActivity;
 import org.ea.sqrl.activites.identity.ImportActivity;
 import org.ea.sqrl.activites.identity.ImportOptionsActivity;
 import org.ea.sqrl.activites.identity.TextImportActivity;
+import org.ea.sqrl.utils.Utils;
 
 import java.util.Objects;
 
@@ -29,18 +34,23 @@ public class StartActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start);
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(false);
+        setContentView(R.layout.startup_wizard_page_4);
 
-        final TextView txtWelcomeMessage = findViewById(R.id.txtWelcomeMessage);
-        txtWelcomeMessage.setMovementMethod(LinkMovementMethod.getInstance());
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         setupProgressPopupWindow(getLayoutInflater());
         setupCameraAccessPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
+
+        TextView wizardText = findViewById(R.id.wizard_text);
+        String s = (String)wizardText.getText();
+        Spannable textSpan = Utils.getSpanWithHighlight(s);
+        wizardText.setText(textSpan);
 
         final Button btnStartCreateIdentity = findViewById(R.id.btnStartCreateIdentity);
         btnStartCreateIdentity.setOnClickListener(v -> {
