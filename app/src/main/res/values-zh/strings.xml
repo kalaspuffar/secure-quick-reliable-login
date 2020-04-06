@@ -273,7 +273,7 @@
 <string name="set_password_import_desc">由于要导入的身份没有设置密码，因此您需要提供在身份创建时提供给您的救援代码。 然后，您将选择一个新密码，该密码将保护您新导入的身份。</string>
 <string name="title_activity_identity_settings">身份设置</string>
 <string name="helptext_password_verify_seconds">通过延长验证完整的SQRL密码所需的时间，可以提高您身份的安全性。任何攻击者，间谍机构或政府都无法大幅加快此验证过程。而且，由于输入密码后即可使用较短的QuickPass，因此您只需等待一次。但是试图猜测您的密码的人，他们每次都需要等待。</string>
-<string name="helptext_quickpass_length">To encourage the use of a longer and more secure access password, SQRL can be configured to only require that your FULL password be provided when it is first used and periodically after that. Once the full password has been entered, for a specified period of time, SQRL may only require the first few characters of your password (called a \"QuickPass\") just to prove it is still you. (How long the \"QuickPass\" is active for is called the \"QuickPass timeout\" and can also be set in the identity settings). \n\nYou chose between a longer and safer QuickPass or a shorter and more convenient one. What makes this trade-off acceptable is that the QuickPass MUST be entered correctly on the first try or the full password will be required again. \n\nFour characters are the recommended length. But you may set it as low as 1 and as long as your full password.</string>
+<string name="helptext_quickpass_length">为了鼓励使用更长，更安全的访问密码，可以将SQRL配置为仅要求您在首次使用时提供完整密码，此后定期提供。一旦输入完整的密码，在之后指定的时间段内，SQRL可能只要求密码的前几个字符（这被称为“ QuickPass”）来证明您的身份。（“ QuickPass“在多长时间内有效被称为“ QuickPass超时”，也可以在身份设置中进行设置）。\n\n您可以选择更长，更安全的QuickPass，或者更短，更方便的QuickPass。这种折衷方案是可以接受的，因为您必须在第一次尝试时正确输入QuickPass，否则将再次需要完整的密码。\n\n建议长度为四个字符，但您既可以将位数降至1位，也可以把它调升到和完整密码一样长。</string>
 <string name="helptext_quickpass_timeout">为保护起见，SQRL的QuickPass将在一段时间后被删除。 此时间跨度由QuickPass超时指定。\n\n超时后，SQRL将在下次登录时再次要求输入完整密码。</string>
 <string name="helptext_request_sqrl_only_login">请求启用SQRL的网站禁用所有其他非SQRL登录方法，以实现最高的安全性。</string>
 <string name="helptext_request_no_sqrl_bypass">要求启用SQRL的网站拒绝任何形式的“我忘记密码”帐户恢复。</string>
@@ -312,6 +312,6 @@
 <string name="intro_2">SQRL在一个身份下\n\n为每个站点创建独立密钥\n\n不共享额外可跟踪的信息</string>
 <string name="intro_3">此应用程序开源，并在开放许可下发布，在关于部分中找到链接。</string>
 <string name="intro_4">通过创建或导入一个身份开始</string>
-<string name="wizard_skip">Skip</string>
-<string name="wizard_next">Next</string>
+<string name="wizard_skip">跳过</string>
+<string name="wizard_next">下一页</string>
 </resources>
