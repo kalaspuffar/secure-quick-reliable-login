@@ -75,7 +75,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtSupersededIdentityHeadline"
-                app:layout_constraintWidth_max="500dp"/>
+                app:layout_constraintWidth_max="500dp"
+                android:layout_gravity="center_horizontal" />
 
         </android.support.constraint.ConstraintLayout>
 
