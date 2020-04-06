@@ -14,7 +14,7 @@
 <string name="action_about">حول</string>
 <string name="about_message_title">حول</string>
 <string name="about_message_text"><b>التسجيل السريع والآمن والموثوق - SQRL</b>\n\nالاصدارة: %s\n\nGithub مستودع:\n<a href="https://github.com/kalaspuffar/secure-quick-reliable-login">https://github.com/kalaspuffar/secure-quick-reliable-login</a>\n\nالمؤلفون:\nدانيال بيرسون (Daniel Persson)</string>
-<string name="decrypt_identity_message"> </string>
+<string name="decrypt_identity_message">You\'ve successfully scanned your secure identity. Please verify that the rescue data presented below corresponds to the data printed on your key page.</string>
 <string name="communication_incorrect_response">استجابة خاطئة، الخادم لم يستجب برمز الخطأ.\nحاول مجددًا مرة أخرى.</string>
 <string name="communication_bad_id_association">Bad ID Association: SQRL identity which may be associated with the query nut does not match the SQRL ID used to submit the query.</string>
 <string name="communication_client_failure">Client failure: Some information in the query didn\'t make sense to the server so it won\'t handle this request.</string>
