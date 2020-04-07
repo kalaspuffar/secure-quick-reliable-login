@@ -13,7 +13,7 @@
 <string name="action_help">Súgó</string>
 <string name="action_about">Névjegy</string>
 <string name="about_message_title">Névjegy</string>
-<string name="about_message_text"><b>Biztonságos Gyors Megbízható Bejelentkezés<b>\n\nVerzió: %s\n\nGithub repo: <a href="https://github.com/kalaspuffar/secure-quick-reliable-login">https://github.com/kalaspuffar/secure-quick-reliable-login</a>\n\nSzerzők:\nDaniel Persson</string>
+<string name="about_message_text"><b>Biztonságos Gyors Megbízható Bejelentkezés</b>\n\nVerzió: %s\n\nGithub repo: <a href="https://github.com/kalaspuffar/secure-quick-reliable-login">https://github.com/kalaspuffar/secure-quick-reliable-login</a>\n\nSzerzők:\nDaniel Persson</string>
 <string name="decrypt_identity_message">Sikeresen beolvastad a biztonságos azonosítódat. Kérlek ellenőrizd hogy a lenti mentési adatok megegyeznek a kinyomtatott szöveggel.</string>
 <string name="communication_incorrect_response">Hibás válasz; a szerver nem hibakóddal válaszolt. Próbáld újra később</string>
 <string name="communication_bad_id_association">Bad ID Association: SQRL identity which may be associated with the query nut does not match the SQRL ID used to submit the query.</string>
