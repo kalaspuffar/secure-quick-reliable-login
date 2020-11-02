@@ -33,9 +33,9 @@ public class ChangePasswordActivity extends BaseActivity {
         findViewById(R.id.btnDoChangePassword).setOnClickListener(v -> {
             if(!txtNewPassword.getText().toString().equals(txtRetypePassword.getText().toString())) {
                 showErrorMessage(R.string.change_password_retyped_password_do_not_match);
-                txtCurrentPassword.setText("");
                 txtNewPassword.setText("");
                 txtRetypePassword.setText("");
+                txtNewPassword.requestFocus();
                 return;
             }
 
@@ -49,15 +49,13 @@ public class ChangePasswordActivity extends BaseActivity {
                     handler.post(() -> {
                         hideProgressPopup();
                         txtCurrentPassword.setText("");
-                        txtNewPassword.setText("");
-                        txtRetypePassword.setText("");
+                        txtCurrentPassword.requestFocus();
                     });
                     storage.clearQuickPass();
                     storage.clear();
 
                     return;
                 }
-                clearQuickPassAfterTimeout();
 
                 boolean encryptStatus = storage.encryptIdentityKey(txtNewPassword.getText().toString(), entropyHarvester);
                 if (!encryptStatus) {
@@ -72,6 +70,7 @@ public class ChangePasswordActivity extends BaseActivity {
                     return;
                 }
 
+                storage.clearQuickPass();
                 storage.clear();
 
                 long currentId = SqrlApplication.getCurrentId(this.getApplication());
