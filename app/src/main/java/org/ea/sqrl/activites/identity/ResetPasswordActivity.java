@@ -2,6 +2,7 @@ package org.ea.sqrl.activites.identity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.PasswordStrengthMeter;
 import org.ea.sqrl.utils.RescueCodeInputHelper;
 import org.ea.sqrl.utils.SqrlApplication;
+import org.ea.sqrl.utils.Utils;
 
 public class ResetPasswordActivity extends BaseActivity {
 
@@ -28,6 +30,7 @@ public class ResetPasswordActivity extends BaseActivity {
         setupProgressPopupWindow(getLayoutInflater());
         setupErrorPopupWindow(getLayoutInflater());
 
+        final TextInputLayout newPwdTextInputLayout = findViewById(R.id.txtResetPasswordNewPasswordLayout);
         final EditText txtResetPasswordNewPassword = findViewById(R.id.txtResetPasswordNewPassword);
         final TextView txtResetPasswordDescription = findViewById(R.id.txtResetPasswordDescription);
         final ViewGroup pwStrengthMeter = findViewById(R.id.passwordStrengthMeter);
@@ -60,6 +63,7 @@ public class ResetPasswordActivity extends BaseActivity {
 
             SQRLStorage storage = SQRLStorage.getInstance(ResetPasswordActivity.this.getApplicationContext());
 
+            Utils.reMaskPassword(newPwdTextInputLayout);
             showProgressPopup();
 
             new Thread(() -> {
