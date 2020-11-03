@@ -11,12 +11,15 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.PopupMenu;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.method.PasswordTransformationMethod;
 import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.EditText;
 
 import com.google.zxing.FormatException;
 
@@ -230,5 +233,17 @@ public class Utils {
             highlighted += 2;
         }
         return textSpan;
+    }
+
+    /**
+     * Re-masks the password field within a TextInputLayout if the password is currently visible in plain text.
+     * 
+     * @param textInputLayout The TextInputLayout holding the password field to be re-masked.
+     */
+    public static void reMaskPassword(TextInputLayout textInputLayout) {
+        EditText editText = (textInputLayout != null) ? textInputLayout.getEditText() : null;
+        if (editText != null && !(editText.getTransformationMethod() instanceof PasswordTransformationMethod)) {
+            textInputLayout.passwordVisibilityToggleRequested(true);
+        }
     }
 }
