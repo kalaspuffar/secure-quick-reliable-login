@@ -288,18 +288,6 @@ public class AccessibilityInstrumentedTest {
     }
 
     @Test
-    public void testStartActivityAccessability() throws Exception {
-        Context targetContext = InstrumentationRegistry.getInstrumentation()
-                .getTargetContext();
-        Intent intent = new Intent(targetContext, StartActivity.class);
-        intent.putExtra("RUNNING_TEST", true);
-        StartActivity a = startActivityRule.launchActivity(intent);
-        unlockScreen(a);
-
-        onView(withId(R.id.startActivityView)).perform(click());
-    }
-
-    @Test
     public void testLoginActivityAccessibility() throws Exception {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
