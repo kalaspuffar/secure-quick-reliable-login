@@ -1,3 +1,10 @@
+Version 1.7.1
+
+Improvements
+* Enable "show password" option when changing password
+* Re-mask passwords when submitting
+* Compiled for newer Android versions.
+
 Version 1.7.0
 
 Improvements
