@@ -1,6 +1,7 @@
 package org.ea.sqrl.activites.identity;
 
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -186,6 +187,7 @@ public class IdentitySettingsActivity extends BaseActivity implements TextWatche
         savePopupWindow.setTouchable(true);
         savePopupWindow.setFocusable(true);
 
+        final TextInputLayout pwdTextInputLayout = popupView.findViewById(R.id.txtPasswordLayout);
         final EditText txtPassword = popupView.findViewById(R.id.txtPassword);
 
         SQRLStorage storage = SQRLStorage.getInstance(IdentitySettingsActivity.this.getApplicationContext());
@@ -194,6 +196,7 @@ public class IdentitySettingsActivity extends BaseActivity implements TextWatche
         final Button btnSaveSettings = popupView.findViewById(R.id.btnSaveSettings);
         btnSaveSettings.setOnClickListener(v -> new Thread(() -> {
             handler.post(() -> {
+                Utils.reMaskPassword(pwdTextInputLayout);
                 savePopupWindow.dismiss();
                 showProgressPopup();
             });

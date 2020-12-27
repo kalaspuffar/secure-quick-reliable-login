@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -28,6 +29,7 @@ import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.IdentitySelector;
 import org.ea.sqrl.utils.RescueCodeInputHelper;
 import org.ea.sqrl.utils.SqrlApplication;
+import org.ea.sqrl.utils.Utils;
 
 import java.security.KeyStore;
 import java.util.regex.Matcher;
@@ -45,6 +47,7 @@ public class LoginActivity extends LoginBaseActivity {
     public static final String ACTION_QUICKPASS_OPERATION = "org.ea.sqrl.activites.LOGON";
 
     private boolean useCps = true;
+    private TextInputLayout pwdTextInputLayout;
     private EditText txtLoginPassword;
     private IdentitySelector mIdentitySelector = null;
     private Matcher mSqrlMatcher;
@@ -56,6 +59,7 @@ public class LoginActivity extends LoginBaseActivity {
         setContentView(R.layout.activity_login);
 
         rootView = findViewById(R.id.loginActivityView);
+        pwdTextInputLayout = findViewById(R.id.txtLoginPasswordLayoutInternal);
         txtLoginPassword = findViewById(R.id.txtLoginPassword);
         communicationFlowHandler = CommunicationFlowHandler.getInstance(this, handler);
 
@@ -352,6 +356,8 @@ public class LoginActivity extends LoginBaseActivity {
 
         long currentId = SqrlApplication.getCurrentId(this.getApplication());
         if(currentId <= 0) return;
+
+        Utils.reMaskPassword(pwdTextInputLayout);
 
         String alternateId = ((TextView)findViewById(R.id.txtAlternateId)).getText().toString();
         if (!alternateId.equals("")) {

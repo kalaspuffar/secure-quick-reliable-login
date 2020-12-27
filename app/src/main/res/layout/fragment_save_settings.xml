@@ -89,7 +89,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/save_settings_password"
-                android:inputType="textPassword"/>
+                android:inputType="textPassword"
+                android:importantForAutofill="yes"
+                android:autofillHints="password"/>
         </android.support.design.widget.TextInputLayout>
 
     </android.support.constraint.ConstraintLayout>
