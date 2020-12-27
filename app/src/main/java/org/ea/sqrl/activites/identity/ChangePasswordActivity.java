@@ -1,6 +1,7 @@
 package org.ea.sqrl.activites.identity;
 
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
@@ -9,6 +10,7 @@ import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.processors.SQRLStorage;
 import org.ea.sqrl.utils.PasswordStrengthMeter;
 import org.ea.sqrl.utils.SqrlApplication;
+import org.ea.sqrl.utils.Utils;
 
 public class ChangePasswordActivity extends BaseActivity {
 
@@ -24,6 +26,9 @@ public class ChangePasswordActivity extends BaseActivity {
         final EditText txtNewPassword = findViewById(R.id.txtNewPassword);
         final EditText txtRetypePassword = findViewById(R.id.txtRetypePassword);
         final ViewGroup pwStrengthMeter = findViewById(R.id.passwordStrengthMeter);
+        final TextInputLayout currentPwdTextInputLayout = findViewById(R.id.txtCurrentPasswordLayout);
+        final TextInputLayout newPwdTextInputLayout = findViewById(R.id.txtNewPasswordLayout);
+        final TextInputLayout retypePwdTextInputLayout = findViewById(R.id.txtRetypePasswordLayout);
 
         new PasswordStrengthMeter(this)
                 .register(txtNewPassword, pwStrengthMeter);
@@ -38,6 +43,10 @@ public class ChangePasswordActivity extends BaseActivity {
                 txtNewPassword.requestFocus();
                 return;
             }
+
+            Utils.reMaskPassword(currentPwdTextInputLayout);
+            Utils.reMaskPassword(newPwdTextInputLayout);
+            Utils.reMaskPassword(retypePwdTextInputLayout);
 
             showProgressPopup();
 
