@@ -81,33 +81,34 @@ public class MainActivity extends LoginBaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+
         if(result != null) {
-            if(result.getContents() == null) {
+            final String qrCodeContent = result.getContents();
+
+            if(qrCodeContent == null) {
                 Log.d(TAG, "Cancelled scan");
                 Snackbar.make(rootView, R.string.scan_cancel, Snackbar.LENGTH_LONG).show();
                 if(!mDbHelper.hasIdentities()) {
                     startActivity(new Intent(this, WizardPage1Activity.class));
                 }
             } else {
-                byte[] qrCodeData = null;
-
-                try {
-                    qrCodeData = Utils.readSQRLQRCode(data);
-                } catch (FormatException fe) {
-                    Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-
-                if (qrCodeData == null) {
-                    Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-
                 // If an identity qr-code was scanned instead of a login qr code,
                 // simply forward it to the import activity and bail out
+                if (qrCodeContent.startsWith(SQRLStorage.STORAGE_HEADER)) {
+                    // We can't use the string result of the qr code decoding here, since we're dealing
+                    // with binary data. We need to get the raw byte segments instead.
+                    byte[] qrCodeData = null;
+                    try {
+                        qrCodeData = Utils.readSQRLQRCode(data);
+                    } catch (FormatException fe) {
+                        Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show();
+                        return;
+                    }
 
-                if (qrCodeData.length > 8 && new String(Arrays.copyOfRange(qrCodeData, 0, 8))
-                        .startsWith(SQRLStorage.STORAGE_HEADER)) {
+                    if (qrCodeData == null) {
+                        Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show();
+                        return;
+                    }
 
                     Intent importIntent = new Intent(this, ImportActivity.class);
                     importIntent.putExtra(ImportActivity.EXTRA_IMPORT_METHOD, ImportActivity.IMPORT_METHOD_FORWARDED_QR_CODE);
@@ -116,8 +117,8 @@ public class MainActivity extends LoginBaseActivity {
                     return;
                 }
 
-                final String serverData = new String(qrCodeData);
-                Uri serverUri = Uri.parse(serverData);
+                // Not an identity qr code, so check if it's a valid login url
+                Uri serverUri = Uri.parse(qrCodeContent);
 
                 if (!Utils.isValidSqrlUri(serverUri)) {
                     Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show();
