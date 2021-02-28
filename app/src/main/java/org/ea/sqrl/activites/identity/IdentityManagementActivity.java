@@ -11,6 +11,7 @@ import org.ea.sqrl.activites.base.BaseActivity;
 import org.ea.sqrl.activites.create.CreateIdentityActivity;
 
 import org.ea.sqrl.utils.IdentitySelector;
+import org.ea.sqrl.utils.SqrlApplication;
 import org.ea.sqrl.utils.Utils;
 
 import java.util.Objects;
@@ -57,6 +58,8 @@ public class IdentityManagementActivity extends BaseActivity {
         if(!mDbHelper.hasIdentities()) {
             IdentityManagementActivity.this.finish();
         } else {
+            long id = SqrlApplication.getCurrentId(this.getApplication());
+            SqrlApplication.setCurrentId(this.getApplicationContext(), id);
             mIdentitySelector.update();
         }
     }
