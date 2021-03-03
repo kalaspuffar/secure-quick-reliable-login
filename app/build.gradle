@@ -6,9 +6,9 @@ android {
     defaultConfig {
         applicationId "org.ea.sqrl"
         minSdkVersion 16
-        targetSdkVersion 28
-        versionCode 52
-        versionName "1.7.0"
+        targetSdkVersion 30
+        versionCode 53
+        versionName "1.7.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
