@@ -9,6 +9,7 @@ import android.util.Log;
 import com.google.zxing.FormatException;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import org.ea.sqrl.utils.QRCodeDecodeHelper;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.base.LoginBaseActivity;
@@ -92,7 +93,7 @@ public class MainActivity extends LoginBaseActivity {
                 byte[] qrCodeData = null;
 
                 try {
-                    qrCodeData = Utils.readSQRLQRCode(data);
+                    qrCodeData = QRCodeDecodeHelper.decode(result.getRawBytes());
                 } catch (FormatException fe) {
                     Snackbar.make(rootView, R.string.scan_incorrect, Snackbar.LENGTH_LONG).show();
                     return;
