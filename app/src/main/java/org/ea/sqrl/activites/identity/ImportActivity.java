@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import org.ea.sqrl.utils.QRCodeDecodeHelper;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.activites.MainActivity;
@@ -145,7 +146,7 @@ public class ImportActivity extends BaseActivity {
                 ImportActivity.this.finish();
             } else {
                 try {
-                    byte[] qrCodeData = Utils.readSQRLQRCode(data);
+                    byte[] qrCodeData = QRCodeDecodeHelper.decode(result.getRawBytes());
                     if(qrCodeData.length == 0) {
                         showErrorMessage(R.string.scan_incorrect);
                         return;
