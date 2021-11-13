@@ -17,6 +17,10 @@ buildscript {
 
 buildDir = 'gen_build'
 allprojects {
+    tasks.withType(Test).configureEach {
+        forkEvery = 100
+    }
+
     buildDir = 'gen_build'
     repositories {
         google()
