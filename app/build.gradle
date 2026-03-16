@@ -36,7 +36,8 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
+    // Local AAR
+    implementation(name: 'libsodium-jni-aar-2.0.2', ext: 'aar')
 
     // AndroidX
     implementation 'androidx.appcompat:appcompat:1.7.0'
@@ -48,17 +49,14 @@ dependencies {
 
     // Google
     implementation 'com.google.android.material:material:1.12.0'
-    // flexbox 1.0.0 loaded from local AAR in libs/ (not available on any live repository)
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
 
     // QR code scanning
-    implementation 'com.journeyapps:zxing-android-embedded:3.5.0'
-    implementation 'com.google.zxing:core:3.4.1'
-
-    // Crypto
-    implementation 'com.github.joshjdevl.libsodiumjni:libsodium-jni-aar:2.0.2'
+    implementation 'com.journeyapps:zxing-android-embedded:4.1.0'
+    implementation 'com.google.zxing:core:3.5.3'
 
     // Testing
-    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
@@ -68,5 +66,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-web:3.0.2'
     androidTestImplementation 'com.android.support.test.espresso.idling:idling-concurrent:3.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-idling-resource:3.0.2'
-    androidTestImplementation 'com.google.guava:guava:30.1-jre'
+    androidTestImplementation 'com.google.guava:guava:33.4.0-android'
 }

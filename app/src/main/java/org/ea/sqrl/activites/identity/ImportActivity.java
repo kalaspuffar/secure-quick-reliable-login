@@ -103,7 +103,7 @@ public class ImportActivity extends BaseActivity {
 
         if (importMethod.equals(IMPORT_METHOD_QR_CODE)) {
             final IntentIntegrator integrator = new IntentIntegrator(this);
-            integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+            integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
             integrator.setCameraId(0);
             integrator.setBeepEnabled(false);
             integrator.setOrientationLocked(false);
