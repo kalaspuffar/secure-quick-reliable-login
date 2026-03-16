@@ -20,9 +20,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -148,7 +148,7 @@ public class BaseActivity extends CommonBaseActivity {
     }
 
     @Override
-    protected boolean onPrepareOptionsPanel(View view, Menu menu) {
+    public boolean onPrepareOptionsMenu(Menu menu) {
         if (menu != null) {
             if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
                 try {
@@ -161,7 +161,7 @@ public class BaseActivity extends CommonBaseActivity {
                 }
             }
         }
-        return super.onPrepareOptionsPanel(view, menu);
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
