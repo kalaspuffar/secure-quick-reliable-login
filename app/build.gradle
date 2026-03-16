@@ -9,7 +9,7 @@ android {
         targetSdk 34
         versionCode 54
         versionName "1.7.2"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -57,14 +57,15 @@ dependencies {
 
     // Testing
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test:rules:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-intents:3.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-accessibility:3.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-web:3.0.2'
-    androidTestImplementation 'com.android.support.test.espresso.idling:idling-concurrent:3.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-idling-resource:3.0.2'
+    androidTestImplementation 'androidx.test:runner:1.6.1'
+    androidTestImplementation 'androidx.test:rules:1.6.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.6.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.6.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-accessibility:3.6.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-web:3.6.1'
+    androidTestImplementation 'androidx.test.espresso.idling:idling-concurrent:3.6.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-idling-resource:3.6.1'
     androidTestImplementation 'com.google.guava:guava:33.4.0-android'
 }
