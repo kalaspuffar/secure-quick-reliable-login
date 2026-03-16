@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     namespace 'org.ea.sqrl'
-    compileSdk 34
+    compileSdk 35
     defaultConfig {
         applicationId "org.ea.sqrl"
         minSdk 21
@@ -37,14 +37,27 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:2.0.4'
-    implementation 'com.android.support:support-v4:28.0.0'
+
+    // AndroidX
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.core:core:1.15.0'
+    implementation 'androidx.fragment:fragment:1.8.6'
+    implementation 'androidx.viewpager:viewpager:1.0.0'
+    implementation 'androidx.biometric:biometric:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+
+    // Google
+    implementation 'com.google.android.material:material:1.12.0'
+    // flexbox 1.0.0 loaded from local AAR in libs/ (not available on any live repository)
+
+    // QR code scanning
     implementation 'com.journeyapps:zxing-android-embedded:3.5.0'
     implementation 'com.google.zxing:core:3.4.1'
+
+    // Crypto
     implementation 'com.github.joshjdevl.libsodiumjni:libsodium-jni-aar:2.0.2'
-    // flexbox 1.0.0 loaded from local AAR in libs/ (not available on any live repository)
+
+    // Testing
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'

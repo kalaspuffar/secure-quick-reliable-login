@@ -3,7 +3,7 @@ package org.ea.sqrl.activites;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatDelegate;
+import androidx.appcompat.app.AppCompatDelegate;
 import android.text.Spannable;
 import android.view.Window;
 import android.view.WindowManager;
