@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion '30.0.3'
+    namespace 'org.ea.sqrl'
+    compileSdk 34
     defaultConfig {
         applicationId "org.ea.sqrl"
-        minSdkVersion 16
-        targetSdkVersion 30
+        minSdk 21
+        targetSdk 34
         versionCode 54
         versionName "1.7.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -21,26 +21,26 @@ android {
     externalNativeBuild {
         cmake {
             path 'CMakeLists.txt'
-            version "3.10.2"
+            version "3.22.1"
         }
     }
-    adbOptions {
+    installation {
         timeOutInMs 20 * 60 * 1000  // 20 minutes
         installOptions "-d", "-t"
     }
-    ndkVersion '22.0.7026061'
+    ndkVersion '27.2.12479018'
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
     implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
+    implementation 'com.journeyapps:zxing-android-embedded:3.5.0'
     implementation 'com.google.zxing:core:3.4.1'
     implementation 'com.github.joshjdevl.libsodiumjni:libsodium-jni-aar:2.0.2'
-    implementation 'com.google.android:flexbox:1.0.0'
+    // flexbox 1.0.0 loaded from local AAR in libs/ (not available on any live repository)
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
