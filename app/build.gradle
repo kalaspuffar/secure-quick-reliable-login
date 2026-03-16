@@ -7,10 +7,38 @@ android {
         applicationId "org.ea.sqrl"
         minSdk 21
         targetSdk 34
-        versionCode 54
-        versionName "1.7.2"
+        versionCode 55
+        versionName "1.7.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+    }
+
+    // Release signing credentials — set these in ~/.gradle/gradle.properties or as
+    // environment variables. NEVER hardcode keystore paths or passwords in this file.
+    //
+    //   SQRL_STORE_FILE=/path/to/keystore.jks
+    //   SQRL_STORE_PASSWORD=****
+    //   SQRL_KEY_ALIAS=****
+    //   SQRL_KEY_PASSWORD=****
+    if (findProperty('SQRL_STORE_FILE') != null &&
+        findProperty('SQRL_STORE_PASSWORD') != null &&
+        findProperty('SQRL_KEY_ALIAS') != null &&
+        findProperty('SQRL_KEY_PASSWORD') != null) {
+        signingConfigs {
+            release {
+                storeFile file(SQRL_STORE_FILE)
+                storePassword SQRL_STORE_PASSWORD
+                keyAlias SQRL_KEY_ALIAS
+                keyPassword SQRL_KEY_PASSWORD
+            }
+        }
+        buildTypes {
+            release {
+                minifyEnabled true
+                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                signingConfig signingConfigs.release
+            }
+        }
     }
 
     buildFeatures {
