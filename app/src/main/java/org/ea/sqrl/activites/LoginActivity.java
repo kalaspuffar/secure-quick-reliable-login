@@ -6,8 +6,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.TextInputLayout;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import com.google.android.material.textfield.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -293,11 +294,11 @@ public class LoginActivity extends LoginBaseActivity {
 
         if (advancedFunctionsLayout.getVisibility() == View.GONE) {
             advancedFunctionsLayout.setVisibility(View.VISIBLE);
-            imgAdvancedFunctionsToggle.setImageDrawable(getResources().getDrawable(
+            imgAdvancedFunctionsToggle.setImageDrawable(ContextCompat.getDrawable(this,
                     R.drawable.ic_keyboard_arrow_up_gray_24dp));
         } else {
             advancedFunctionsLayout.setVisibility(View.GONE);
-            imgAdvancedFunctionsToggle.setImageDrawable(getResources().getDrawable(
+            imgAdvancedFunctionsToggle.setImageDrawable(ContextCompat.getDrawable(this,
                     R.drawable.ic_keyboard_arrow_down_gray_24dp));
         }
     };

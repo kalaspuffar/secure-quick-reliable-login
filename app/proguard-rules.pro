@@ -18,4 +18,19 @@
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
-#-renamesourcefileattribute SourceFile
+{-#renamesourcefileattribute SourceFile
+
+# ZXING QR library needs to be kept (reflection-based scanning)
+-keep class com.google.zxing.** { *; }
+-keep class com.journeyapps.barcode.scanner.** { *; }
+-dontwarn com.journeyapps.**
+
+# libsodium-jni JNI bridge must stay intact
+-keep class org.libsodium.jni.** { *; }
+
+# Our custom native AES-GCM JNI wrapper
+-keep class org.ea.sqrl.jni.Grc_aesgcm { *; }
+
+# SQRL protocol handlers use reflection
+-keep class io.uhash.** { *; }
+

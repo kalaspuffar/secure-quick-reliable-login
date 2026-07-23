@@ -2,10 +2,10 @@ package org.ea.sqrl.activites.base;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.StringRes;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import org.ea.sqrl.R;
 import org.ea.sqrl.utils.Utils;

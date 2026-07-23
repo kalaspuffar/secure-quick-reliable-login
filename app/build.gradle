@@ -1,55 +1,108 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion '30.0.3'
+    namespace 'org.ea.sqrl'
+    compileSdk 35
     defaultConfig {
         applicationId "org.ea.sqrl"
-        minSdkVersion 16
-        targetSdkVersion 30
-        versionCode 54
-        versionName "1.7.2"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        minSdk 21
+        targetSdk 34
+        versionCode 55
+        versionName "1.7.3"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
 
+    // Optional release signing for local development builds. Set these in ~/.gradle/gradle.properties:
+    //   SQRL_STORE_FILE=/path/to/keystore.jks
+    //   SQRL_STORE_PASSWORD=****
+    //   SQRL_KEY_ALIAS=****
+    //   SQRL_KEY_PASSWORD=****
+    // F-Droid will sign the APK on their server with their own key.
+    def hasKeystore = findProperty('SQRL_STORE_FILE') != null &&
+                      findProperty('SQRL_STORE_PASSWORD') != null &&
+                      findProperty('SQRL_KEY_ALIAS') != null &&
+                      findProperty('SQRL_KEY_PASSWORD') != null
+
+    if (hasKeystore) {
+        signingConfigs {
+            release {
+                storeFile file(SQRL_STORE_FILE)
+                storePassword SQRL_STORE_PASSWORD
+                keyAlias SQRL_KEY_ALIAS
+                keyPassword SQRL_KEY_PASSWORD
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (hasKeystore) {
+                signingConfig signingConfigs.release
+            }
+        }
+        debug {
+            // Debug builds don't need custom signing - Android handles that automatically
+        }
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     externalNativeBuild {
         cmake {
             path 'CMakeLists.txt'
-            version "3.10.2"
+            version "3.22.1"
         }
     }
-    adbOptions {
+    installation {
         timeOutInMs 20 * 60 * 1000  // 20 minutes
         installOptions "-d", "-t"
     }
-    ndkVersion '22.0.7026061'
+    ndkVersion '27.2.12479018'
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:2.0.4'
-    implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
-    implementation 'com.google.zxing:core:3.4.1'
-    implementation 'com.github.joshjdevl.libsodiumjni:libsodium-jni-aar:2.0.2'
-    implementation 'com.google.android:flexbox:1.0.0'
-    testImplementation 'junit:junit:4.13.1'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test:rules:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-intents:3.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-accessibility:3.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-web:3.0.2'
-    androidTestImplementation 'com.android.support.test.espresso.idling:idling-concurrent:3.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-idling-resource:3.0.2'
-    androidTestImplementation 'com.google.guava:guava:30.1-jre'
+    // libsodium-jni: Local AAR since no Maven distribution exists on their repo.
+    // F-Droid CI will download this from GitHub releases during build.
+    // See https://github.com/joshjdevl/libsodium-jni for upstream project.
+    implementation(name: 'libsodium-jni-aar-2.0.2', ext: 'aar')
+
+    // AndroidX
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.core:core:1.15.0'
+    implementation 'androidx.fragment:fragment:1.8.6'
+    implementation 'androidx.viewpager:viewpager:1.0.0'
+    implementation 'androidx.biometric:biometric:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+
+    // Google
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
+
+    // QR code scanning (ZXing)
+    implementation 'com.journeyapps:zxing-android-embedded:4.1.0'
+    implementation 'com.google.zxing:core:3.5.3'
+
+    // Testing
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test:runner:1.6.1'
+    androidTestImplementation 'androidx.test:rules:1.6.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.6.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.6.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-accessibility:3.6.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-web:3.6.1'
+    androidTestImplementation 'androidx.test.espresso.idling:idling-concurrent:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-idling-resource:3.6.1'
+    androidTestImplementation 'com.google.guava:guava:33.4.0-android'
 }

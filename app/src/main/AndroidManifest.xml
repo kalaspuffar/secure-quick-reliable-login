@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="org.ea.sqrl">
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- ZXing 4.1.0 declares minSdk 24 in its manifest, but its QR scanning APIs
+         work correctly on API 21+. Override to allow our minSdk 21 project to use it. -->
+    <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -66,6 +69,7 @@
         <activity
             android:name=".activites.MainActivity"
             android:label="@string/app_name"
+            android:exported="true"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -159,6 +163,7 @@
             android:label="@string/title_activity_url_login"
             android:noHistory="true"
             android:excludeFromRecents="true"
+            android:exported="true"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -186,7 +191,7 @@
             />
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="org.ea.sqrl.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">

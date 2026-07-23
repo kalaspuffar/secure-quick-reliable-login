@@ -3,8 +3,8 @@ package org.ea.sqrl.activites.identity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.Snackbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.google.android.material.snackbar.Snackbar;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
@@ -103,7 +103,7 @@ public class ImportActivity extends BaseActivity {
 
         if (importMethod.equals(IMPORT_METHOD_QR_CODE)) {
             final IntentIntegrator integrator = new IntentIntegrator(this);
-            integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+            integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
             integrator.setCameraId(0);
             integrator.setBeepEnabled(false);
             integrator.setOrientationLocked(false);
