@@ -13,17 +13,18 @@ android {
         vectorDrawables.useSupportLibrary = true
     }
 
-    // Release signing credentials — set these in ~/.gradle/gradle.properties or as
-    // environment variables. NEVER hardcode keystore paths or passwords in this file.
-    //
+    // Optional release signing for local development builds. Set these in ~/.gradle/gradle.properties:
     //   SQRL_STORE_FILE=/path/to/keystore.jks
     //   SQRL_STORE_PASSWORD=****
     //   SQRL_KEY_ALIAS=****
     //   SQRL_KEY_PASSWORD=****
-    if (findProperty('SQRL_STORE_FILE') != null &&
-        findProperty('SQRL_STORE_PASSWORD') != null &&
-        findProperty('SQRL_KEY_ALIAS') != null &&
-        findProperty('SQRL_KEY_PASSWORD') != null) {
+    // F-Droid will sign the APK on their server with their own key.
+    def hasKeystore = findProperty('SQRL_STORE_FILE') != null &&
+                      findProperty('SQRL_STORE_PASSWORD') != null &&
+                      findProperty('SQRL_KEY_ALIAS') != null &&
+                      findProperty('SQRL_KEY_PASSWORD') != null
+
+    if (hasKeystore) {
         signingConfigs {
             release {
                 storeFile file(SQRL_STORE_FILE)
@@ -32,12 +33,18 @@ android {
                 keyPassword SQRL_KEY_PASSWORD
             }
         }
-        buildTypes {
-            release {
-                minifyEnabled true
-                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (hasKeystore) {
                 signingConfig signingConfigs.release
             }
+        }
+        debug {
+            // Debug builds don't need custom signing - Android handles that automatically
         }
     }
 
@@ -64,7 +71,9 @@ android {
 }
 
 dependencies {
-    // Local AAR
+    // libsodium-jni: Local AAR since no Maven distribution exists on their repo.
+    // F-Droid CI will download this from GitHub releases during build.
+    // See https://github.com/joshjdevl/libsodium-jni for upstream project.
     implementation(name: 'libsodium-jni-aar-2.0.2', ext: 'aar')
 
     // AndroidX
@@ -79,7 +88,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
 
-    // QR code scanning
+    // QR code scanning (ZXing)
     implementation 'com.journeyapps:zxing-android-embedded:4.1.0'
     implementation 'com.google.zxing:core:3.5.3'
 
@@ -93,7 +102,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.6.1'
     androidTestImplementation 'androidx.test.espresso:espresso-accessibility:3.6.1'
     androidTestImplementation 'androidx.test.espresso:espresso-web:3.6.1'
-    androidTestImplementation 'androidx.test.espresso.idling:idling-concurrent:3.6.1'
+    androidTestImplementation 'androidx.test.espresso.idling:idling-concurrent:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-idling-resource:3.6.1'
     androidTestImplementation 'com.google.guava:guava:33.4.0-android'
 }
